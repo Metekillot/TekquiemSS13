@@ -435,6 +435,64 @@ GLOBAL_LIST_EMPTY(teleportlocs)
  *
  * Updates the fire light on fire alarms in the area and sets all lights to emergency mode
  */
+
+/obj/effect/decal/firecontrol
+	name = "fire shower"
+	icon = 'code/modules/ziggers/props.dmi'
+	icon_state = "rain"
+	plane = GAME_PLANE
+	layer = CAR_LAYER
+	alpha = 28
+	var/last_fire_extinguish = 0
+
+/obj/effect/decal/firecontrol/Initialize()
+	. = ..()
+	START_PROCESSING(SSobj, src)
+
+/obj/effect/decal/firecontrol/Destroy()
+	. = ..()
+	STOP_PROCESSING(SSobj, src)
+
+/obj/effect/decal/firecontrol/process(delta_time)
+	if(last_fire_extinguish+30 < world.time)
+		last_fire_extinguish = world.time
+		for(var/mob/M in get_turf(src))
+			if(M)
+				SEND_SOUND(M, sound('code/modules/ziggers/sounds/rain.ogg', 0, 0, CHANNEL_RAIN, 25))
+		for(var/obj/effect/fire/F in get_turf(src))
+			if(F)
+				qdel(F)
+
+/area/proc/fire_extinguishment()
+	if(fire_controling)
+		return
+	fire_controling = TRUE
+	playsound(src, 'sound/effects/alert.ogg', 100, FALSE)
+	set_fire_alarm_effect()
+	for(var/turf/open/O in src)
+		new /obj/effect/decal/firecontrol(O)
+	spawn(300)
+		unset_fire_alarm_effects()
+		fire_controling = FALSE
+		for(var/obj/effect/decal/firecontrol/F in src)
+			if(F)
+				qdel(F)
+
+/area/proc/fog_setup()
+	for(var/turf/open/O in src)
+		var/obj/effect/realistic_fog/F = new(O)
+		GLOB.fog_suka += F
+
+/area/proc/rain_setup()
+	for(var/turf/open/O in src)
+		var/obj/effect/new_rain/R = new(O)
+		GLOB.rain_suka += R
+
+/area/proc/snow_setup()
+	for(var/turf/open/O in src)
+		var/obj/effect/new_snow/S = new(O)
+		GLOB.snow_suka += S
+
 /area/proc/set_fire_alarm_effect()
 	fire = TRUE
 	if(!triggered_firealarms) //If there aren't any fires/breaches
@@ -575,14 +633,22 @@ GLOBAL_LIST_EMPTY(teleportlocs)
 		return
 
 	// Ambience goes down here -- make sure to list each area separately for ease of adding things in later, thanks! Note: areas adjacent to each other should have the same sounds to prevent cutoff when possible.- LastyScratch
-	if(L.client && !L.client.ambience_playing && L.client.prefs.toggles & SOUND_SHIP_AMBIENCE)
-		L.client.ambience_playing = 1
-		SEND_SOUND(L, sound('sound/ambience/shipambience.ogg', repeat = 1, wait = 0, volume = 35, channel = CHANNEL_BUZZ))
+//	if(L.client && !L.client.ambience_playing && L.client.prefs.toggles & SOUND_SHIP_AMBIENCE)
+//		L.client.ambience_playing = 1
+	if(L)
+		if(L.client)
+			if(istype(get_area(loc), /area/vtm/northbeach))
+				if(!L.client.ambience_playing)
+					L.client.ambience_playing = 1
+					SEND_SOUND(L, sound('code/modules/ziggers/sounds/beach.ogg', repeat = 1, wait = 0, volume = 35, channel = CHANNEL_BUZZ))
+			else if(L.client.ambience_playing)
+				L.client.ambience_playing = 0
+				SEND_SOUND(L, sound(null, channel = CHANNEL_BUZZ))
 
 	if(!(L.client && (L.client.prefs.toggles & SOUND_AMBIENCE)))
 		return //General ambience check is below the ship ambience so one can play without the other
 
-	if(prob(35))
+	if(prob(50))
 		var/sound = pick(ambientsounds)
 
 		if(!L.client.played)

@@ -172,10 +172,13 @@
 /datum/component/personal_crafting/proc/construct_item(atom/a, datum/crafting_recipe/R)
 	var/list/contents = get_surroundings(a,R.blacklist)
 	var/send_feedback = 1
+	var/mob/living/carbon/human/PIS
+	if(ishuman(a))
+		PIS = a
 	if(check_contents(a, R, contents))
 		if(check_tools(a, R, contents))
 			//If we're a mob we'll try a do_after; non mobs will instead instantly construct the item
-			if(ismob(a) && !do_after(a, R.time, target = a))
+			if(ismob(a) && !do_after(a, R.time*max(1, (5-PIS.mentality)), target = a))
 				return "."
 			contents = get_surroundings(a,R.blacklist)
 			if(!check_contents(a, R, contents))
@@ -184,6 +187,20 @@
 				return ", missing tool."
 			var/list/parts = del_reqs(R, a)
 			var/atom/movable/I = new R.result (get_turf(a.loc))
+			if(istype(I, /mob/living/simple_animal/hostile))
+				var/mob/living/simple_animal/hostile/HS = I
+				if(ishuman(a))
+					HS.my_creator = a
+			if(istype(I, /obj/structure/fleshwall))
+				if(istype(get_area(a), /area/vtm))
+					var/area/vtm/V = get_area(a)
+					if(V.upper)
+						PIS.AdjustMasquerade(-1)
+			if(istype(I, /obj/effect/decal/gut_floor))
+				if(istype(get_area(a), /area/vtm))
+					var/area/vtm/V = get_area(a)
+					if(V.upper)
+						PIS.AdjustMasquerade(-1)
 			I.CheckParts(parts, R)
 			if(send_feedback)
 				SSblackbox.record_feedback("tally", "object_crafted", 1, I.type)

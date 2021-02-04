@@ -12,7 +12,7 @@
 	minimal_player_age = 10
 	exp_requirements = 180
 	exp_type = EXP_TYPE_CREW
-	exp_type_department = EXP_TYPE_SERVICE
+	exp_type_department = EXP_TYPE_NEUTRALS
 
 	outfit = /datum/outfit/job/hop
 
@@ -36,7 +36,7 @@
 
 	liver_traits = list(TRAIT_ROYAL_METABOLISM)
 
-	display_order = JOB_DISPLAY_ORDER_HEAD_OF_PERSONNEL
+//	display_order = JOB_DISPLAY_ORDER_HEAD_OF_PERSONNEL
 
 /datum/outfit/job/hop
 	name = "Head of Personnel"
@@ -52,9 +52,3 @@
 		/obj/item/melee/classic_baton/telescopic=1, /obj/item/modular_computer/tablet/preset/advanced/command = 1)
 
 	chameleon_extras = list(/obj/item/gun/energy/e_gun, /obj/item/stamp/hop)
-
-/datum/outfit/job/hop/pre_equip(mob/living/carbon/human/H)
-	..()
-	if(locate(/datum/holiday/ianbirthday) in SSevents.holidays)
-		undershirt = /datum/sprite_accessory/undershirt/ian
-

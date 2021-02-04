@@ -9,6 +9,7 @@
 	gain_text = "<span class='notice'>You feel like hanging out with other people.</span>"
 	lose_text = "<span class='danger'>You feel like you're over the bar scene.</span>"
 	medical_record_text = "Patient will not shut the hell up."
+	mood_quirk = TRUE
 
 /datum/quirk/introvert
 	name = "Introvert"
@@ -18,15 +19,7 @@
 	gain_text = "<span class='notice'>You feel like reading a good book quietly.</span>"
 	lose_text = "<span class='danger'>You feel like libraries are boring.</span>"
 	medical_record_text = "Patient doesn't seem to say much."
-
-/datum/quirk/no_taste
-	name = "Ageusia"
-	desc = "You can't taste anything! Toxic food will still poison you."
-	value = 0
-	mob_trait = TRAIT_AGEUSIA
-	gain_text = "<span class='notice'>You can't taste anything!</span>"
-	lose_text = "<span class='notice'>You can taste again!</span>"
-	medical_record_text = "Patient suffers from ageusia and is incapable of tasting food or reagents."
+	mood_quirk = TRUE
 
 /datum/quirk/foreigner
 	name = "Foreigner"
@@ -35,6 +28,7 @@
 	gain_text = "<span class='notice'>The words being spoken around you don't make any sense."
 	lose_text = "<span class='notice'>You've developed fluency in Galactic Common."
 	medical_record_text = "Patient does not speak Galactic Common and may require an interpreter."
+	mood_quirk = TRUE
 
 /datum/quirk/foreigner/add()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -55,6 +49,7 @@
 	gain_text = "<span class='notice'>You feel repulsion at the idea of eating meat.</span>"
 	lose_text = "<span class='notice'>You feel like eating meat isn't that bad.</span>"
 	medical_record_text = "Patient reports a vegetarian diet."
+	mood_quirk = TRUE
 
 /datum/quirk/vegetarian/add()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -79,6 +74,7 @@
 	lose_text = "<span class='notice'>Well who cares about deco anyways?</span>"
 	medical_record_text = "Patient seems to be rather stuck up."
 	mob_trait = TRAIT_SNOB
+	mood_quirk = TRUE
 
 /datum/quirk/pineapple_liker
 	name = "Ananas Affinity"
@@ -87,6 +83,7 @@
 	gain_text = "<span class='notice'>You feel an intense craving for pineapple.</span>"
 	lose_text = "<span class='notice'>Your feelings towards pineapples seem to return to a lukewarm state.</span>"
 	medical_record_text = "Patient demonstrates a pathological love of pineapple."
+	mood_quirk = TRUE
 
 /datum/quirk/pineapple_liker/add()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -106,6 +103,7 @@
 	gain_text = "<span class='notice'>You find yourself pondering what kind of idiot actually enjoys pineapples...</span>"
 	lose_text = "<span class='notice'>Your feelings towards pineapples seem to return to a lukewarm state.</span>"
 	medical_record_text = "Patient is correct to think that pineapple is disgusting."
+	mood_quirk = TRUE
 
 /datum/quirk/pineapple_hater/add()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -125,6 +123,7 @@
 	gain_text = "<span class='notice'>You start craving something that tastes strange.</span>"
 	lose_text = "<span class='notice'>You feel like eating normal food again.</span>"
 	medical_record_text = "Patient demonstrates irregular nutrition preferences."
+	mood_quirk = TRUE
 
 /datum/quirk/deviant_tastes/add()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -143,8 +142,9 @@
 /datum/quirk/monochromatic
 	name = "Monochromacy"
 	desc = "You suffer from full colorblindness, and perceive nearly the entire world in blacks and whites."
-	value = 0
+	value = -1
 	medical_record_text = "Patient is afflicted with almost complete color blindness."
+	mood_quirk = TRUE
 
 /datum/quirk/monochromatic/add()
 	quirk_holder.add_client_colour(/datum/client_colour/monochrome)
@@ -163,6 +163,7 @@
 	desc = "You are irrationally afraid of something."
 	value = 0
 	medical_record_text = "Patient has an irrational fear of something."
+	mood_quirk = TRUE
 
 /datum/quirk/phobia/post_add()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -178,6 +179,7 @@
 	desc = "Lacking familiarity with certain stations, you start with a wayfinding pinpointer where available."
 	value = 0
 	medical_record_text = "Patient demonstrates a keen ability to get lost."
+	mood_quirk = TRUE
 
 	var/obj/item/pinpointer/wayfinding/wayfinder
 	var/where
@@ -215,6 +217,7 @@
 	gain_text = "<span class='notice'>Your head is as smooth as can be, it's terrible.</span>"
 	lose_text = "<span class='notice'>Your head itches, could it be... growing hair?!</span>"
 	medical_record_text = "Patient starkly refused to take off headwear during examination."
+	mood_quirk = TRUE
 	///The user's starting hairstyle
 	var/old_hair
 
@@ -269,6 +272,7 @@
 	desc = "Due to a past incident, your ability to communicate has been relegated to your hands."
 	value = 0
 	medical_record_text = "During physical examination, patient's tongue was found to be uniquely damaged."
+	mood_quirk = TRUE
 
 //Adds tongue & gloves
 /datum/quirk/tongue_tied/on_spawn()
@@ -293,6 +297,7 @@
 	gain_text = "<span class='notice'>You know everything about photography.</span>"
 	lose_text = "<span class='danger'>You forget how photo cameras work.</span>"
 	medical_record_text = "Patient mentions photography as a stress-relieving hobby."
+	mood_quirk = TRUE
 
 /datum/quirk/photographer/on_spawn()
 	var/mob/living/carbon/human/H = quirk_holder

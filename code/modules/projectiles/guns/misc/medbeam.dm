@@ -1,9 +1,9 @@
 /obj/item/gun/medbeam
-	name = "Medical Beamgun"
-	desc = "Don't cross the streams!"
+	name = "Healing Hand"
+	desc = "It has some blood coming from it..."
 	icon = 'icons/obj/chronos.dmi'
-	icon_state = "chronogun"
-	inhand_icon_state = "chronogun"
+	icon_state = "medgun"
+	inhand_icon_state = "medgun"
 	w_class = WEIGHT_CLASS_NORMAL
 
 	var/mob/living/current_target
@@ -66,7 +66,7 @@
 
 	current_target = target
 	active = TRUE
-	current_beam = user.Beam(current_target, icon_state="medbeam", time = 10 MINUTES, maxdistance = max_range, beam_type = /obj/effect/ebeam/medical)
+	current_beam = user.Beam(current_target, icon_state="blood", time = 10 MINUTES, maxdistance = max_range, beam_type = /obj/effect/ebeam/medical)
 	RegisterSignal(current_beam, COMSIG_PARENT_QDELETING, .proc/beam_died)//this is a WAY better rangecheck than what was done before (process check)
 
 	SSblackbox.record_feedback("tally", "gun_fired", 1, type)
@@ -110,11 +110,11 @@
 			if(!AM.CanPass(dummy,turf,1))
 				qdel(dummy)
 				return FALSE
-		for(var/obj/effect/ebeam/medical/B in turf)// Don't cross the str-beams!
-			if(B.owner.origin != current_beam.origin)
-				explosion(B.loc,0,3,5,8)
-				qdel(dummy)
-				return FALSE
+//		for(var/obj/effect/ebeam/medical/B in turf)// Don't cross the str-beams!
+//			if(B.owner.origin != current_beam.origin)
+//				explosion(B.loc,0,3,5,8)
+//				qdel(dummy)
+//				return FALSE
 	qdel(dummy)
 	return TRUE
 
@@ -123,11 +123,11 @@
 
 /obj/item/gun/medbeam/proc/on_beam_tick(mob/living/target)
 	if(target.health != target.maxHealth)
-		new /obj/effect/temp_visual/heal(get_turf(target), "#80F5FF")
-	target.adjustBruteLoss(-4)
-	target.adjustFireLoss(-4)
-	target.adjustToxLoss(-1)
-	target.adjustOxyLoss(-1)
+		new /obj/effect/temp_visual/heal(get_turf(target), "#FF0000")
+	target.adjustBruteLoss(-20)
+	target.adjustFireLoss(-20)
+	target.adjustToxLoss(-10)
+	target.adjustOxyLoss(-10)
 	return
 
 /obj/item/gun/medbeam/proc/on_beam_release(mob/living/target)

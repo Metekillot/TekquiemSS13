@@ -57,6 +57,34 @@
 
 	var/atom/movable/screen/using
 	var/atom/movable/screen/inventory/inv_box
+	var/atom/movable/screen/inventory/inv_add
+	var/atom/movable/screen/transform_werewolf
+
+	if(isgarou(owner))
+		transform_werewolf = new /atom/movable/screen/transform_lupus()
+		transform_werewolf.screen_loc = ui_werewolf_lupus
+		transform_werewolf.hud = src
+		static_inventory += transform_werewolf
+
+		transform_werewolf = new /atom/movable/screen/transform_crinos()
+		transform_werewolf.screen_loc = ui_werewolf_crinos
+		transform_werewolf.hud = src
+		static_inventory += transform_werewolf
+
+		transform_werewolf = new /atom/movable/screen/transform_homid()
+		transform_werewolf.screen_loc = ui_werewolf_homid
+		transform_werewolf.hud = src
+		static_inventory += transform_werewolf
+
+		transform_werewolf = new /atom/movable/screen/auspice()
+		transform_werewolf.screen_loc = ui_werewolf_auspice
+		transform_werewolf.hud = src
+		static_inventory += transform_werewolf
+
+		rage_icon = new /atom/movable/screen/rage()
+		rage_icon.screen_loc = ui_werewolf_rage
+		rage_icon.hud = src
+		infodisplay += rage_icon
 
 	using = new/atom/movable/screen/language_menu
 	using.icon = ui_style
@@ -151,6 +179,30 @@
 	inv_box.slot_id = ITEM_SLOT_NECK
 	inv_box.hud = src
 	toggleable_inventory += inv_box
+
+	inv_add = new /atom/movable/screen/addinv()
+	inv_add.name = "inventory"
+	inv_add.icon = 'code/modules/ziggers/32x48.dmi'
+	inv_add.icon_state = "gorg"
+	inv_add.screen_loc = ui_gorg
+	inv_add.hud = src
+	toggleable_inventory += inv_add
+
+	inv_add = new /atom/movable/screen/addinv()
+	inv_add.name = "inventory"
+	inv_add.icon = 'code/modules/ziggers/icons.dmi'
+	inv_add.icon_state = "cross1"
+	inv_add.screen_loc = ui_cross1
+	inv_add.hud = src
+	toggleable_inventory += inv_add
+
+	inv_add = new /atom/movable/screen/addinv()
+	inv_add.name = "inventory"
+	inv_add.icon = 'code/modules/ziggers/icons.dmi'
+	inv_add.icon_state = "cross2"
+	inv_add.screen_loc = ui_cross2
+	inv_add.hud = src
+	toggleable_inventory += inv_add
 
 	inv_box = new /atom/movable/screen/inventory()
 	inv_box.name = "back"
@@ -273,21 +325,84 @@
 	rest_icon.hud = src
 	static_inventory += rest_icon
 
-	internals = new /atom/movable/screen/internals()
-	internals.hud = src
-	infodisplay += internals
+	block_icon = new /atom/movable/screen/block()
+//	block_icon.icon = ui_style
+	block_icon.screen_loc = ui_above_movement
+	block_icon.hud = src
+	static_inventory += block_icon
+
+//	internals = new /atom/movable/screen/internals()
+//	internals.hud = src
+//	infodisplay += internals
 
 	spacesuit = new /atom/movable/screen/spacesuit
 	spacesuit.hud = src
 	infodisplay += spacesuit
 
 	healths = new /atom/movable/screen/healths()
+	if(iskindred(owner))
+		healths.icon = 'code/modules/ziggers/32x48.dmi'
+	else
+		healths.icon = 'code/modules/ziggers/ghoul_health.dmi'
 	healths.hud = src
 	infodisplay += healths
+	blood_icon = new /atom/movable/screen/blood()
+	blood_icon.screen_loc = ui_bloodpool
+	blood_icon.hud = src
+	infodisplay += blood_icon
 
-	healthdoll = new /atom/movable/screen/healthdoll()
-	healthdoll.hud = src
-	infodisplay += healthdoll
+	discipline1_icon = new /atom/movable/screen/disciplines()
+	discipline1_icon.screen_loc = ui_discipline1
+	discipline1_icon.hud = src
+	static_inventory += discipline1_icon
+
+	discipline2_icon = new /atom/movable/screen/disciplines()
+	discipline2_icon.screen_loc = ui_discipline2
+	discipline2_icon.hud = src
+	static_inventory += discipline2_icon
+
+	discipline3_icon = new /atom/movable/screen/disciplines()
+	discipline3_icon.screen_loc = ui_discipline3
+	discipline3_icon.hud = src
+	static_inventory += discipline3_icon
+
+	discipline4_icon = new /atom/movable/screen/disciplines()
+	discipline4_icon.screen_loc = ui_discipline4
+	discipline4_icon.hud = src
+	static_inventory += discipline4_icon
+
+	drinkblood_icon = new /atom/movable/screen/drinkblood()
+	if(iskindred(owner))
+		drinkblood_icon.icon_state = "drink"
+	drinkblood_icon.screen_loc = ui_drinkblood
+	drinkblood_icon.hud = src
+	static_inventory += drinkblood_icon
+
+	bloodheal_icon = new /atom/movable/screen/bloodheal()
+	if(!iskindred(owner))
+		bloodheal_icon.icon_state = ""
+	bloodheal_icon.screen_loc = ui_bloodheal
+	bloodheal_icon.hud = src
+	static_inventory += bloodheal_icon
+
+	bloodpower_icon = new /atom/movable/screen/bloodpower()
+	if(!iskindred(owner))
+		bloodpower_icon.icon_state = ""
+	bloodpower_icon.screen_loc = ui_bloodpower
+	bloodpower_icon.hud = src
+	static_inventory += bloodpower_icon
+
+	zone_icon = new /atom/movable/screen/vtm_zone()
+	zone_icon.screen_loc = ui_bloodpower
+	zone_icon.screen_loc = ui_vtm_zone
+	zone_icon.hud = src
+	static_inventory += zone_icon
+
+//	if(character.dna.species.id == "kindred"
+
+//	healthdoll = new /atom/movable/screen/healthdoll()
+//	healthdoll.hud = src
+//	infodisplay += healthdoll
 
 	pull_icon = new /atom/movable/screen/pull()
 	pull_icon.icon = ui_style

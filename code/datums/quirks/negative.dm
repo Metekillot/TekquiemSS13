@@ -31,6 +31,7 @@
 	lose_text = "<span class='notice'>You feel vigorous again.</span>"
 	medical_record_text = "Patient requires regular treatment for blood loss due to low production of blood."
 	hardcore_value = 8
+	mood_quirk = TRUE
 
 /datum/quirk/blooddeficiency/on_process(delta_time)
 	var/mob/living/carbon/human/H = quirk_holder
@@ -48,6 +49,7 @@
 	lose_text = "<span class='notice'>You miraculously gain back your vision.</span>"
 	medical_record_text = "Patient has permanent blindness."
 	hardcore_value = 15
+	mood_quirk = TRUE
 
 /datum/quirk/blindness/add()
 	quirk_holder.become_blind(ROUNDSTART_TRAIT)
@@ -71,6 +73,7 @@
 	lose_text = "<span class='notice'>You feel wrinkled again.</span>"
 	medical_record_text = "Patient has a tumor in their brain that is slowly driving them to brain death."
 	hardcore_value = 12
+	mood_quirk = TRUE
 	/// Location of the bottle of pills on spawn
 	var/where
 
@@ -106,6 +109,7 @@
 	lose_text = "<span class='notice'>You're able to hear again!</span>"
 	medical_record_text = "Patient's cochlear nerve is incurably damaged."
 	hardcore_value = 12
+	mood_quirk = TRUE
 
 /datum/quirk/depression
 	name = "Depression"
@@ -121,6 +125,47 @@
 /datum/quirk/depression/on_process(delta_time)
 	if(DT_PROB(0.05, delta_time))
 		SEND_SIGNAL(quirk_holder, COMSIG_ADD_MOOD_EVENT, "depression_mild", /datum/mood_event/depression_mild)
+
+/datum/quirk/ground_heirloom
+	name = "Ground Heirloom"
+	desc = "You are the current owner of an domain, passed down for generations. You have to keep it safe!"
+	value = -2
+	mood_quirk = TRUE
+	var/obj/item/ground_heir/heirloom
+	var/where
+	var/last_notice = 0
+	medical_record_text = "Patient demonstrates an unnatural attachment to a ground."
+	hardcore_value = 1
+
+/datum/quirk/ground_heirloom/on_spawn()
+	var/mob/living/carbon/human/H = quirk_holder
+	heirloom = new(get_turf(quirk_holder))
+	var/list/slots = list(
+		LOCATION_LPOCKET = ITEM_SLOT_LPOCKET,
+		LOCATION_RPOCKET = ITEM_SLOT_RPOCKET,
+		LOCATION_BACKPACK = ITEM_SLOT_BACKPACK,
+		LOCATION_HANDS = ITEM_SLOT_HANDS
+	)
+	where = H.equip_in_one_of_slots(heirloom, slots, FALSE) || "at your feet"
+
+/datum/quirk/ground_heirloom/post_add()
+	if(where == LOCATION_BACKPACK)
+		var/mob/living/carbon/human/H = quirk_holder
+		SEND_SIGNAL(H.back, COMSIG_TRY_STORAGE_SHOW, H)
+
+	to_chat(quirk_holder, "<span class='boldnotice'>There is a precious family [heirloom.name] [where], passed down from generation to generation. Keep it safe!</span>")
+
+	var/list/names = splittext(quirk_holder.real_name, " ")
+	var/family_name = names[names.len]
+
+	heirloom.AddComponent(/datum/component/heirloom, quirk_holder.mind, family_name)
+
+/datum/quirk/ground_heirloom/on_process()
+	if(!heirloom in quirk_holder.GetAllContents())
+		if(last_notice+300 < world.time)
+			to_chat(quirk_holder, "<span class='warning'>You are missing your domain...</span>")
+			quirk_holder.bloodpool = max(0, quirk_holder.bloodpool-1)
+			last_notice = world.time
 
 /datum/quirk/family_heirloom
 	name = "Family Heirloom"
@@ -261,6 +306,7 @@
 	lose_text = "<span class='notice'>You feel sturdy again.</span>"
 	medical_record_text = "Patient is absurdly easy to injure. Please take all due dilligence to avoid possible malpractice suits."
 	hardcore_value = 4
+	mood_quirk = TRUE
 
 /datum/quirk/heavy_sleeper
 	name = "Heavy Sleeper"
@@ -271,6 +317,7 @@
 	lose_text = "<span class='notice'>You feel awake again.</span>"
 	medical_record_text = "Patient has abnormal sleep study results and is difficult to wake up."
 	hardcore_value = 2
+	mood_quirk = TRUE
 
 /datum/quirk/hypersensitive
 	name = "Hypersensitive"
@@ -280,6 +327,7 @@
 	lose_text = "<span class='notice'>You don't seem to make a big deal out of everything anymore.</span>"
 	medical_record_text = "Patient demonstrates a high level of emotional volatility."
 	hardcore_value = 3
+	mood_quirk = TRUE
 
 /datum/quirk/hypersensitive/add()
 	var/datum/component/mood/mood = quirk_holder.GetComponent(/datum/component/mood)
@@ -301,6 +349,7 @@
 	lose_text = "<span class='danger'>You're no longer severely affected by alcohol.</span>"
 	medical_record_text = "Patient demonstrates a low tolerance for alcohol. (Wimp)"
 	hardcore_value = 3
+	mood_quirk = TRUE
 
 /datum/quirk/nearsighted //t. errorage
 	name = "Nearsighted"
@@ -310,6 +359,7 @@
 	lose_text = "<span class='notice'>You start seeing faraway things normally again.</span>"
 	medical_record_text = "Patient requires prescription glasses in order to counteract nearsightedness."
 	hardcore_value = 5
+	mood_quirk = TRUE
 
 /datum/quirk/nearsighted/add()
 	quirk_holder.become_nearsighted(ROUNDSTART_TRAIT)
@@ -326,6 +376,7 @@
 	value = -3
 	medical_record_text = "Patient demonstrates a fear of the dark. (Seriously?)"
 	hardcore_value = 5
+	mood_quirk = TRUE
 
 /datum/quirk/nyctophobia/on_process()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -341,6 +392,25 @@
 	else
 		SEND_SIGNAL(quirk_holder, COMSIG_CLEAR_MOOD_EVENT, "nyctophobia")
 
+/datum/quirk/lightophobia
+	name = "Lightophobia"
+	desc = "As far as you can remember, you've always been afraid of the light. While in the light without a shadow, you instinctually act careful, and constantly feel a sense of dread."
+	value = -3
+	medical_record_text = "Patient demonstrates a fear of the light."
+	hardcore_value = 5
+	mood_quirk = TRUE
+
+/datum/quirk/lightophobia/on_process()
+	var/turf/T = get_turf(quirk_holder)
+	if(T)
+		var/lums = T.get_lumcount()
+		if(lums > 0.5)
+			if(quirk_holder.m_intent == MOVE_INTENT_RUN && prob(50))
+				to_chat(quirk_holder, "<span class='warning'>Easy, easy, take it slow... you're in the light...</span>")
+				quirk_holder.toggle_move_intent()
+				if(prob(10))
+					quirk_holder.apply_damage(5, BURN, BODY_ZONE_HEAD)
+
 /datum/quirk/nonviolent
 	name = "Pacifist"
 	desc = "The thought of violence makes you sick. So much so, in fact, that you can't hurt anyone."
@@ -350,6 +420,7 @@
 	lose_text = "<span class='notice'>You think you can defend yourself again.</span>"
 	medical_record_text = "Patient is unusually pacifistic and cannot bring themselves to cause physical harm."
 	hardcore_value = 6
+	mood_quirk = TRUE
 
 /datum/quirk/paraplegic
 	name = "Paraplegic"
@@ -360,6 +431,7 @@
 	lose_text = null
 	medical_record_text = "Patient has an untreatable impairment in motor function in the lower extremities."
 	hardcore_value = 15
+	mood_quirk = TRUE
 
 /datum/quirk/paraplegic/add()
 	var/datum/brain_trauma/severe/paralysis/paraplegic/T = new()
@@ -397,6 +469,7 @@
 	mob_trait = TRAIT_POOR_AIM
 	medical_record_text = "Patient possesses a strong tremor in both hands."
 	hardcore_value = 3
+	mood_quirk = TRUE
 
 /datum/quirk/prosopagnosia
 	name = "Prosopagnosia"
@@ -405,6 +478,7 @@
 	mob_trait = TRAIT_PROSOPAGNOSIA
 	medical_record_text = "Patient suffers from prosopagnosia and cannot recognize faces."
 	hardcore_value = 5
+	mood_quirk = TRUE
 
 /datum/quirk/prosthetic_limb
 	name = "Prosthetic Limb"
@@ -413,6 +487,7 @@
 	var/slot_string = "limb"
 	medical_record_text = "During physical examination, patient was found to have a prosthetic limb."
 	hardcore_value = 3
+	mood_quirk = TRUE
 
 /datum/quirk/prosthetic_limb/on_spawn()
 	var/limb_slot = pick(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM, BODY_ZONE_L_LEG, BODY_ZONE_R_LEG)
@@ -449,6 +524,7 @@
 	lose_text = "<span class='notice'>You feel like standing up for yourself.</span>"
 	medical_record_text = "Patient presents a notably unassertive personality and is easy to manipulate."
 	hardcore_value = 4
+	mood_quirk = TRUE
 
 /datum/quirk/insanity
 	name = "Reality Dissociation Syndrome"
@@ -459,6 +535,7 @@
 	lose_text = "<span class='notice'>You feel in tune with the world again.</span>"
 	medical_record_text = "Patient suffers from acute Reality Dissociation Syndrome and experiences vivid hallucinations."
 	hardcore_value = 6
+	mood_quirk = TRUE
 
 /datum/quirk/insanity/on_process(delta_time)
 	if(quirk_holder.reagents.has_reagent(/datum/reagent/toxin/mindbreaker, needs_metabolizing = TRUE))
@@ -484,6 +561,7 @@
 	lose_text = "<span class='notice'>You feel easier about talking again.</span>" //if only it were that easy!
 	medical_record_text = "Patient is usually anxious in social encounters and prefers to avoid them."
 	hardcore_value = 4
+	mood_quirk = TRUE
 	var/dumb_thing = TRUE
 
 /datum/quirk/social_anxiety/add()
@@ -560,6 +638,7 @@
 	gain_text = "<span class='danger'>You suddenly feel the craving for drugs.</span>"
 	medical_record_text = "Patient has a history of hard drugs."
 	hardcore_value = 4
+	mood_quirk = TRUE
 	var/drug_list = list(/datum/reagent/drug/crank, /datum/reagent/drug/krokodil, /datum/reagent/medicine/morphine, /datum/reagent/drug/happiness, /datum/reagent/drug/methamphetamine) //List of possible IDs
 	var/datum/reagent/reagent_type //!If this is defined, reagent_id will be unused and the defined reagent type will be instead.
 	var/datum/reagent/reagent_instance //! actual instanced version of the reagent
@@ -636,6 +715,7 @@
 	reagent_type = /datum/reagent/drug/nicotine
 	accessory_type = /obj/item/lighter/greyscale
 	hardcore_value = 1
+	mood_quirk = TRUE
 
 /datum/quirk/junkie/smoker/on_spawn()
 	drug_container_type = pick(/obj/item/storage/fancy/cigarettes,
@@ -671,6 +751,7 @@
 	lose_text = "<span class='notice'>Your mind finally feels calm.</span>"
 	medical_record_text = "Patient's mind is in a vulnerable state, and cannot recover from traumatic events."
 	hardcore_value = 9
+	mood_quirk = TRUE
 
 /datum/quirk/allergic
 	name = "Extreme Medicine Allergy"
@@ -680,6 +761,7 @@
 	lose_text = "<span class='notice'>You feel your immune system phase back into perfect shape.</span>"
 	medical_record_text = "Patient's immune system responds violently to certain chemicals."
 	hardcore_value = 3
+	mood_quirk = TRUE
 	var/list/allergies = list()
 	var/list/blacklist = list(/datum/reagent/medicine/c2,/datum/reagent/medicine/epinephrine,/datum/reagent/medicine/adminordrazine,/datum/reagent/medicine/omnizine/godblood,/datum/reagent/medicine/cordiolis_hepatico,/datum/reagent/medicine/synaphydramine,/datum/reagent/medicine/diphenhydramine)
 

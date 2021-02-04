@@ -18,6 +18,9 @@
 		to_chat(src, "<span class='notice'>You look at your arm and sigh.</span>")
 		return
 
+	if(celerity_visual)
+		changeNext_move(CLICK_CD_RAPID)
+
 	// Special glove functions:
 	// If the gloves do anything, have them return 1 to stop
 	// normal attack_hand() here.
@@ -194,6 +197,15 @@
 		A.attack_hand(src)
 		update_inv_hands()
 
+
+/mob/living/carbon/werewolf/crinos/UnarmedAttack(atom/A, proximity)
+	if(HAS_TRAIT(src, TRAIT_HANDS_BLOCKED))
+		return
+	if(A)
+		if(a_intent == INTENT_HARM)
+			return ..()
+		A.attack_hand(src)
+		update_inv_hands()
 
 /*
 	Hostile animals

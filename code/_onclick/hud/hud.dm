@@ -40,6 +40,17 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	var/atom/movable/screen/zone_select
 	var/atom/movable/screen/pull_icon
 	var/atom/movable/screen/rest_icon
+	var/atom/movable/screen/block_icon
+	var/atom/movable/screen/blood_icon
+	var/atom/movable/screen/rage_icon
+	var/atom/movable/screen/drinkblood_icon
+	var/atom/movable/screen/bloodheal_icon
+	var/atom/movable/screen/bloodpower_icon
+	var/atom/movable/screen/disciplines/discipline1_icon
+	var/atom/movable/screen/disciplines/discipline2_icon
+	var/atom/movable/screen/disciplines/discipline3_icon
+	var/atom/movable/screen/disciplines/discipline4_icon
+	var/atom/movable/screen/disciplines/zone_icon
 	var/atom/movable/screen/throw_icon
 	var/atom/movable/screen/module_store_icon
 
@@ -56,8 +67,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	var/action_buttons_hidden = FALSE
 
 	var/atom/movable/screen/healths
-	var/atom/movable/screen/healthdoll
-	var/atom/movable/screen/internals
+//	var/atom/movable/screen/healthdoll
+//	var/atom/movable/screen/internals
 	var/atom/movable/screen/wanted/wanted_lvl
 	var/atom/movable/screen/spacesuit
 	// subtypes can override this to force a specific UI style
@@ -100,12 +111,13 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	QDEL_LIST(toggleable_inventory)
 	QDEL_LIST(hotkeybuttons)
 	throw_icon = null
+	block_icon = null
 	QDEL_LIST(infodisplay)
 
 	healths = null
-	healthdoll = null
+//	healthdoll = null
 	wanted_lvl = null
-	internals = null
+//	internals = null
 	spacesuit = null
 	lingchemdisplay = null
 	lingstingdisplay = null

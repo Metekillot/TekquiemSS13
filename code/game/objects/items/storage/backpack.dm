@@ -20,6 +20,9 @@
 	slot_flags = ITEM_SLOT_BACK	//ERROOOOO
 	resistance_flags = NONE
 	max_integrity = 300
+	onflooricon = 'code/modules/ziggers/onfloor.dmi'
+	worn_icon = 'code/modules/ziggers/worn.dmi'
+	body_worn = TRUE
 
 /obj/item/storage/backpack/ComponentInitialize()
 	. = ..()
@@ -363,7 +366,7 @@
 
 /obj/item/storage/backpack/duffelbag/cursed/examine(mob/user)
 	. = ..()
-	
+
 	if(hunger > 25)
 		. += "<span class='danger'>The bag is growling for food...</span>"
 

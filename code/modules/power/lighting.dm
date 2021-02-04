@@ -212,11 +212,11 @@
 /obj/machinery/light
 	name = "light fixture"
 	icon = 'icons/obj/lighting.dmi'
-	var/overlayicon = 'icons/obj/lighting_overlay.dmi'
+//	var/overlayicon = 'icons/obj/lighting_overlay.dmi'
 	var/base_state = "tube"		// base description and icon_state
 	icon_state = "tube"
 	desc = "A lighting fixture."
-	layer = WALL_OBJ_LAYER
+	layer = ABOVE_ALL_MOB_LAYERS_LAYER
 	max_integrity = 100
 	use_power = ACTIVE_POWER_USE
 	idle_power_usage = 2
@@ -225,9 +225,9 @@
 	var/on = FALSE					// 1 if on, 0 if off
 	var/on_gs = FALSE
 	var/static_power_used = 0
-	var/brightness = 8			// luminosity when on, also used in power calculation
+	var/brightness = 4			// luminosity when on, also used in power calculation
 	var/bulb_power = 1			// basically the alpha of the emitted light source
-	var/bulb_colour = "#f3fffa"	// befault colour of the light.
+	var/bulb_colour = "#ffe3cd"	// befault colour of the light.
 	var/status = LIGHT_OK		// LIGHT_OK, _EMPTY, _BURNED or _BROKEN
 	var/flickering = FALSE
 	var/light_type = /obj/item/light/tube		// the type of light item
@@ -241,15 +241,15 @@
 	var/start_with_cell = TRUE	// if true, this fixture generates a very weak cell at roundstart
 
 	var/nightshift_enabled = FALSE	//Currently in night shift mode?
-	var/nightshift_allowed = TRUE	//Set to FALSE to never let this light get switched to night mode.
-	var/nightshift_brightness = 8
+	var/nightshift_allowed = FALSE	//Set to FALSE to never let this light get switched to night mode.
+	var/nightshift_brightness = 4
 	var/nightshift_light_power = 0.45
-	var/nightshift_light_color = "#FFDDCC"
+	var/nightshift_light_color = "#ffde9b"
 
 	var/emergency_mode = FALSE	// if true, the light is in emergency mode
 	var/no_emergency = FALSE	// if true, this light cannot ever have an emergency mode
 	var/bulb_emergency_brightness_mul = 0.25	// multiplier for this light's base brightness in emergency power mode
-	var/bulb_emergency_colour = "#FF3232"	// determines the colour of the light while it's in emergency mode
+	var/bulb_emergency_colour = "#ff0000"	// determines the colour of the light while it's in emergency mode
 	var/bulb_emergency_pow_mul = 0.75	// the multiplier for determining the light's power in emergency mode
 	var/bulb_emergency_pow_min = 0.5	// the minimum value for the light's power in emergency mode
 
@@ -307,9 +307,9 @@
 	icon_state = "bulb"
 	base_state = "bulb"
 	fitting = "bulb"
-	brightness = 4
-	nightshift_brightness = 4
-	bulb_colour = "#FFD6AA"
+	brightness = 3
+	nightshift_allowed = FALSE
+	bulb_colour = "#ffde9b"
 	desc = "A small lighting fixture."
 	light_type = /obj/item/light/bulb
 
@@ -332,6 +332,11 @@
 	nightshift_allowed = FALSE
 	brightness = 1
 	bulb_power = 0.8
+
+/obj/machinery/light/small/pink
+	bulb_colour = "#DE6EE2"
+	no_emergency = TRUE
+	nightshift_allowed = FALSE
 
 /obj/machinery/light/small/blacklight
 	bulb_colour = "#A700FF"
@@ -398,23 +403,32 @@
 		if(LIGHT_BROKEN)
 			icon_state = "[base_state]-broken"
 
-/obj/machinery/light/update_overlays()
-	. = ..()
-	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
-	if(on && status == LIGHT_OK)
-		var/area/A = get_area(src)
-		if(emergency_mode || (A?.fire))
-			SSvis_overlays.add_vis_overlay(src, overlayicon, "[base_state]_emergency", layer, plane, dir)
-		else if (nightshift_enabled)
-			SSvis_overlays.add_vis_overlay(src, overlayicon, "[base_state]_nightshift", layer, plane, dir)
-		else
-			SSvis_overlays.add_vis_overlay(src, overlayicon, base_state, layer, plane, dir)
+///obj/machinery/light/update_overlays()
+//	. = ..()
+//	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
+//	if(on && status == LIGHT_OK)
+//		var/area/A = get_area(src)
+//		if(emergency_mode || (A?.fire))
+//			SSvis_overlays.add_vis_overlay(src, overlayicon, "[base_state]_emergency", layer, plane, dir)
+//		else if (nightshift_enabled)
+//			SSvis_overlays.add_vis_overlay(src, overlayicon, "[base_state]_nightshift", layer, plane, dir)
+//		else
+//			SSvis_overlays.add_vis_overlay(src, overlayicon, base_state, layer, plane, dir)
 
 // update the icon_state and luminosity of the light depending on its state
 /obj/machinery/light/proc/update(trigger = TRUE)
+	if(istype(get_area(src), /area/vtm))
+		var/area/A = get_area(src)
+		if(A.requires_power)
+			on = FALSE
+			set_light(0)
+		else
+			on = TRUE
 	switch(status)
 		if(LIGHT_BROKEN,LIGHT_BURNED,LIGHT_EMPTY)
 			on = FALSE
+			set_light(0)
+	update_icon()
 	emergency_mode = FALSE
 	if(on)
 		var/BR = brightness
@@ -641,6 +655,8 @@
 // true if area has power and lightswitch is on
 /obj/machinery/light/proc/has_power()
 	var/area/A = get_area(src)
+	if(istype(A, /area/vtm))
+		return !A.requires_power
 	return A.lightswitch && A.power_light
 
 // returns whether this light has emergency power
@@ -877,6 +893,7 @@
 	inhand_icon_state = "c_tube"
 	brightness = 8
 	custom_price = PAYCHECK_EASY * 0.5
+	onflooricon = 'code/modules/ziggers/onfloor.dmi'
 
 /obj/item/light/tube/broken
 	status = LIGHT_BROKEN
@@ -891,6 +908,7 @@
 	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 	brightness = 4
 	custom_price = PAYCHECK_EASY * 0.4
+	onflooricon = 'code/modules/ziggers/onfloor.dmi'
 
 /obj/item/light/bulb/broken
 	status = LIGHT_BROKEN
@@ -925,7 +943,7 @@
 		return
 	var/mob/living/L = AM
 	if(!(L.movement_type & (FLYING|FLOATING)) || L.buckled)
-		playsound(src, 'sound/effects/glass_step.ogg', HAS_TRAIT(L, TRAIT_LIGHT_STEP) ? 30 : 50, TRUE)
+		playsound(src, 'sound/effects/glass_step.ogg', HAS_TRAIT(L, TRAIT_LIGHT_STEP) ? 15 : 50, TRUE)
 		if(status == LIGHT_BURNED || status == LIGHT_OK)
 			shatter()
 

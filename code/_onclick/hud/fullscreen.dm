@@ -111,6 +111,17 @@
 	layer = CURSE_LAYER
 	plane = FULLSCREEN_PLANE
 
+/atom/movable/screen/fullscreen/rain
+	icon_state = "rain"
+	layer = CURSE_LAYER
+	plane = FULLSCREEN_PLANE
+//	alpha = 100
+
+/atom/movable/screen/fullscreen/fog
+	icon_state = "fog"
+	layer = CURSE_LAYER
+	plane = FULLSCREEN_PLANE
+
 /atom/movable/screen/fullscreen/impaired
 	icon_state = "impairedoverlay"
 

@@ -14,7 +14,41 @@
 		if(HAS_TRAIT(L, TRAIT_PROSOPAGNOSIA))
 			obscure_name = TRUE
 
-	. = list("<span class='info'>*---------*\nThis is <EM>[!obscure_name ? name : "Unknown"]</EM>!")
+		if(HAS_TRAIT(src, TRAIT_CHARMER))
+			if(gender == L.gender)
+				if(HAS_TRAIT(L, TRAIT_HOMOSEXUAL))
+					L.face_atom(src)
+					L.emote("blush")
+			else
+				if(!HAS_TRAIT(L, TRAIT_HOMOSEXUAL))
+					L.face_atom(src)
+					L.emote("blush")
+
+	var/my_shape = "average"
+	var/my_gender = "male"
+	if(gender == MALE)
+		switch(age)
+			if(1 to 16)
+				my_gender = "boy"
+			if(16 to 24)
+				my_gender = "guy"
+			if(24 to INFINITY)
+				my_gender = "man"
+	if(gender == FEMALE)
+		my_gender = "female"
+		switch(age)
+			if(1 to 16)
+				my_gender = "girl"
+			if(16 to 24)
+				my_gender = "lady"
+			if(24 to INFINITY)
+				my_gender = "woman"
+	if(my_shape == "s")
+		my_shape = "slim"
+	if(my_shape == "f")
+		my_shape = "fat"
+
+	. = list("<span class='info'>*---------*\nThis is <EM>[!obscure_name ? name : "Unknown"]</EM>, [age2agedescription(age)] [my_shape] [my_gender]!")
 
 	var/obscured = check_obscured_slots()
 	var/skipface = (wear_mask && (wear_mask.flags_inv & HIDEFACE)) || (head && (head.flags_inv & HIDEFACE))
@@ -93,6 +127,11 @@
 	//ID
 	if(wear_id && !(wear_id.item_flags & EXAMINE_SKIP))
 		. += "[t_He] [t_is] wearing [wear_id.get_examine_string(user)]."
+
+//	if(ishuman(user))
+//		var/mob/living/carbon/human/US = user
+//		if(US.dna.species.id == "kindred" && dna.species.id == "kindred")
+//			. += "[t_He] [t_is] at least from <b>[client.prefs.generation]</b> generation."
 
 	//Status effects
 	var/list/status_examines = status_effect_examines()
@@ -234,16 +273,15 @@
 		if(DISGUST_LEVEL_DISGUSTED to INFINITY)
 			msg += "[t_He] look[p_s()] extremely disgusted.\n"
 
-	var/apparent_blood_volume = blood_volume
-	if(skin_tone == "albino")
-		apparent_blood_volume -= 150 // enough to knock you down one tier
-	switch(apparent_blood_volume)
-		if(BLOOD_VOLUME_OKAY to BLOOD_VOLUME_SAFE)
-			msg += "[t_He] [t_has] pale skin.\n"
-		if(BLOOD_VOLUME_BAD to BLOOD_VOLUME_OKAY)
-			msg += "<b>[t_He] look[p_s()] like pale death.</b>\n"
-		if(-INFINITY to BLOOD_VOLUME_BAD)
-			msg += "<span class='deadsay'><b>[t_He] resemble[p_s()] a crushed, empty juice pouch.</b></span>\n"
+	var/apparent_blood_volume = bloodpool
+//	if(skin_tone == "albino")
+//		apparent_blood_volume -= 150 // enough to knock you down one tier
+	if(apparent_blood_volume >= round(maxbloodpool/2) && apparent_blood_volume <= maxbloodpool)
+		msg += "[t_He] [t_has] pale skin.\n"
+	else if(apparent_blood_volume >= 1 && apparent_blood_volume < round(maxbloodpool/2))
+		msg += "<b>[t_He] look[p_s()] like pale death.</b>\n"
+	else if(apparent_blood_volume <= 0)
+		msg += "<span class='deadsay'><b>[t_He] resemble[p_s()] a crushed, empty juice pouch.</b></span>\n"
 
 	if(is_bleeding())
 		var/list/obj/item/bodypart/bleeding_limbs = list()
@@ -352,9 +390,9 @@
 		if(getorgan(/obj/item/organ/brain))
 			if(ai_controller?.ai_status == AI_STATUS_ON)
 				msg += "<span class='deadsay'>[t_He] do[t_es]n't appear to be [t_him]self.</span>\n"
-			if(!key)
+			if(!key && !istype(src, /mob/living/carbon/human/npc))
 				msg += "<span class='deadsay'>[t_He] [t_is] totally catatonic. The stresses of life in deep-space must have been too much for [t_him]. Any recovery is unlikely.</span>\n"
-			else if(!client)
+			else if(!client && !istype(src, /mob/living/carbon/human/npc))
 				msg += "[t_He] [t_has] a blank, absent-minded stare and appears completely unresponsive to anything. [t_He] may snap out of it soon.\n"
 
 	var/scar_severity = 0
@@ -380,6 +418,12 @@
 	var/trait_exam = common_trait_examine()
 	if (!isnull(trait_exam))
 		. += trait_exam
+
+	if(ishuman(user))
+		. += "<a href='?src=[REF(src)];masquerade=1'>Spot a Masquerade violation</a>"
+
+	if(flavor_text)
+		. += "[sanitize_text(flavor_text)]\n"
 
 	var/perpname = get_face_name(get_id_name(""))
 	if(perpname && (HAS_TRAIT(user, TRAIT_SECURITY_HUD) || HAS_TRAIT(user, TRAIT_MEDICAL_HUD)))

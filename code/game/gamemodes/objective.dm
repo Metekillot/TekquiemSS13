@@ -528,6 +528,19 @@ GLOBAL_LIST(admin_objective_list) //Prefilled admin assignable objective list
 			return FALSE
 	return TRUE
 
+/datum/objective/spiral
+	name = "spiral"
+	explanation_text = "Protect Black Spiral totem and destroy all of other totems in city."
+
+/datum/objective/spiral/check_completion()
+	for(var/obj/structure/werewolf_totem/W in GLOB.totems)
+		if(W.tribe != "Black Spiral")
+			if(W.totem_health != 0)
+				return FALSE
+		else if(W.totem_health == 0)
+			return FALSE
+	return TRUE
+
 /datum/objective/nuclear
 	name = "nuclear"
 	explanation_text = "Destroy the station with a nuclear device."
@@ -969,3 +982,78 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	var/area/target_area = get_area(target)
 
 	return (istype(user_area, dropoff) && istype(target_area, dropoff))
+
+
+/datum/objective/money
+	name = "earn money"
+	var/amount = 500
+
+/datum/objective/money/update_explanation_text()
+	..()
+	explanation_text = "Earn [amount] dollars."
+
+/datum/objective/money/check_completion()
+	var/stol = 0
+	var/list/datum/mind/owners = get_owners()
+	for(var/datum/mind/M in owners)
+		if(!isliving(M.current))
+			continue
+		var/list/all_items = M.current.GetAllContents()	//this should get things in cheesewheels, books, etc.
+		for(var/obj/item/stack/dollar/I in all_items) //Check for wanted items
+			stol += I.amount
+	return stol >= amount
+
+/mob/living
+	var/list/drunked_of = list()
+
+/datum/objective/blood
+	name = "get blood of"
+	var/target_name
+
+/datum/objective/blood/update_explanation_text()
+	..()
+	explanation_text = "Drink blood of [target_name]."
+
+/datum/objective/blood/check_completion()
+	var/tru = FALSE
+	var/list/datum/mind/owners = get_owners()
+	for(var/datum/mind/M in owners)
+		if(!isliving(M.current))
+			continue
+		var/mob/living/L = M.current
+		for(var/i in L.drunked_of)
+			if(i == target_name)
+				tru = TRUE
+	return tru
+
+/datum/objective/protect_niga
+	name = "protect the"
+	var/mob/living/carbon/human/mine_target
+
+/datum/objective/protect_niga/update_explanation_text()
+	..()
+	explanation_text = "Prevent [mine_target] from dying."
+
+/datum/objective/protect_niga/check_completion()
+	return !target || !considered_alive(target)
+
+/mob/living/carbon/human
+	var/last_repainted_mark
+
+/datum/objective/become_member
+	name = "become member of"
+	var/faction
+
+/datum/objective/become_member/update_explanation_text()
+	..()
+	explanation_text = "Become a member of [faction]. Help your faction by claiming at least one mark on the map."
+
+/datum/objective/become_member/check_completion()
+	var/list/datum/mind/owners = get_owners()
+	for(var/datum/mind/M in owners)
+		if(!ishuman(M.current))
+			continue
+		var/mob/living/carbon/human/L = M.current
+		if(L.last_repainted_mark == faction && L.frakcja == faction)
+			return TRUE
+	return FALSE

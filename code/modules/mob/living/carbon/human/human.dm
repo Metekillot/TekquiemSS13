@@ -24,6 +24,7 @@
 	AddComponent(/datum/component/bloodysoles/feet)
 	AddElement(/datum/element/ridable, /datum/component/riding/creature/human)
 	GLOB.human_list += src
+	phonevoicetag = length(GLOB.human_list)+10
 
 /mob/living/carbon/human/proc/setup_human_dna()
 	//initialize dna. for spawned humans; overwritten by other code
@@ -215,6 +216,13 @@
 			return
 
 	if(href_list["pockets"] && usr.canUseTopic(src, BE_CLOSE, NO_DEXTERITY)) //TODO: Make it match (or intergrate it into) strippanel so you get 'item cannot fit here' warnings if mob_can_equip fails
+		if(isnpc(src))
+			var/mob/living/carbon/human/npc/N = src
+			if(N.fights_anyway)
+				N.Aggro(usr, TRUE)
+			else
+				if(prob(33))
+					N.Aggro(usr, TRUE)
 		var/pocket_side = href_list["pockets"] != "right" ? "left" : "right"
 		var/pocket_id = (pocket_side == "right" ? ITEM_SLOT_RPOCKET : ITEM_SLOT_LPOCKET)
 		var/obj/item/pocket_item = (pocket_id == ITEM_SLOT_RPOCKET ? r_store : l_store)
@@ -267,6 +275,31 @@
 	if(istype(user) && href_list["shoes"] && shoes && (user.mobility_flags & MOBILITY_USE)) // we need to be on the ground, so we'll be a bit looser
 		shoes.handle_tying(usr)
 
+///////KARMA//////
+	if(href_list["masquerade"])
+		if(!ishuman(usr))
+			return
+		var/mob/living/carbon/human/H = usr
+		if(H.stat > 2)
+			return
+		if(usr == src)
+			return
+		if(dna)
+			var/no_vote = FALSE
+			for(var/i in H.voted_for)
+				if(i == dna.real_name)
+					no_vote = TRUE
+			if(no_vote)
+				return
+			var/reason = input(usr, "Write a description of violation:", "Spot a Masquerade violation") as text|null
+			if(reason)
+				masquerade_votes = masquerade_votes+1
+				message_admins("[H]([H.key]) spotted [src]'s([key]) masqureade violation. Description: [reason]")
+				H.voted_for |= dna.real_name
+				if(masquerade_votes > 1)
+					masquerade_votes = 0
+					last_masquerade_violation = 0
+					AdjustMasquerade(-1)
 ///////HUDs///////
 	if(href_list["hud"])
 		if(!ishuman(usr))
@@ -642,6 +675,9 @@
 #define CPR_PANIC_SPEED (0.8 SECONDS)
 
 /// Performs CPR on the target after a delay.
+/mob/living/carbon/human
+	var/last_cpr_exp = 0
+
 /mob/living/carbon/human/proc/do_cpr(mob/living/carbon/target)
 	if(target == src)
 		return
@@ -666,13 +702,13 @@
 			to_chat(src, "<span class='warning'>Remove [p_their()] mask first!</span>")
 			return FALSE
 
-		if (!getorganslot(ORGAN_SLOT_LUNGS))
-			to_chat(src, "<span class='warning'>You have no lungs to breathe with, so you cannot perform CPR!</span>")
-			return FALSE
+//		if (!getorganslot(ORGAN_SLOT_LUNGS))
+//			to_chat(src, "<span class='warning'>You have no lungs to breathe with, so you cannot perform CPR!</span>")
+//			return FALSE
 
-		if (HAS_TRAIT(src, TRAIT_NOBREATH))
-			to_chat(src, "<span class='warning'>You do not breathe, so you cannot perform CPR!</span>")
-			return FALSE
+//		if (HAS_TRAIT(src, TRAIT_NOBREATH))
+//			to_chat(src, "<span class='warning'>You do not breathe, so you cannot perform CPR!</span>")
+//			return FALSE
 
 		visible_message("<span class='notice'>[src] is trying to perform CPR on [target.name]!</span>", \
 						"<span class='notice'>You try to perform CPR on [target.name]... Hold still!</span>")
@@ -686,6 +722,19 @@
 
 		visible_message("<span class='notice'>[src] performs CPR on [target.name]!</span>", "<span class='notice'>You perform CPR on [target.name].</span>")
 		SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "saved_life", /datum/mood_event/saved_life)
+		if(last_cpr_exp+1200 < world.time)
+			last_cpr_exp = world.time
+			if(isnpc(target))
+				var/mob/living/carbon/human/npc/N = target
+				if(N.last_damager != src)
+					AdjustHumanity(1, 10)
+//			if(key)
+//				var/datum/preferences/P = GLOB.preferences_datums[ckey(key)]
+//				if(P)
+//					var/mode = 1
+//					if(HAS_TRAIT(src, TRAIT_NON_INT))
+//						mode = 2
+//					P.exper = min(calculate_mob_max_exper(src), P.exper+(20/mode))
 		log_combat(src, target, "CPRed")
 
 		if (HAS_TRAIT(target, TRAIT_NOBREATH))
@@ -858,35 +907,35 @@
 						hud_used.healths.icon_state = "health7"
 					if(SCREWYHUD_HEALTHY)
 						hud_used.healths.icon_state = "health0"
-		if(hud_used.healthdoll)
-			hud_used.healthdoll.cut_overlays()
-			if(stat != DEAD)
-				hud_used.healthdoll.icon_state = "healthdoll_OVERLAY"
-				for(var/X in bodyparts)
-					var/obj/item/bodypart/BP = X
-					var/damage = BP.burn_dam + BP.brute_dam
-					var/comparison = (BP.max_damage/5)
-					var/icon_num = 0
-					if(damage)
-						icon_num = 1
-					if(damage > (comparison))
-						icon_num = 2
-					if(damage > (comparison*2))
-						icon_num = 3
-					if(damage > (comparison*3))
-						icon_num = 4
-					if(damage > (comparison*4))
-						icon_num = 5
-					if(hal_screwyhud == SCREWYHUD_HEALTHY)
-						icon_num = 0
-					if(icon_num)
-						hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[BP.body_zone][icon_num]"))
-				for(var/t in get_missing_limbs()) //Missing limbs
-					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]6"))
-				for(var/t in get_disabled_limbs()) //Disabled limbs
-					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]7"))
-			else
-				hud_used.healthdoll.icon_state = "healthdoll_DEAD"
+//		if(hud_used.healthdoll)
+//			hud_used.healthdoll.cut_overlays()
+//			if(stat != DEAD)
+//				hud_used.healthdoll.icon_state = "healthdoll_OVERLAY"
+//				for(var/X in bodyparts)
+//					var/obj/item/bodypart/BP = X
+//					var/damage = BP.burn_dam + BP.brute_dam
+//					var/comparison = (BP.max_damage/5)
+//					var/icon_num = 0
+//					if(damage)
+//						icon_num = 1
+//					if(damage > (comparison))
+//						icon_num = 2
+//					if(damage > (comparison*2))
+//						icon_num = 3
+//					if(damage > (comparison*3))/
+//						icon_num = 4
+//					if(damage > (comparison*4))
+//						icon_num = 5
+//					if(hal_screwyhud == SCREWYHUD_HEALTHY)
+//						icon_num = 0
+//					if(icon_num)
+//						hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[BP.body_zone][icon_num]"))
+//				for(var/t in get_missing_limbs()) //Missing limbs
+//					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]6"))
+//				for(var/t in get_disabled_limbs()) //Disabled limbs
+//					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]7"))
+//			else
+//				hud_used.healthdoll.icon_state = "healthdoll_DEAD"
 
 /mob/living/carbon/human/fully_heal(admin_revive = FALSE)
 	dna?.species.spec_fully_heal(src)
@@ -1168,6 +1217,46 @@
 	. = ..()
 	if(use_random_name)
 		fully_replace_character_name(real_name, dna.species.random_name())
+
+/mob/living/carbon/human/species/kindred
+	race = /datum/species/kindred
+
+/mob/living/carbon/human/species/vamp_mannequin
+	race = /datum/species/vamp_mannequin
+
+/mob/living/carbon/human/species/vamp_mannequin/napoleon
+
+/mob/living/carbon/human/species/vamp_mannequin/napoleon/Initialize()
+	. = ..()
+	equip_to_slot_or_del(new /obj/item/clothing/head/vampire/napoleon(src), ITEM_SLOT_HEAD)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/vampire/jackboots/high(src), ITEM_SLOT_FEET)
+	equip_to_slot_or_del(new /obj/item/clothing/under/vampire/napoleon(src), ITEM_SLOT_ICLOTHING)
+
+/mob/living/carbon/human/species/vamp_mannequin/nazi
+
+/mob/living/carbon/human/species/vamp_mannequin/nazi/Initialize()
+	. = ..()
+	equip_to_slot_or_del(new /obj/item/clothing/head/vampire/nazi(src), ITEM_SLOT_HEAD)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/vampire/jackboots/high(src), ITEM_SLOT_FEET)
+	equip_to_slot_or_del(new /obj/item/clothing/under/vampire/nazi(src), ITEM_SLOT_ICLOTHING)
+
+/mob/living/carbon/human/species/vamp_mannequin/conquestador
+
+/mob/living/carbon/human/species/vamp_mannequin/conquestador/Initialize()
+	. = ..()
+	equip_to_slot_or_del(new /obj/item/clothing/head/vampire/helmet/spain(src), ITEM_SLOT_HEAD)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/vampire/jackboots/work(src), ITEM_SLOT_FEET)
+	equip_to_slot_or_del(new /obj/item/clothing/under/vampire/tremere(src), ITEM_SLOT_ICLOTHING)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/vest/medieval(src), ITEM_SLOT_OCLOTHING)
+
+/mob/living/carbon/human/species/vamp_mannequin/cowboy
+
+/mob/living/carbon/human/species/vamp_mannequin/cowboy/Initialize()
+	. = ..()
+	equip_to_slot_or_del(new /obj/item/clothing/head/vampire/cowboy(src), ITEM_SLOT_HEAD)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/vampire/brown(src), ITEM_SLOT_FEET)
+	equip_to_slot_or_del(new /obj/item/clothing/under/vampire/bouncer(src), ITEM_SLOT_ICLOTHING)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/trench/alt(src), ITEM_SLOT_OCLOTHING)
 
 /mob/living/carbon/human/species/abductor
 	race = /datum/species/abductor

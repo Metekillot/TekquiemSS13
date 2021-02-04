@@ -8,7 +8,7 @@
 	if(gender_override && !(randomise[RANDOM_GENDER] || randomise[RANDOM_GENDER_ANTAG] && antag_override))
 		gender = gender_override
 	else
-		gender = pick(MALE,FEMALE,PLURAL)
+		gender = pick(MALE,FEMALE)
 	if(randomise[RANDOM_AGE] || randomise[RANDOM_AGE_ANTAG] && antag_override)
 		age = rand(AGE_MIN,AGE_MAX)
 	if(randomise[RANDOM_UNDERWEAR])
@@ -24,9 +24,17 @@
 	if(randomise[RANDOM_JUMPSUIT_STYLE])
 		jumpsuit_style = pick(GLOB.jumpsuitlist)
 	if(randomise[RANDOM_HAIRSTYLE])
-		hairstyle = random_hairstyle(gender)
+		if(clane.no_hair)
+			hairstyle = "Bald"
+		else if(clane.haircuts)
+			hairstyle = pick(clane.haircuts)
+		else
+			hairstyle = random_hairstyle(gender)
 	if(randomise[RANDOM_FACIAL_HAIRSTYLE])
-		facial_hairstyle = random_facial_hairstyle(gender)
+		if(clane.no_facial)
+			facial_hairstyle = "Shaved"
+		else
+			facial_hairstyle = random_facial_hairstyle(gender)
 	if(randomise[RANDOM_HAIR_COLOR])
 		hair_color = random_short_color()
 	if(randomise[RANDOM_FACIAL_HAIR_COLOR])
@@ -49,6 +57,21 @@
 	pref_species = new random_species_type
 	if(randomise[RANDOM_NAME])
 		real_name = pref_species.random_name(gender,1)
+	if(pref_species.id == "ghoul")
+		discipline1type = null
+		discipline2type = null
+		discipline3type = null
+		discipline4type = null
+	if(pref_species.id == "kindred")
+		qdel(clane)
+		clane = new /datum/vampireclane/brujah()
+		if(length(clane.clane_disciplines) >= 1)
+			discipline1type = clane.clane_disciplines[1]
+		if(length(clane.clane_disciplines) >= 2)
+			discipline2type = clane.clane_disciplines[2]
+		if(length(clane.clane_disciplines) >= 3)
+			discipline3type = clane.clane_disciplines[3]
+		discipline4type = null
 
 ///Setup a hardcore random character and calculate their hardcore random score
 /datum/preferences/proc/hardcore_random_setup(mob/living/carbon/human/character, antagonist, is_latejoiner)
@@ -113,6 +136,10 @@
 		if(job_preferences[job] > highest_pref)
 			previewJob = SSjob.GetJob(job)
 			highest_pref = job_preferences[job]
+		if(job == SSjob.overflow_role)
+			if(job_preferences[SSjob.overflow_role] == JP_LOW)
+				previewJob = SSjob.GetJob(job)
+				highest_pref = job_preferences[job]
 
 	if(previewJob)
 		// Silicons only need a very basic preview since there is no customization for them.
@@ -125,7 +152,21 @@
 
 	// Set up the dummy for its photoshoot
 	var/mob/living/carbon/human/dummy/mannequin = generate_or_wait_for_human_dummy(DUMMY_HUMAN_SLOT_PREFERENCES)
+	var/mutable_appearance/MAMA = mutable_appearance('code/modules/ziggers/64x32.dmi', "slot", layer = SPACE_LAYER)
+	MAMA.pixel_x = -16
+	mannequin.add_overlay(MAMA)
 	copy_to(mannequin, 1, TRUE, TRUE)
+	if(clane.alt_sprite)
+		mannequin.dna.species.limbs_id = clane.alt_sprite
+//	else
+//		mannequin.dna.species.limbs_id = initial(pref_species.limbs_id)
+	if(clane.no_hair)
+		mannequin.facial_hairstyle = "Shaved"
+		mannequin.hairstyle = "Bald"
+		mannequin.update_hair()
+	mannequin.update_body()
+	mannequin.update_body_parts()
+	mannequin.update_icon()
 
 	if(previewJob)
 		mannequin.job = previewJob.title

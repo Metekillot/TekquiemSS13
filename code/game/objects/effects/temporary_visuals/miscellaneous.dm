@@ -51,9 +51,64 @@
 	randomdir = 0
 
 /obj/effect/temp_visual/dir_setting/firing_effect
-	icon = 'icons/effects/effects.dmi'
+	icon = 'code/modules/ziggers/64x64.dmi'
 	icon_state = "firing_effect"
+	pixel_w = -16
+	pixel_z = -16
 	duration = 2
+	plane = ABOVE_LIGHTING_PLANE
+	layer = ABOVE_LIGHTING_LAYER
+
+/obj/effect/temp_visual/dir_setting/swing_effect
+	icon = 'icons/effects/96x96.dmi'
+	icon_state = "swing1"
+	pixel_w = -32
+	pixel_z = -32
+	duration = 3
+
+/obj/effect/temp_visual/dir_setting/claw_effect
+	icon = 'icons/effects/96x96.dmi'
+	icon_state = "claw1"
+	pixel_w = -32
+	pixel_z = -32
+	duration = 3
+
+/obj/effect/temp_visual/dir_setting/fall_effect
+	icon = 'icons/effects/64x64.dmi'
+	icon_state = "fall_damage"
+	pixel_w = -16
+	pixel_z = -16
+	duration = 5
+	alpha = 128
+	plane = GAME_PLANE
+	layer = HIGH_SIGIL_LAYER
+
+/obj/effect/temp_visual/dir_setting/crack_effect
+	icon = 'icons/effects/96x96.dmi'
+	icon_state = "crack"
+	pixel_w = -32
+	pixel_z = -32
+	duration = 50
+	alpha = 196
+	plane = GAME_PLANE
+	layer = HIGH_SIGIL_LAYER
+
+/obj/effect/temp_visual/dir_setting/crack_effect/Initialize()
+	. = ..()
+	animate(src, alpha = 0, time = 50)
+
+/obj/effect/temp_visual/dir_setting/fall_effect/Initialize()
+	. = ..()
+	var/size_matrix = matrix()*3
+	animate(src, transform = size_matrix, alpha = 0, time = 5)
+
+/obj/effect/temp_visual/dir_setting/swing_effect/Initialize()
+	. = ..()
+	icon_state = "swing[rand(1, 2)]"
+
+/obj/effect/temp_visual/dir_setting/claw_effect/Initialize()
+	. = ..()
+	icon_state = "claw[rand(1, 2)]"
 
 /obj/effect/temp_visual/dir_setting/firing_effect/setDir(newdir)
 	switch(newdir)
@@ -281,10 +336,17 @@
 
 /obj/effect/temp_visual/dust_animation
 	icon = 'icons/mob/mob.dmi'
-	duration = 15
+	duration = 16
+
+/obj/effect/temp_visual/tremere
+	icon = 'code/modules/ziggers/48x48.dmi'
+	icon_state = "gib"
+	pixel_w = -8
+	duration = 50
 
 /obj/effect/temp_visual/dust_animation/Initialize(mapload, dust_icon)
 	icon_state = dust_icon // Before ..() so the correct icon is flick()'d
+	set_light(2, 2, "#feb716")
 	. = ..()
 
 /obj/effect/temp_visual/mummy_animation

@@ -2,6 +2,10 @@
 /////Initial Building/////
 //////////////////////////
 
+GLOBAL_LIST_EMPTY(clanes_list)	//>:3
+
+GLOBAL_LIST_EMPTY(auspices_list)
+
 /proc/make_datum_references_lists()
 	//hair
 	init_sprite_accessory_subtypes(/datum/sprite_accessory/hair, GLOB.hairstyles_list, GLOB.hairstyles_male_list, GLOB.hairstyles_female_list)
@@ -40,6 +44,16 @@
 		var/datum/species/S = new spath()
 		GLOB.species_list[S.id] = spath
 	sortList(GLOB.species_list, /proc/cmp_typepaths_asc)
+
+	for(var/spath in subtypesof(/datum/vampireclane))
+		var/datum/vampireclane/S = new spath()
+		GLOB.clanes_list[S.name] = spath
+	sortList(GLOB.clanes_list, /proc/cmp_typepaths_asc)
+
+	for(var/spath in subtypesof(/datum/auspice))
+		var/datum/auspice/S = new spath()
+		GLOB.auspices_list[S.name] = spath
+	sortList(GLOB.auspices_list, /proc/cmp_typepaths_asc)
 
 	//Surgeries
 	for(var/path in subtypesof(/datum/surgery))

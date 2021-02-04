@@ -13,6 +13,15 @@
 	mergeable_decal = FALSE
 	beauty = -50
 
+/obj/effect/decal/cleanable/fire_ash
+	name = "ashes"
+	desc = "Ashes to ashes, dust to dust, and into space."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "dirt"
+	mergeable_decal = FALSE
+	beauty = -75
+	color = "#000000"
+
 /obj/effect/decal/cleanable/ash/Initialize()
 	. = ..()
 	reagents.add_reagent(/datum/reagent/ash, 30)
@@ -73,6 +82,62 @@
 /obj/effect/decal/cleanable/dirt/Destroy()
 	if(smoothing_flags & (SMOOTH_CORNERS|SMOOTH_BITMASK))
 		QUEUE_SMOOTH_NEIGHBORS(src)
+	return ..()
+
+/obj/effect/decal/cleanable/gasoline
+	name = "gasoline"
+	desc = "I HOPE YOU DIE IN A FIRE!!!"
+	icon = 'icons/effects/dirt.dmi'
+	icon_state = "water"
+	base_icon_state = "water"
+	smoothing_flags = SMOOTH_BITMASK
+	smoothing_groups = list(SMOOTH_GROUP_CLEANABLE_DIRT)
+	canSmoothWith = list(SMOOTH_GROUP_CLEANABLE_DIRT, SMOOTH_GROUP_WALLS)
+//	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	beauty = -50
+	alpha = 64
+	color = "#c6845b"
+
+/obj/effect/decal/cleanable/gasoline/update_icon()
+	QUEUE_SMOOTH(src)
+	QUEUE_SMOOTH_NEIGHBORS(src)
+
+/obj/effect/decal/cleanable/gasoline/Crossed(atom/movable/AM, oldloc)
+	if(isliving(AM))
+		var/mob/living/L = AM
+		if(L.on_fire)
+			var/obj/effect/fire/F = locate() in get_turf(src)
+			if(!F)
+				new /obj/effect/fire(get_turf(src))
+
+/obj/effect/decal/cleanable/gasoline/Initialize()
+	. = ..()
+	var/turf/T = get_turf(src)
+	if(istype(T, /turf/open/floor))
+		var/turf/open/floor/F = T
+		F.spread_chance = 100
+		F.burn_material += 100
+//	smoothing_flags = SMOOTH_BITMASK
+	QUEUE_SMOOTH(src)
+	QUEUE_SMOOTH_NEIGHBORS(src)
+
+/obj/effect/decal/cleanable/gasoline/Destroy()
+	QUEUE_SMOOTH_NEIGHBORS(src)
+	return ..()
+
+/obj/effect/decal/cleanable/gasoline/fire_act(exposed_temperature, exposed_volume)
+	var/obj/effect/fire/F = locate() in loc
+	if(!F)
+		new /obj/effect/fire(loc)
+	..()
+
+/obj/effect/decal/cleanable/gasoline/attackby(obj/item/I, mob/living/user)
+	var/attacked_by_hot_thing = I.get_temperature()
+	if(attacked_by_hot_thing)
+		visible_message("<span class='warning'>[user] tries to ignite [src] with [I]!</span>", "<span class='warning'>You try to ignite [src] with [I].</span>")
+		log_combat(user, src, (attacked_by_hot_thing < 480) ? "tried to ignite" : "ignited", I)
+		fire_act(attacked_by_hot_thing)
+		return
 	return ..()
 
 /obj/effect/decal/cleanable/dirt/dust
@@ -257,3 +322,55 @@
 /obj/effect/decal/cleanable/garbage/Initialize()
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_SLUDGE, CELL_VIRUS_TABLE_GENERIC, rand(2,4), 15)
+
+/obj/effect/decal/cleanable/feet_trail
+	name = "trails"
+	desc = "Can lead somewhere... Or not."
+	icon = 'icons/effects/dirt.dmi'
+	icon_state = "feet_trail"
+
+/obj/effect/decal/cleanable/feet_trail/Initialize()
+	. = ..()
+	pixel_x = rand(-4, 4)
+	pixel_y = rand(-4, 4)
+
+/obj/effect/decal/cleanable/drag_trail
+	name = "trails"
+	desc = "Can lead somewhere... Or not."
+	icon = 'icons/effects/dirt.dmi'
+	icon_state = "drag_trail"
+
+/obj/effect/decal/cleanable/car_trail
+	name = "trails"
+	desc = "Can lead somewhere... Or not."
+	icon = 'icons/effects/dirt.dmi'
+	icon_state = "car_trail"
+
+/turf/open/floor/Exited(atom/movable/Obj, atom/newloc)
+	. = ..()
+	if(GLOB.winter)
+		if(istype(get_area(src), /area/vtm))
+			var/area/vtm/V = get_area(src)
+			if(V.upper)
+				if(isliving(Obj))
+					if(ishuman(Obj))
+						var/mob/living/carbon/human/human = Obj
+						if(human.body_position != LYING_DOWN)
+							var/obj/effect/decal/cleanable/feet_trail/trail = new(src)
+							trail.dir = get_dir(src, newloc)
+						else
+							var/obj/effect/decal/cleanable/drag_trail/trail = new(src)
+							trail.dir = get_dir(src, newloc)
+					else
+						var/mob/living/living = Obj
+						if(!living.stat)
+							var/obj/effect/decal/cleanable/feet_trail/trail = new(src)
+							trail.dir = get_dir(src, newloc)
+						else
+							var/obj/effect/decal/cleanable/drag_trail/trail = new(src)
+							trail.dir = get_dir(src, newloc)
+				if(istype(Obj, /obj/vampire_car))
+					var/obj/vampire_car/car = Obj
+					if(car.on)
+						var/obj/effect/decal/cleanable/car_trail/trail = new(src)
+						trail.dir = Obj.dir

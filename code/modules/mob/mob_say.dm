@@ -1,14 +1,40 @@
 //Speech verbs.
 
 ///Say verb
-/mob/verb/say_verb(message as text)
+/mob/verb/say_verb()
 	set name = "Say"
 	set category = "IC"
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
 		to_chat(usr, "<span class='danger'>Speech is currently admin-disabled.</span>")
 		return
-	if(message)
-		say(message)
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		H.remove_overlay(SAY_LAYER)
+		var/mutable_appearance/say_overlay = mutable_appearance('icons/mob/talk.dmi', "default0", -SAY_LAYER)
+		H.overlays_standing[SAY_LAYER] = say_overlay
+		H.apply_overlay(SAY_LAYER)
+		var/mess = input("What are you trying to say?") as text|null
+		if(say(mess))
+			H.remove_overlay(SAY_LAYER)
+		else
+			H.remove_overlay(SAY_LAYER)
+//				H.remove_overlay(SAY_LAYER)
+//			else
+//				H.remove_overlay(SAY_LAYER)
+	else
+		var/mess = input("What are you trying to say?") as text|null
+		if(mess)
+			say(mess)
+
+/mob/living/verb/flavor_verb()
+	set name = "Flavor Text"
+	set category = "IC"
+	var/flavor = input("Choose your new flavor text:") as text|null
+	if(flavor)
+		if(length(flavor) > 3 * 512)
+			to_chat(src, "Too long...")
+		else
+			flavor_text = sanitize_text(flavor)
 
 ///Whisper verb
 /mob/verb/whisper_verb(message as text)
@@ -75,7 +101,7 @@
 			alt_name = " (died as [real_name])"
 
 	var/spanned = say_quote(message)
-	var/source = "<span class='game'><span class='prefix'>DEAD:</span> <span class='name'>[name]</span>[alt_name]"
+	var/source = "<span class='game'><span class='name'>[name]</span>[alt_name]" //<span class='prefix'>DEAD:</span> [ChillRaccoon] - removed due to a maggot developer
 	var/rendered = " <span class='message'>[emoji_parse(spanned)]</span></span>"
 	log_talk(message, LOG_SAY, tag="DEAD")
 	if(SEND_SIGNAL(src, COMSIG_MOB_DEADSAY, message) & MOB_DEADSAY_SIGNAL_INTERCEPT)

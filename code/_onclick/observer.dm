@@ -8,6 +8,12 @@
 			return									// seems legit.
 
 	// Things you might plausibly want to follow
+
+	// [ChillRaccoon] - follow and teleport should make only admins
+
+	if(!aghosted)
+		return FALSE
+
 	if(ismovable(A))
 		ManualFollow(A)
 

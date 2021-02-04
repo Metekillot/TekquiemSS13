@@ -69,7 +69,7 @@
 	var/icon/human_image
 	var/image/current_image
 	var/hidden = FALSE
-	var/move_delay = 0
+	//var/move_delay = 0
 	var/mob/living/carbon/owner
 	var/datum/brain_trauma/special/imaginary_friend/trauma
 
@@ -105,7 +105,9 @@
 	var/gender = pick(MALE, FEMALE)
 	real_name = random_unique_name(gender)
 	name = real_name
-	human_image = get_flat_human_icon(null, pick(SSjob.occupations))
+	var/datum/job/sacjob = SSjob.GetJob("Taxi Driver")
+	var/datum/preferences/sacface = client.prefs
+	human_image = get_flat_human_icon(null, sacjob, sacface)
 
 /mob/camera/imaginary_friend/proc/Show()
 	if(!client) //nobody home
@@ -179,16 +181,16 @@
 		var/link = FOLLOW_LINK(M, owner)
 		to_chat(M, "[link] [dead_rendered]")
 
-/mob/camera/imaginary_friend/Move(NewLoc, Dir = 0)
-	if(world.time < move_delay)
-		return FALSE
+/*mob/camera/imaginary_friend/Move(NewLoc, Dir = 0)
+//	if(world.time < move_delay)
+//return FALSE
 	if(get_dist(src, owner) > 9)
 		recall()
 		move_delay = world.time + 10
 		return FALSE
 	forceMove(NewLoc)
 	move_delay = world.time + 1
-
+*/
 /mob/camera/imaginary_friend/forceMove(atom/destination)
 	dir = get_dir(get_turf(src), destination)
 	loc = destination

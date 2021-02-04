@@ -826,6 +826,8 @@ GLOBAL_LIST_EMPTY(allCasters)
 		CRASH("Invalid user for this proc")
 
 /obj/machinery/newscaster/proc/print_paper()
+	return
+/*
 	SSblackbox.record_feedback("amount", "newspapers_printed", 1)
 	var/obj/item/newspaper/NEWSPAPER = new /obj/item/newspaper
 	for(var/datum/newscaster/feed_channel/FC in GLOB.news_network.network_channels)
@@ -839,7 +841,7 @@ GLOBAL_LIST_EMPTY(allCasters)
 	NEWSPAPER.forceMove(drop_location())
 	NEWSPAPER.creationTime = GLOB.news_network.lastAction
 	paper_remaining--
-
+*/
 
 /obj/machinery/newscaster/proc/remove_alert()
 	alert = FALSE
@@ -860,8 +862,8 @@ GLOBAL_LIST_EMPTY(allCasters)
 
 
 /obj/item/newspaper
-	name = "newspaper"
-	desc = "An issue of The Griffon, the newspaper circulating aboard Nanotrasen Space Stations."
+	name = "newspaper (San Francisco Chronicle)"
+	desc = "An issue of San Francisco Chronicle, the newspaper circulating aboard San Francisco and North California."
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "newspaper"
 	lefthand_file = 'icons/mob/inhands/misc/books_lefthand.dmi'
@@ -870,21 +872,10 @@ GLOBAL_LIST_EMPTY(allCasters)
 	attack_verb_continuous = list("baps")
 	attack_verb_simple = list("bap")
 	resistance_flags = FLAMMABLE
-	var/screen = 0
-	var/pages = 0
-	var/curr_page = 0
-	var/list/datum/newscaster/feed_channel/news_content = list()
-	var/scribble=""
-	var/scribble_page = null
-	var/wantedAuthor
-	var/wantedCriminal
-	var/wantedBody
-	var/wantedPhoto
-	var/creationTime
 
 /obj/item/newspaper/suicide_act(mob/user)
 	user.visible_message("<span class='suicide'>[user] is focusing intently on [src]! It looks like [user.p_theyre()] trying to commit sudoku... until [user.p_their()] eyes light up with realization!</span>")
-	user.say(";JOURNALISM IS MY CALLING! EVERYBODY APPRECIATES UNBIASED REPORTI-GLORF", forced="newspaper suicide")
+	user.say("JOURNALISM IS MY CALLING! EVERYBODY APPRECIATES UNBIASED REPORTI-GLORF", forced="newspaper suicide")
 	var/mob/living/carbon/human/H = user
 	var/obj/W = new /obj/item/reagent_containers/food/drinks/bottle/whiskey(H.loc)
 	playsound(H.loc, 'sound/items/drink.ogg', rand(10,50), TRUE)
@@ -893,6 +884,12 @@ GLOBAL_LIST_EMPTY(allCasters)
 
 	return(TOXLOSS)
 
+/obj/item/newspaper/examine(mob/user)
+	. = ..()
+	to_chat(user, "<B>Weather Forecast:</B>")
+	SScityweather.get_forecast(user)
+
+/*
 /obj/item/newspaper/attack_self(mob/user)
 	if(ishuman(user))
 		var/mob/living/carbon/human/human_user = user
@@ -974,6 +971,7 @@ GLOBAL_LIST_EMPTY(allCasters)
 	else
 		to_chat(user, "<span class='warning'>The paper is full of unintelligible symbols!</span>")
 
+
 /obj/item/newspaper/proc/notContent(list/L)
 	if(!L.len)
 		return FALSE
@@ -1038,3 +1036,5 @@ GLOBAL_LIST_EMPTY(allCasters)
 			add_fingerprint(user)
 	else
 		return ..()
+
+*/

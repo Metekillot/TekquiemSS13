@@ -69,7 +69,25 @@
 	var/bounty_types = CIV_JOB_BASIC
 
 	/// Should this job be allowed to be picked for the bureaucratic error event?
-	var/allow_bureaucratic_error = TRUE
+	var/allow_bureaucratic_error = FALSE
+
+	// Fuck thin blood
+	var/minimal_generation = 13
+	var/minimal_masquerade = 1
+	var/minimal_age = 18
+//	var/list/allowed_species = list("kindred")
+	var/kindred_only = FALSE
+	var/humans_accessible = FALSE
+	var/human_only = FALSE
+	var/garou_allowed = FALSE
+	var/list/allowed_bloodlines = list("Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry")
+
+	// List for phone shit
+	var/my_contact_is_important = FALSE
+	// Only for display in memories
+	var/list/known_contacts = list()
+
+	var/duty
 
 /datum/job/New()
 	. = ..()
@@ -117,6 +135,14 @@
 		for(var/i in roundstart_experience)
 			experiencer.mind.adjust_experience(i, roundstart_experience[i], TRUE)
 
+	if(my_contact_is_important)
+		for(var/obj/item/vamp/phone/PHONE in GLOB.phones_list)
+			if(PHONE)
+				PHONE.add_important_contacts()
+
+	if(length(known_contacts) > 0)
+		H.knowscontacts = known_contacts
+
 /datum/job/proc/announce(mob/living/carbon/human/H)
 	if(head_announce)
 		announce_head(H, head_announce)
@@ -137,10 +163,13 @@
 /datum/job/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, client/preference_source)
 	if(!H)
 		return FALSE
+/*
 	if(CONFIG_GET(flag/enforce_human_authority) && (title in GLOB.command_positions))
 		if(H.dna.species.id != "human")
 			H.set_species(/datum/species/human)
 			H.apply_pref_name("human", preference_source)
+*/
+//No need to humanize fucking furries, since there is no fucking furries
 	if(!visualsOnly)
 		var/datum/bank_account/bank_account = new(H.real_name, src, H.dna.species.payday_modifier)
 		bank_account.payday(STARTING_PAYCHECKS, TRUE)
@@ -230,11 +259,11 @@
 
 	uniform = /obj/item/clothing/under/color/grey
 	id = /obj/item/card/id
-	ears = /obj/item/radio/headset
-	belt = /obj/item/pda
+//	ears = /obj/item/radio/headset
+//	belt = /obj/item/pda
 	back = /obj/item/storage/backpack
 	shoes = /obj/item/clothing/shoes/sneakers/black
-	box = /obj/item/storage/box/survival
+//	box = /obj/item/storage/box/survival
 
 	var/backpack = /obj/item/storage/backpack
 	var/satchel  = /obj/item/storage/backpack/satchel
@@ -279,18 +308,19 @@
 
 	var/obj/item/card/id/C = H.wear_id
 	if(istype(C))
-		C.access = J.get_access()
-		shuffle_inplace(C.access) // Shuffle access list to make NTNet passkeys less predictable
-		C.registered_name = H.real_name
-		C.assignment = J.title
-		if(H.age)
-			C.registered_age = H.age
-		C.update_label()
-		var/datum/bank_account/B = SSeconomy.bank_accounts_by_id["[H.account_id]"]
-		if(B && B.account_id == H.account_id)
-			C.registered_account = B
-			B.bank_cards += C
-		H.sec_hud_set_ID()
+		if(C)
+			C.access = J.get_access()
+			shuffle_inplace(C.access) // Shuffle access list to make NTNet passkeys less predictable
+			C.registered_name = H.real_name
+			C.assignment = J.title
+			if(H.age)
+				C.registered_age = H.age
+			C.update_label()
+			var/datum/bank_account/B = SSeconomy.bank_accounts_by_id["[H.account_id]"]
+			if(B && B.account_id == H.account_id)
+				C.registered_account = B
+				B.bank_cards += C
+			H.sec_hud_set_ID()
 
 	var/obj/item/pda/PDA = H.get_item_by_slot(pda_slot)
 	if(istype(PDA))

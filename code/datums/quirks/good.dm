@@ -9,6 +9,7 @@
 	gain_text = "<span class='notice'>You feel like you could drink a whole keg!</span>"
 	lose_text = "<span class='danger'>You don't feel as resistant to alcohol anymore. Somehow.</span>"
 	medical_record_text = "Patient demonstrates a high tolerance for alcohol."
+	mood_quirk = TRUE
 
 /datum/quirk/apathetic
 	name = "Apathetic"
@@ -16,6 +17,16 @@
 	value = 4
 	mood_quirk = TRUE
 	medical_record_text = "Patient was administered the Apathy Evaluation Scale but did not bother to complete it."
+
+/datum/quirk/no_taste
+	name = "Ageusia"
+	desc = "You can't taste anything! Toxic food will still poison you."
+	value = 1
+	mob_trait = TRAIT_AGEUSIA
+	gain_text = "<span class='notice'>You can't taste anything!</span>"
+	lose_text = "<span class='notice'>You can taste again!</span>"
+	medical_record_text = "Patient suffers from ageusia and is incapable of tasting food or reagents."
+	mood_quirk = TRUE
 
 /datum/quirk/apathetic/add()
 	var/datum/component/mood/mood = quirk_holder.GetComponent(/datum/component/mood)
@@ -36,6 +47,7 @@
 	gain_text = "<span class='notice'>You feel like a drink would do you good.</span>"
 	lose_text = "<span class='danger'>You no longer feel like drinking would ease your pain.</span>"
 	medical_record_text = "Patient has unusually efficient liver metabolism and can slowly regenerate wounds by drinking alcoholic beverages."
+	mood_quirk = TRUE
 
 /datum/quirk/drunkhealing/on_process(delta_time)
 	var/mob/living/carbon/C = quirk_holder
@@ -58,6 +70,7 @@
 	gain_text = "<span class='notice'>You feel in tune with those around you.</span>"
 	lose_text = "<span class='danger'>You feel isolated from others.</span>"
 	medical_record_text = "Patient is highly perceptive of and sensitive to social cues, or may possibly have ESP. Further testing needed."
+	mood_quirk = TRUE
 
 /datum/quirk/fan_clown
 	name = "Clown Fan"
@@ -67,6 +80,7 @@
 	gain_text = "<span class='notice'>You are a big fan of clowns.</span>"
 	lose_text = "<span class='danger'>The clown doesn't seem so great.</span>"
 	medical_record_text = "Patient reports being a big fan of clowns."
+	mood_quirk = TRUE
 
 /datum/quirk/fan_clown/on_spawn()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -80,13 +94,14 @@
 	fan.add_hud_to(H)
 
 /datum/quirk/fan_mime
-	name = "Mime Fan"
+	name = "Mime Enjoyer"
 	desc = "You enjoy mime antics and get a mood boost from wearing your mime pin."
 	value = 2
 	mob_trait = TRAIT_FAN_MIME
 	gain_text = "<span class='notice'>You are a big fan of the Mime.</span>"
 	lose_text = "<span class='danger'>The mime doesn't seem so great.</span>"
 	medical_record_text = "Patient reports being a big fan of mimes."
+	mood_quirk = TRUE
 
 /datum/quirk/fan_mime/on_spawn()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -107,6 +122,7 @@
 	gain_text = "<span class='notice'>You feel lithe on your feet!</span>"
 	lose_text = "<span class='danger'>You feel clumsy again.</span>"
 	medical_record_text = "Patient scored highly on cardio tests."
+	mood_quirk = TRUE
 
 /datum/quirk/friendly
 	name = "Friendly"
@@ -138,6 +154,7 @@
 	gain_text = "<span class='notice'>You walk with a little more litheness.</span>"
 	lose_text = "<span class='danger'>You start tromping around like a barbarian.</span>"
 	medical_record_text = "Patient's dexterity belies a strong capacity for stealth."
+	mood_quirk = TRUE
 
 /datum/quirk/light_step/on_spawn()
 	var/datum/component/footstep/C = quirk_holder.GetComponent(/datum/component/footstep)
@@ -153,6 +170,7 @@
 	gain_text = "<span class='notice'>You know everything about musical instruments.</span>"
 	lose_text = "<span class='danger'>You forget how musical instruments work.</span>"
 	medical_record_text = "Patient brain scans show a highly-developed auditory pathway."
+	mood_quirk = TRUE
 
 /datum/quirk/musician/on_spawn()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -171,6 +189,7 @@
 	gain_text = "<span class='notice'>The shadows seem a little less dark.</span>"
 	lose_text = "<span class='danger'>Everything seems a little darker.</span>"
 	medical_record_text = "Patient's eyes show above-average acclimation to darkness."
+	mood_quirk = TRUE
 
 /datum/quirk/night_vision/on_spawn()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -185,6 +204,7 @@
 	value = 8
 	mob_trait = TRAIT_SELF_AWARE
 	medical_record_text = "Patient demonstrates an uncanny knack for self-diagnosis."
+	mood_quirk = TRUE
 
 /datum/quirk/skittish
 	name = "Skittish"
@@ -192,6 +212,7 @@
 	value = 8
 	mob_trait = TRAIT_SKITTISH
 	medical_record_text = "Patient demonstrates a high aversion to danger and has described hiding in containers out of fear."
+	mood_quirk = TRUE
 
 /datum/quirk/spiritual
 	name = "Spiritual"
@@ -201,6 +222,7 @@
 	gain_text = "<span class='notice'>You have faith in a higher power.</span>"
 	lose_text = "<span class='danger'>You lose faith!</span>"
 	medical_record_text = "Patient reports a belief in a higher power."
+	mood_quirk = TRUE
 
 /datum/quirk/spiritual/on_spawn()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -215,6 +237,7 @@
 	gain_text = "<span class='notice'>You know how to tag walls efficiently.</span>"
 	lose_text = "<span class='danger'>You forget how to tag walls properly.</span>"
 	medical_record_text = "Patient was recently seen for possible paint huffing incident."
+	mood_quirk = TRUE
 
 /datum/quirk/tagger/on_spawn()
 	var/mob/living/carbon/human/H = quirk_holder
@@ -230,3 +253,4 @@
 	mob_trait = TRAIT_VORACIOUS
 	gain_text = "<span class='notice'>You feel HONGRY.</span>"
 	lose_text = "<span class='danger'>You no longer feel HONGRY.</span>"
+	mood_quirk = TRUE

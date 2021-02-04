@@ -441,6 +441,12 @@
 	set name = "Examine"
 	set category = "IC"
 
+	if(ishuman(src))
+		if(ishuman(A) || isitem(A))
+			var/mob/living/carbon/human/ueban = src
+			if(!do_mob(src, src, max(1, 15-ueban.mentality*3)))
+				return
+
 	if(isturf(A) && !(sight & SEE_TURFS) && !(A in view(client ? client.view : world.view, src)))
 		// shift-click catcher may issue examinate() calls for out-of-sight turfs
 		return
@@ -699,6 +705,23 @@
 		to_chat(usr, "<span class='boldnotice'>You must be dead to use this!</span>")
 		return
 
+//	if(SSmasquerade.total_level <= 250)
+//		to_chat(usr, "<span class='boldnotice'>Global Masquerade level is too low!</span>")
+//		if(check_rights_for(usr.client, R_ADMIN))
+//			if(alert(usr, "Do you want to respawn faster than usual player? (only admins can)", "Respawn", "Yes", "No") != "Yes")
+//				return
+//		else
+//			return
+
+	if(respawntimeofdeath+12000 > world.time)
+		var/timetoresp = round(((respawntimeofdeath+12000)-world.time)/10)
+		to_chat(usr, "<span class='notice'>You need to wait [timetoresp] seconds before respawn</span>")
+		if(check_rights_for(usr.client, R_ADMIN))
+			if(alert(usr, "Do you want to respawn faster than usual player? (only admins can)", "Respawn", "Yes", "No") != "Yes")
+				return
+		else
+			return
+
 	log_game("[key_name(usr)] used abandon mob.")
 
 	to_chat(usr, "<span class='boldnotice'>Please roleplay correctly!</span>")
@@ -770,8 +793,14 @@
 			if(what)
 				if(!(what.item_flags & ABSTRACT))
 					user.stripPanelUnequip(what,src,slot)
+					if(isnpc(src))
+						var/mob/living/carbon/human/npc/N = src
+						N.Aggro(usr, TRUE)
 			else
 				user.stripPanelEquip(what,src,slot)
+				if(isnpc(src))
+					var/mob/living/carbon/human/npc/N = src
+					N.Aggro(usr, TRUE)
 
 		if(user.machine == src)
 			if(Adjacent(user))
@@ -1161,8 +1190,22 @@
 	if (!client)
 		return
 	client.mouse_pointer_icon = initial(client.mouse_pointer_icon)
+	var/shootahell = FALSE
+	var/discipliner = FALSE
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if(istype(H.get_active_held_item(), /obj/item/gun))
+			shootahell = TRUE
+		for(var/atom/movable/screen/disciplines/DISCP in H.hud_used.static_inventory)
+			if(DISCP)
+				if(DISCP.active)
+					discipliner = TRUE
 	if(examine_cursor_icon && client.keys_held["Shift"]) //mouse shit is hardcoded, make this non hard-coded once we make mouse modifiers bindable
 		client.mouse_pointer_icon = examine_cursor_icon
+	else if(discipliner)
+		client.mouse_pointer_icon = discipline_cursor_icon
+	else if(shootahell)
+		client.mouse_pointer_icon = pvp_cursor_icon
 	else if (ismecha(loc))
 		var/obj/vehicle/sealed/mecha/M = loc
 		if(M.mouse_pointer)

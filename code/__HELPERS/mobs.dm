@@ -190,6 +190,9 @@ GLOBAL_LIST_EMPTY(species_list)
 	if(!user.Process_Spacemove(0) && user.inertia_dir)
 		drifting = TRUE
 
+	if(HAS_TRAIT(user, TRAIT_LAZY))
+		time = time*2
+
 	var/target_loc = target.loc
 
 	if(!interaction_key && target)
@@ -268,6 +271,9 @@ GLOBAL_LIST_EMPTY(species_list)
 	if(target && !isturf(target))
 		target_loc = target.loc
 
+	if(HAS_TRAIT(user, TRAIT_LAZY))
+		delay = delay*2
+
 	if(!interaction_key && target)
 		interaction_key = target //Use the direct ref to the target
 	if(interaction_key) //Do we have a interaction_key now?
@@ -339,6 +345,9 @@ GLOBAL_LIST_EMPTY(species_list)
 	if(!length(targets))
 		return FALSE
 	var/user_loc = user.loc
+
+	if(HAS_TRAIT(user, TRAIT_LAZY))
+		time = time*2
 
 	time *= user.cached_multiplicative_actions_slowdown
 
@@ -512,16 +521,24 @@ GLOBAL_LIST_EMPTY(species_list)
 		if(isobserver(M))
 			var/rendered_message = message
 
+			var/mob/dead/observer/O = M
+
 			if(follow_target)
 				var/F
 				if(turf_target)
 					F = FOLLOW_OR_TURF_LINK(M, follow_target, turf_target)
 				else
 					F = FOLLOW_LINK(M, follow_target)
-				rendered_message = "[F] [message]"
+				if(O.aghosted)
+					rendered_message = "[F] [message]"
+				else
+					rendered_message = "[message]"
 			else if(turf_target)
 				var/turf_link = TURF_LINK(M, turf_target)
-				rendered_message = "[turf_link] [message]"
+				if(O.aghosted)
+					rendered_message = "[turf_link] [message]"
+				else
+					rendered_message = "[message]"
 
 			to_chat(M, rendered_message)
 		else

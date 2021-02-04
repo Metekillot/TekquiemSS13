@@ -62,6 +62,7 @@
 	///If the mob is charging, how long will it stun it's target on success, and itself on failure?
 	var/knockdown_time = 3 SECONDS
 	///Declares a cooldown for potential charges right off the bat.
+	var/mob/living/carbon/human/my_creator
 	COOLDOWN_DECLARE(charge_cooldown)
 
 /mob/living/simple_animal/hostile/Initialize()
@@ -80,6 +81,11 @@
 	. = ..()
 	if(!.) //dead
 		walk(src, 0) //stops walking
+	else if(my_creator)
+		if(CheckEyewitness(src, src, 5, FALSE))
+			SEND_SOUND(src, sound('code/modules/ziggers/sounds/masquerade_violation.ogg', 0, 0, 75))
+			to_chat(src, "<span class='userdanger'><b>MASQUERADE VIOLATION</b></span>")
+			my_creator.AdjustMasquerade(-1)
 
 /mob/living/simple_animal/hostile/handle_automated_action()
 	if(AIStatus == AI_OFF)
@@ -440,6 +446,12 @@
 
 
 /mob/living/simple_animal/hostile/Move(atom/newloc, dir , step_x , step_y)
+	if(client)
+		for(var/mob/living/L in newloc)
+			if(L)
+				if(CanAttack(L))
+					ClickOn(L)
+					return
 	if(dodging && approaching_target && prob(dodge_prob) && moving_diagonally == 0 && isturf(loc) && isturf(newloc))
 		return dodge(newloc,dir)
 	else

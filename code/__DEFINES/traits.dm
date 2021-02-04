@@ -134,6 +134,7 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_ADVANCEDTOOLUSER	"advancedtooluser" //Whether a mob is dexterous enough to use machines and certain items or not.
 #define TRAIT_MONKEYLIKE		"monkeylike" //Antagonizes the above.
 #define TRAIT_PACIFISM			"pacifism"
+#define TRAIT_ELYSIUM			"elysium"
 #define TRAIT_IGNORESLOWDOWN	"ignoreslow"
 #define TRAIT_IGNOREDAMAGESLOWDOWN "ignoredamageslowdown"
 #define TRAIT_DEATHCOMA			"deathcoma" //Causes death-like unconsciousness
@@ -244,6 +245,29 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_ANTENNAE	"antennae"
 
 #define TRAIT_NOBLEED "nobleed" //This carbon doesn't bleed
+
+
+#define TRAIT_ACROBATIC			"acrobatic"
+#define TRAIT_DANCER			"dancer"
+#define TRAIT_EXP_DRIVER			"experienced_driver"
+#define TRAIT_BONE_KEY			"bone_key"
+#define TRAIT_BLOODY_LOVER			"bloody_lover"
+#define TRAIT_TOUGH_FLESH			"tough_flesh"
+#define TRAIT_BLOODY_SUCKER			"bloody_sucker"
+#define TRAIT_NON_INT			"non_intellectual"
+#define TRAIT_COFFIN_THERAPY			"coffin_therapy"
+#define TRAIT_RUBICON			"rubicon"
+#define TRAIT_HUNGRY			"hungry"
+#define TRAIT_PHOENIX			"phoenix"
+#define TRAIT_LAZY			"lazy"
+#define TRAIT_HOMOSEXUAL			"homosexual"
+#define TRAIT_HUNTED			"hunted"
+#define TRAIT_VIOLATOR			"violator"
+#define TRAIT_DIABLERIE			"diablerie"
+#define TRAIT_GULLET				"gullet"
+#define TRAIT_CHARMER				"charmer"
+#define TRAIT_UNMASQUERADE			"unmasquerade"	//For tzi clothing
+#define TRAIT_NONMASQUERADE			"nonmasquerade"	//For tzi mods
 
 // You can stare into the abyss, but it does not stare back.
 // You're immune to the hallucination effect of the supermatter, either

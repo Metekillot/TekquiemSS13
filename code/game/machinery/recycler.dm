@@ -201,11 +201,12 @@
 	// Instantly lie down, also go unconscious from the pain, before you die.
 	L.Unconscious(100)
 	L.adjustBruteLoss(crush_damage)
+	qdel(src)
 
 /obj/machinery/recycler/deathtrap
 	name = "dangerous old crusher"
 	obj_flags = CAN_BE_HIT | EMAGGED
-	crush_damage = 120
+	crush_damage = 999999
 	flags_1 = NODECONSTRUCT_1
 
 /obj/item/paper/guides/recycler

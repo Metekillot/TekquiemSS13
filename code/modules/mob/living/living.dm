@@ -393,11 +393,12 @@
 		to_chat(src, text="You are unable to succumb to death! This life continues.", type=MESSAGE_TYPE_INFO)
 		return
 	log_message("Has [whispered ? "whispered his final words" : "succumbed to death"] with [round(health, 0.1)] points of health!", LOG_ATTACK)
-	adjustOxyLoss(health - HEALTH_THRESHOLD_DEAD)
-	updatehealth()
+	if(!iskindred(src))
+		adjustOxyLoss(health - HEALTH_THRESHOLD_DEAD)
+		updatehealth()
 	if(!whispered)
 		to_chat(src, "<span class='notice'>You have given up life and succumbed to death.</span>")
-	death()
+//	death()
 
 /mob/living/incapacitated(ignore_restraints = FALSE, ignore_grab = FALSE, ignore_stasis = FALSE)
 	if(HAS_TRAIT(src, TRAIT_INCAPACITATED) || (!ignore_restraints && (HAS_TRAIT(src, TRAIT_RESTRAINED) || (!ignore_grab && pulledby && pulledby.grab_state >= GRAB_AGGRESSIVE))) || (!ignore_stasis && IS_IN_STASIS(src)))
@@ -603,23 +604,23 @@
 /mob/living/update_health_hud()
 	var/severity = 0
 	var/healthpercent = (health/maxHealth) * 100
-	if(hud_used?.healthdoll) //to really put you in the boots of a simplemob
-		var/atom/movable/screen/healthdoll/living/livingdoll = hud_used.healthdoll
-		switch(healthpercent)
-			if(100 to INFINITY)
-				severity = 0
-			if(80 to 100)
-				severity = 1
-			if(60 to 80)
-				severity = 2
-			if(40 to 60)
-				severity = 3
-			if(20 to 40)
-				severity = 4
-			if(1 to 20)
-				severity = 5
-			else
-				severity = 6
+	switch(healthpercent)
+		if(100 to INFINITY)
+			severity = 0
+		if(80 to 100)
+			severity = 1
+		if(60 to 80)
+			severity = 2
+		if(40 to 60)
+			severity = 3
+		if(20 to 40)
+			severity = 4
+		if(1 to 20)
+			severity = 5
+		else
+			severity = 6
+	if(hud_used?.healths) //to really put you in the boots of a simplemob
+		var/atom/movable/screen/healthdoll/living/livingdoll = hud_used.healths
 		livingdoll.icon_state = "living[severity]"
 		if(!livingdoll.filtered)
 			livingdoll.filtered = TRUE
@@ -829,7 +830,7 @@
 	return bleed_amount
 
 /mob/living/proc/getTrail()
-	if(getBruteLoss() < 300)
+	if(getBruteLoss() < 100)
 		return pick("ltrails_1", "ltrails_2")
 	else
 		return pick("trails_1", "trails_2")
@@ -872,14 +873,32 @@
 
 	if(!can_resist())
 		return
+
 	changeNext_move(CLICK_CD_RESIST)
 
 	SEND_SIGNAL(src, COMSIG_LIVING_RESIST, src)
+
 	//resisting grabs (as if it helps anyone...)
 	if(!HAS_TRAIT(src, TRAIT_RESTRAINED) && pulledby)
 		log_combat(src, pulledby, "resisted grab")
 		resist_grab()
 		return
+
+	if(IsStun())
+		AdjustStun(-5)
+		do_attack_animation(src)
+		visible_message("<span class='danger'>[src] tries to stand up!</span>", \
+						"<span class='userdanger'>You try to stand up!</span>")
+	if(IsKnockdown())
+		AdjustKnockdown(-5)
+		do_attack_animation(src)
+		visible_message("<span class='danger'>[src] tries to stand up!</span>", \
+						"<span class='userdanger'>You try to stand up!</span>")
+	if(IsImmobilized())
+		AdjustImmobilized(-5)
+		do_attack_animation(src)
+		visible_message("<span class='danger'>[src] tries to stand up!</span>", \
+						"<span class='userdanger'>You try to stand up!</span>")
 
 	//unbuckling yourself
 	if(buckled && last_special <= world.time)
@@ -971,6 +990,12 @@
 	what.add_fingerprint(src)
 	if(do_mob(src, who, what.strip_delay, interaction_key = what))
 		if(what && Adjacent(who))
+			if(ishuman(src) && isnpc(who))
+				var/mob/living/carbon/human/H = src
+				var/mob/living/carbon/human/NPC = who
+				if(NPC.stat < 1)
+					if(istype(what, /obj/item/clothing) || istype(what, /obj/item/vamp/keys) || istype(what, /obj/item/stack/dollar))
+						H.AdjustHumanity(-1, 6)
 			if(islist(where))
 				var/list/L = where
 				if(what == who.get_item_for_held_index(L[2]))
@@ -1914,6 +1939,7 @@
 			if (INTENT_HARM)
 				if (HAS_TRAIT(src, TRAIT_PACIFISM))
 					return FALSE
+				check_elysium(FALSE)
 				attack_result = style.harm_act(src, target)
 			if (INTENT_DISARM)
 				attack_result = style.disarm_act(src, target)

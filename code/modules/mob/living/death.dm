@@ -43,16 +43,28 @@
  * * drop_items - Should the mob drop their items before dusting?
  * * force - Should this mob be FORCABLY dusted?
 */
+
+/mob/living/proc/unequip_epic()
+	var/list/items = list()
+	items |= get_equipped_items(TRUE)
+	for(var/obj/item/I in items)
+		dropItemToGround(I)
+		if(prob(80))
+			step(I, pick(GLOB.alldirs))
+	drop_all_held_items()
+
 /mob/living/proc/dust(just_ash, drop_items, force)
-	death(TRUE)
+	if(stat != DEAD)
+		death(TRUE)
 
 	if(drop_items)
-		unequip_everything()
+		unequip_epic()
 
 	if(buckled)
 		buckled.unbuckle_mob(src, force = TRUE)
 
 	dust_animation()
+	alpha = 0
 	spawn_dust(just_ash)
 	QDEL_IN(src,5) // since this is sometimes called in the middle of movement, allow half a second for movement to finish, ghosting to happen and animation to play. Looks much nicer and doesn't cause multiple runtimes.
 
@@ -72,6 +84,7 @@
 	set_stat(DEAD)
 	unset_machine()
 	timeofdeath = world.time
+	respawntimeofdeath = timeofdeath
 	tod = station_time_timestamp()
 	var/turf/T = get_turf(src)
 	if(mind && mind.name && mind.active && !istype(T.loc, /area/ctf))

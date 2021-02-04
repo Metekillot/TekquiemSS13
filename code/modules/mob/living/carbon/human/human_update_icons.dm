@@ -56,10 +56,63 @@ There are several things that need to be remembered:
 /mob/living/carbon/human/proc/update_mutant_bodyparts()
 	dna.species.handle_mutant_bodyparts(src)
 
+/mob/living/carbon/human
+	var/given_penis = FALSE
 
 /mob/living/carbon/human/update_body()
+	if(dna.species.id == "mannequin")
+		base_body_mod = ""
+		dna.species.limbs_id = "[base_body_mod]mannequin"
+	else
+		dna.species.limbs_id = "[base_body_mod]human"
+
+	if(clane)
+		if(clane.alt_sprite)
+			dna.species.limbs_id = "[base_body_mod][clane.alt_sprite]"
+
+	if(unique_body_sprite)
+		dna.species.limbs_id = "[base_body_mod][unique_body_sprite]"
+
+	if(base_body_mod == "s")
+		if(gender == FEMALE)
+			body_sprite = 'code/modules/ziggers/worn_slim_f.dmi'
+		else
+			body_sprite = 'code/modules/ziggers/worn_slim_m.dmi'
+	if(base_body_mod == "f")
+		body_sprite = 'code/modules/ziggers/worn_fat.dmi'
+	if(base_body_mod == "")
+		body_sprite = null
+	for(var/obj/item/I in GetAllContents())
+		if(I)
+			I.update_bodyfied(src)
+	update_inv_w_uniform()
+	update_inv_wear_id()
+	update_inv_gloves()
+	update_inv_glasses()
+	update_inv_ears()
+	update_inv_shoes()
+	update_inv_s_store()
+	update_inv_wear_mask()
+	update_inv_head()
+	update_inv_belt()
+	update_inv_back()
+	update_inv_wear_suit()
+	update_inv_pockets()
+	update_inv_neck()
+//	update_body_parts_head_only()
 	remove_overlay(BODY_LAYER)
 	dna.species.handle_body(src)
+	if(gender == MALE)
+		if(!given_penis)
+			var/obj/item/organ/replacement = new /obj/item/organ/penis()
+			replacement.Insert(src, TRUE, FALSE)
+			given_penis = TRUE
+	else
+		given_penis = FALSE
+		var/obj/item/organ/I = getorgan(/obj/item/organ/penis)
+		if(I)
+			I.Remove(src)
+			QDEL_NULL(I)
 	..()
 
 /mob/living/carbon/human/update_fire()
@@ -624,6 +677,8 @@ generate/load female uniform sprites matching all previously decided variables
 		// lipstick
 		if(lip_style && (LIPS in dna.species.species_traits))
 			var/mutable_appearance/lip_overlay = mutable_appearance('icons/mob/human_face.dmi', "lips_[lip_style]", -BODY_LAYER)
+			if(base_body_mod == "s")
+				lip_overlay = mutable_appearance('icons/mob/human_face_f.dmi', "lips_[lip_style]", -BODY_LAYER)
 			lip_overlay.color = lip_color
 			if(OFFSET_FACE in dna.species.offset_features)
 				lip_overlay.pixel_x += dna.species.offset_features[OFFSET_FACE][1]
@@ -636,8 +691,12 @@ generate/load female uniform sprites matching all previously decided variables
 			var/mutable_appearance/eye_overlay
 			if(!E)
 				eye_overlay = mutable_appearance('icons/mob/human_face.dmi', "eyes_missing", -BODY_LAYER)
+				if(base_body_mod == "s")
+					eye_overlay = mutable_appearance('icons/mob/human_face_f.dmi', "eyes_missing", -BODY_LAYER)
 			else
 				eye_overlay = mutable_appearance('icons/mob/human_face.dmi', E.eye_icon_state, -BODY_LAYER)
+				if(base_body_mod == "s")
+					eye_overlay = mutable_appearance('icons/mob/human_face_f.dmi', E.eye_icon_state, -BODY_LAYER)
 			if((EYECOLOR in dna.species.species_traits) && E)
 				eye_overlay.color = "#" + eye_color
 			if(OFFSET_FACE in dna.species.offset_features)

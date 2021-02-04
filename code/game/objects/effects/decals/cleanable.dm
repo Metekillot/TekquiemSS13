@@ -11,6 +11,10 @@
 
 /obj/effect/decal/cleanable/Initialize(mapload, list/datum/disease/diseases)
 	. = ..()
+	if(istype(get_area(src), /area/vtm))
+		var/area/vtm/V = get_area(src)
+		if(V.upper)
+			GLOB.cleanable_list += src
 	if (random_icon_states && (icon_state == initial(icon_state)) && length(random_icon_states) > 0)
 		icon_state = pick(random_icon_states)
 	create_reagents(300)
@@ -35,6 +39,7 @@
 		SSblackbox.record_feedback("tally", "station_mess_created", 1, name)
 
 /obj/effect/decal/cleanable/Destroy()
+	GLOB.cleanable_list -= src
 	var/turf/T = get_turf(src)
 	if(T && is_station_level(T.z))
 		SSblackbox.record_feedback("tally", "station_mess_destroyed", 1, name)
@@ -85,9 +90,10 @@
 //This is on /cleanable because fuck this ancient mess
 /obj/effect/decal/cleanable/Crossed(atom/movable/AM)
 	..()
-	if(iscarbon(AM) && blood_state && bloodiness > 0)
-		SEND_SIGNAL(AM, COMSIG_STEP_ON_BLOOD, src)
-		update_icon()
+	if(prob(bloodiness))
+		if(iscarbon(AM) && blood_state && bloodiness >= 40)
+			SEND_SIGNAL(AM, COMSIG_STEP_ON_BLOOD, src)
+			update_icon()
 
 /obj/effect/decal/cleanable/wash(clean_types)
 	. = ..()

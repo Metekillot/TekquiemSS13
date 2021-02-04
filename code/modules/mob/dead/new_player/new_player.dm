@@ -2,6 +2,7 @@
 
 /mob/dead/new_player
 	var/ready = 0
+	var/late_ready = FALSE
 	var/spawning = 0//Referenced when you want to delete the new_player later on in the code.
 
 	flags_1 = NONE
@@ -51,6 +52,11 @@
 	asset_datum.send(client)
 	var/list/output = list("<center><p><a href='byond://?src=[REF(src)];show_preferences=1'>Setup Character</a></p>")
 
+	if(late_ready)
+		output += "<p>Late Party: <a href='byond://?src=[REF(src)];late_party=1'>Yes</a></p>"
+	else
+		output += "<p>Late Party: <a href='byond://?src=[REF(src)];late_party=1'>No</a></p>"
+
 	if(SSticker.current_state <= GAME_STATE_PREGAME)
 		switch(ready)
 			if(PLAYER_NOT_READY)
@@ -60,7 +66,7 @@
 			if(PLAYER_READY_TO_OBSERVE)
 				output += "<p>\[ [LINKIFY_READY("Ready", PLAYER_READY_TO_PLAY)] | [LINKIFY_READY("Not Ready", PLAYER_NOT_READY)] | <b> Observe </b> \]</p>"
 	else
-		output += "<p><a href='byond://?src=[REF(src)];manifest=1'>View the Crew Manifest</a></p>"
+//		output += "<p><a href='byond://?src=[REF(src)];manifest=1'>View the Kindred Population</a></p>"
 		output += "<p><a href='byond://?src=[REF(src)];late_join=1'>Join Game!</a></p>"
 		output += "<p>[LINKIFY_READY("Observe", PLAYER_READY_TO_OBSERVE)]</p>"
 
@@ -69,7 +75,7 @@
 
 	output += "</center>"
 
-	var/datum/browser/popup = new(src, "playersetup", "<div align='center'>New Player Options</div>", 250, 265)
+	var/datum/browser/popup = new(src, "playersetup", "<div align='center'>[make_font_cool("NEW PLAYER")]</div>", 250, 265)
 	popup.set_window_options("can_close=0")
 	popup.set_content(output.Join())
 	popup.open(FALSE)
@@ -133,6 +139,8 @@
 		return TRUE
 
 	if(href_list["ready"])
+		SSbad_guys_party.candidates -= src
+		late_ready = FALSE
 		var/tready = text2num(href_list["ready"])
 		//Avoid updating ready if we're after PREGAME (they should use latejoin instead)
 		//This is likely not an actual issue but I don't have time to prove that this
@@ -149,7 +157,18 @@
 		src << browse(null, "window=playersetup") //closes the player setup window
 		new_player_panel()
 
+	if(href_list["late_party"])
+		ready = PLAYER_NOT_READY
+		if(late_ready)
+			late_ready = FALSE
+			SSbad_guys_party.candidates -= src
+		else
+			late_ready = TRUE
+			SSbad_guys_party.candidates += src
+
 	if(href_list["late_join"])
+		SSbad_guys_party.candidates -= src
+		late_ready = FALSE
 		if(!SSticker?.IsRoundInProgress())
 			to_chat(usr, "<span class='boldwarning'>The round is either not ready, or has already finished...</span>")
 			return
@@ -178,6 +197,14 @@
 	if(href_list["SelectedJob"])
 		if(!SSticker?.IsRoundInProgress())
 			to_chat(usr, "<span class='danger'>The round is either not ready, or has already finished...</span>")
+			return
+
+		var/name_wrong = FALSE
+		for(var/i in GLOB.fucking_joined)
+			if(i == client.prefs.real_name)
+				name_wrong = TRUE
+		if(name_wrong)
+			to_chat(usr, "<span class='danger'>You already used this character in round!</span>")
 			return
 
 		if(!GLOB.enter_allowed)
@@ -261,6 +288,8 @@
 			return "Your account is not old enough for [jobtitle]."
 		if(JOB_UNAVAILABLE_SLOTFULL)
 			return "[jobtitle] is already filled to capacity."
+		if(JOB_UNAVAILABLE_GENERATION)
+			return "Your generation is too young for [jobtitle]."
 	return "Error: Unknown job availability."
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
@@ -268,7 +297,7 @@
 	if(!job)
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
-		if(job.title == "Assistant")
+		if(job.title == "Citizen")
 			if(isnum(client.player_age) && client.player_age <= 14) //Newbies can always be assistants
 				return JOB_AVAILABLE
 			for(var/datum/job/J in SSjob.occupations)
@@ -286,6 +315,30 @@
 		return JOB_UNAVAILABLE_PLAYTIME
 	if(latejoin && !job.special_check_latejoin(client))
 		return JOB_UNAVAILABLE_GENERIC
+	if(client.prefs.generation > job.minimal_generation)
+		return JOB_UNAVAILABLE_GENERATION
+	if(client.prefs.masquerade < job.minimal_masquerade)
+		return JOB_UNAVAILABLE_MASQUERADE
+	if(client.prefs.age < job.minimal_age)
+		return JOB_UNAVAILABLE_AGE
+	if(job.kindred_only)
+		if(client.prefs.pref_species.name != "Vampire")
+			return JOB_UNAVAILABLE_SPECIES
+	if(!job.garou_allowed)
+		if(client.prefs.pref_species.name == "Werewolf")
+			return JOB_UNAVAILABLE_SPECIES
+	if(job.human_only)
+		if(client.prefs.pref_species.name != "Human")
+			return JOB_UNAVAILABLE_SPECIES
+	if(!job.humans_accessible)
+		if(client.prefs.pref_species.name == "Human")
+			return JOB_UNAVAILABLE_SPECIES
+	if(client.prefs.pref_species.name == "Vampire")
+		if(client.prefs.clane)
+			for(var/i in job.allowed_bloodlines)
+				if(i == client.prefs.clane.name)
+					return JOB_AVAILABLE
+			return JOB_UNAVAILABLE_CLAN
 	return JOB_AVAILABLE
 
 /mob/dead/new_player/proc/AttemptLateSpawn(rank)
@@ -297,6 +350,10 @@
 	if(SSticker.late_join_disabled)
 		alert(src, "An administrator has disabled late join spawning.")
 		return FALSE
+
+//	if(SSmasquerade.total_level <= 250)
+//		alert(src, "Global Masquerade level is too low!")
+//		return FALSE
 
 	var/arrivals_docked = TRUE
 	if(SSshuttle.arrivals)
@@ -327,7 +384,7 @@
 		if(!arrivals_docked)
 			var/atom/movable/screen/splash/Spl = new(character.client, TRUE)
 			Spl.Fade(TRUE)
-			character.playsound_local(get_turf(character), 'sound/voice/ApproachingTG.ogg', 25)
+//			character.playsound_local(get_turf(character), 'sound/voice/ApproachingTG.ogg', 25)
 
 		character.update_parallax_teleport()
 
@@ -343,6 +400,7 @@
 			SSshuttle.arrivals.QueueAnnounce(humanc, rank)
 		else
 			AnnounceArrival(humanc, rank)
+//		humanc.create_disciplines()
 		AddEmploymentContract(humanc)
 		if(GLOB.highlander)
 			to_chat(humanc, "<span class='userdanger'><i>THERE CAN BE ONLY ONE!!!</i></span>")
@@ -409,7 +467,7 @@
 			var/datum/job/job_datum = SSjob.name_occupations[job]
 			if(job_datum && IsJobUnavailable(job_datum.title, TRUE) == JOB_AVAILABLE)
 				var/command_bold = ""
-				if(job in GLOB.command_positions)
+				if(job in GLOB.leader_positions)
 					command_bold = " command"
 				if(job_datum in SSjob.prioritized_jobs)
 					dept_dat += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'><span class='priority'>[job_datum.title] ([job_datum.current_positions])</span></a>"
@@ -470,12 +528,31 @@
 	new_character = .
 	if(transfer_after)
 		transfer_character()
-
+//	if(client.prefs.archtype)
+//		H.__archetype = new client.prefs.archtype
 /mob/dead/new_player/proc/transfer_character()
 	. = new_character
 	if(.)
 		new_character.key = key		//Manually transfer the key to log them in,
 		new_character.stop_sound_channel(CHANNEL_LOBBYMUSIC)
+		if(ishuman(new_character))
+			var/mob/living/carbon/human/H = new_character
+			if(H.client)
+				if(H.age < 16)
+					H.add_quirk(/datum/quirk/freerunning)
+					H.add_quirk(/datum/quirk/light_step)
+					H.add_quirk(/datum/quirk/skittish)
+					H.add_quirk(/datum/quirk/pushover)
+				H.create_disciplines()
+				if(isgarou(H))
+					for(var/obj/structure/werewolf_totem/S in GLOB.totems)
+						if(S.tribe == H.auspice.tribe)
+							H.forceMove(get_turf(S))
+				if(H.client.prefs.ambitious)
+					if(H.mind)
+						H.mind.add_antag_datum(/datum/antagonist/ambitious)
+				H.generate_friends()
+				GLOB.fucking_joined |= H.client.prefs.real_name
 		new_character = null
 		qdel(src)
 
@@ -487,7 +564,7 @@
 	client.crew_manifest_delay = world.time + (1 SECONDS)
 
 	var/dat = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'></head><body>"
-	dat += "<h4>Crew Manifest</h4>"
+	dat += "<h4>Kindred population</h4>"
 	dat += GLOB.data_core.get_manifest_html()
 
 	src << browse(dat, "window=manifest;size=387x420;can_close=1")

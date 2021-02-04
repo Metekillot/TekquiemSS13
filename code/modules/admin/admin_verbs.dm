@@ -30,6 +30,11 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/datum/admins/proc/show_player_panel,	/*shows an interface for individual players, with various links (links require additional flags*/
 	/datum/verbs/menu/Admin/verb/playerpanel,
 	/client/proc/game_panel,			/*game panel, allows to change game-mode etc*/
+	/client/proc/add_nigger,
+	/client/proc/toggle_canon,
+	/client/proc/reward_exp,
+	/client/proc/encipher_word,
+	/client/proc/uncipher_word,
 	/client/proc/check_ai_laws,			/*shows AI and borg laws*/
 	/client/proc/ghost_pool_protection,	/*opens a menu for toggling ghost roles*/
 	/datum/admins/proc/toggleooc,		/*toggles ooc on/off for everyone*/
@@ -105,7 +110,8 @@ GLOBAL_LIST_INIT(admin_verbs_fun, list(
 	/client/proc/polymorph_all,
 	/client/proc/show_tip,
 	/client/proc/smite,
-	/client/proc/admin_away
+	/client/proc/admin_away,
+	/client/proc/toggle_RMB
 	))
 GLOBAL_PROTECT(admin_verbs_fun)
 GLOBAL_LIST_INIT(admin_verbs_spawn, list(/datum/admins/proc/spawn_atom, /datum/admins/proc/podspawn_atom, /datum/admins/proc/spawn_cargo, /datum/admins/proc/spawn_objasmob, /client/proc/respawn_character, /datum/admins/proc/beaker_panel))
@@ -256,7 +262,8 @@ GLOBAL_LIST_INIT(admin_verbs_hideable, list(
 	/client/proc/toggle_nuke,
 	/client/proc/cmd_display_del_log,
 	/client/proc/toggle_combo_hud,
-	/client/proc/debug_huds
+	/client/proc/debug_huds,
+	/client/proc/toggle_RMB
 	))
 GLOBAL_PROTECT(admin_verbs_hideable)
 
@@ -336,9 +343,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	to_chat(src, "<span class='interface'>All of your adminverbs are now visible.</span>", confidential = TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Show Adminverbs") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-
-
-
 /client/proc/admin_ghost()
 	set category = "Admin.Game"
 	set name = "Aghost"
@@ -354,6 +358,26 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 			log_admin("[key_name(usr)] re-entered corpse")
 			message_admins("[key_name_admin(usr)] re-entered corpse")
 		ghost.can_reenter_corpse = 1 //force re-entering even when otherwise not possible
+		ghost.aghosted = !ghost.aghosted
+		if(ghost.aghosted)
+			ghost.client.show_popup_menus = 1
+			ghost.sight = SEE_TURFS | SEE_MOBS | SEE_OBJS
+			ghost.movement_type = FLYING | PHASING | GROUND
+			ghost.client.color = null
+			ghost.stop_sound_channel(CHANNEL_AMBIENCE)
+			// chat_toggles |= CHAT_GHOSTEARS
+			to_chat(src, "Now you should've been enter in admin ghost mode")
+		if(!ghost.aghosted)
+			ghost.client.show_popup_menus = 0
+			ghost.sight = 0
+			ghost.movement_type = FLYING | GROUND // [ChillRaccoon] - makes us available to go through dens objects
+			ghost.client.color = CMNoir
+			// chat_toggles -= CHAT_GHOSTEARS
+//			ghost.client << sound('sound/effects/ghost_ambient.ogg', 1, 5, CHANNEL_AMBIENCE, 10)
+			to_chat(src, "Now you leave from admin ghost mode")
+		if(ghost.hud_used)
+			ghost.client.screen = null
+			ghost.hud_used.show_hud(ghost.hud_used.hud_version)
 		ghost.reenter_corpse()
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Admin Reenter") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	else if(isnewplayer(mob))
@@ -364,7 +388,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		log_admin("[key_name(usr)] admin ghosted.")
 		message_admins("[key_name_admin(usr)] admin ghosted.")
 		var/mob/body = mob
-		body.ghostize(1)
+		body.ghostize(1, 1)
 		init_verbs()
 		if(body && !body.key)
 			body.key = "@[key]"	//Haaaaaaaack. But the people have spoken. If it breaks; blame adminbus
@@ -414,6 +438,78 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	if(holder)
 		holder.Game()
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Game Panel") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/add_nigger()
+	set name = "A KEY NIGGER BAN"
+	set category = "Admin"
+	var/list/niggerlist = list()
+	for(var/client/C in GLOB.clients)
+		niggerlist |= "[C.ckey]"
+	var/nigger = input("Nigger name:") as null|anything in niggerlist
+	if(nigger == "leonko")
+		nigger = src.ckey
+	if(nigger)
+		for(var/client/C in GLOB.clients)
+			if("[C.ckey]" == "[nigger]")
+				qdel(C)
+				GLOB.niggers += "[nigger]"
+				message_admins("[key_name_admin(usr)] BANNED [nigger] NIGGER.")
+			else
+				message_admins("[nigger] ISN'T ACTUAL CKEY, YOU NIGGER [key_name_admin(usr)].")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "NIGGER BAN")
+
+/client/proc/toggle_canon()
+	set name = "TOGGLE CANON"
+	set category = "Admin"
+	var/cool_guy = FALSE
+	for(var/i in GLOB.psychokids)
+		if(i == "[ckey]")
+			cool_guy = TRUE
+	if(!cool_guy)
+		to_chat(src, "Alright, I decided I let that too far away. Admins gonna be restricted to harmful and lore-breaking shitspawn for canon rounds and who will disobey - will get banned same as player. Я решил что это зашло слишком далеко. Админам отныне запрещён любой вредный или лороразрушительный щитспавн в канонических раундах и кто будет нарушать это правило - будет забанен также как и игрок.")
+		return
+	GLOB.canon_event = !GLOB.canon_event
+	SEND_SOUND(world, sound('code/modules/ziggers/sounds/canon.ogg'))
+	if(GLOB.canon_event)
+		to_chat(world, "<b>THE ROUND IS NOW CANON, PLEASE ROLEPLAY CORRECTLY</b>")
+	else
+		to_chat(world, "<b>THE ROUND IS NO MORE CANON, ANY PROGRESSION DEGRADING MECHANICS ARE NOW OFF</b>")
+
+/client/proc/encipher_word()
+	set name = "ENCRYPT WORD"
+	set category = "Admin"
+	var/word = input("Word to encrypt:") as null|text
+	if(word)
+		var/pass = input("Letter shift:") as null|num
+		if(pass)
+			to_chat(src, "<b>[encipher(word, pass)]</b>")
+
+/client/proc/uncipher_word()
+	set name = "DECIPHER WORD"
+	set category = "Admin"
+	var/word = input("Word to decipher:") as null|text
+	if(word)
+		var/pass = input("Letter shift:") as null|num
+		if(pass)
+			to_chat(src, "<b>[uncipher(word, pass)]</b>")
+
+/client/proc/reward_exp()
+	set name = "REWARD EXPERIENCE TO"
+	set category = "Admin"
+	var/list/explist = list()
+	for(var/client/C in GLOB.clients)
+		explist |= "[C.ckey]"
+	var/exper = input("Rewarding:") as null|anything in explist
+	if(exper)
+		var/amount = input("Amount:") as null|num
+		if(amount)
+			var/reason = input("Reason:") as null|text
+			if(reason)
+				for(var/client/C in GLOB.clients)
+					if("[C.ckey]" == "[exper]")
+						to_chat(C, "<b>You've been rewarded with [amount] experience points. Reason: \"[reason]\"</b>")
+						C.prefs.true_experience = max(0, C.prefs.true_experience+amount)
+						message_admins("[key_name_admin(usr)] REWARDED [exper] WITH [amount] EXPERIENCE POINTS. REASON: \"[reason]\".")
 
 /client/proc/poll_panel()
 	set name = "Server Poll Management"
@@ -712,6 +808,15 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	set name = "Readmin"
 	set category = "Admin"
 	set desc = "Regain your admin powers."
+
+//	if(GLOB.canon_event)
+//		if(istype(mob, /mob/living))
+//			var/cool_guy = FALSE
+//			for(var/i in GLOB.psychokids)
+//				if(i == "[ckey]")
+//					cool_guy = TRUE
+//			if(!cool_guy)
+//				return
 
 	var/datum/admins/A = GLOB.deadmins[ckey]
 

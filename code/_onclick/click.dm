@@ -64,6 +64,59 @@
  * * [obj/item/proc/afterattack] (atom,user,adjacent,params) - used both ranged and adjacent
  * * [mob/proc/RangedAttack] (atom,params) - used only ranged, only used for tk and laser eyes but could be changed
  */
+
+/mob/proc/claw_swing()
+	next_click = world.time+5
+	new /obj/effect/temp_visual/dir_setting/claw_effect(get_turf(src), dir)
+	playsound(loc, 'code/modules/ziggers/sounds/swing.ogg', 50, TRUE)
+	var/atom/M
+	var/turf/T = get_step(src, dir)
+	var/turf/T1 = get_step(T, turn(dir, -90))
+	var/turf/T2 = get_step(T, turn(dir, 90))
+	for(var/mob/living/MB in T)
+		if(MB)
+			M = MB
+	if(!M)
+		for(var/mob/living/MB in T1)
+			if(MB)
+				M = MB
+		for(var/mob/living/MB in T2)
+			if(MB)
+				M = MB
+
+	if(M)
+		return M
+	for(var/obj/OB in T)
+		if(OB)
+			M = OB
+	return M
+
+/mob/proc/melee_swing()
+	next_click = world.time+5
+	new /obj/effect/temp_visual/dir_setting/swing_effect(get_turf(src), dir)
+	playsound(loc, 'code/modules/ziggers/sounds/swing.ogg', 50, TRUE)
+	var/atom/M
+	var/turf/T = get_step(src, dir)
+	var/turf/T1 = get_step(T, turn(dir, -90))
+	var/turf/T2 = get_step(T, turn(dir, 90))
+	for(var/mob/living/MB in T)
+		if(MB)
+			M = MB
+	if(!M)
+		for(var/mob/living/MB in T1)
+			if(MB)
+				M = MB
+		for(var/mob/living/MB in T2)
+			if(MB)
+				M = MB
+
+	if(M)
+		return M
+	for(var/obj/OB in T)
+		if(OB)
+			M = OB
+	return M
+
 /mob/proc/ClickOn( atom/A, params )
 	if(world.time <= next_click)
 		return
@@ -133,27 +186,113 @@
 			W.melee_attack_chain(src, A, params)
 		else
 			if(ismob(A))
-				changeNext_move(CLICK_CD_MELEE)
+				if(isliving(src))
+					var/mob/living/L = src
+					if(L.melee_professional)
+						changeNext_move(CLICK_CD_RANGE)
+					else
+						changeNext_move(CLICK_CD_MELEE)
+				else
+					changeNext_move(CLICK_CD_MELEE)
 			UnarmedAttack(A)
 		return
 
 	//Can't reach anything else in lockers or other weirdness
-	if(!loc.AllowClick())
+
+	var/atom/last_locc = null
+
+	if(istype(loc, /obj/vampire_car))
+		var/obj/vampire_car/V = loc
+		if(V.driver != src)
+			last_locc = loc
+			forceMove(last_locc.loc)
+
+	if(!loc.AllowClick() && !last_locc)
 		return
 
-	//Standard reach turf to turf or reaching inside storage
-	if(CanReach(A,W))
-		if(W)
-			W.melee_attack_chain(src, A, params)
+	if(iscrinos(src))
+		if(!W)
+			var/mob/living/carbon/werewolf/wolf = src
+			var/allowed_to_proceed = FALSE
+			if(get_dist(A, src) <= 1)
+				allowed_to_proceed = TRUE
+			if(wolf.a_intent == INTENT_HARM && !isitem(A))
+				allowed_to_proceed = TRUE
+			if(allowed_to_proceed)
+				switch(wolf.a_intent)
+					if(INTENT_HARM)
+						changeNext_move(CLICK_CD_MELEE)
+						var/atom/B = claw_swing()
+						UnarmedAttack(B)
+					if(INTENT_HELP)
+						UnarmedAttack(A)
+					if(INTENT_GRAB)
+						changeNext_move(CLICK_CD_GRABBING)
+						if(A != src)
+							if(isliving(A))
+								var/mob/living/living = A
+								living.grabbedby(wolf)
+								return
+							else
+								UnarmedAttack(A)
+					if(INTENT_DISARM)
+						changeNext_move(CLICK_CD_MELEE)
+						if(A != src)
+							if(iscarbon(A))
+								var/mob/living/carbon/living = A
+								wolf.disarm(living)
+								do_attack_animation(A)
+								return
+							else
+								UnarmedAttack(A)
 		else
-			if(ismob(A))
-				changeNext_move(CLICK_CD_MELEE)
-			UnarmedAttack(A,1)
+			if(istype(W, /obj/item/melee))
+				var/atom/B = melee_swing()
+				W.melee_attack_chain(src, B, params)
+			else if(CanReach(A,W))
+				W.melee_attack_chain(src, A, params)
+
+		if(last_locc)
+			forceMove(last_locc)
+		return
+
+	if(istype(W, /obj/item/melee))
+		if(A)
+			if(CanReach(A,W))
+				melee_swing()
+				W.melee_attack_chain(src, A, params)
+			else
+				var/atom/B = melee_swing()
+				if(B)
+					W.melee_attack_chain(src, B, params)
+		else
+			var/atom/B = melee_swing()
+			if(B)
+				W.melee_attack_chain(src, B, params)
 	else
-		if(W)
-			W.afterattack(A,src,0,params)
+	//Standard reach turf to turf or reaching inside storage
+		if(CanReach(A,W))
+			if(W)
+				W.melee_attack_chain(src, A, params)
+			else
+				if(ismob(A))
+					if(isliving(src))
+						var/mob/living/L = src
+						if(L.melee_professional)
+							changeNext_move(CLICK_CD_RANGE)
+						else
+							changeNext_move(CLICK_CD_MELEE)
+					else
+						changeNext_move(CLICK_CD_MELEE)
+				UnarmedAttack(A,1)
 		else
-			RangedAttack(A,params)
+			if(W)
+				W.afterattack(A,src,0,params)
+			else
+				RangedAttack(A,params)
+
+	if(last_locc)
+		forceMove(last_locc)
 
 /// Is the atom obscured by a PREVENT_CLICK_UNDER_1 object above it
 /atom/proc/IsObscured()
@@ -358,11 +497,11 @@
  * Unused except for AI
  */
 /mob/proc/CtrlShiftClickOn(atom/A)
-	A.CtrlShiftClick(src)
+	src.pointed(A)
 	return
 
 /mob/proc/ShiftMiddleClickOn(atom/A)
-	src.pointed(A)
+	A.CtrlShiftClick(src)
 	return
 
 /atom/proc/CtrlShiftClick(mob/user)

@@ -10,7 +10,7 @@
 	speak_emote = list("purrs", "meows")
 	emote_hear = list("meows.", "mews.")
 	emote_see = list("shakes its head.", "shivers.")
-	speak_chance = 1
+	speak_chance = 0
 	turns_per_move = 5
 	see_in_dark = 6
 	ventcrawler = VENTCRAWLER_ALWAYS
@@ -188,61 +188,24 @@
 	gold_core_spawnable = NO_SPAWN
 	unique_pet = TRUE
 
-
-/mob/living/simple_animal/pet/cat/update_resting()
-	. = ..()
+/*
+/mob/living/simple_animal/pet/cat/Life()
+	//MICE!
 	if(stat == DEAD)
 		return
-	if (resting)
-		icon_state = "[icon_living]_rest"
-		collar_type = "[initial(collar_type)]_rest"
-	else
-		icon_state = "[icon_living]"
-		collar_type = "[initial(collar_type)]"
-	regenerate_icons()
-
-
-/mob/living/simple_animal/pet/cat/Life()
-	if(!stat && !buckled && !client)
-		if(prob(1))
-			manual_emote(pick("stretches out for a belly rub.", "wags its tail.", "lies down."))
-			set_resting(TRUE)
-		else if (prob(1))
-			manual_emote(pick("sits down.", "crouches on its hind legs.", "looks alert."))
-			set_resting(TRUE)
-			icon_state = "[icon_living]_sit"
-			collar_type = "[initial(collar_type)]_sit"
-		else if (prob(1))
-			if (resting)
-				manual_emote(pick("gets up and meows.", "walks around.", "stops resting."))
-				set_resting(FALSE)
-			else
-				manual_emote(pick("grooms its fur.", "twitches its whiskers.", "shakes out its coat."))
-
-	//MICE!
+	if(key)
+		return
 	if((src.loc) && isturf(src.loc))
 		if(!stat && !resting && !buckled)
-			for(var/mob/living/simple_animal/mouse/M in view(1,src))
-				if(istype(M, /mob/living/simple_animal/mouse/brown/tom) && inept_hunter)
-					if (emote_cooldown < (world.time - 600))
-						visible_message("<span class='warning'>[src] chases [M] around, to no avail!</span>")
-						step(M, pick(GLOB.cardinals))
-						emote_cooldown = world.time
-					break
+			for(var/mob/living/simple_animal/pet/rat/M in view(1,src))
 				if(!M.stat && Adjacent(M))
 					manual_emote("splats \the [M]!")
-					M.splat()
+					M.death()
 					movement_target = null
 					stop_automated_movement = 0
 					break
-			for(var/obj/item/toy/cattoy/T in view(1,src))
-				if (T.cooldown < (world.time - 400))
-					manual_emote("bats \the [T] around with its paw!")
-					T.cooldown = world.time
 
 	..()
-
-	make_babies()
 
 	if(!stat && !resting && !buckled)
 		turns_since_scan++
@@ -255,14 +218,14 @@
 			if( !movement_target || !(movement_target.loc in oview(src, 3)) )
 				movement_target = null
 				stop_automated_movement = 0
-				for(var/mob/living/simple_animal/mouse/snack in oview(src,3))
+				for(var/mob/living/simple_animal/pet/rat/snack in oview(src,3))
 					if(isturf(snack.loc) && !snack.stat)
 						movement_target = snack
 						break
 			if(movement_target)
 				stop_automated_movement = 1
 				walk_to(src,movement_target,0,3)
-
+*/
 /mob/living/simple_animal/pet/cat/jerry //Holy shit we left jerry on donut ~ Arcane ~Fikou
 	name = "Jerry"
 	desc = "Tom is VERY amused."
@@ -320,3 +283,78 @@
 	if(L.a_intent == INTENT_HARM && L.reagents && !stat)
 		L.reagents.add_reagent(/datum/reagent/consumable/nutriment, 0.4)
 		L.reagents.add_reagent(/datum/reagent/consumable/nutriment/vitamin, 0.4)
+
+/mob/living/simple_animal/pet/cat/vampire
+	icon = 'code/modules/ziggers/mobs.dmi'
+	bloodpool = 1
+	maxbloodpool = 1
+
+/mob/living/simple_animal/pet/cat/vampire/Initialize()
+	. = ..()
+	var/id = rand(1, 7)
+	icon_state = "cat[id]"
+	icon_living = "cat[id]"
+	icon_dead = "cat[id]_dead"
+
+/mob/living/simple_animal/hostile/beastmaster/cat
+	name = "cat"
+	desc = "Kitty!!"
+	icon = 'code/modules/ziggers/mobs.dmi'
+	icon_state = "cat2"
+	icon_living = "cat2"
+	icon_dead = "cat2_dead"
+	speak = list("Meow!", "Esp!", "Purr!", "HSSSSS")
+	speak_emote = list("purrs", "meows")
+	emote_hear = list("meows.", "mews.")
+	emote_see = list("shakes its head.", "shivers.")
+	attack_verb_continuous = "bites"
+	attack_verb_simple = "bite"
+	attack_sound = 'code/modules/ziggers/sounds/cat.ogg'
+	speak_chance = 0
+	turns_per_move = 5
+	see_in_dark = 6
+	ventcrawler = VENTCRAWLER_ALWAYS
+	pass_flags = PASSTABLE
+	mob_size = MOB_SIZE_SMALL
+	mob_biotypes = MOB_ORGANIC|MOB_BEAST
+	minbodytemp = 200
+	maxbodytemp = 400
+	unsuitable_atmos_damage = 1
+	animal_species = /mob/living/simple_animal/pet/cat
+	childtype = list(/mob/living/simple_animal/pet/cat/kitten)
+	butcher_results = list(/obj/item/food/meat/slab = 1, /obj/item/organ/ears/cat = 1, /obj/item/organ/tail/cat = 1, /obj/item/stack/sheet/animalhide/cat = 1)
+	response_help_continuous = "pets"
+	response_help_simple = "pet"
+	response_disarm_continuous = "gently pushes aside"
+	response_disarm_simple = "gently push aside"
+	response_harm_continuous = "kicks"
+	response_harm_simple = "kick"
+	mobility_flags = MOBILITY_FLAGS_REST_CAPABLE_DEFAULT
+	var/turns_since_scan = 0
+	var/mob/living/simple_animal/mouse/movement_target
+	///Limits how often cats can spam chasing mice.
+	var/emote_cooldown = 0
+	///Can this cat catch special mice?
+	var/inept_hunter = FALSE
+	gold_core_spawnable = FRIENDLY_SPAWN
+	can_be_held = TRUE
+	held_state = "cat2"
+	pet_bonus = TRUE
+	pet_bonus_emote = "purrs!"
+
+	footstep_type = FOOTSTEP_MOB_CLAW
+	bloodpool = 1
+	maxbloodpool = 1
+	maxHealth = 40
+	health = 40
+	harm_intent_damage = 20
+	melee_damage_lower = 20
+	melee_damage_upper = 20
+	speed = 0
+
+/mob/living/simple_animal/hostile/beastmaster/cat/Initialize()
+	. = ..()
+	var/id = rand(1, 7)
+	icon_state = "cat[id]"
+	icon_living = "cat[id]"
+	icon_dead = "cat[id]_dead"

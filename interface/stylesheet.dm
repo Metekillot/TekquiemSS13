@@ -62,6 +62,7 @@ h1.alert, h2.alert		{color: #000000;}
 .infoplain				{}
 
 .userdanger				{color: #ff0000;	font-weight: bold;	font-size: 3;}
+.userhelp				{color: #14a833;	font-weight: bold;	font-size: 3;}
 .danger					{color: #ff0000;	font-weight: bold;}
 .danger					{color: #ff0000;}
 .tinydanger				{color: #ff0000; font-size: 85%;}
@@ -87,6 +88,8 @@ h1.alert, h2.alert		{color: #000000;}
 .suicide				{color: #ff5050;	font-style: italic;}
 .green					{color: #03ff39;}
 .nicegreen				{color: #14a833;}
+.userlove				{color: #FF1493;	font-style: italic; font-weight: bold;	text-shadow: 0 0 6px #ff6dbc;}
+.love					{color: #ff006a;	font-style: italic;	text-shadow: 0 0 6px #ff6d6d;}
 .cult					{color: #973e3b;}
 .cultlarge				{color: #973e3b;	font-weight: bold;	font-size: 3;}
 .narsie					{color: #973e3b;	font-weight: bold;	font-size: 15;}
@@ -121,6 +124,8 @@ h1.alert, h2.alert		{color: #000000;}
 .sans					{font-family: "Comic Sans MS", cursive, sans-serif;}
 .papyrus				{font-family: "Papyrus", cursive, sans-serif;}
 .robot					{font-family: "Courier New", cursive, sans-serif;}
+.phone					{font-family: "Courier New", cursive, sans-serif;}
+.smallphone					{font-family: "Courier New", cursive, sans-serif; font-size: 85%;}
 
 .command_headset		{font-weight: bold;	font-size: 3;}
 .small					{font-size: 1;}

@@ -675,9 +675,20 @@
 			visible_message("<span class='warning'>[src] vanishes into smoke on contact with [target]!</span>")
 			return BULLET_ACT_BLOCK
 		M.take_overall_damage(0,10) //between this 10 burn, the 10 brute, the explosion brute, and the onfire burn, your at about 65 damage if you stop drop and roll immediately
-	var/turf/T = get_turf(target)
-	explosion(T, -1, exp_heavy, exp_light, exp_flash, 0, flame_range = exp_fire)
+//	var/turf/T = get_turf(target)
+//	explosion(T, -1, exp_heavy, exp_light, exp_flash, 0, flame_range = 0)
+	var/obj/effect/fire/R = new(get_turf(target))
+	R.color = color
+	if(istype(get_area(target), /area/vtm))
+		var/area/vtm/V = get_area(target)
+		if(V.zone_type == "masquerade")
+			if(isliving(firer))
+				var/mob/living/L = firer
+				L.check_elysium(TRUE)
 
+
+/obj/projectile/magic/aoe/fireball/baali
+	color = "#2dff00"
 
 //still magic related, but a different path
 
