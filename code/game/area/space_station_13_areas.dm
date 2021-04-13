@@ -453,7 +453,59 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	name = "Recreation Area"
 	icon_state = "rec"
 
-/area/crew_quarters/cafeteria
+/area/commons/cryopods
+	name = "Cryopod Room"
+	icon_state = "cryopod"
+
+// Commons - Vacant Rooms
+
+/area/commons/vacant_room
+	name = "Vacant Room"
+	icon_state = "vacant_room"
+	ambience_index = AMBIENCE_MAINT
+
+/area/commons/vacant_room/office
+	name = "Vacant Office"
+	icon_state = "vacant_office"
+
+/area/commons/vacant_room/commissary
+	name = "Vacant Commissary"
+	icon_state = "vacant_commissary"
+
+//Commons - Storage
+/area/commons/storage
+	sound_environment = SOUND_AREA_STANDARD_STATION
+
+/area/commons/storage/tools
+	name = "Auxiliary Tool Storage"
+	icon_state = "tool_storage"
+
+/area/commons/storage/primary
+	name = "Primary Tool Storage"
+	icon_state = "primary_storage"
+
+/area/commons/storage/art
+	name = "Art Supply Storage"
+	icon_state = "art_storage"
+
+/area/commons/storage/emergency/starboard
+	name = "Starboard Emergency Storage"
+	icon_state = "emergency_storage"
+
+/area/commons/storage/emergency/port
+	name = "Port Emergency Storage"
+	icon_state = "emergency_storage"
+
+/area/commons/storage/mining
+	name = "Public Mining Storage"
+	icon_state = "mining"
+
+//Service
+
+/area/service
+	airlock_wires = /datum/wires/airlock/service
+
+/area/service/cafeteria
 	name = "Cafeteria"
 	icon_state = "cafeteria"
 
