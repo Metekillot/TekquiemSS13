@@ -120,58 +120,36 @@
 	text_dehack = "You reboot [name] and restore the target identification."
 	text_dehack_fail = "[name] refuses to accept your authority!"
 
-/mob/living/simple_animal/bot/secbot/get_controls(mob/user)
-	var/dat
-	dat += hack(user)
-	dat += showpai(user)
-	dat += text({"
-<TT><B>Securitron v1.6 controls</B></TT><BR><BR>
-Status: []<BR>
-Behaviour controls are [locked ? "locked" : "unlocked"]<BR>
-Maintenance panel panel is [open ? "opened" : "closed"]"},
-
-"<A href='byond://?src=[REF(src)];power=1'>[on ? "On" : "Off"]</A>" )
-
+// Variables sent to TGUI
+/mob/living/simple_animal/bot/secbot/ui_data(mob/user)
+	var/list/data = ..()
 	if(!locked || issilicon(user) || isAdminGhostAI(user))
-		dat += text({"<BR>
-Arrest Unidentifiable Persons: []<BR>
-Arrest for Unauthorized Weapons: []<BR>
-Arrest for Warrant: []<BR>
-Operating Mode: []<BR>
-Report Arrests[]<BR>
-Auto Patrol: []"},
+		data["custom_controls"]["check_id"] = security_mode_flags & SECBOT_CHECK_IDS
+		data["custom_controls"]["check_weapons"] = security_mode_flags & SECBOT_CHECK_WEAPONS
+		data["custom_controls"]["check_warrants"] = security_mode_flags & SECBOT_CHECK_RECORDS
+		data["custom_controls"]["handcuff_targets"] = security_mode_flags & SECBOT_HANDCUFF_TARGET
+		data["custom_controls"]["arrest_alert"] = security_mode_flags & SECBOT_DECLARE_ARRESTS
+	return data
 
-"<A href='byond://?src=[REF(src)];operation=idcheck'>[idcheck ? "Yes" : "No"]</A>",
-"<A href='byond://?src=[REF(src)];operation=weaponscheck'>[weaponscheck ? "Yes" : "No"]</A>",
-"<A href='byond://?src=[REF(src)];operation=ignorerec'>[check_records ? "Yes" : "No"]</A>",
-"<A href='byond://?src=[REF(src)];operation=switchmode'>[arrest_type ? "Detain" : "Arrest"]</A>",
-"<A href='byond://?src=[REF(src)];operation=declarearrests'>[declare_arrests ? "Yes" : "No"]</A>",
-"<A href='byond://?src=[REF(src)];operation=patrol'>[auto_patrol ? "On" : "Off"]</A>" )
+// Actions received from TGUI
+/mob/living/simple_animal/bot/secbot/ui_act(action, params)
+	. = ..()
+	if(. || (locked && !usr.has_unlimited_silicon_privilege))
+		return
+	switch(action)
+		if("check_id")
+			security_mode_flags ^= SECBOT_CHECK_IDS
+		if("check_weapons")
+			security_mode_flags ^= SECBOT_CHECK_WEAPONS
+		if("check_warrants")
+			security_mode_flags ^= SECBOT_CHECK_RECORDS
+		if("handcuff_targets")
+			security_mode_flags ^= SECBOT_HANDCUFF_TARGET
+		if("arrest_alert")
+			security_mode_flags ^= SECBOT_DECLARE_ARRESTS
+	return
 
-	return	dat
-
-/mob/living/simple_animal/bot/secbot/Topic(href, href_list)
-	if(..())
-		return 1
-
-	switch(href_list["operation"])
-		if("idcheck")
-			idcheck = !idcheck
-			update_controls()
-		if("weaponscheck")
-			weaponscheck = !weaponscheck
-			update_controls()
-		if("ignorerec")
-			check_records = !check_records
-			update_controls()
-		if("switchmode")
-			arrest_type = !arrest_type
-			update_controls()
-		if("declarearrests")
-			declare_arrests = !declare_arrests
-			update_controls()
-
-/mob/living/simple_animal/bot/secbot/proc/retaliate(mob/living/carbon/human/H)
+/mob/living/simple_animal/bot/secbot/proc/retaliate(mob/living/carbon/human/attacking_human)
 	var/judgement_criteria = judgement_criteria()
 	threatlevel = H.assess_threat(judgement_criteria, weaponcheck=CALLBACK(src, PROC_REF(check_for_weapons)))
 	threatlevel += 6
