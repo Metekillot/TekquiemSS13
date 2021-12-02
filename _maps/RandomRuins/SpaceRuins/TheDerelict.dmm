@@ -2701,10 +2701,6 @@
 /obj/effect/decal/cleanable/blood/splatter,
 /turf/open/floor/plasteel/airless,
 /area/ruin/space/derelict/hallway/primary)
-"lg" = (
-/obj/structure/chair/stool,
-/turf/open/floor/plasteel/airless,
-/area/ruin/space/derelict/hallway/primary)
 "lh" = (
 /obj/machinery/door/airlock/maintenance{
 	name = "Atmospherics Access";
@@ -3186,15 +3182,6 @@
 	req_access_txt = "23"
 	},
 /turf/open/floor/plating/airless,
-/area/ruin/space/derelict/hallway/secondary)
-"mX" = (
-/obj/machinery/power/apc{
-	dir = 8;
-	name = "Worn-out APC";
-	pixel_x = -25
-	},
-/obj/structure/cable,
-/turf/open/floor/plasteel/airless,
 /area/ruin/space/derelict/hallway/secondary)
 "mY" = (
 /obj/effect/spawner/structure/window/hollow/reinforced/end{
@@ -10441,7 +10428,7 @@ mI
 mI
 mI
 mI
-mX
+mI
 mI
 mU
 mZ
