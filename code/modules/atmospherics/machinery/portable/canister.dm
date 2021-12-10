@@ -527,7 +527,7 @@
 		return
 	switch(action)
 		if("relabel")
-			var/label = input("New canister label:", name) as null|anything in sortList(label2types)
+			var/label = tgui_input_list(usr, "New canister label", name, GLOB.gas_id_to_canister)
 			if(label && !..())
 				var/newtype = label2types[label]
 				if(newtype)

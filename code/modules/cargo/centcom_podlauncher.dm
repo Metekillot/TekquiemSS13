@@ -402,9 +402,11 @@
 			if (specificTarget)
 				specificTarget = null
 				return
-			var/list/mobs = getpois()//code stolen from observer.dm
-			var/inputTarget = input("Select a mob! (Smiting does this automatically)", "Target", null, null) as null|anything in mobs
-			if (isnull(inputTarget))
+
+			var/list/possible_destinations = SSpoints_of_interest.get_mob_pois()
+			var/target = tgui_input_list(usr, "Select a mob! (Smiting does this automatically)", "Target", possible_destinations)
+
+			if (isnull(target))
 				return
 			var/mob/target = mobs[inputTarget]
 			specificTarget = target///input specific tartget

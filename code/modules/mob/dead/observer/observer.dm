@@ -475,7 +475,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		var/area/A = V
 		if(!(A.area_flags & HIDDEN_AREA))
 			filtered += A
-	var/area/thearea  = input("Area to jump to", "BOOYEA") as null|anything in filtered
+	var/area/thearea = tgui_input_list(usr, "Area to jump to", "BOOYEA", filtered)
 
 	if(!thearea)
 		return
@@ -555,12 +555,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			dest += getpois(mobs_only = TRUE) //Fill list, prompt user with list
 			target = input("Please, select a player!", "Jump to Mob", null, null) as null|anything in dest
 
-			if (!target)//Make sure we actually have a target
-				return
-			else
-				var/mob/M = dest[target] //Destination mob
-				var/mob/A = src			 //Source mob
-				var/turf/T = get_turf(M) //Turf of the destination mob
+	target = tgui_input_list(usr, "Please, select a player!", "Jump to Mob", possible_destinations)
 
 				if(T && isturf(T))	//Make sure the turf exists, then move the source to that destination.
 					A.forceMove(T)
@@ -578,7 +573,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		var/list/views = list()
 		for(var/i in 7 to max_view)
 			views |= i
-		var/new_view = input("Choose your new view", "Modify view range", 0) as null|anything in views
+		var/new_view = tgui_input_list(usr, "New view", "Modify view range", views)
 		if(new_view)
 			client.view_size.setTo(clamp(new_view, 7, max_view) - 7)
 	else
@@ -694,7 +689,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if(!(L in GLOB.player_list) && !L.mind)
 			possessible += L
 
-	var/mob/living/target = input("Your new life begins today!", "Possess Mob", null, null) as null|anything in sortNames(possessible)
+	var/mob/living/target = tgui_input_list(usr, "Your new life begins today!", "Possess Mob", sort_names(possessible))
 
 	if(!target)
 		return FALSE
@@ -916,7 +911,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 		reset_perspective(null)
 
-		var/eye_name = null
+	target = tgui_input_list(usr, "Please, select a player!", "Jump to Mob", possible_destinations)
 
 		eye_name = input("Please, select a player!", "Observe", null, null) as null|anything in creatures
 

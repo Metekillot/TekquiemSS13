@@ -156,7 +156,7 @@
 		return FALSE
 	return TRUE
 
-/datum/eldritch_knowledge/curse/on_finished_recipe(mob/living/user,list/atoms,loc)
+/datum/eldritch_knowledge/curse/on_finished_recipe(mob/living/user, list/atoms,loc)
 
 	var/list/compiled_list = list()
 
@@ -170,7 +170,7 @@
 		to_chat(user, "<span class='warning'>These items don't possess the required fingerprints or DNA.</span>")
 		return FALSE
 
-	var/chosen_mob = input("Select the person you wish to curse","Your target") as null|anything in sortList(compiled_list, GLOBAL_PROC_REF(cmp_mob_realname_dsc))
+	var/chosen_mob = tgui_input_list(user, "Select the person you wish to curse","Your target", sort_list(compiled_list, /proc/cmp_mob_realname_dsc))
 	if(!chosen_mob)
 		return FALSE
 	curse(compiled_list[chosen_mob])
