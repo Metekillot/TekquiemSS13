@@ -269,15 +269,16 @@
 	icon_state = "timeg"
 	var/unit_spread = 10 // Amount of units per repeat. Can be altered with a multitool.
 
-/obj/item/grenade/chem_grenade/adv_release/attackby(obj/item/I, mob/user, params)
-	if(I.tool_behaviour == TOOL_MULTITOOL && !active)
-		var/newspread = text2num(stripped_input(user, "Please enter a new spread amount", name))
-		if (newspread != null && user.canUseTopic(src, BE_CLOSE))
-			newspread = round(newspread)
-			unit_spread = clamp(newspread, 5, 100)
-			to_chat(user, "<span class='notice'>You set the time release to [unit_spread] units per detonation.</span>")
-		if (newspread != unit_spread)
-			to_chat(user, "<span class='notice'>The new value is out of bounds. Minimum spread is 5 units, maximum is 100 units.</span>")
+/obj/item/grenade/chem_grenade/adv_release/multitool_act(mob/living/user, obj/item/tool)
+	if (active)
+		return
+	var/newspread = tgui_input_number(user, "Please enter a new spread amount", name)
+	if (newspread != null && user.canUseTopic(src, BE_CLOSE))
+		newspread = round(newspread)
+		unit_spread = clamp(newspread, 5, 100)
+		to_chat(user, span_notice("You set the time release to [unit_spread] units per detonation."))
+	if (newspread != unit_spread)
+		to_chat(user, span_notice("The new value is out of bounds. Minimum spread is 5 units, maximum is 100 units."))
 	..()
 
 /obj/item/grenade/chem_grenade/adv_release/detonate(mob/living/lanced_by)
