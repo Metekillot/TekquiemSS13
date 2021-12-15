@@ -239,7 +239,7 @@ GLOBAL_LIST_EMPTY(req_console_ckey_departments)
 	if(href_list["write"])
 		to_department = ckey(reject_bad_text(href_list["write"])) //write contains the string of the receiving department's name
 
-		var/new_message = (to_department in GLOB.req_console_ckey_departments) && stripped_input(usr, "Write your message:", "Awaiting Input", "", MAX_MESSAGE_LEN)
+		var/new_message = (to_department in GLOB.req_console_ckey_departments) && tgui_input_text(usr, "Write your message", "Awaiting Input")
 		if(new_message)
 			to_department = GLOB.req_console_ckey_departments[to_department]
 			message = new_message
@@ -247,7 +247,7 @@ GLOBAL_LIST_EMPTY(req_console_ckey_departments)
 			priority = clamp(text2num(href_list["priority"]), REQ_NORMAL_MESSAGE_PRIORITY, REQ_EXTREME_MESSAGE_PRIORITY)
 
 	if(href_list["writeAnnouncement"])
-		var/new_message = reject_bad_text(stripped_input(usr, "Write your message:", "Awaiting Input", "", MAX_MESSAGE_LEN))
+		var/new_message = reject_bad_text(tgui_input_text(usr, "Write your message", "Awaiting Input"))
 		if(new_message)
 			message = new_message
 			priority = clamp(text2num(href_list["priority"]) || REQ_NORMAL_MESSAGE_PRIORITY, REQ_NORMAL_MESSAGE_PRIORITY, REQ_EXTREME_MESSAGE_PRIORITY)

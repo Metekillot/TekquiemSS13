@@ -22,8 +22,8 @@
 		if(!user.can_write(used_item))
 			to_chat(user, "<span class='notice'>You scribble illegibly on the side of [src]!</span>")
 			return
-		var/t = tgui_input_text(user, "What would you like the label to be?", name, null)
-		if(user.get_active_held_item() != used_item)
+		var/new_name = tgui_input_text(user, "What would you like the label to be?", name, max_length = MAX_NAME_LEN)
+		if((user.get_active_held_item() != used_item) || !user.canUseTopic(src, BE_CLOSE))
 			return
 		if(!user.canUseTopic(src, BE_CLOSE))
 			return

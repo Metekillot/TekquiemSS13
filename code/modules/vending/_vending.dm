@@ -1143,7 +1143,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 			say("\The [src] has been linked to [C].")
 
 	if(compartmentLoadAccessCheck(user))
-		if(IS_WRITING_UTENSIL(I))
+		if(istype(I, /obj/item/pen))
 			name = tgui_input_text(user, "Set name", "Name", name, 20)
 			desc = tgui_input_text(user, "Set description", "Description", desc, 60)
 			slogan_list += tgui_input_text(user, "Set slogan", "Slogan", "Epic", 60)

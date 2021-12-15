@@ -64,19 +64,23 @@
 		return
 	if(!isnull(target) && !target.toff)
 		charges--
-		var/difficulty = 0
-		if(target.cartridge)
-			difficulty += BitCount(target.cartridge.access&(CART_MEDICAL | CART_SECURITY | CART_ENGINE | CART_CLOWN | CART_JANITOR | CART_MANIFEST))
-			if(target.cartridge.access & CART_MANIFEST)
-				difficulty++ //if cartridge has manifest access it has extra snowflake difficulty
-		if(SEND_SIGNAL(target, COMSIG_PDA_CHECK_DETONATE) & COMPONENT_PDA_NO_DETONATE || prob(difficulty * 15))
-			U.show_message("<span class='danger'>An error flashes on your [src].</span>", MSG_VISUAL)
-		else
-			log_bomber(U, "triggered a PDA explosion on", target, "[!is_special_character(U) ? "(TRIGGED BY NON-ANTAG)" : ""]")
-			U.show_message("<span class='notice'>Success!</span>", MSG_VISUAL)
-			target.explode()
-	else
-		to_chat(U, "<span class='alert'>PDA not found.</span>")
+		return
+
+	var/original_host = host_pda
+	var/fakename = sanitize_name(tgui_input_text(user, "Enter a name for the rigged message.", "Forge Message", max_length = MAX_NAME_LEN), allow_numbers = TRUE)
+	if(!fakename || host_pda != original_host || !user.canUseTopic(host_pda, BE_CLOSE))
+		return
+	var/fakejob = sanitize_name(tgui_input_text(user, "Enter a job for the rigged message.", "Forge Message", max_length = MAX_NAME_LEN), allow_numbers = TRUE)
+	if(!fakejob || host_pda != original_host || !user.canUseTopic(host_pda, BE_CLOSE))
+		return
+	if(charges > 0 && host_pda.send_message(user, list(target), rigged = REF(user), fakename = fakename, fakejob = fakejob))
+		charges--
+		user.show_message(span_notice("Success!"), MSG_VISUAL)
+		//Rigs the PDA to explode if they try to outsmart us by using the message function menu.
+		var/reference = REF(src)
+		ADD_TRAIT(target, TRAIT_PDA_CAN_EXPLODE, reference)
+		ADD_TRAIT(target, TRAIT_PDA_MESSAGE_MENU_RIGGED, reference)
+		addtimer(TRAIT_CALLBACK_REMOVE(target, TRAIT_PDA_MESSAGE_MENU_RIGGED, reference), 10 SECONDS)
 
 /obj/item/cartridge/virus/frame
 	name = "\improper F.R.A.M.E. cartridge"
