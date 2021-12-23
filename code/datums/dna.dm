@@ -672,5 +672,5 @@
 			return
 		eyes.Remove(src)
 		qdel(eyes)
-		visible_message("<span class='notice'>[src] looks up and their eyes melt away!</span>", "<span class>='userdanger'>I understand now.</span>")
-		addtimer(CALLBACK(src, PROC_REF(adjustOrganLoss), ORGAN_SLOT_BRAIN, 200), 20)
+		visible_message(span_notice("[src] looks up and their eyes melt away!"), span_userdanger("I understand now."))
+		addtimer(CALLBACK(src, .proc/adjustOrganLoss, ORGAN_SLOT_BRAIN, 200), 20)

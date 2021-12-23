@@ -133,9 +133,26 @@
 
 	var/mob/living/ridden_creature = parent
 
-	for(var/i in ridden_creature.abilities)
-		var/obj/effect/proc_holder/proc_holder = i
-		M.RemoveAbility(proc_holder)
+	for(var/ability in ridden_creature.abilities)
+		var/obj/effect/proc_holder/proc_holder = ability
+		if(!proc_holder.action)
+			return
+		if(rider == proc_holder.ranged_ability_user)
+			proc_holder.remove_ranged_ability()
+		proc_holder.action.Unshare(rider)
+
+/datum/component/riding/creature/riding_can_z_move(atom/movable/movable_parent, direction, turf/start, turf/destination, z_move_flags, mob/living/rider)
+	if(!(z_move_flags & ZMOVE_CAN_FLY_CHECKS))
+		return COMPONENT_RIDDEN_ALLOW_Z_MOVE
+	if(!can_be_driven)
+		if(z_move_flags & ZMOVE_FEEDBACK)
+			to_chat(rider, span_warning("[movable_parent] cannot be driven around. Unbuckle from [movable_parent.p_them()] first."))
+		return COMPONENT_RIDDEN_STOP_Z_MOVE
+	if(!ride_check(rider, FALSE))
+		if(z_move_flags & ZMOVE_FEEDBACK)
+			to_chat(rider, span_warning("You're unable to ride [movable_parent] right now!"))
+		return COMPONENT_RIDDEN_STOP_Z_MOVE
+	return COMPONENT_RIDDEN_ALLOW_Z_MOVE
 
 
 ///////Yes, I said humans. No, this won't end well...//////////

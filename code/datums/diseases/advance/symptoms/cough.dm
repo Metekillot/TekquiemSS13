@@ -61,7 +61,7 @@ BONUS
 	switch(A.stage)
 		if(1, 2, 3)
 			if(prob(base_message_chance) && !suppress_warning)
-				to_chat(M, "<span notice='warning'>[pick("You swallow excess mucus.", "You lightly cough.")]</span>")
+				to_chat(M, span_warning("[pick("You swallow excess mucus.", "You lightly cough.")]"))
 		else
 			M.emote("cough")
 			if(M.CanSpreadAirborneDisease())
@@ -71,7 +71,7 @@ BONUS
 				if(I && I.w_class == WEIGHT_CLASS_TINY)
 					M.dropItemToGround(I)
 			if(power >= 2 && prob(30))
-				to_chat(M, "<span notice='userdanger'>[pick("You have a coughing fit!", "You can't stop coughing!")]</span>")
+				to_chat(M, span_userdanger("[pick("You have a coughing fit!", "You can't stop coughing!")]"))
 				M.Immobilize(20)
 				addtimer(CALLBACK(M, TYPE_PROC_REF(/mob, emote), "cough"), 6)
 				addtimer(CALLBACK(M, TYPE_PROC_REF(/mob, emote), "cough"), 12)

@@ -142,8 +142,8 @@
 /datum/antagonist/cult/on_removal()
 	SSticker.mode.cult -= owner
 	if(!silent)
-		owner.current.visible_message("<span class='deconversion_message'>[owner.current] looks like [owner.current.p_theyve()] just reverted to [owner.current.p_their()] old faith!</span>", null, null, null, owner.current)
-		to_chat(owner.current, "<span class='userdanger'>An unfamiliar white light flashes through your mind, cleansing the taint of the Geometer and all your memories as her servant.</span>")
+		owner.current.visible_message(span_deconversion_message(span_warning("[owner.current] looks like [owner.current.p_theyve()] just reverted to [owner.current.p_their()] old faith!")), null, null, null, owner.current)
+		to_chat(owner.current, span_userdanger("An unfamiliar white light flashes through your mind, cleansing the taint of the Geometer and all your memories as her servant."))
 		owner.current.log_message("has renounced the cult of Nar'Sie!", LOG_ATTACK, color="#960000")
 	if(cult_team.blood_target && cult_team.blood_target_image && owner.current.client)
 		owner.current.client.images -= cult_team.blood_target_image

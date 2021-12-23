@@ -81,6 +81,29 @@
 			return TRUE
 	return FALSE
 
+/obj/structure/grille/proc/clear_tile(mob/user)
+	var/at_users_feet = get_turf(user)
+
+	var/unanchored_items_on_tile
+	var/obj/item/last_item_moved
+	for(var/obj/item/item_to_move in loc.contents)
+		if(!item_to_move.anchored)
+			if(unanchored_items_on_tile <= CLEAR_TILE_MOVE_LIMIT)
+				item_to_move.forceMove(at_users_feet)
+				last_item_moved = item_to_move
+			unanchored_items_on_tile++
+
+	if(!unanchored_items_on_tile)
+		return TRUE
+
+	to_chat(user, span_notice("You move [unanchored_items_on_tile == 1 ? "[last_item_moved]" : "some things"] out of the way."))
+
+	if(unanchored_items_on_tile - CLEAR_TILE_MOVE_LIMIT > 0)
+		to_chat(user, span_warning("There's still too much stuff in the way!"))
+		return FALSE
+
+	return TRUE
+
 /obj/structure/grille/Bumped(atom/movable/AM)
 	if(!ismob(AM))
 		return

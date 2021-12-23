@@ -512,12 +512,20 @@
 	var/turf/current_turf = get_turf(src)
 	var/turf/above_turf = SSmapping.get_turf_above(current_turf)
 
-	if(can_zFall(above_turf, 1, current_turf, DOWN)) //Will be fall down if we go up?
-		to_chat(src, "<span class='notice'>You are not Superman.<span>")
+	var/ventcrawling_flag = HAS_TRAIT(src, TRAIT_MOVE_VENTCRAWLING) ? ZMOVE_VENTCRAWLING : 0
+	if(!above_turf)
+		to_chat(src, span_warning("There's nowhere to go in that direction!"))
 		return
 
-	if(zMove(UP, TRUE))
-		to_chat(src, "<span class='notice'>You move upwards.</span>")
+	if(can_z_move(DOWN, above_turf, current_turf, ZMOVE_FALL_FLAGS|ventcrawling_flag)) //Will we fall down if we go up?
+		if(buckled)
+			to_chat(src, span_warning("[buckled] is is not capable of flight."))
+		else
+			to_chat(src, span_warning("You are not Superman."))
+		return
+
+	if(zMove(UP, z_move_flags = ZMOVE_FLIGHT_FLAGS|ZMOVE_FEEDBACK|ventcrawling_flag))
+		to_chat(src, span_notice("You move upwards."))
 
 ///Moves a mob down a z level
 /mob/verb/down()

@@ -59,12 +59,12 @@
 		to_chat(user, "<span class='warning'>You're already interacting with [H]!</span>")
 		return
 
-	user.visible_message("<span class='danger'>[user] is slitting [H]'s throat!</span>", \
-					"<span class='danger'>You start slicing [H]'s throat!</span>", \
-					"<span class='hear'>You hear a cutting noise!</span>", ignored_mobs = H)
-	H.show_message("<span class='userdanger'>Your throat is being slit by [user]!</span>", MSG_VISUAL, \
-					"<span class = 'userdanger'>Something is cutting into your neck!</span>", NONE)
-	log_combat(user, H, "starts slicing the throat of")
+	user.visible_message(span_danger("[user] is slitting [H]'s throat!"), \
+					span_danger("You start slicing [H]'s throat!"), \
+					span_hear("You hear a cutting noise!"), ignored_mobs = H)
+	H.show_message(span_userdanger("Your throat is being slit by [user]!"), MSG_VISUAL, \
+					span_userdanger("Something is cutting into your neck!"), NONE)
+	log_combat(user, H, "attempted throat slitting", source)
 
 	playsound(H.loc, butcher_sound, 50, TRUE, -1)
 	if(do_mob(user, H, clamp(500 / source.force, 30, 100)) && H.Adjacent(source))

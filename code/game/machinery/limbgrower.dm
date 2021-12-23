@@ -63,7 +63,7 @@
 
 /obj/machinery/limbgrower/attackby(obj/item/O, mob/user, params)
 	if (busy)
-		to_chat(user, "<span class=\"alert\">The Limb Grower is busy. Please wait for completion of previous operation.</span>")
+		to_chat(user, span_warning("The Limb Grower is busy. Please wait for completion of previous operation."))
 		return
 
 	if(default_deconstruction_screwdriver(user, "limbgrower_panelopen", "limbgrower_idleoff", O))
@@ -83,8 +83,9 @@
 		if(href_list["menu"])
 			screen = text2num(href_list["menu"])
 
-		if(href_list["category"] in categories) //Don't let people send invalid categories, selected_category is displayed to anyone who looks at the machine in several places
-			selected_category = href_list["category"]
+	if (busy)
+		to_chat(usr, span_warning("The limb grower is busy. Please wait for completion of previous operation."))
+		return
 
 		if(href_list["disposeI"])  //Get rid of a reagent incase you add the wrong one by mistake
 			reagents.del_reagent(text2path(href_list["disposeI"]))
@@ -228,9 +229,9 @@
 /obj/machinery/limbgrower/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
 		return
-	for(var/id in SSresearch.techweb_designs)
-		var/datum/design/D = SSresearch.techweb_design_by_id(id)
-		if((D.build_type & LIMBGROWER) && ("emagged" in D.category))
-			stored_research.add_design(D)
-	to_chat(user, "<span class='warning'>A warning flashes onto the screen, stating that safety overrides have been deactivated!</span>")
+	for(var/design_id in SSresearch.techweb_designs)
+		var/datum/design/found_design = SSresearch.techweb_design_by_id(design_id)
+		if((found_design.build_type & LIMBGROWER) && ("emagged" in found_design.category))
+			stored_research.add_design(found_design)
+	to_chat(user, span_warning("Safety overrides have been deactivated!"))
 	obj_flags |= EMAGGED

@@ -38,6 +38,19 @@
 	if(target.loc != holder) //mob warped out of the warp
 		qdel(holder)
 		return
+
+	var/found_exit = FALSE
+	for(var/turf/possible_exit as anything in exit_point_list)
+		if(possible_exit.is_blocked_turf_ignore_climbable())
+			continue
+		exit_point = possible_exit
+		found_exit = TRUE
+		break
+	if(!found_exit)
+		to_chat(target, span_danger("Unable to find an unobstructed space, you find yourself ripped back to where you started."))
+	exit_point_list.Cut()
+	holder.forceMove(exit_point)
+
 	mobloc = get_turf(target.loc)
 	jaunt_steam(mobloc)
 	ADD_TRAIT(target, TRAIT_IMMOBILIZED, type)

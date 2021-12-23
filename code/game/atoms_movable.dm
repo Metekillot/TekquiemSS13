@@ -138,13 +138,40 @@
 				break
 	SSvis_overlays.add_vis_overlay(src, icon, icon_state, EMISSIVE_BLOCKER_LAYER, EMISSIVE_BLOCKER_PLANE, dir)
 
-/atom/movable/proc/can_zFall(turf/source, levels = 1, turf/target, direction)
-	if(!direction)
-		direction = DOWN
-	if(!source)
-		source = get_turf(src)
-		if(!source)
-			return FALSE
+/atom/movable/update_overlays()
+	. = ..()
+	var/emissive_block = update_emissive_block()
+	if(emissive_block)
+		. += emissive_block
+
+/atom/movable/proc/onZImpact(turf/impacted_turf, levels, message = TRUE)
+	if(message)
+		visible_message(span_danger("[src] crashes into [impacted_turf]!"))
+	var/atom/highest = impacted_turf
+	for(var/atom/hurt_atom as anything in impacted_turf.contents)
+		if(!hurt_atom.density)
+			continue
+		if(isobj(hurt_atom) || ismob(hurt_atom))
+			if(hurt_atom.layer > highest.layer)
+				highest = hurt_atom
+	INVOKE_ASYNC(src, .proc/SpinAnimation, 5, 2)
+	return TRUE
+
+/*
+ * The core multi-z movement proc. Used to move a movable through z levels.
+ * If target is null, it'll be determined by the can_z_move proc, which can potentially return null if
+ * conditions aren't met (see z_move_flags defines in __DEFINES/movement.dm for info) or if dir isn't set.
+ * Bear in mind you don't need to set both target and dir when calling this proc, but at least one or two.
+ * This will set the currently_z_moving to CURRENTLY_Z_MOVING_GENERIC if unset, and then clear it after
+ * Forcemove().
+ *
+ *
+ * Args:
+ * * dir: the direction to go, UP or DOWN, only relevant if target is null.
+ * * target: The target turf to move the src to. Set by can_z_move() if null.
+ * * z_move_flags: bitflags used for various checks in both this proc and can_z_move(). See __DEFINES/movement.dm.
+ */
+/atom/movable/proc/zMove(dir, turf/target, z_move_flags = ZMOVE_FLIGHT_FLAGS)
 	if(!target)
 		target = get_step_multiz(source, direction)
 		if(!target)
@@ -177,9 +204,23 @@
 	if(!destination)
 		destination = get_step_multiz(src, direction)
 		if(!destination)
+			if(z_move_flags & ZMOVE_FEEDBACK)
+				to_chat(rider || src, span_warning("There's nowhere to go in that direction!"))
 			return FALSE
-	return T.zPassOut(src, direction, destination) && destination.zPassIn(src, direction, T)
-
+	if(z_move_flags & ZMOVE_FALL_CHECKS && (throwing || (movement_type & (FLYING|FLOATING)) || !has_gravity(start)))
+		return FALSE
+	if(z_move_flags & ZMOVE_CAN_FLY_CHECKS && !(movement_type & (FLYING|FLOATING)) && has_gravity(start))
+		if(z_move_flags & ZMOVE_FEEDBACK)
+			if(rider)
+				to_chat(rider, span_warning("[src] is is not capable of flight."))
+			else
+				to_chat(src, span_warning("You are not Superman."))
+		return FALSE
+	if(!(z_move_flags & ZMOVE_IGNORE_OBSTACLES) && !(start.zPassOut(src, direction, destination) && destination.zPassIn(src, direction, start)))
+		if(z_move_flags & ZMOVE_FEEDBACK)
+			to_chat(rider || src, span_warning("You couldn't move there!"))
+		return FALSE
+	return destination //used by some child types checks and zMove()
 
 /atom/movable/vv_edit_var(var_name, var_value)
 	var/static/list/banned_edits = list("step_x" = TRUE, "step_y" = TRUE, "step_size" = TRUE, "bounds" = TRUE)
