@@ -19,7 +19,7 @@
 	if(!istype(trauma))
 		to_chat(user, "<span class='warning'>Something is wrong; Either due a bug or admemes, you are trying to cast this spell without a split personality!</span>")
 		return
-	var/msg = stripped_input(usr, "What would you like to tell your other self?", null , "")
+	var/msg = tgui_input_text(usr, "What would you like to tell your other self?", "Commune")
 	if(!msg)
 		charge_counter = charge_max
 		return

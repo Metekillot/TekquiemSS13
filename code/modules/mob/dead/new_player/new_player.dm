@@ -251,12 +251,14 @@
 		ready = PLAYER_NOT_READY
 		return FALSE
 
-	var/this_is_like_playing_right = alert(src,"Are you sure you wish to observe? You will not be able to play this round!","Player Setup","Yes","No")
-
-	if(QDELETED(src) || !src.client || this_is_like_playing_right != "Yes")
+	var/less_input_message
+	if(SSlag_switch.measures[DISABLE_DEAD_KEYLOOP])
+		less_input_message = " - Notice: Observer freelook is currently disabled."
+	var/this_is_like_playing_right = tgui_alert(usr, "Are you sure you wish to observe? You will not be able to play this round![less_input_message]", "Observe", "Yes", "No")
+	if(this_is_like_playing_right != "Yes")
+		return FALSE
+	if(QDELETED(src) || !src.client)
 		ready = PLAYER_NOT_READY
-		src << browse(null, "window=playersetup") //closes the player setup window
-		new_player_panel()
 		return FALSE
 
 	var/mob/dead/observer/observer = new()

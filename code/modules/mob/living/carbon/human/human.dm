@@ -475,16 +475,16 @@
 			if(href_list["add_citation"])
 				var/maxFine = CONFIG_GET(number/maxfine)
 				var/t1 = tgui_input_text(usr, "Citation crime", "Security HUD")
-				var/fine = FLOOR(tgui_input_number(usr, "Citation fine", "Security HUD", 50, max_value = maxFine), 1)
-				if(!R || !t1 || !fine || !allowed_access)
+				var/fine = tgui_input_number(usr, "Citation fine", "Security HUD", 50, maxFine, 5)
+				if(isnull(fine))
+					return
+				if(!R || !t1 || !allowed_access)
 					return
 				if(!H.canUseHUD())
 					return
 				if(!HAS_TRAIT(H, TRAIT_SECURITY_HUD))
 					return
-				if(fine < 0)
-					to_chat(usr, "<span class='warning'>You're pretty sure that's not how money works.</span>")
-					return
+				fine = round(fine)
 				fine = min(fine, maxFine)
 
 				var/crime = GLOB.data_core.createCrimeEntry(t1, "", allowed_access, station_time_timestamp(), fine)

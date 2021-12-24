@@ -465,7 +465,7 @@
 			if(!SSticker.HasRoundStarted())
 				alert("The game hasn't started yet!")
 				return
-			var/objective = stripped_input(holder, "Enter an objective")
+			var/objective = tgui_input_text(holder, "Enter an objective", "Objective")
 			if(!objective)
 				return
 			SSblackbox.record_feedback("nested tally", "admin_secrets_fun_used", 1, list("Traitor All", "[objective]"))

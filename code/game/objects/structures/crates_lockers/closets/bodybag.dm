@@ -30,7 +30,7 @@
 	if (IS_WRITING_UTENSIL(interact_tool))
 		if(!user.can_write(interact_tool))
 			return
-		var/t = stripped_input(user, "What would you like the label to be?", name, null, 53)
+		var/t = tgui_input_text(user, "What would you like the label to be?", name, max_length = 53)
 		if(user.get_active_held_item() != interact_tool)
 			return
 		if(!user.canUseTopic(src, BE_CLOSE))

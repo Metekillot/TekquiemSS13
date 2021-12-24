@@ -685,12 +685,12 @@
 		return
 	M.docile = 1
 	M.set_nutrition(700)
-	to_chat(M, "<span class='warning'>You absorb the potion and feel your intense desire to feed melt away.</span>")
-	to_chat(user, "<span class='notice'>You feed the slime the potion, removing its hunger and calming it.</span>")
-	var/newname = sanitize_name(stripped_input(user, "Would you like to give the slime a name?", "Name your new pet", "pet slime", MAX_NAME_LEN))
+	to_chat(M, span_warning("You absorb the potion and feel your intense desire to feed melt away."))
+	to_chat(user, span_notice("You feed the slime the potion, removing its hunger and calming it."))
+	var/newname = sanitize_name(tgui_input_text(user, "Would you like to give the slime a name?", "Name your new pet", "Pet Slime", MAX_NAME_LEN))
 
 	if (!newname)
-		newname = "pet slime"
+		newname = "Pet Slime"
 	M.name = newname
 	M.real_name = newname
 	qdel(src)
@@ -981,7 +981,7 @@
 
 	to_chat(user, "<span class='notice'>You offer [src] to [user]...</span>")
 
-	var/new_name = sanitize_name(stripped_input(M, "What would you like your name to be?", "Input a name", M.real_name, MAX_NAME_LEN))
+	var/new_name = sanitize_name(tgui_input_text(M, "What would you like your name to be?", "Input a name", M.real_name, MAX_NAME_LEN))
 
 	if(!new_name || QDELETED(src) || QDELETED(M) || new_name == M.real_name || !M.Adjacent(user))
 		being_used = FALSE

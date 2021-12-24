@@ -64,8 +64,8 @@
 			if(!ID)
 				return
 			if(R.stat == DEAD) //Dead borgs will listen to you no longer
-				to_chat(usr, "<span class='warn'>Error -- Could not open a connection to unit:[R]</span>")
-			var/message = stripped_input(usr, message = "Enter message to be sent to remote cyborg.", title = "Send Message")
+				to_chat(usr, span_warning("Error -- Could not open a connection to unit:[R]"))
+			var/message = tgui_input_text(usr, "Message to be sent to remote cyborg", "Send Message")
 			if(!message)
 				return
 			to_chat(R, "<br><br><span class='notice'>Message from [ID] -- \"[message]\"</span><br>")
