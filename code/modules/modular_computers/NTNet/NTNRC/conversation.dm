@@ -60,6 +60,27 @@
 			var/datum/computer_file/program/chatclient/newop = pick(clients)
 			changeop(newop)
 
+/datum/ntnet_conversation/proc/go_offline(datum/computer_file/program/chatclient/offline)
+	if(!istype(offline) || !(offline in active_clients))
+		return
+	active_clients.Remove(offline)
+	offline_clients.Add(offline)
+
+/datum/ntnet_conversation/proc/mute_user(datum/computer_file/program/chatclient/op, datum/computer_file/program/chatclient/muted)
+	if(!op.netadmin_mode && operator != op) //sanity even if the person shouldn't be able to see the mute button
+		return
+	if(muted in muted_clients)
+		muted_clients.Remove(muted)
+		muted.computer.alert_call(muted, "You have been unmuted from [title]!", 'sound/machines/ping.ogg')
+	else
+		muted_clients.Add(muted)
+		muted.computer.alert_call(muted, "You have been muted from [title]!")
+
+/datum/ntnet_conversation/proc/ping_user(datum/computer_file/program/chatclient/pinger, datum/computer_file/program/chatclient/pinged)
+	if(pinger in muted_clients) //oh my god fuck off
+		return
+	add_status_message("[pinger.username] pinged [pinged.username].")
+	pinged.computer.alert_call(pinged, "You have been pinged in [title] by [pinger.username]!", 'sound/machines/ping.ogg')
 
 /datum/ntnet_conversation/proc/changeop(datum/computer_file/program/chatclient/newop)
 	if(istype(newop))
