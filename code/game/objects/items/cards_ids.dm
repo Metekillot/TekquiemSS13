@@ -163,7 +163,7 @@
 		to_chat(user, "<span class='warning'>[src] doesn't have a linked account to deposit into!</span>")
 		return FALSE
 
-	if (!money || !money.len)
+	if (!money || !length(money))
 		return FALSE
 
 	var/total = 0
@@ -192,33 +192,24 @@
 	. = FALSE
 	var/datum/bank_account/old_account = registered_account
 
-	var/new_bank_id = input(user, "Enter your account ID number.", "Account Reclamation", 111111) as num | null
-
-	if (isnull(new_bank_id))
+	var/new_bank_id = tgui_input_number(user, "Enter your account ID number", "Account Reclamation", 111111, 999999, 111111)
+	if(isnull(new_bank_id))
 		return
-
 	if(!alt_click_can_use_id(user))
 		return
-	if(!new_bank_id || new_bank_id < 111111 || new_bank_id > 999999)
-		to_chat(user, "<span class='warning'>The account ID number needs to be between 111111 and 999999.</span>")
+	if(registered_account && registered_account.account_id == new_bank_id)
+		to_chat(user, span_warning("The account ID was already assigned to this card."))
 		return
-	if (registered_account && registered_account.account_id == new_bank_id)
-		to_chat(user, "<span class='warning'>The account ID was already assigned to this card.</span>")
+	var/datum/bank_account/account = SSeconomy.bank_accounts_by_id["[new_bank_id]"]
+	if(isnull(account))
+		to_chat(user, span_warning("The account ID number provided is invalid."))
 		return
-
-	var/datum/bank_account/B = SSeconomy.bank_accounts_by_id["[new_bank_id]"]
-	if(B)
-		if (old_account)
-			old_account.bank_cards -= src
-
-		B.bank_cards += src
-		registered_account = B
-		to_chat(user, "<span class='notice'>The provided account has been linked to this ID card.</span>")
-
-		return TRUE
-
-	to_chat(user, "<span class='warning'>The account ID number provided is invalid.</span>")
-	return
+	if(old_account)
+		old_account.bank_cards -= src
+	account.bank_cards += src
+	registered_account = account
+	to_chat(user, span_notice("The provided account has been linked to this ID card."))
+	return TRUE
 
 /obj/item/card/id/AltClick(mob/living/user)
 	return
@@ -226,18 +217,16 @@
 	/*
 	if(!alt_click_can_use_id(user))
 		return
-
 	if(!registered_account)
 		set_new_account(user)
 		return
-
 	if (registered_account.being_dumped)
 		registered_account.bank_card_talk("<span class='warning'>内部服务器错误</span>", TRUE)
 		return
-
-	var/amount_to_remove =  FLOOR(input(user, "How much do you want to withdraw? Current Balance: [registered_account.account_balance]", "Withdraw Funds", 5) as num|null, 1)
-
-	if(!amount_to_remove || amount_to_remove < 0)
+	var/amount_to_remove = round(tgui_input_number(user, "How much do you want to withdraw?", "Withdraw Funds", 1, registered_account.account_balance, 1))
+	if(isnull(amount_to_remove))
+		return
+	if(amount_to_remove < 1 || amount_to_remove > registered_account.account_balance)
 		return
 	if(!alt_click_can_use_id(user))
 		return
@@ -757,4 +746,698 @@ update_label()
 	icon_state = "car_budget" //saving up for a new tesla
 
 /obj/item/card/id/departmental_budget/AltClick(mob/living/user)
-	registered_account.bank_card_talk("<span class='warning'>Withdrawing is not compatible with this card design.</span>", TRUE) //prevents the vault bank machine being useless and putting money from the budget to your card to go over personal crates
+	registered_account.bank_card_talk(span_warning("Withdrawing is not compatible with this card design."), TRUE) //prevents the vault bank machine being useless and putting money from the budget to your card to go over personal crates
+
+/obj/item/card/id/advanced
+	name = "identification card"
+	desc = "A card used to provide ID and determine access across the station. Has an integrated digital display and advanced microchips."
+	icon_state = "card_grey"
+	worn_icon_state = "card_grey"
+
+	wildcard_slots = WILDCARD_LIMIT_GREY
+
+	/// An overlay icon state for when the card is assigned to a name. Usually manifests itself as a little scribble to the right of the job icon.
+	var/assigned_icon_state = "assigned"
+
+	/// If this is set, will manually override the icon file for the trim. Intended for admins to VV edit and chameleon ID cards.
+	var/trim_icon_override
+	/// If this is set, will manually override the icon state for the trim. Intended for admins to VV edit and chameleon ID cards.
+	var/trim_state_override
+	/// If this is set, will manually override the trim's assignmment for SecHUDs. Intended for admins to VV edit and chameleon ID cards.
+	var/trim_assignment_override
+
+/obj/item/card/id/advanced/Initialize(mapload)
+	. = ..()
+	RegisterSignal(src, COMSIG_ITEM_EQUIPPED, .proc/update_intern_status)
+	RegisterSignal(src, COMSIG_ITEM_DROPPED, .proc/remove_intern_status)
+
+/obj/item/card/id/advanced/Destroy()
+	UnregisterSignal(src, list(COMSIG_ITEM_EQUIPPED, COMSIG_ITEM_DROPPED))
+
+	return ..()
+
+/obj/item/card/id/advanced/proc/update_intern_status(datum/source, mob/user)
+	SIGNAL_HANDLER
+
+	if(!user?.client)
+		return
+	if(!CONFIG_GET(flag/use_exp_tracking))
+		return
+	if(!CONFIG_GET(flag/use_low_living_hour_intern))
+		return
+	if(!SSdbcore.Connect())
+		return
+
+	var/intern_threshold = (CONFIG_GET(number/use_low_living_hour_intern_hours) * 60) || (CONFIG_GET(number/use_exp_restrictions_heads_hours) * 60) || INTERN_THRESHOLD_FALLBACK_HOURS * 60
+	var/playtime = user.client.get_exp_living(pure_numeric = TRUE)
+
+	if((intern_threshold >= playtime) && (user.mind?.assigned_role.title in SSjob.station_jobs))
+		is_intern = TRUE
+		update_label()
+		return
+
+	if(!is_intern)
+		return
+
+	is_intern = FALSE
+	update_label()
+
+/obj/item/card/id/advanced/proc/remove_intern_status(datum/source, mob/user)
+	SIGNAL_HANDLER
+
+	if(!is_intern)
+		return
+
+	is_intern = FALSE
+	update_label()
+
+/obj/item/card/id/advanced/proc/on_holding_card_slot_moved(obj/item/computer_hardware/card_slot/source, atom/old_loc, dir, forced)
+	SIGNAL_HANDLER
+	if(istype(old_loc, /obj/item/modular_computer/tablet))
+		UnregisterSignal(old_loc, list(COMSIG_ITEM_EQUIPPED, COMSIG_ITEM_DROPPED))
+
+	if(istype(source.loc, /obj/item/modular_computer/tablet))
+		RegisterSignal(source.loc, COMSIG_ITEM_EQUIPPED, .proc/update_intern_status)
+		RegisterSignal(source.loc, COMSIG_ITEM_DROPPED, .proc/remove_intern_status)
+
+/obj/item/card/id/advanced/Moved(atom/OldLoc, Dir)
+	. = ..()
+
+	if(istype(OldLoc, /obj/item/pda) || istype(OldLoc, /obj/item/storage/wallet))
+		UnregisterSignal(OldLoc, list(COMSIG_ITEM_EQUIPPED, COMSIG_ITEM_DROPPED))
+
+	if(istype(OldLoc, /obj/item/computer_hardware/card_slot))
+		var/obj/item/computer_hardware/card_slot/slot = OldLoc
+
+		UnregisterSignal(OldLoc, COMSIG_MOVABLE_MOVED)
+
+		if(istype(slot.holder, /obj/item/modular_computer/tablet))
+			var/obj/item/modular_computer/tablet/slot_holder = slot.holder
+			UnregisterSignal(slot_holder, list(COMSIG_ITEM_EQUIPPED, COMSIG_ITEM_DROPPED))
+
+	if(istype(loc, /obj/item/pda) || istype(loc, /obj/item/storage/wallet))
+		RegisterSignal(loc, COMSIG_ITEM_EQUIPPED, .proc/update_intern_status)
+		RegisterSignal(loc, COMSIG_ITEM_DROPPED, .proc/remove_intern_status)
+
+	if(istype(loc, /obj/item/computer_hardware/card_slot))
+		var/obj/item/computer_hardware/card_slot/slot = loc
+
+		RegisterSignal(loc, COMSIG_MOVABLE_MOVED, .proc/on_holding_card_slot_moved)
+
+		if(istype(slot.holder, /obj/item/modular_computer/tablet))
+			var/obj/item/modular_computer/tablet/slot_holder = slot.holder
+			RegisterSignal(slot_holder, COMSIG_ITEM_EQUIPPED, .proc/update_intern_status)
+			RegisterSignal(slot_holder, COMSIG_ITEM_DROPPED, .proc/remove_intern_status)
+
+/obj/item/card/id/advanced/update_overlays()
+	. = ..()
+
+	if(registered_name && registered_name != "Captain")
+		. += mutable_appearance(icon, assigned_icon_state)
+
+	var/trim_icon_file = trim_icon_override ? trim_icon_override : trim?.trim_icon
+	var/trim_icon_state = trim_state_override ? trim_state_override : trim?.trim_state
+
+	if(!trim_icon_file || !trim_icon_state)
+		return
+
+	. += mutable_appearance(trim_icon_file, trim_icon_state)
+
+/obj/item/card/id/advanced/get_trim_assignment()
+	if(trim_assignment_override)
+		return trim_assignment_override
+	else if(ispath(trim))
+		var/datum/id_trim/trim_singleton = SSid_access.trim_singletons_by_path[trim]
+		return trim_singleton.assignment
+
+	return ..()
+
+/obj/item/card/id/advanced/silver
+	name = "silver identification card"
+	desc = "A silver card which shows honour and dedication."
+	icon_state = "card_silver"
+	worn_icon_state = "card_silver"
+	inhand_icon_state = "silver_id"
+	wildcard_slots = WILDCARD_LIMIT_SILVER
+
+/datum/id_trim/maint_reaper
+	access = list(ACCESS_MAINT_TUNNELS)
+	trim_state = "trim_janitor"
+	assignment = "Reaper"
+
+/obj/item/card/id/advanced/silver/reaper
+	name = "Thirteen's ID Card (Reaper)"
+	trim = /datum/id_trim/maint_reaper
+	registered_name = "Thirteen"
+
+/obj/item/card/id/advanced/gold
+	name = "gold identification card"
+	desc = "A golden card which shows power and might."
+	icon_state = "card_gold"
+	worn_icon_state = "card_gold"
+	inhand_icon_state = "gold_id"
+	wildcard_slots = WILDCARD_LIMIT_GOLD
+
+/obj/item/card/id/advanced/gold/captains_spare
+	name = "captain's spare ID"
+	desc = "The spare ID of the High Lord himself."
+	registered_name = "Captain"
+	trim = /datum/id_trim/job/captain
+	registered_age = null
+
+/obj/item/card/id/advanced/gold/captains_spare/update_label() //so it doesn't change to Captain's ID card (Captain) on a sneeze
+	if(registered_name == "Captain")
+		name = "[initial(name)][(!assignment || assignment == "Captain") ? "" : " ([assignment])"]"
+		update_appearance(UPDATE_ICON)
+	else
+		..()
+
+/obj/item/card/id/advanced/centcom
+	name = "\improper CentCom ID"
+	desc = "An ID straight from Central Command."
+	icon_state = "card_centcom"
+	worn_icon_state = "card_centcom"
+	assigned_icon_state = "assigned_centcom"
+	registered_name = "Central Command"
+	registered_age = null
+	trim = /datum/id_trim/centcom
+	wildcard_slots = WILDCARD_LIMIT_CENTCOM
+
+/obj/item/card/id/advanced/centcom/ert
+	name = "\improper CentCom ID"
+	desc = "An ERT ID card."
+	registered_age = null
+	registered_name = "Emergency Response Intern"
+	trim = /datum/id_trim/centcom/ert
+
+/obj/item/card/id/advanced/centcom/ert
+	registered_name = "Emergency Response Team Commander"
+	trim = /datum/id_trim/centcom/ert/commander
+
+/obj/item/card/id/advanced/centcom/ert/security
+	registered_name = "Security Response Officer"
+	trim = /datum/id_trim/centcom/ert/security
+
+/obj/item/card/id/advanced/centcom/ert/engineer
+	registered_name = "Engineering Response Officer"
+	trim = /datum/id_trim/centcom/ert/engineer
+
+/obj/item/card/id/advanced/centcom/ert/medical
+	registered_name = "Medical Response Officer"
+	trim = /datum/id_trim/centcom/ert/medical
+
+/obj/item/card/id/advanced/centcom/ert/chaplain
+	registered_name = "Religious Response Officer"
+	trim = /datum/id_trim/centcom/ert/chaplain
+
+/obj/item/card/id/advanced/centcom/ert/janitor
+	registered_name = "Janitorial Response Officer"
+	trim = /datum/id_trim/centcom/ert/janitor
+
+/obj/item/card/id/advanced/centcom/ert/clown
+	registered_name = "Entertainment Response Officer"
+	trim = /datum/id_trim/centcom/ert/clown
+
+/obj/item/card/id/advanced/black
+	name = "black identification card"
+	desc = "This card is telling you one thing and one thing alone. The person holding this card is an utter badass."
+	icon_state = "card_black"
+	worn_icon_state = "card_black"
+	assigned_icon_state = "assigned_syndicate"
+	wildcard_slots = WILDCARD_LIMIT_GOLD
+
+/obj/item/card/id/advanced/black/deathsquad
+	name = "\improper Death Squad ID"
+	desc = "A Death Squad ID card."
+	registered_name = "Death Commando"
+	trim = /datum/id_trim/centcom/deathsquad
+	wildcard_slots = WILDCARD_LIMIT_DEATHSQUAD
+
+/obj/item/card/id/advanced/black/syndicate_command
+	name = "syndicate ID card"
+	desc = "An ID straight from the Syndicate."
+	registered_name = "Syndicate"
+	registered_age = null
+	trim = /datum/id_trim/syndicom
+	wildcard_slots = WILDCARD_LIMIT_SYNDICATE
+
+/obj/item/card/id/advanced/black/syndicate_command/crew_id
+	name = "syndicate ID card"
+	desc = "An ID straight from the Syndicate."
+	registered_name = "Syndicate"
+	trim = /datum/id_trim/syndicom/crew
+
+/obj/item/card/id/advanced/black/syndicate_command/captain_id
+	name = "syndicate captain ID card"
+	desc = "An ID straight from the Syndicate."
+	registered_name = "Syndicate"
+	trim = /datum/id_trim/syndicom/captain
+
+/obj/item/card/id/advanced/debug
+	name = "\improper Debug ID"
+	desc = "A debug ID card. Has ALL the all access, you really shouldn't have this."
+	icon_state = "card_centcom"
+	worn_icon_state = "card_centcom"
+	assigned_icon_state = "assigned_centcom"
+	trim = /datum/id_trim/admin
+	wildcard_slots = WILDCARD_LIMIT_ADMIN
+
+/obj/item/card/id/advanced/debug/Initialize(mapload)
+	. = ..()
+	registered_account = SSeconomy.get_dep_account(ACCOUNT_CAR)
+
+/obj/item/card/id/advanced/prisoner
+	name = "prisoner ID card"
+	desc = "You are a number, you are not a free man."
+	icon_state = "card_prisoner"
+	worn_icon_state = "card_prisoner"
+	inhand_icon_state = "orange-id"
+	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
+	registered_name = "Scum"
+	registered_age = null
+	trim = /datum/id_trim/job/prisoner
+
+	wildcard_slots = WILDCARD_LIMIT_PRISONER
+
+	/// Number of gulag points required to earn freedom.
+	var/goal = 0
+	/// Number of gulag points earned.
+	var/points = 0
+	/// If the card has a timer set on it for temporary stay.
+	var/timed = FALSE
+	/// Time to assign to the card when they pass through the security gate.
+	var/time_to_assign
+	/// Time left on a card till they can leave.
+	var/time_left = 0
+
+/obj/item/card/id/advanced/prisoner/attackby(obj/item/card/id/C, mob/user)
+	..()
+	var/list/id_access = C.GetAccess()
+	if(!(ACCESS_BRIG in id_access))
+		return
+	if(timed)
+		timed = FALSE
+		time_to_assign = initial(time_to_assign)
+		registered_name = initial(registered_name)
+		STOP_PROCESSING(SSobj, src)
+		to_chat(user, "Restating prisoner ID to default parameters.")
+		return
+	var/choice = tgui_input_number(user, "Sentence time in seconds", "Sentencing")
+	if(isnull(time_to_assign) || !user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
+		return
+	time_to_assign = round(choice)
+	to_chat(user, "You set the sentence time to [time_to_assign] seconds.")
+	timed = TRUE
+
+/obj/item/card/id/advanced/prisoner/proc/start_timer()
+	say("Sentence started, welcome to the corporate rehabilitation center!")
+	START_PROCESSING(SSobj, src)
+
+/obj/item/card/id/advanced/prisoner/examine(mob/user)
+	. = ..()
+	if(timed)
+		if(time_left <= 0)
+			. += span_notice("The digital timer on the card has zero seconds remaining. You leave a changed man, but a free man nonetheless.")
+		else
+			. += span_notice("The digital timer on the card has [time_left] seconds remaining. Don't do the crime if you can't do the time.")
+
+/obj/item/card/id/advanced/prisoner/process(delta_time)
+	if(!timed)
+		return
+	time_left -= delta_time
+	if(time_left <= 0)
+		say("Sentence time has been served. Thank you for your cooperation in our corporate rehabilitation program!")
+		STOP_PROCESSING(SSobj, src)
+
+/obj/item/card/id/advanced/prisoner/attack_self(mob/user)
+	to_chat(usr, span_notice("You have accumulated [points] out of the [goal] points you need for freedom."))
+
+/obj/item/card/id/advanced/prisoner/one
+	name = "Prisoner #13-001"
+	registered_name = "Prisoner #13-001"
+	trim = /datum/id_trim/job/prisoner/one
+
+/obj/item/card/id/advanced/prisoner/two
+	name = "Prisoner #13-002"
+	registered_name = "Prisoner #13-002"
+	trim = /datum/id_trim/job/prisoner/two
+
+/obj/item/card/id/advanced/prisoner/three
+	name = "Prisoner #13-003"
+	registered_name = "Prisoner #13-003"
+	trim = /datum/id_trim/job/prisoner/three
+
+/obj/item/card/id/advanced/prisoner/four
+	name = "Prisoner #13-004"
+	registered_name = "Prisoner #13-004"
+	trim = /datum/id_trim/job/prisoner/four
+
+/obj/item/card/id/advanced/prisoner/five
+	name = "Prisoner #13-005"
+	registered_name = "Prisoner #13-005"
+	trim = /datum/id_trim/job/prisoner/five
+
+/obj/item/card/id/advanced/prisoner/six
+	name = "Prisoner #13-006"
+	registered_name = "Prisoner #13-006"
+	trim = /datum/id_trim/job/prisoner/six
+
+/obj/item/card/id/advanced/prisoner/seven
+	name = "Prisoner #13-007"
+	registered_name = "Prisoner #13-007"
+	trim = /datum/id_trim/job/prisoner/seven
+
+/obj/item/card/id/advanced/mining
+	name = "mining ID"
+	trim = /datum/id_trim/job/shaft_miner/spare
+
+/obj/item/card/id/advanced/highlander
+	name = "highlander ID"
+	registered_name = "Highlander"
+	desc = "There can be only one!"
+	icon_state = "card_black"
+	worn_icon_state = "card_black"
+	assigned_icon_state = "assigned_syndicate"
+	trim = /datum/id_trim/highlander
+	wildcard_slots = WILDCARD_LIMIT_ADMIN
+
+/obj/item/card/id/advanced/chameleon
+	name = "agent card"
+	desc = "A highly advanced chameleon ID card. Touch this card on another ID card or player to choose which accesses to copy. Has special magnetic properties which force it to the front of wallets."
+	trim = /datum/id_trim/chameleon
+	wildcard_slots = WILDCARD_LIMIT_CHAMELEON
+
+	/// Have we set a custom name and job assignment, or will we use what we're given when we chameleon change?
+	var/forged = FALSE
+	/// Anti-metagaming protections. If TRUE, anyone can change the ID card's details. If FALSE, only syndicate agents can.
+	var/anyone = FALSE
+	/// Weak ref to the ID card we're currently attempting to steal access from.
+	var/datum/weakref/theft_target
+
+/obj/item/card/id/advanced/chameleon/Initialize(mapload)
+	. = ..()
+
+	var/datum/action/item_action/chameleon/change/id/chameleon_card_action = new(src)
+	chameleon_card_action.chameleon_type = /obj/item/card/id/advanced
+	chameleon_card_action.chameleon_name = "ID Card"
+	chameleon_card_action.initialize_disguises()
+
+/obj/item/card/id/advanced/chameleon/Destroy()
+	theft_target = null
+	. = ..()
+
+/obj/item/card/id/advanced/chameleon/afterattack(atom/target, mob/user, proximity)
+	if(!proximity)
+		return
+
+	if(istype(target, /obj/item/card/id))
+		theft_target = WEAKREF(target)
+		ui_interact(user)
+		return
+
+	return ..()
+
+/obj/item/card/id/advanced/chameleon/pre_attack_secondary(atom/target, mob/living/user, params)
+	// If we're attacking a human, we want it to be covert. We're not ATTACKING them, we're trying
+	// to sneakily steal their accesses by swiping our agent ID card near them. As a result, we
+	// return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN to cancel any part of the following the attack chain.
+	if(istype(target, /mob/living/carbon/human))
+		to_chat(user, "<span class='notice'>You covertly start to scan [target] with \the [src], hoping to pick up a wireless ID card signal...</span>")
+
+		if(!do_mob(user, target, 2 SECONDS))
+			to_chat(user, "<span class='notice'>The scan was interrupted.</span>")
+			return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+		var/mob/living/carbon/human/human_target = target
+
+		var/list/target_id_cards = human_target.get_all_contents_type(/obj/item/card/id)
+
+		if(!length(target_id_cards))
+			to_chat(user, "<span class='notice'>The scan failed to locate any ID cards.</span>")
+			return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+		var/selected_id = pick(target_id_cards)
+		to_chat(user, "<span class='notice'>You successfully sync your [src] with \the [selected_id].</span>")
+		theft_target = WEAKREF(selected_id)
+		ui_interact(user)
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+	if(istype(target, /obj/item))
+		var/obj/item/target_item = target
+
+		to_chat(user, "<span class='notice'>You covertly start to scan [target] with your [src], hoping to pick up a wireless ID card signal...</span>")
+
+		var/list/target_id_cards = target_item.get_all_contents_type(/obj/item/card/id)
+
+		var/target_item_id = target_item.GetID()
+
+		if(target_item_id)
+			target_id_cards |= target_item_id
+
+		if(!length(target_id_cards))
+			to_chat(user, "<span class='notice'>The scan failed to locate any ID cards.</span>")
+			return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+		var/selected_id = pick(target_id_cards)
+		to_chat(user, "<span class='notice'>You successfully sync your [src] with \the [selected_id].</span>")
+		theft_target = WEAKREF(selected_id)
+		ui_interact(user)
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+	return ..()
+
+/obj/item/card/id/advanced/chameleon/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "ChameleonCard", name)
+		ui.open()
+
+/obj/item/card/id/advanced/chameleon/ui_static_data(mob/user)
+	var/list/data = list()
+	data["wildcardFlags"] = SSid_access.wildcard_flags_by_wildcard
+	data["accessFlagNames"] = SSid_access.access_flag_string_by_flag
+	data["accessFlags"] = SSid_access.flags_by_access
+	return data
+
+/obj/item/card/id/advanced/chameleon/ui_host(mob/user)
+	// Hook our UI to the theft target ID card for UI state checks.
+	return theft_target?.resolve()
+
+/obj/item/card/id/advanced/chameleon/ui_state(mob/user)
+	return GLOB.always_state
+
+/obj/item/card/id/advanced/chameleon/ui_status(mob/user)
+	var/target = theft_target?.resolve()
+
+	if(!target)
+		return UI_CLOSE
+
+	var/status = min(
+		ui_status_user_strictly_adjacent(user, target),
+		ui_status_user_is_advanced_tool_user(user),
+		max(
+			ui_status_user_is_conscious_and_lying_down(user),
+			ui_status_user_is_abled(user, target),
+		),
+	)
+
+	if(status < UI_INTERACTIVE)
+		return UI_CLOSE
+
+	return status
+
+/obj/item/card/id/advanced/chameleon/ui_data(mob/user)
+	var/list/data = list()
+
+	data["showBasic"] = FALSE
+
+	var/list/regions = list()
+
+	var/obj/item/card/id/target_card = theft_target.resolve()
+	if(target_card)
+		var/list/tgui_region_data = SSid_access.all_region_access_tgui
+		for(var/region in SSid_access.station_regions)
+			regions += tgui_region_data[region]
+
+	data["accesses"] = regions
+	data["ourAccess"] = access
+	data["ourTrimAccess"] = trim ? trim.access : list()
+	data["theftAccess"] = target_card.access.Copy()
+	data["wildcardSlots"] = wildcard_slots
+	data["selectedList"] = access
+	data["trimAccess"] = list()
+
+	return data
+
+/obj/item/card/id/advanced/chameleon/ui_act(action, list/params)
+	. = ..()
+	if(.)
+		return
+
+	var/obj/item/card/id/target_card = theft_target?.resolve()
+	if(QDELETED(target_card))
+		to_chat(usr, span_notice("The ID card you were attempting to scan is no longer in range."))
+		target_card = null
+		return TRUE
+
+	// Wireless ID theft!
+	var/turf/our_turf = get_turf(src)
+	var/turf/target_turf = get_turf(target_card)
+	if(!our_turf.Adjacent(target_turf))
+		to_chat(usr, span_notice("The ID card you were attempting to scan is no longer in range."))
+		target_card = null
+		return TRUE
+
+	switch(action)
+		if("mod_access")
+			var/access_type = params["access_target"]
+			var/try_wildcard = params["access_wildcard"]
+			if(access_type in access)
+				remove_access(list(access_type))
+				LOG_ID_ACCESS_CHANGE(usr, src, "removed [SSid_access.get_access_desc(access_type)]")
+				return TRUE
+
+			if(!(access_type in target_card.access))
+				to_chat(usr, span_notice("ID error: ID card rejected your attempted access modification."))
+				LOG_ID_ACCESS_CHANGE(usr, src, "failed to add [SSid_access.get_access_desc(access_type)][try_wildcard ? " with wildcard [try_wildcard]" : ""]")
+				return TRUE
+
+			if(!can_add_wildcards(list(access_type), try_wildcard))
+				to_chat(usr, span_notice("ID error: ID card rejected your attempted access modification."))
+				LOG_ID_ACCESS_CHANGE(usr, src, "failed to add [SSid_access.get_access_desc(access_type)][try_wildcard ? " with wildcard [try_wildcard]" : ""]")
+				return TRUE
+
+			if(!add_access(list(access_type), try_wildcard))
+				to_chat(usr, span_notice("ID error: ID card rejected your attempted access modification."))
+				LOG_ID_ACCESS_CHANGE(usr, src, "failed to add [SSid_access.get_access_desc(access_type)][try_wildcard ? " with wildcard [try_wildcard]" : ""]")
+				return TRUE
+
+			if(access_type in ACCESS_ALERT_ADMINS)
+				message_admins("[ADMIN_LOOKUPFLW(usr)] just added [SSid_access.get_access_desc(access_type)] to an ID card [ADMIN_VV(src)] [(registered_name) ? "belonging to [registered_name]." : "with no registered name."]")
+			LOG_ID_ACCESS_CHANGE(usr, src, "added [SSid_access.get_access_desc(access_type)]")
+			return TRUE
+
+/obj/item/card/id/advanced/chameleon/attack_self(mob/user)
+	if(isliving(user) && user.mind)
+		var/popup_input = tgui_alert(user, "Choose Action", "Agent ID", list("Show", "Forge/Reset", "Change Account ID"))
+		if(user.incapacitated())
+			return
+		if(!user.is_holding(src))
+			return
+		if(popup_input == "Forge/Reset")
+			if(!forged)
+				var/input_name = tgui_input_text(user, "What name would you like to put on this card? Leave blank to randomise.", "Agent card name", registered_name ? registered_name : (ishuman(user) ? user.real_name : user.name), MAX_NAME_LEN)
+				input_name = sanitize_name(input_name)
+				if(!input_name)
+					// Invalid/blank names give a randomly generated one.
+					if(user.gender == MALE)
+						input_name = "[pick(GLOB.first_names_male)] [pick(GLOB.last_names)]"
+					else if(user.gender == FEMALE)
+						input_name = "[pick(GLOB.first_names_female)] [pick(GLOB.last_names)]"
+					else
+						input_name = "[pick(GLOB.first_names)] [pick(GLOB.last_names)]"
+
+				registered_name = input_name
+
+				var/change_trim = tgui_alert(user, "Adjust the appearance of your card's trim?", "Modify Trim", list("Yes", "No"))
+				if(change_trim == "Yes")
+					var/list/blacklist = typecacheof(type) + typecacheof(/obj/item/card/id/advanced/simple_bot)
+					var/list/trim_list = list()
+					for(var/trim_path in typesof(/datum/id_trim))
+						if(blacklist[trim_path])
+							continue
+
+						var/datum/id_trim/trim = SSid_access.trim_singletons_by_path[trim_path]
+
+						if(trim && trim.trim_state && trim.assignment)
+							var/fake_trim_name = "[trim.assignment] ([trim.trim_state])"
+							trim_list[fake_trim_name] = trim_path
+
+					var/selected_trim_path = tgui_input_list(user, "Select trim to apply to your card.\nNote: This will not grant any trim accesses.", "Forge Trim", sort_list(trim_list, /proc/cmp_typepaths_asc))
+					if(selected_trim_path)
+						SSid_access.apply_trim_to_chameleon_card(src, trim_list[selected_trim_path])
+
+				var/target_occupation = tgui_input_text(user, "What occupation would you like to put on this card?\nNote: This will not grant any access levels.", "Agent card job assignment", assignment ? assignment : "Assistant")
+				if(target_occupation)
+					assignment = target_occupation
+
+				var/new_age = tgui_input_number(user, "Choose the ID's age", "Agent card age", AGE_MIN, AGE_MAX, AGE_MIN)
+				if(new_age)
+					registered_age = round(new_age)
+
+				if(tgui_alert(user, "Activate wallet ID spoofing, allowing this card to force itself to occupy the visible ID slot in wallets?", "Wallet ID Spoofing", list("Yes", "No")) == "Yes")
+					ADD_TRAIT(src, TRAIT_MAGNETIC_ID_CARD, CHAMELEON_ITEM_TRAIT)
+
+				update_label()
+				update_icon()
+				forged = TRUE
+				to_chat(user, span_notice("You successfully forge the ID card."))
+				log_game("[key_name(user)] has forged \the [initial(name)] with name \"[registered_name]\", occupation \"[assignment]\" and trim \"[trim?.assignment]\".")
+
+				if(!registered_account)
+					if(ishuman(user))
+						var/mob/living/carbon/human/accountowner = user
+
+						var/datum/bank_account/account = SSeconomy.bank_accounts_by_id["[accountowner.account_id]"]
+						if(account)
+							account.bank_cards += src
+							registered_account = account
+							to_chat(user, span_notice("Your account number has been automatically assigned."))
+				return
+			if(forged)
+				registered_name = initial(registered_name)
+				assignment = initial(assignment)
+				SSid_access.remove_trim_from_chameleon_card(src)
+				REMOVE_TRAIT(src, TRAIT_MAGNETIC_ID_CARD, CHAMELEON_ITEM_TRAIT)
+				log_game("[key_name(user)] has reset \the [initial(name)] named \"[src]\" to default.")
+				update_label()
+				update_icon()
+				forged = FALSE
+				to_chat(user, span_notice("You successfully reset the ID card."))
+				return
+		if (popup_input == "Change Account ID")
+			set_new_account(user)
+			return
+	return ..()
+
+/// A special variant of the classic chameleon ID card which accepts all access.
+/obj/item/card/id/advanced/chameleon/black
+	icon_state = "card_black"
+	worn_icon_state = "card_black"
+	assigned_icon_state = "assigned_syndicate"
+	wildcard_slots = WILDCARD_LIMIT_GOLD
+
+/obj/item/card/id/advanced/engioutpost
+	registered_name = "George 'Plastic' Miller"
+	desc = "A card used to provide ID and determine access across the station. There's blood dripping from the corner. Ew."
+	trim = /datum/id_trim/engioutpost
+	registered_age = 47
+
+/obj/item/card/id/advanced/simple_bot
+	name = "simple bot ID card"
+	desc = "An internal ID card used by the station's non-sentient bots. You should report this to a coder if you're holding it."
+	wildcard_slots = WILDCARD_LIMIT_ADMIN
+
+/obj/item/card/id/red
+	name = "Red Team identification card"
+	desc = "A card used to identify members of the red team for CTF"
+	icon_state = "ctf_red"
+
+/obj/item/card/id/blue
+	name = "Blue Team identification card"
+	desc = "A card used to identify members of the blue team for CTF"
+	icon_state = "ctf_blue"
+
+/obj/item/card/id/yellow
+	name = "Yellow Team identification card"
+	desc = "A card used to identify members of the yellow team for CTF"
+	icon_state = "ctf_yellow"
+
+/obj/item/card/id/green
+	name = "Green Team identification card"
+	desc = "A card used to identify members of the green team for CTF"
+	icon_state = "ctf_green"
+
+#undef INTERN_THRESHOLD_FALLBACK_HOURS
+#undef ID_ICON_BORDERS

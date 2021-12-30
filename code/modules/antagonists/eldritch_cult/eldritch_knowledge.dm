@@ -148,11 +148,10 @@
 
 /datum/eldritch_knowledge/curse/recipe_snowflake_check(list/atoms, loc)
 	fingerprints = list()
-	for(var/X in atoms)
-		var/atom/A = X
-		fingerprints |= A.return_fingerprints()
-	listclearnulls(fingerprints)
-	if(fingerprints.len == 0)
+	for(var/atom/requirements as anything in atoms)
+		fingerprints |= requirements.return_fingerprints()
+	list_clear_nulls(fingerprints)
+	if(!length(fingerprints))
 		return FALSE
 	return TRUE
 
@@ -166,12 +165,12 @@
 			compiled_list |= human_to_check.real_name
 			compiled_list[human_to_check.real_name] = human_to_check
 
-	if(compiled_list.len == 0)
-		to_chat(user, "<span class='warning'>These items don't possess the required fingerprints or DNA.</span>")
+	if(!length(compiled_list))
+		to_chat(user, span_warning("These items don't possess the required fingerprints or DNA."))
 		return FALSE
 
-	var/chosen_mob = tgui_input_list(user, "Select the person you wish to curse","Your target", sort_list(compiled_list, /proc/cmp_mob_realname_dsc))
-	if(!chosen_mob)
+	var/chosen_mob = tgui_input_list(user, "Select the person you wish to curse", "Eldritch Curse", sort_list(compiled_list, /proc/cmp_mob_realname_dsc))
+	if(isnull(chosen_mob))
 		return FALSE
 	curse(compiled_list[chosen_mob])
 	addtimer(CALLBACK(src, PROC_REF(uncurse), compiled_list[chosen_mob]),timer)
@@ -287,11 +286,16 @@
 				var/datum/mind/targeted =  A.find_target()//easy way, i dont feel like copy pasting that entire block of code
 				if(!targeted)
 					break
-				targets["[targeted.current.real_name] the [targeted.assigned_role]"] = targeted.current
-			LH.target = targets[input(user,"Choose your next target","Target") in targets]
-			qdel(A)
-			if(LH.target)
-				to_chat(user,"<span class='warning'>Your new target has been selected, go and sacrifice [LH.target.real_name]!</span>")
+				targets["[targeted.current.real_name] the [targeted.assigned_role.title][is_teammate ? " (ally)" : ""]"] = targeted.current
+			var/chosen_target = tgui_input_list(user, "Choose a target", "Eldritch Targeting", targets)
+			if(isnull(chosen_target))
+				return FALSE
+			if(isnull(targets[chosen_target]))
+				return FALSE
+			heart.target = targets[chosen_target]
+			qdel(temp_objective)
+			if(heart.target)
+				to_chat(user,span_warning("Your new target has been selected, go and sacrifice [heart.target.real_name]!"))
 			else
 				to_chat(user,"<span class='warning'>target could not be found for living heart.</span>")
 

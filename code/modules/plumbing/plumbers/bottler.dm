@@ -55,8 +55,14 @@
 ///changing input ammount with a window
 /obj/machinery/plumbing/bottler/interact(mob/user)
 	. = ..()
-	wanted_amount = clamp(round(input(user,"maximum is 100u","set ammount to fill with") as num|null, 1), 1, 100)
-	to_chat(user, "<span class='notice'> The [src] will now fill for [wanted_amount]u.</span>")
+	if(!valid_output_configuration)
+		to_chat(user, span_warning("A flashing notification on the screen reads: \"Output location error!\""))
+		return .
+	var/new_amount = tgui_input_number(user, "Set Amount to Fill", "Desired Amount", 1, 100, 1)
+	if(isnull(new_amount))
+		return .
+	wanted_amount = round(new_amount)
+	to_chat(user, span_notice(" The [src] will now fill for [wanted_amount]u."))
 
 /obj/machinery/plumbing/bottler/process()
 	if(machine_stat & NOPOWER)

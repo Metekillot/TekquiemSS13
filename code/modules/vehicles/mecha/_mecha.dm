@@ -352,7 +352,7 @@
 	var/hide_weapon = locate(/obj/item/mecha_parts/concealed_weapon_bay) in contents
 	var/hidden_weapon = hide_weapon ? (locate(/obj/item/mecha_parts/mecha_equipment/weapon) in equipment) : null
 	var/list/visible_equipment = equipment - hidden_weapon
-	if(visible_equipment.len)
+	if(length(visible_equipment))
 		. += "It's equipped with:"
 		for(var/obj/item/mecha_parts/mecha_equipment/ME in visible_equipment)
 			. += "[icon2html(ME, user)] \A [ME]."
@@ -815,14 +815,14 @@
 			var/list/ai_pilots = list()
 			for(var/mob/living/silicon/ai/aipilot in occupants)
 				ai_pilots += aipilot
-			if(!ai_pilots.len) //Mech does not have an AI for a pilot
-				to_chat(user, "<span class='warning'>No AI detected in the [name] onboard computer.</span>")
+			if(!length(ai_pilots)) //Mech does not have an AI for a pilot
+				to_chat(user, span_warning("No AI detected in the [name] onboard computer."))
 				return
-			if(ai_pilots.len > 1) //Input box for multiple AIs, but if there's only one we'll default to them.
-				AI = input(user,"Which AI do you wish to card?", "AI Selection") as null|anything in sortList(ai_pilots)
+			if(length(ai_pilots) > 1) //Input box for multiple AIs, but if there's only one we'll default to them.
+				AI = tgui_input_list(user, "Which AI do you wish to card?", "AI Selection", sort_list(ai_pilots))
 			else
 				AI = ai_pilots[1]
-			if(!AI)
+			if(isnull(AI))
 				return
 			if(!(AI in occupants) || !user.Adjacent(src))
 				return //User sat on the selection window and things changed.
@@ -960,7 +960,7 @@
 		if(obj_integrity <= 0)
 			to_chat(M, "<span class='warning'>You cannot get in the [name], it has been destroyed!</span>")
 		else if(LAZYLEN(occupants) >= max_occupants)
-			to_chat(M, "<span class='danger'>[occupants[occupants.len]] was faster! Try better next time, loser.</span>")//get the last one that hopped in
+			to_chat(M, span_danger("[occupants[length(occupants)]] was faster! Try better next time, loser."))//get the last one that hopped in
 		else if(M.buckled)
 			to_chat(M, "<span class='warning'>You can't enter the exosuit while buckled.</span>")
 		else if(M.has_buckled_mobs())

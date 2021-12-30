@@ -211,10 +211,12 @@
 		droppable_parts += assembly.emp_module
 	if(assembly.proxy_module)
 		droppable_parts += assembly.proxy_module
-	if(!droppable_parts.len)
+	if(!length(droppable_parts))
 		return
-	var/obj/item/choice = input(user, "Select a part to remove:", src) as null|obj in sortNames(droppable_parts)
-	if(!choice || !user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
+	var/obj/item/choice = tgui_input_list(user, "Select a part to remove", "Part Removal", sort_names(droppable_parts))
+	if(isnull(choice))
+		return
+	if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 		return
 	to_chat(user, "<span class='notice'>You remove [choice] from [src].</span>")
 	if(choice == assembly.xray_module)

@@ -66,8 +66,12 @@
 /datum/action/innate/construction/switch_mode/Activate()
 	if(..())
 		return
-	var/list/buildlist = list("Walls and Floors" = 1,"Airlocks" = 2,"Deconstruction" = 3,"Windows and Grilles" = 4)
-	var/buildmode = input("Set construction mode.", "Base Console", null) in buildlist
+	var/list/buildlist = list("Walls and Floors" = RCD_FLOORWALL, "Airlocks" = RCD_AIRLOCK, "Deconstruction" = RCD_DECONSTRUCT, "Windows and Grilles" = RCD_WINDOWGRILLE)
+	var/buildmode = tgui_input_list(owner, "Set construction mode", "Base Console", buildlist)
+	if(isnull(buildmode))
+		return
+	if(isnull(buildlist[buildmode]))
+		return
 	check_rcd()
 	base_console.internal_rcd.mode = buildlist[buildmode]
 	to_chat(owner, "Build mode is now [buildmode].")

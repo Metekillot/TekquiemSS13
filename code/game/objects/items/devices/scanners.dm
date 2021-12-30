@@ -99,6 +99,10 @@ GENE SCANNER
 	var/advanced = FALSE
 	custom_price = PAYCHECK_HARD
 
+/obj/item/healthanalyzer/examine(mob/user)
+	. = ..()
+	. += span_notice("Alt-click [src] to toggle the limb damage readout.")
+
 /obj/item/healthanalyzer/suicide_act(mob/living/carbon/user)
 	user.visible_message("<span class='suicide'>[user] begins to analyze [user.p_them()]self with [src]! The display shows that [user.p_theyre()] dead!</span>")
 	return BRUTELOSS
@@ -170,12 +174,16 @@ GENE SCANNER
 		mob_status = "<span class='alert'><b>Deceased</b></span>"
 		oxy_loss = max(rand(1, 40), oxy_loss, (300 - (tox_loss + fire_loss + brute_loss))) // Random oxygen loss
 
-	if(ishuman(M))
-		var/mob/living/carbon/human/H = M
-		if(H.undergoing_cardiac_arrest() && H.stat != DEAD)
-			render_list += "<span class='alert'>Subject suffering from heart attack: Apply defibrillation or other electric shock immediately!</span>\n"
+	render_list += "[span_info("Analyzing results for [target]:")]\n<span class='info ml-1'>Overall status: [mob_status]</span>\n"
 
-	render_list += "<span class='info'>Analyzing results for [M]:</span>\n<span class='info ml-1'>Overall status: [mob_status]</span>\n"
+	SEND_SIGNAL(target, COMSIG_LIVING_HEALTHSCAN, render_list, advanced, user, mode)
+
+	if(ishuman(target))
+		var/mob/living/carbon/human/humantarget = target
+		if(humantarget.undergoing_cardiac_arrest() && humantarget.stat != DEAD)
+			render_list += "<span class='alert ml-1'><b>Subject suffering from heart attack: Apply defibrillation or other electric shock immediately!</b></span>\n"
+		if(humantarget.has_reagent(/datum/reagent/inverse/technetium))
+			advanced = TRUE
 
 	// Husk detection
 	if(advanced && HAS_TRAIT_FROM(M, TRAIT_HUSK, BURN))
@@ -251,6 +259,33 @@ GENE SCANNER
 
 	if(advanced && M.hallucinating())
 		render_list += "<span class='info ml-1'>Subject is hallucinating.</span>\n"
+
+	//Eyes and ears
+	if(advanced && iscarbon(target))
+		var/mob/living/carbon/carbontarget = target
+
+		// Ear status
+		var/obj/item/organ/ears/ears = carbontarget.getorganslot(ORGAN_SLOT_EARS)
+		if(istype(ears))
+			if(HAS_TRAIT_FROM(carbontarget, TRAIT_DEAF, GENETIC_MUTATION))
+				render_list = "<span class='alert ml-2'>Subject is genetically deaf.\n</span>"
+			else if(HAS_TRAIT_FROM(carbontarget, TRAIT_DEAF, EAR_DAMAGE))
+				render_list = "<span class='alert ml-2'>Subject is deaf from ear damage.\n</span>"
+			else if(HAS_TRAIT(carbontarget, TRAIT_DEAF))
+				render_list = "<span class='alert ml-2'>Subject is deaf.\n</span>"
+			else
+				if(ears.damage)
+					render_list += "<span class='alert ml-2'>Subject has [ears.damage > ears.maxHealth ? "permanent ": "temporary "]hearing damage.\n</span>"
+				if(ears.deaf)
+					render_list += "<span class='alert ml-2'>Subject is [ears.damage > ears.maxHealth ? "permanently ": "temporarily "] deaf.\n</span>"
+
+		// Eye status
+		var/obj/item/organ/eyes/eyes = carbontarget.getorganslot(ORGAN_SLOT_EYES)
+		if(istype(eyes))
+			if(carbontarget.is_blind())
+				render_list += "<span class='alert ml-2'>Subject is blind.\n</span>"
+			else if(HAS_TRAIT(carbontarget, TRAIT_NEARSIGHT))
+				render_list += "<span class='alert ml-2'>Subject is nearsighted.\n</span>"
 
 	// Body part damage report
 	if(iscarbon(M) && mode == SCANNER_VERBOSE)
@@ -341,7 +376,31 @@ GENE SCANNER
 						[advanced ? "<td><font color='#0000CC'>[CEILING(organ.damage,1)]</font></td>" : ""]\
 						<td>[status]</td></tr>"
 
-			if (render)
+			var/datum/species/the_dudes_species = humantarget.dna.species
+			var/missing_organs = list()
+			if(!humantarget.getorganslot(ORGAN_SLOT_BRAIN))
+				missing_organs += "brain"
+			if(!(NOBLOOD in the_dudes_species.species_traits) && !humantarget.getorganslot(ORGAN_SLOT_HEART))
+				missing_organs += "heart"
+			if(!(TRAIT_NOBREATH in the_dudes_species.species_traits) && !humantarget.getorganslot(ORGAN_SLOT_LUNGS))
+				missing_organs += "lungs"
+			if(!(TRAIT_NOMETABOLISM in the_dudes_species.species_traits) && !humantarget.getorganslot(ORGAN_SLOT_LIVER))
+				missing_organs += "liver"
+			if(!(NOSTOMACH in the_dudes_species.species_traits) && !humantarget.getorganslot(ORGAN_SLOT_STOMACH))
+				missing_organs += "stomach"
+			if(!humantarget.getorganslot(ORGAN_SLOT_EARS))
+				missing_organs += "ears"
+			if(!humantarget.getorganslot(ORGAN_SLOT_EYES))
+				missing_organs += "eyes"
+
+			if(length(missing_organs))
+				render = TRUE
+				for(var/organ in missing_organs)
+					toReport += "<tr><td><font color='#cc3333'>[organ]:</font></td>\
+						[advanced ? "<td><font color='#ff3333'>["-"]</font></td>" : ""]\
+						<td><font color='#cc3333'>["Missing"]</font></td></tr>"
+
+			if(render)
 				render_list += toReport + "</table>" // tables do not need extra linebreak
 
 		//Genetic damage
@@ -438,14 +497,18 @@ GENE SCANNER
 
 	if(istype(M) && M.reagents)
 		var/render_list = list()
-		if(M.reagents.reagent_list.len)
+
+		// Blood reagents
+		if(target.reagents.reagent_list.len)
 			render_list += "<span class='notice ml-1'>Subject contains the following reagents in their blood:</span>\n"
 			for(var/r in M.reagents.reagent_list)
 				var/datum/reagent/reagent = r
 				render_list += "<span class='notice ml-2'>[round(reagent.volume, 0.001)] units of [reagent.name][reagent.overdosed ? "</span> - <span class='boldannounce'>OVERDOSING</span>" : ".</span>"]\n"
 		else
 			render_list += "<span class='notice ml-1'>Subject contains no reagents in their blood.</span>\n"
-		var/obj/item/organ/stomach/belly = M.getorganslot(ORGAN_SLOT_STOMACH)
+
+		// Stomach reagents
+		var/obj/item/organ/stomach/belly = target.getorganslot(ORGAN_SLOT_STOMACH)
 		if(belly)
 			if(belly.reagents.reagent_list.len)
 				render_list += "<span class='notice ml-1'>Subject contains the following reagents in their stomach:</span>\n"
@@ -460,21 +523,31 @@ GENE SCANNER
 			else
 				render_list += "<span class='notice ml-1'>Subject contains no reagents in their stomach.</span>\n"
 
-		if(LAZYLEN(M.reagents.addiction_list))
-			render_list += "<span class='boldannounce ml-1'>Subject is addicted to the following reagents:</span>\n"
-			for(var/a in M.reagents.addiction_list)
-				var/datum/reagent/addiction = a
-				render_list += "<span class='alert ml-2'>[addiction.name]</span>\n"
-		else
-			render_list += "<span class='notice ml-1'>Subject is not addicted to any reagents.</span>\n"
+		// Addictions
+		if(LAZYLEN(target.mind?.active_addictions))
+			render_list += "<span class='boldannounce ml-1'>Subject is addicted to the following types of drug:</span>\n"
+			for(var/datum/addiction/addiction_type as anything in target.mind.active_addictions)
+				render_list += "<span class='alert ml-2'>[initial(addiction_type.name)]</span>\n"
 
-		to_chat(user, jointext(render_list, ""), trailing_newline = FALSE) // we handled the last <br> so we don't need handholding
+		// Special eigenstasium addiction
+		if(target.has_status_effect(/datum/status_effect/eigenstasium))
+			render_list += "<span class='notice ml-1'>Subject is temporally unstable. Stabilising agent is recommended to reduce disturbances.</span>\n"
 
-/obj/item/healthanalyzer/verb/toggle_mode()
-	set name = "Switch Verbosity"
-	set category = "Object"
+		// Allergies
+		for(var/datum/quirk/quirky as anything in target.quirks)
+			if(istype(quirky, /datum/quirk/item_quirk/allergic))
+				var/datum/quirk/item_quirk/allergic/allergies_quirk = quirky
+				var/allergies = allergies_quirk.allergy_string
+				render_list += "<span class='alert ml-1'>Subject is extremely allergic to the following chemicals:</span>\n"
+				render_list += "<span class='alert ml-2'>[allergies]</span>\n"
 
-	if(usr.incapacitated())
+		// we handled the last <br> so we don't need handholding
+		to_chat(user, jointext(render_list, ""), trailing_newline = FALSE, type = MESSAGE_TYPE_INFO)
+
+/obj/item/healthanalyzer/AltClick(mob/user)
+	..()
+
+	if(!user.canUseTopic(src, BE_CLOSE))
 		return
 
 	mode = !mode
@@ -883,7 +956,9 @@ GENE SCANNER
 		options += get_display_name(A)
 
 	var/answer = tgui_input_list(user, "Analyze Potential", "Sequence Analyzer", sort_list(options))
-	if(answer && ready && user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
+	if(isnull(answer))
+		return
+	if(ready && user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 		var/sequence
 		for(var/A in buffer) //this physically hurts but i dont know what anything else short of an assoc list
 			if(get_display_name(A) == answer)

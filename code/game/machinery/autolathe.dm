@@ -183,7 +183,7 @@
 							list_to_show += i
 
 					used_material = tgui_input_list(usr, "Choose [used_material]", "Custom Material", sort_list(list_to_show, /proc/cmp_typepaths_asc))
-					if(!used_material)
+					if(isnull(used_material))
 						return //Didn't pick any material, so you can't build shit either.
 					custom_materials[used_material] += amount_needed
 
@@ -201,11 +201,73 @@
 		if(href_list["search"])
 			matching_designs.Cut()
 
-			for(var/v in stored_research.researched_designs)
-				var/datum/design/D = SSresearch.techweb_design_by_id(v)
-				if(findtext(D.name,href_list["to_search"]))
-					matching_designs.Add(D)
-			updateUsrDialog()
+/obj/machinery/autolathe/attackby(obj/item/O, mob/living/user, params)
+	if(busy)
+		balloon_alert(user, "it's busy!")
+		return TRUE
+
+	if(default_deconstruction_crowbar(O))
+		return TRUE
+
+	if(panel_open && is_wire_tool(O))
+		wires.interact(user)
+		return TRUE
+
+	if(user.combat_mode) //so we can hit the machine
+		return ..()
+
+	if(machine_stat)
+		return TRUE
+
+	if(istype(O, /obj/item/disk/design_disk))
+		user.visible_message(span_notice("[user] begins to load \the [O] in \the [src]..."),
+			balloon_alert(user, "uploading design..."),
+			span_hear("You hear the chatter of a floppy drive."))
+		busy = TRUE
+		if(do_after(user, 14.4, target = src))
+			var/obj/item/disk/design_disk/disky = O
+			var/list/not_imported
+			for(var/datum/design/blueprint as anything in disky.blueprints)
+				if(!blueprint)
+					continue
+				if(blueprint.build_type & AUTOLATHE)
+					stored_research.add_design(blueprint)
+				else
+					LAZYADD(not_imported, blueprint.name)
+			if(not_imported)
+				to_chat(user, span_warning("The following design[length(not_imported) > 1 ? "s" : ""] couldn't be imported: [english_list(not_imported)]"))
+		busy = FALSE
+		return TRUE
+
+	if(panel_open)
+		balloon_alert(user, "close the panel first!")
+		return FALSE
+
+	return ..()
+
+/obj/machinery/autolathe/attackby_secondary(obj/item/weapon, mob/living/user, params)
+	. = SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	if(busy)
+		balloon_alert(user, "it's busy!")
+		return
+
+	if(default_deconstruction_screwdriver(user, "autolathe_t", "autolathe", weapon))
+		return
+
+	if(machine_stat)
+		return SECONDARY_ATTACK_CALL_NORMAL
+
+	if(panel_open)
+		balloon_alert(user, "close the panel first!")
+		return
+
+	return SECONDARY_ATTACK_CALL_NORMAL
+
+/obj/machinery/autolathe/proc/AfterMaterialInsert(obj/item/item_inserted, id_inserted, amount_inserted)
+	if(istype(item_inserted, /obj/item/stack/ore/bluespace_crystal))
+		use_power(MINERAL_MATERIAL_AMOUNT / 10)
+	else if(item_inserted.has_material_type(/datum/material/glass))
+		flick("autolathe_r", src)//plays glass insertion animation by default otherwise
 	else
 		to_chat(usr, "<span class=\"alert\">The autolathe is busy. Please wait for completion of previous operation.</span>")
 
@@ -366,7 +428,7 @@
 	return dat
 
 /obj/machinery/autolathe/proc/can_build(datum/design/D, amount = 1)
-	if(D.make_reagents.len)
+	if(length(D.make_reagents))
 		return FALSE
 
 	var/coeff = (ispath(D.build_path, /obj/item/stack) ? 1 : prod_coeff)

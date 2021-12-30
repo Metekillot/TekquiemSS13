@@ -55,26 +55,29 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 		//see code/modules/mob/dead/new_player/preferences.dm at approx line 545 for comments!
 		//this is largely copypasted from there.
 
-		//handle facial hair (if necessary)
-		if(H.gender != FEMALE)
-			var/new_style = input(user, "Select a facial hairstyle", "Grooming")  as null|anything in GLOB.facial_hairstyles_list
-			if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-				return	//no tele-grooming
-			if(new_style)
-				H.facial_hairstyle = new_style
-		else
-			H.facial_hairstyle = "Shaved"
-
-		//handle normal hair
-		var/new_style = input(user, "Select a hairstyle", "Grooming")  as null|anything in GLOB.hairstyles_list
+	//handle facial hair (if necessary)
+	if(hairdresser.gender != FEMALE)
+		var/new_style = tgui_input_list(user, "Select a facial hairstyle", "Grooming", GLOB.facial_hairstyles_list)
+		if(isnull(new_style))
+			return TRUE
 		if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-			return	//no tele-grooming
-		if(HAS_TRAIT(H, TRAIT_BALD))
-			to_chat(H, "<span class='notice'>If only growing back hair were that easy for you...</span>")
-		if(new_style)
-			H.hairstyle = new_style
+			return TRUE //no tele-grooming
+		hairdresser.facial_hairstyle = new_style
+	else
+		hairdresser.facial_hairstyle = "Shaved"
 
-		H.update_hair()
+	//handle normal hair
+	var/new_style = tgui_input_list(user, "Select a hairstyle", "Grooming", GLOB.hairstyles_list)
+	if(isnull(new_style))
+		return TRUE
+	if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
+		return TRUE //no tele-grooming
+	if(HAS_TRAIT(hairdresser, TRAIT_BALD))
+		to_chat(hairdresser, span_notice("If only growing back hair were that easy for you..."))
+
+	hairdresser.hairstyle = new_style
+
+	hairdresser.update_hair()
 
 /obj/structure/mirror/examine_status(mob/user)
 	if(broken)
@@ -155,12 +158,12 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 	choosable_races = get_roundstart_species().Copy()
 	..()
 
-/obj/structure/mirror/magic/badmin/New()
-	for(var/speciestype in subtypesof(/datum/species))
-		var/datum/species/S = speciestype
-		if(initial(S.changesource_flags) & MIRROR_BADMIN)
-			choosable_races += initial(S.id)
-	..()
+	if(length(selectable_races))
+		return
+	for(var/datum/species/species_type as anything in subtypesof(/datum/species))
+		if(initial(species_type.changesource_flags) & race_flags)
+			selectable_races[initial(species_type.name)] = species_type
+	selectable_races = sort_list(selectable_races)
 
 /obj/structure/mirror/magic/attack_hand(mob/user)
 	. = ..()
@@ -171,14 +174,16 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 
 	var/mob/living/carbon/human/H = user
 
-	var/choice = input(user, "Something to change?", "Magical Grooming") as null|anything in list("name", "race", "gender", "hair", "eyes")
+	var/choice = tgui_input_list(user, "Something to change?", "Magical Grooming", list("name", "race", "gender", "hair", "eyes"))
+	if(isnull(choice))
+		return TRUE
 
 	if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 		return
 
 	switch(choice)
 		if("name")
-			var/newname = sanitize_name(stripped_input(H, "Who are we again?", "Name change", H.name, MAX_NAME_LEN), allow_numbers = TRUE) //It's magic so whatever.
+			var/newname = sanitize_name(tgui_input_text(amazed_human, "Who are we again?", "Name change", amazed_human.name, MAX_NAME_LEN), allow_numbers = TRUE) //It's magic so whatever.
 			if(!newname)
 				return
 			if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
@@ -191,18 +196,26 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 				H.mind.name = newname
 /*
 		if("race")
-			var/newrace
-			var/racechoice = input(H, "What are we again?", "Race change") as null|anything in choosable_races
-			newrace = GLOB.species_list[racechoice]
-
-			if(!newrace)
-				return
+			var/racechoice = tgui_input_list(amazed_human, "What are we again?", "Race change", selectable_races)
+			if(isnull(racechoice))
+				return TRUE
+			if(selectable_races[racechoice])
+				return TRUE
 			if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 				return
 			H.set_species(newrace, icon_update=0)
 
-			if(H.dna.species.use_skintones)
-				var/new_s_tone = input(user, "Choose your skin tone:", "Race change")  as null|anything in GLOB.skin_tones
+			var/datum/species/newrace = selectable_races[racechoice]
+			amazed_human.set_species(newrace, icon_update = FALSE)
+
+			if(amazed_human.dna.species.use_skintones)
+				var/new_s_tone = tgui_input_list(user, "Choose your skin tone", "Race change", GLOB.skin_tones)
+				if(new_s_tone)
+					amazed_human.skin_tone = new_s_tone
+					amazed_human.dna.update_ui_block(DNA_SKIN_TONE_BLOCK)
+
+			if(MUTCOLORS in amazed_human.dna.species.species_traits)
+				var/new_mutantcolor = input(user, "Choose your skin color:", "Race change", amazed_human.dna.features["mcolor"]) as color|null
 				if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 					return
 
@@ -285,5 +298,34 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 	if(choice)
 		curse(user)
 
-/obj/structure/mirror/magic/proc/curse(mob/living/user)
-	return
+/obj/structure/mirror/magic/lesser/Initialize(mapload)
+	// Roundstart species don't have a flag, so it has to be set on Initialize.
+	selectable_races = get_selectable_species().Copy()
+	return ..()
+
+/obj/structure/mirror/magic/badmin
+	race_flags = MIRROR_BADMIN
+
+/obj/structure/mirror/magic/pride
+	name = "pride's mirror"
+	desc = "Pride cometh before the..."
+	race_flags = MIRROR_PRIDE
+
+/obj/structure/mirror/magic/pride/attack_hand(mob/user, list/modifiers)
+	. = ..()
+	if(.)
+		return TRUE
+
+	user.visible_message(span_danger("<B>The ground splits beneath [user] as [user.p_their()] hand leaves the mirror!</B>"), \
+	span_notice("Perfect. Much better! Now <i>nobody</i> will be able to resist yo-"))
+
+	var/turf/user_turf = get_turf(user)
+	var/list/levels = SSmapping.levels_by_trait(ZTRAIT_SPACE_RUINS)
+	var/turf/dest
+	if(length(levels))
+		dest = locate(user_turf.x, user_turf.y, pick(levels))
+
+	user_turf.ChangeTurf(/turf/open/chasm, flags = CHANGETURF_INHERIT_AIR)
+	var/turf/open/chasm/new_chasm = user_turf
+	new_chasm.set_target(dest)
+	new_chasm.drop(user)

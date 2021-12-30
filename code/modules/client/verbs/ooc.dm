@@ -307,7 +307,7 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 			players[displayed_key] = displayed_key
 
 	// Check if the list is empty
-	if(!players.len)
+	if(!length(players))
 		// Express that there are no players we can ignore in chat
 		to_chat(src, "There are no other players you can ignore!")
 
@@ -318,10 +318,10 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 	players = sortList(players)
 
 	// Request the player to ignore
-	var/selection = input("Please, select a player!", "Ignore", null, null) as null|anything in players
+	var/selection = tgui_input_list(src, "Select a player", "Ignore", players)
 
 	// Stop running if we didn't receieve a valid selection
-	if(!selection || !(selection in players))
+	if(isnull(selection) || !(selection in players))
 		return
 
 	// Store the selected player
@@ -351,7 +351,7 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 	set desc = "Stop ignoring a player's messages on the OOC channel"
 
 	// Check if we've ignored any players
-	if(!prefs.ignoring.len)
+	if(!length(prefs.ignoring))
 		// Express that we haven't ignored any players in chat
 		to_chat(src, "You haven't ignored any players!")
 
@@ -359,10 +359,10 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 		return
 
 	// Request the player to unignore
-	var/selection = input("Please, select a player!", "Unignore", null, null) as null|anything in prefs.ignoring
+	var/selection = tgui_input_list(src, "Select a player", "Unignore", prefs.ignoring)
 
 	// Stop running if we didn't receive a selection
-	if(!selection)
+	if(isnull(selection))
 		return
 
 	// Check if the selected player is not on our ignore list

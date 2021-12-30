@@ -128,7 +128,7 @@ var/list/CMNoir = list(0.3,0.3,0.3,0,\
 
 	if(!T)
 		var/list/turfs = get_area_turfs(/area/shuttle/arrival)
-		if(turfs.len)
+		if(length(turfs))
 			T = pick(turfs)
 		else
 			T = SSmapping.get_station_center()
@@ -477,15 +477,18 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			filtered += A
 	var/area/thearea = tgui_input_list(usr, "Area to jump to", "BOOYEA", filtered)
 
-	if(!thearea)
+	if(isnull(thearea))
+		return
+	if(!isobserver(usr))
+		to_chat(usr, span_warning("Not when you're not dead!"))
 		return
 
 	var/list/L = list()
 	for(var/turf/T in get_area_turfs(thearea.type))
 		L+=T
 
-	if(!L || !L.len)
-		to_chat(usr, "<span class='warning'>No area available.</span>")
+	if(!L || !length(L))
+		to_chat(usr, span_warning("No area available."))
 		return
 
 	usr.forceMove(pick(L))
@@ -556,12 +559,25 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			target = input("Please, select a player!", "Jump to Mob", null, null) as null|anything in dest
 
 	target = tgui_input_list(usr, "Please, select a player!", "Jump to Mob", possible_destinations)
+	if(isnull(target))
+		return
+	if (!isobserver(usr))
+		return
 
-				if(T && isturf(T))	//Make sure the turf exists, then move the source to that destination.
-					A.forceMove(T)
-					A.update_parallax_contents()
-				else
-					to_chat(A, "<span class='danger'>This mob is not located in the game world.</span>")
+	var/mob/destination_mob = possible_destinations[target] //Destination mob
+
+	// During the break between opening the input menu and selecting our target, has this become an invalid option?
+	if(!SSpoints_of_interest.is_valid_poi(destination_mob))
+		return
+
+	var/mob/source_mob = src  //Source mob
+	var/turf/destination_turf = get_turf(destination_mob) //Turf of the destination mob
+
+	if(isturf(destination_turf))
+		source_mob.abstract_move(destination_turf)
+		source_mob.update_parallax_contents()
+	else
+		to_chat(source_mob, span_danger("This mob is not located in the game world."))
 
 /mob/dead/observer/verb/change_view_range()
 	set category = "Ghost"
@@ -912,8 +928,10 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		reset_perspective(null)
 
 	target = tgui_input_list(usr, "Please, select a player!", "Jump to Mob", possible_destinations)
-
-		eye_name = input("Please, select a player!", "Observe", null, null) as null|anything in creatures
+	if(isnull(target))
+		return
+	if (!isobserver(usr))
+		return
 
 		if (!eye_name)
 			return
@@ -1015,7 +1033,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			I.appearance = MA
 			t_ray_images += I
 	stored_t_ray_images += t_ray_images
-	if(t_ray_images.len)
+	if(length(t_ray_images))
 		if(t_ray_view)
 			client.images += t_ray_images
 		else

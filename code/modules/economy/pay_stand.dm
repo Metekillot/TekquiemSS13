@@ -26,11 +26,11 @@
 					return
 				name = rename_msg
 				return
-			else if(user.a_intent == INTENT_GRAB)
-				var/force_fee_input = input(user,"Set the fee!","Set a fee!",0) as num|null
+			else if(choice == "Set the fee")
+				var/force_fee_input = tgui_input_number(user, "Set the fee", "Fee", max_value = 10000)
 				if(isnull(force_fee_input) || !user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
 					return
-				force_fee = force_fee_input
+				force_fee = round(force_fee_input)
 				return
 			locked = !locked
 			to_chat(user, "<span class='notice'>You [src.locked ? "lock" : "unlock"] the paystand, protecting the bolts from [anchored ? "loosening" : "tightening"].</span>")

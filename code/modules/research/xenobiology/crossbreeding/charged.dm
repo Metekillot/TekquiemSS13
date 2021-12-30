@@ -168,9 +168,9 @@ Charged extracts:
 	if(!istype(H))
 		to_chat(user, "<span class='warning'>You must be a humanoid to use this!</span>")
 		return
-	var/racechoice = input(H, "Choose your slime subspecies.", "Slime Selection") as null|anything in sortList(subtypesof(/datum/species/jelly), GLOBAL_PROC_REF(cmp_typepaths_asc))
-	if(!racechoice)
-		to_chat(user, "<span class='notice'>You decide not to become a slime for now.</span>")
+	var/racechoice = tgui_input_list(H, "Choose your slime subspecies", "Slime Selection", sort_list(subtypesof(/datum/species/jelly), /proc/cmp_typepaths_asc))
+	if(isnull(racechoice))
+		to_chat(user, span_notice("You decide not to become a slime for now."))
 		return
 	if(!user.canUseTopic(src, BE_CLOSE))
 		return

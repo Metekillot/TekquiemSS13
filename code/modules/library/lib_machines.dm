@@ -134,13 +134,26 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 			INVOKE_ASYNC(src, PROC_REF(update_db_info))
 			return TRUE
 
-///Checks if the machine is alloweed to make another db request yet. TRUE if so, FALSE otherwise
-/obj/machinery/computer/libraryconsole/proc/prevent_db_spam()
-	var/allowed = can_db_request()
-	if(!allowed)
-		return FALSE
-	COOLDOWN_START(src, db_request_cooldown, 1 SECONDS)
-	return TRUE
+	if(href_list["settitle"])
+		var/newtitle = input("Enter a title to search for:") as text|null
+		if(newtitle)
+			title = sanitize(newtitle)
+		else
+			title = null
+	if(href_list["setcategory"])
+		var/newcategory = tgui_input_list(usr, "Choose a category to search for", "Category Search", list("Any", "Fiction", "Non-Fiction", "Adult", "Reference", "Religion"))
+		if(newcategory)
+			category = sanitize(newcategory)
+		else
+			category = "Any"
+	if(href_list["setauthor"])
+		var/newauthor = input("Enter an author to search for:") as text|null
+		if(newauthor)
+			author = sanitize(newauthor)
+		else
+			author = null
+	if(href_list["search"])
+		screenstate = 1
 
 /obj/machinery/computer/libraryconsole/proc/can_db_request()
 	if(sending_request) //Absolutely not
@@ -591,33 +604,106 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 	if(!scan.cache)
 		say("No cached book found. Aborting upload.")
 		return
-	if (!SSdbcore.Connect())
-		say("Connection to Archive has been severed. Aborting.")
-		return
-	var/datum/book_info/book = scan.cache
-	if(!book.title)
-		say("No title detected. Aborting")
-		return
-	if(!book.author)
-		say("No author detected. Aborting")
-		return
-	if(!book.content)
-		say("No content detected. Aborting")
-		return
-	var/msg = "has uploaded the book titled [book.title], [length(book.content)] signs"
-	var/datum/db_query/query_library_upload = SSdbcore.NewQuery({"
-		INSERT INTO [format_table_name("library")] (author, title, content, category, ckey, datetime, round_id_created)
-		VALUES (:author, :title, :content, :category, :ckey, Now(), :round_id)
-	"}, list("title" = book.title, "author" = book.author, "content" = book.content, "category" = upload_category, "ckey" = usr.ckey, "round_id" = GLOB.round_id))
-	if(!query_library_upload.Execute())
-		qdel(query_library_upload)
-		say("Database error encountered uploading to Archive")
-		return
-	usr.log_message(msg, LOG_GAME)
-	qdel(query_library_upload)
-	library_updated()
-	say("Upload Complete. Uploaded title will be available for printing in a moment")
-	update_db_info()
+	if(href_list["page"] && screenstate == 4)
+		page = text2num(href_list["page"])
+	if(href_list["switchscreen"])
+		switch(href_list["switchscreen"])
+			if("0")
+				screenstate = 0
+			if("1")
+				screenstate = 1
+			if("2")
+				screenstate = 2
+			if("3")
+				screenstate = 3
+			if("4")
+				screenstate = 4
+			if("5")
+				screenstate = 5
+			if("6")
+				screenstate = 6
+			if("7")
+				screenstate = 7
+			if("8")
+				screenstate = 8
+	if(href_list["arccheckout"])
+		if(obj_flags & EMAGGED)
+			src.arcanecheckout = 1
+		src.screenstate = 0
+	if(href_list["increasetime"])
+		checkoutperiod += 1
+	if(href_list["decreasetime"])
+		checkoutperiod -= 1
+		if(checkoutperiod < 1)
+			checkoutperiod = 1
+	if(href_list["editbook"])
+		buffer_book = stripped_input(usr, "Enter the book's title:", max_length = 45)
+	if(href_list["editmob"])
+		buffer_mob = stripped_input(usr, "Enter the recipient's name:", max_length = MAX_NAME_LEN)
+	if(href_list["checkout"])
+		var/datum/borrowbook/b = new /datum/borrowbook
+		b.bookname = sanitize(buffer_book)
+		b.mobname = sanitize(buffer_mob)
+		b.getdate = world.time
+		b.duedate = world.time + (checkoutperiod * 600)
+		checkouts.Add(b)
+	if(href_list["checkin"])
+		var/datum/borrowbook/b = locate(href_list["checkin"]) in checkouts
+		if(b && istype(b))
+			checkouts.Remove(b)
+	if(href_list["delbook"])
+		var/obj/item/book/b = locate(href_list["delbook"]) in inventory
+		if(b && istype(b))
+			inventory.Remove(b)
+	if(href_list["setauthor"])
+		var/newauthor = stripped_input(usr, "Enter the author's name", "Set Author", max_length = MAX_NAME_LEN)
+		if(newauthor)
+			scanner.cache.author = newauthor
+	if(href_list["setcategory"])
+		var/newcategory = tgui_input_list(usr, "Choose a category", "Set Category", list("Fiction", "Non-Fiction", "Adult", "Reference", "Religion","Technical"))
+		if(newcategory)
+			upload_category = newcategory
+	if(href_list["upload"])
+		if(scanner)
+			if(scanner.cache)
+				var/choice = tgui_alert(usr, "Are you certain you wish to upload this title to the Archive?", "Confirm Upload", list("Confirm", "Abort"))
+				if(choice == "Confirm")
+					if (!SSdbcore.Connect())
+						tgui_alert(usr,"Connection to Archive has been severed. Aborting.")
+					else
+						var/msg = "[key_name(usr)] has uploaded the book titled [scanner.cache.name], [length(scanner.cache.dat)] signs"
+						var/datum/db_query/query_library_upload = SSdbcore.NewQuery({"
+							INSERT INTO [format_table_name("library")] (author, title, content, category, ckey, datetime, round_id_created)
+							VALUES (:author, :title, :content, :category, :ckey, Now(), :round_id)
+						"}, list("title" = scanner.cache.name, "author" = scanner.cache.author, "content" = scanner.cache.dat, "category" = upload_category, "ckey" = usr.ckey, "round_id" = GLOB.round_id))
+						if(!query_library_upload.Execute())
+							qdel(query_library_upload)
+							tgui_alert(usr,"Database error encountered uploading to Archive")
+							return
+						else
+							log_game(msg)
+							qdel(query_library_upload)
+							tgui_alert(usr,"Upload Complete. Uploaded title will be unavailable for printing for a short period")
+	if(href_list["newspost"])
+		if(!GLOB.news_network)
+			tgui_alert(usr,"No news network found on station. Aborting.")
+		var/channelexists = 0
+		for(var/datum/newscaster/feed_channel/FC in GLOB.news_network.network_channels)
+			if(FC.channel_name == "Nanotrasen Book Club")
+				channelexists = 1
+				break
+		if(!channelexists)
+			GLOB.news_network.CreateFeedChannel("Nanotrasen Book Club", "Library", null)
+		GLOB.news_network.SubmitArticle(scanner.cache.dat, "[scanner.cache.name]", "Nanotrasen Book Club", null)
+		tgui_alert(usr,"Upload complete. Your uploaded title is now available on station newscasters.")
+	if(href_list["orderbyid"])
+		if(printer_cooldown > world.time)
+			say("Printer unavailable. Please allow a short time before attempting to print.")
+		else
+			var/orderid = input("Enter your order:") as num|null
+			if(orderid)
+				if(isnum(orderid) && ISINTEGER(orderid))
+					href_list["targetid"] = num2text(orderid)
 
 /// Call this proc to attempt a print. It will return false if the print failed, true otherwise, longside some ux
 /// Accepts a callback to call when the print "finishes"

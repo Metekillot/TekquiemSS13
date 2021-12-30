@@ -130,11 +130,9 @@
 /obj/structure/sign/attackby(obj/item/I, mob/user, params)
 	if(is_editable && IS_WRITING_UTENSIL(I))
 		if(!length(GLOB.editable_sign_types))
-			populate_editable_sign_types()
-			if(!length(GLOB.editable_sign_types))
-				CRASH("GLOB.editable_sign_types failed to populate")
-		var/choice = input(user, "Select a sign type.", "Sign Customization") as null|anything in GLOB.editable_sign_types
-		if(!choice)
+			CRASH("GLOB.editable_sign_types failed to populate")
+		var/choice = tgui_input_list(user, "Select a sign type", "Sign Customization", GLOB.editable_sign_types)
+		if(isnull(choice))
 			return
 		if(!Adjacent(user)) //Make sure user is adjacent still.
 			to_chat(user, "<span class='warning'>You need to stand next to the sign to change it!</span>")
@@ -157,14 +155,28 @@
 		return
 	return ..()
 
-/**
- * This is called when a sign is removed from a wall, either through deconstruction or being knocked down.
- * @param mob/living/user The user who removed the sign, if it was knocked down by a mob.
- */
-/obj/structure/sign/proc/knock_down(mob/living/user)
-	var/turf/drop_turf
-	if(user)
-		drop_turf = get_turf(user)
+/obj/item/sign/attackby(obj/item/I, mob/user, params)
+	if(is_editable && istype(I, /obj/item/pen))
+		if(!length(GLOB.editable_sign_types))
+			CRASH("GLOB.editable_sign_types failed to populate")
+		var/choice = tgui_input_list(user, "Select a sign type", "Sign Customization", GLOB.editable_sign_types)
+		if(isnull(choice))
+			return
+		if(!Adjacent(user)) //Make sure user is adjacent still.
+			to_chat(user, span_warning("You need to stand next to the sign to change it!"))
+			return
+		user.visible_message(span_notice("You begin changing [src]."))
+		if(!do_after(user, 4 SECONDS, target = src))
+			return
+		set_sign_type(GLOB.editable_sign_types[choice])
+		user.visible_message(span_notice("You finish changing the sign."))
+		return
+	return ..()
+
+/obj/item/sign/proc/set_sign_type(obj/structure/sign/fake_type)
+	name = initial(fake_type.name)
+	if(fake_type != /obj/structure/sign/blank)
+		desc = "[initial(fake_type.desc)] It can be placed on a wall."
 	else
 		drop_turf = drop_location()
 	var/obj/item/sign/unwrenched_sign = new (drop_turf)

@@ -78,10 +78,10 @@
 	implements = implements + implements_extract
 
 /datum/surgery_step/manipulate_organs/preop(mob/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery)
-	I = null
-	if(istype(tool, /obj/item/organ_storage))
-		if(!tool.contents.len)
-			to_chat(user, "<span class='warning'>There is nothing inside [tool]!</span>")
+	target_organ = null
+	if(istype(tool, /obj/item/borg/apparatus/organ_storage))
+		if(!length(tool.contents))
+			to_chat(user, span_warning("There is nothing inside [tool]!"))
 			return -1
 		I = tool.contents[1]
 		if(!isorgan(I))
@@ -105,8 +105,10 @@
 	else if(implement_type in implements_extract)
 		current_type = "extract"
 		var/list/organs = target.getorganszone(target_zone)
-		if(!organs.len)
-			to_chat(user, "<span class='warning'>There are no removable organs in [target]'s [parse_zone(target_zone)]!</span>")
+		if (target_zone == BODY_ZONE_PRECISE_EYES)
+			target_zone = check_zone(target_zone)
+		if(!length(organs))
+			to_chat(user, span_warning("There are no removable organs in [target]'s [parse_zone(target_zone)]!"))
 			return -1
 		else
 			for(var/obj/item/organ/O in organs)
@@ -114,10 +116,13 @@
 				organs -= O
 				organs[O.name] = O
 
-			I = input("Remove which organ?", "Surgery", null, null) as null|anything in sortList(organs)
-			if(I && user && target && user.Adjacent(target) && user.get_active_held_item() == tool)
-				I = organs[I]
-				if(!I)
+			var/chosen_organ = tgui_input_list(user, "Remove which organ?", "Surgery", sort_list(organs))
+			if(isnull(chosen_organ))
+				return -1
+			target_organ = chosen_organ
+			if(user && target && user.Adjacent(target) && user.get_active_held_item() == tool)
+				target_organ = organs[target_organ]
+				if(!target_organ)
 					return -1
 				if(I.organ_flags & ORGAN_UNREMOVABLE)
 					to_chat(user, "<span class='warning'>[I] is too well connected to take out!</span>")

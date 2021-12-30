@@ -21,13 +21,18 @@
 /obj/machinery/door/poddoor/attackby(obj/item/W, mob/user, params)
 	. = ..()
 
-	if(istype(W,/obj/item/vamp/keys))
-		var/obj/item/vamp/keys/key = W
-		if(key.accesslocks.Find(id))
-			var/area/current_area = get_area(src)
-			for(var/obj/machinery/button/door/door_button in current_area)
-				door_button.device.pulsed()
-				break
+/obj/machinery/door/poddoor/multitool_act(mob/living/user, obj/item/tool)
+	. = ..()
+	if (!panel_open)
+		return
+	if (deconstruction != BLASTDOOR_FINISHED)
+		return
+	var/change_id = tgui_input_number(user, "Set the door controllers ID", "Door Controller ID", id, 100, 1)
+	if(isnull(change_id))
+		return
+	id = round(change_id)
+	to_chat(user, span_notice("You change the ID to [id]."))
+	balloon_alert(user, "ID changed")
 
 	if(ertblast && W.tool_behaviour == TOOL_SCREWDRIVER) // This makes it so ERT members cannot cheese by opening their blast doors.
 		to_chat(user, "<span class='warning'>This shutter has a different kind of screw, you cannot unscrew the panel open.</span>")

@@ -251,9 +251,14 @@
 		if("select_colour")
 			. = can_change_colour && select_colour(usr)
 		if("enter_text")
-			var/txt = stripped_input(usr,"Choose what to write.",
-				"Scribbles",default = text_buffer)
-			text_buffer = crayon_text_strip(txt)
+			var/txt = tgui_input_text(usr, "Choose what to write", "Scribbles", text_buffer)
+			if(isnull(txt))
+				return
+			txt = crayon_text_strip(txt)
+			if(text_buffer == txt)
+				return // No valid changes.
+			text_buffer = txt
+
 			. = TRUE
 			paint_mode = PAINT_NORMAL
 			drawtype = "a"

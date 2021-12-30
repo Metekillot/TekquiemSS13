@@ -144,17 +144,22 @@
 		var/turf/T = get_turf(target)
 		log_game("[key_name(user)] has set the teleporter target to [target] at [AREACOORD(T)]")
 
-	else
-		var/list/S = power_station.linked_stations
-		for(var/obj/machinery/teleport/station/R in S)
-			if(is_eligible(R) && R.teleporter_hub)
-				var/area/A = get_area(R)
-				L[avoid_assoc_duplicate_keys(A.name, areaindex)] = R
-		if(!L.len)
-			to_chat(user, "<span class='alert'>No active connected stations located.</span>")
+	if (regime_set == "Teleporter")
+		var/desc = tgui_input_list(usr, "Select a location to lock in", "Locking Computer", sort_list(targets))
+		if(isnull(desc))
 			return
-		var/desc = input("Please select a station to lock in.", "Locking Computer") as null|anything in sortList(L)
-		var/obj/machinery/teleport/station/target_station = L[desc]
+		set_teleport_target(targets[desc])
+		var/turf/target_turf = get_turf(targets[desc])
+		log_game("[key_name(user)] has set the teleporter target to [targets[desc]] at [AREACOORD(target_turf)]")
+	else
+		if (!length(targets))
+			to_chat(user, span_alert("No active connected stations located."))
+			return
+
+		var/desc = tgui_input_list(usr, "Select a station to lock in", "Locking Computer", sort_list(targets))
+		if(isnull(desc))
+			return
+		var/obj/machinery/teleport/station/target_station = targets[desc]
 		if(!target_station || !target_station.teleporter_hub)
 			return
 		var/turf/T = get_turf(target_station)
