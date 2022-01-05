@@ -457,58 +457,10 @@
 
 /obj/item/paper/Click(location, control, params)
 	. = ..()
-	var/list/modifiers = params2list(params)
-	if(!modifiers["right"])
-		return
-
-	var/mob/living/carbon/human/user = usr
-	var/obj/item/tool = user.get_active_held_item()
-	var/list/writing_stats = tool?.get_writing_implement_details()
-
-	if(!length(writing_stats))
-		return NONE
-	if(writing_stats["interaction_mode"] != MODE_STAMPING)
-		return NONE
-	if(!user.can_read(src) || user.is_blind()) // Just leftclick instead
-		return NONE
-
-	add_stamp(writing_stats["stamp_class"], rand(1, 300), rand(1, 400), stamp_icon_state = writing_stats["stamp_icon_state"])
-	user.visible_message(
-		span_notice("[user] quickly stamps [src] with [tool] without looking."),
-		span_notice("You quickly stamp [src] with [tool] without looking."),
-	)
-	playsound(src, 'sound/items/handling/standard_stamp.ogg', 50, vary = TRUE)
-
-	return FALSE // Stop the UI from opening.
-
-/**
- * Attempts to ui_interact the paper to the given user, with some sanity checking
- * to make sure the camera still exists via the weakref and that this paper is still
- * attached to it.
- */
-/obj/item/paper/proc/show_through_camera(mob/living/user)
-	if(!can_show_to_mob_through_camera(user))
-		return
-
-	return ui_interact(user)
-
-/obj/item/paper/proc/can_show_to_mob_through_camera(mob/living/user)
-	var/obj/machinery/camera/held_to_camera = camera_holder.resolve()
-
-	if(!held_to_camera)
-		return FALSE
-
-	if(isAI(user))
-		var/mob/living/silicon/ai/ai_user = user
-		if(ai_user.control_disabled || (ai_user.stat == DEAD))
-			return FALSE
-
-		return TRUE
-
-	if(user.client?.eye != held_to_camera)
-		return FALSE
-
-	return TRUE
+	if(.)
+		info = "[stars(info)]"
+		for(var/index in 1 to length(add_info))
+			add_info[index] = "[stars(add_info[index])]"
 
 /obj/item/paper/ui_assets(mob/user)
 	return list(
