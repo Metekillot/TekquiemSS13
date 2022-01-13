@@ -133,14 +133,20 @@
 	],
 
 	"threat": [
-		"sabbat",
-		"expendable",
-		"caitiff",
-		"primogen",
-		"traitor",
-		"anarch",
-		"tzimisce",
-		"werewolf"
+		"Cult",
+		"Wizard",
+		"Blob",
+		"Ling",
+		"Ops",
+		"Spiders",
+		"Xenos",
+		"Revenant",
+		"Traitor",
+		"Harm",
+		"Blue APC",
+		"I hear flashing",
+		"Help",
+		"%TARGETNAME%"
 	],
 
 	"location": [

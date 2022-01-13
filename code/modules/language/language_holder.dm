@@ -279,11 +279,6 @@ Key procs
 	understood_languages = list(/datum/language/english = list(LANGUAGE_ATOM))
 	spoken_languages = list()
 
-/datum/language_holder/swarmer
-	understood_languages = list()
-	spoken_languages = list()
-	blocked_languages = list(/datum/language/english = list(LANGUAGE_ATOM))
-
 /datum/language_holder/venus
 	understood_languages = list(/datum/language/italian = list(LANGUAGE_ATOM))
 	spoken_languages = list(/datum/language/italian = list(LANGUAGE_ATOM))

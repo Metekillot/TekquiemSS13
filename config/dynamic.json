@@ -45,6 +45,72 @@
 			"autotraitor_cooldown": 450
 		}
 	},
-	"Midround": {},
-	"Latejoin": {}
+
+	"Midround": {
+		"Syndicate Sleeper Agent": {
+			"weight": 0
+		},
+
+		"Family Head Aspirants": {
+			"weight": 0
+		},
+
+		"Malfunctioning AI": {
+			"weight": 0
+		},
+
+		"Wizard": {
+			"weight": 0
+		},
+
+		"Nuclear Assault": {
+			"weight": 0
+		},
+
+		"Blob": {
+			"weight": 0
+		},
+
+		"Blob Infection": {
+			"weight": 0
+		},
+
+		"Alien Infestation": {
+			"weight": 0
+		},
+
+		"Nightmare": {
+			"weight": 0
+		},
+
+		"Space Dragon": {
+			"weight": 0
+		},
+
+		"Abductors": {
+			"weight": 0
+		},
+
+		"Space Ninja": {
+			"weight": 0
+		},
+
+		"Spiders": {
+			"weight": 0
+		}
+	},
+
+	"Latejoin": {
+		"Syndicate Infiltrator": {
+			"weight": 0
+		},
+
+		"Provocateur": {
+			"weight": 0
+		},
+
+		"Heretic Smuggler": {
+			"weight": 0
+		}
+	}
 }

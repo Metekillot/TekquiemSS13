@@ -245,6 +245,82 @@
 			for(var/job in job_lists[department])
 				if(break_counter > 0 && (break_counter % 3 == 0))
 					output += "<br>"
+				break_counter++
+				var/job_name = job_datum.title
+				if(length(job_datum.departments_list) > 1) //This job is in multiple departments, so we need to check all the boxes.
+					// Clicking this will also toggle all the other boxes, minus this one.
+					var/department_index = job_datum.departments_list.Find(department.type)
+					if(!department_index)
+						stack_trace("Failed to find a department index for [department.type] in the departments_list of [job_datum.type]")
+					output += {"<label class='inputlabel checkbox'>[job_name]
+						<input type='checkbox' id='[job_name]_[department_index]' name='[job_name]' class='[label_class]' value='1'[tgui_fancy ? " onClick='toggle_other_checkboxes(this, \"[length(job_datum.departments_list)]\", \"[department_index]\")'" : ""]>
+						<div class='inputbox[(job_name in banned_from) ? " banned" : ""]'></div></label>
+						"}
+				else
+					output += {"<label class='inputlabel checkbox'>[job_name]
+							<input type='checkbox' name='[job_name]' class='[label_class]' value='1'>
+							<div class='inputbox[(job_name in banned_from) ? " banned" : ""]'></div></label>
+							"}
+			output += "</div></div>"
+			break_counter = 0
+
+		var/list/other_job_lists = list(
+			"Abstract" = list("Appearance", "Emote", "Deadchat", "OOC", "Urgent Adminhelp"),
+			)
+		for(var/department in other_job_lists)
+			output += "<div class='column'><label class='rolegroup [ckey(department)]'>[tgui_fancy ? "<input type='checkbox' name='[department]' class='hidden' onClick='header_click_all_checkboxes(this)'>" : ""][department]</label><div class='content'>"
+			break_counter = 0
+			for(var/job in other_job_lists[department])
+				if(break_counter > 0 && (break_counter % 3 == 0))
+					output += "<br>"
+				output += {"<label class='inputlabel checkbox'>[job]
+							<input type='checkbox' name='[job]' class='[department]' value='1'>
+							<div class='inputbox[(job in banned_from) ? " banned" : ""]'></div></label>
+				"}
+				break_counter++
+			output += "</div></div>"
+		var/list/long_job_lists = list(
+			"Ghost and Other Roles" = list(
+				ROLE_PAI,
+				ROLE_BRAINWASHED,
+				ROLE_DEATHSQUAD,
+				ROLE_DRONE,
+				ROLE_LAVALAND,
+				ROLE_MIND_TRANSFER,
+				ROLE_POSIBRAIN,
+				ROLE_SENTIENCE,
+			),
+			"Antagonist Positions" = list(
+				ROLE_ABDUCTOR,
+				ROLE_ALIEN,
+				ROLE_BLOB,
+				ROLE_BROTHER,
+				ROLE_CHANGELING,
+				ROLE_CULTIST,
+				ROLE_FAMILIES,
+				ROLE_HERETIC,
+				ROLE_HIVE,
+				ROLE_INTERNAL_AFFAIRS,
+				ROLE_MALF,
+				ROLE_NINJA,
+				ROLE_OPERATIVE,
+				ROLE_OVERTHROW,
+				ROLE_REV,
+				ROLE_REVENANT,
+				ROLE_REV_HEAD,
+				ROLE_SENTIENT_DISEASE,
+				ROLE_SPIDER,
+				ROLE_SYNDICATE,
+				ROLE_TRAITOR,
+				ROLE_WIZARD,
+			),
+		)
+		for(var/department in long_job_lists)
+			output += "<div class='column'><label class='rolegroup long [ckey(department)]'>[tgui_fancy ? "<input type='checkbox' name='[department]' class='hidden' onClick='header_click_all_checkboxes(this)'>" : ""][department]</label><div class='content'>"
+			break_counter = 0
+			for(var/job in long_job_lists[department])
+				if(break_counter > 0 && (break_counter % 10 == 0))
+					output += "<br>"
 				output += {"<label class='inputlabel checkbox'>[job]
 							<input type='checkbox' name='[job]' class='[department]' value='1'>
 							<div class='inputbox[(job in banned_from) ? " banned" : ""]'></div></label>
