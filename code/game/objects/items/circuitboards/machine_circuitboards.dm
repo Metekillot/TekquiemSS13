@@ -355,12 +355,6 @@
 		/obj/item/stock_parts/manipulator = 1)
 	def_components = list(/obj/item/stack/ore/bluespace_crystal = /obj/item/stack/ore/bluespace_crystal/artificial)
 
-/obj/item/circuitboard/machine/paystand
-	name = "Pay Stand (Machine Board)"
-	icon_state = "generic"
-	build_path = /obj/machinery/paystand
-	req_components = list()
-
 /obj/item/circuitboard/machine/protolathe
 	name = "Protolathe (Machine Board)"
 	icon_state = "generic"

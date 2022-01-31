@@ -80,10 +80,6 @@
 /obj/item/storage/cans/sixbeer,
 /turf/open/floor/plasteel/grimy,
 /area/ruin/space/has_grav/hellfactoryoffice)
-"am" = (
-/obj/machinery/paystand,
-/turf/open/floor/plasteel/grimy,
-/area/ruin/space/has_grav/hellfactoryoffice)
 "an" = (
 /obj/effect/decal/remains/human,
 /obj/effect/decal/cleanable/blood/old,
@@ -1390,7 +1386,7 @@ aa
 aa
 aa
 ah
-am
+ao
 ao
 aH
 ao
