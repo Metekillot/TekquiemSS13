@@ -122,7 +122,7 @@
 	var/shock_damage = min(rand(30,40),rand(30,40))
 
 	if(iscarbon(user))
-		user.Paralyze(300)
+		user.Paralyze(10 SECONDS)
 		user.electrocute_act(shock_damage, src, 1)
 
 	else if(issilicon(user))
@@ -142,8 +142,11 @@
 /obj/machinery/field/proc/bump_field(atom/movable/AM as mob|obj)
 	if(hasShocked)
 		return FALSE
-	hasShocked = TRUE
-	do_sparks(5, TRUE, AM.loc)
-	var/atom/target = get_edge_target_turf(AM, get_dir(src, get_step_away(AM, src)))
-	AM.throw_at(target, 200, 4)
-	addtimer(CALLBACK(src, PROC_REF(clear_shock)), 5)
+	has_shocked = TRUE
+	do_sparks(5, TRUE, considered_atom.loc)
+	var/atom/target = get_edge_target_turf(considered_atom, get_dir(src, get_step_away(considered_atom, src)))
+	if(isliving(considered_atom))
+		to_chat(considered_atom, span_userdanger("The field repels you with tremendous force!"))
+	playsound(src, 'sound/effects/gravhit.ogg', 50, TRUE)
+	considered_atom.throw_at(target, 200, 4)
+	addtimer(CALLBACK(src, .proc/clear_shock), 5)
