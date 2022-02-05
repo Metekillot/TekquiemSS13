@@ -623,9 +623,11 @@
 	if(incapacitated())
 		return
 	var/input
-	switch(alert("Would you like to select a hologram based on a crew member, an animal, or switch to a unique avatar?",,"Crew Member","Unique","Animal"))
-		if("Crew Member")
-			var/list/personnel_list = list()
+	switch(tgui_input_list(usr, "Would you like to select a hologram based on a custom character, an animal, or switch to a unique avatar?", "Customize", list("Custom Character","Unique","Animal")))
+		if("Custom Character")
+			switch(tgui_alert(usr,"Would you like to base it off of your current character loadout, or a member on station?", "Customize", list("My Character","Station Member")))
+				if("Station Member")
+					var/list/personnel_list = list()
 
 			for(var/datum/data/record/t in GLOB.data_core.locked)//Look in data core locked.
 				personnel_list["[t.fields["name"]]: [t.fields["rank"]]"] = t.fields["image"]//Pull names, rank, and image.
@@ -644,7 +646,7 @@
 						holo_icon = getHologramIcon(icon(character_icon))
 
 				if("My Character")
-					switch(tgui_alert(usr,"WARNING: Your AI hologram will take the appearance of your currently selected character ([usr.client.prefs?.read_preference(/datum/preference/name/real_name)]). Are you sure you want to proceed?",,list("Yes","No")))
+					switch(tgui_alert(usr,"WARNING: Your AI hologram will take the appearance of your currently selected character ([usr.client.prefs?.read_preference(/datum/preference/name/real_name)]). Are you sure you want to proceed?", "Customize", list("Yes","No")))
 						if("Yes")
 							var/mob/living/carbon/human/dummy/ai_dummy = new
 							var/mutable_appearance/appearance = usr.client.prefs.render_new_preview_appearance(ai_dummy)

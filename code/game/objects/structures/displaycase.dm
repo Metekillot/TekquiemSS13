@@ -504,14 +504,15 @@
 				playsound(src, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
 				return
 
-			var/new_price_input = tgui_input_number(usr, "Sale price for this vend-a-tray", "New Price", 10, 1000, 1)
-			if(isnull(new_price_input) || (payments_acc != potential_acc.registered_account))
-				to_chat(usr, "<span class='warning'>[src] rejects your new price.</span>")
+			var/new_price_input = tgui_input_number(usr, "Sale price for this vend-a-tray", "New Price", 10, 1000)
+			if(!new_price_input || QDELETED(usr) || QDELETED(src))
 				return
-			if(!usr.canUseTopic(src, BE_CLOSE, FALSE, NO_TK) )
-				to_chat(usr, "<span class='warning'>You need to get closer!</span>")
+			if(payments_acc != potential_acc.registered_account)
+				to_chat(usr, span_warning("[src] rejects your new price."))
 				return
-			new_price_input = round(new_price_input)
+			if(!usr.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
+				to_chat(usr, span_warning("You need to get closer!"))
+				return
 			sale_price = new_price_input
 			to_chat(usr, "<span class='notice'>The cost is now set to [sale_price].</span>")
 			SStgui.update_uis(src)

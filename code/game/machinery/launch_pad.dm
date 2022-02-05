@@ -380,8 +380,8 @@
 			pad.display_name = new_name
 		if("remove")
 			. = TRUE
-			if(usr && alert(usr, "Are you sure?", "Unlink Launchpad", "I'm Sure", "Abort") != "Abort")
-				pad = null
+			if(usr && tgui_alert(usr, "Are you sure?", "Unlink Launchpad", list("Confirm", "Abort")) == "I'm Sure")
+				our_pad = null
 		if("launch")
 			sending = TRUE
 			teleport(usr, pad)
