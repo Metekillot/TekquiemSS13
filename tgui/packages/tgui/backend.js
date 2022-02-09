@@ -257,35 +257,33 @@ export const sendAct = (action, payload = {}) => {
   });
 };
 
-/**
- * @typedef BackendState
- * @type {{
- *   config: {
- *     title: string,
- *     status: number,
- *     interface: string,
- *     window: {
- *       key: string,
- *       size: [number, number],
- *       fancy: boolean,
- *       locked: boolean,
- *     },
- *     client: {
- *       ckey: string,
- *       address: string,
- *       computer_id: string,
- *     },
- *     user: {
- *       name: string,
- *       observer: number,
- *     },
- *   },
- *   data: any,
- *   shared: any,
- *   suspending: boolean,
- *   suspended: boolean,
- * }}
- */
+type BackendState<TData> = {
+  config: {
+    title: string,
+    status: number,
+    interface: string,
+    refreshing: boolean,
+    window: {
+      key: string,
+      size: [number, number],
+      fancy: boolean,
+      locked: boolean,
+    },
+    client: {
+      ckey: string,
+      address: string,
+      computer_id: string,
+    },
+    user: {
+      name: string,
+      observer: number,
+    },
+  },
+  data: TData,
+  shared: Record<string, any>,
+  suspending: boolean,
+  suspended: boolean,
+}
 
 /**
  * Selects a backend-related slice of Redux state

@@ -195,7 +195,7 @@
 		return
 	if(!COOLDOWN_FINISHED(src, refresh_cooldown))
 		refreshing = TRUE
-		addtimer(CALLBACK(src, PROC_REF(send_full_update), custom_data, force), COOLDOWN_TIMELEFT(src, refresh_cooldown), TIMER_UNIQUE)
+		addtimer(CALLBACK(src, .proc/send_full_update), TGUI_REFRESH_FULL_UPDATE_COOLDOWN, TIMER_UNIQUE)
 		return
 	refreshing = FALSE
 	var/should_update_data = force || status >= UI_UPDATE
@@ -233,10 +233,7 @@
 	json_data["config"] = list(
 		"title" = title,
 		"status" = status,
-		"interface" = list(
-			"name" = interface,
-			"layout" = "list", // TODO: user.client.prefs.read_preference(src_object.layout_prefs_used),
-		),
+		"interface" = interface,
 		"refreshing" = refreshing,
 		"window" = list(
 			"key" = window_key,
