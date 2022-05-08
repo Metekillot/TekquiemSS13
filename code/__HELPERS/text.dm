@@ -101,6 +101,7 @@
 		return null
 	return text
 
+
 /**
  * Used to get a properly sanitized input. Returns null if cancel is pressed.
  *
@@ -116,7 +117,7 @@
 	if(isnull(user_input)) // User pressed cancel
 		return
 	if(no_trim)
-		return copytext_char(html_encode(user_input), 1, max_length)
+		return copytext(html_encode(user_input), 1, max_length)
 	else
 		return trim(html_encode(user_input), max_length) //trim is "outside" because html_encode can expand single symbols into multiple symbols (such as turning < into &lt;)
 
@@ -135,7 +136,7 @@
 	if(isnull(user_input)) // User pressed cancel
 		return
 	if(no_trim)
-		return copytext_char(html_encode(user_input), 1, max_length)
+		return copytext(html_encode(user_input), 1, max_length)
 	else
 		return trim(html_encode(user_input), max_length)
 
