@@ -64,7 +64,7 @@
 	window_open = FALSE
 	winshow(client, "tgui_say", FALSE)
 	window.send_message("props", list(
-		lightMode = FALSE,
+		lightMode = client.prefs?.read_preference(/datum/preference/toggle/tgui_say_light_mode),
 		maxLength = max_length,
 	))
 	stop_thinking()
@@ -82,7 +82,7 @@
 	if(!payload?["channel"])
 		CRASH("No channel provided to an open TGUI-Say")
 	window_open = TRUE
-	if(payload["channel"] != OOC_CHANNEL && payload["channel"] != ADMIN_CHANNEL && payload["channel"] != LOOC_CHANNEL) // TFN EDIT CHANGE (Add LOOC_CHANNEL)
+	if(payload["channel"] != OOC_CHANNEL)
 		start_thinking()
 	if(client.typing_indicators)
 		log_speech_indicators("[key_name(client)] started typing at [loc_name(client.mob)], indicators enabled.")
@@ -117,10 +117,10 @@
 		close()
 		return TRUE
 	if (type == "thinking")
-		if(payload["visible"] == TRUE)
+		if(payload["mode"] == TRUE)
 			start_thinking()
 			return TRUE
-		if(payload["visible"] == FALSE)
+		if(payload["mode"] == FALSE)
 			stop_thinking()
 			return TRUE
 		return FALSE

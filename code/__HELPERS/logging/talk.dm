@@ -35,9 +35,11 @@
 		target.log_talk(message, LOG_VICTIM, tag = "[tag] from [key_name(source)]", log_globally = FALSE)
 
 /// Logging for speech taking place over comms, as well as tcomms equipment
-/proc/log_telecomms(text, list/data)
-	logger.Log(LOG_CATEGORY_TELECOMMS, text, data)
+/proc/log_telecomms(text)
+	if (CONFIG_GET(flag/log_telecomms))
+		WRITE_LOG(GLOB.world_telecomms_log, "TCOMMS: [text]")
 
 /// Logging for speech indicators.
-/proc/log_speech_indicators(text, list/data)
-	logger.Log(LOG_CATEGORY_SPEECH_INDICATOR, text, data)
+/proc/log_speech_indicators(text)
+	if (CONFIG_GET(flag/log_speech_indicators))
+		WRITE_LOG(GLOB.world_speech_indicators_log, "SPEECH INDICATOR: [text]")

@@ -10,7 +10,7 @@
 /datum/tgui_say/proc/alter_entry(payload)
 	var/entry = payload["entry"]
 	/// No OOC leaks
-	if(!entry || payload["channel"] == OOC_CHANNEL || payload["channel"] == ME_CHANNEL || payload["channel"] == LOOC_CHANNEL) // TFN EDIT: LOOC CHANNEL
+	if(!entry || payload["channel"] == OOC_CHANNEL || payload["channel"] == ME_CHANNEL)
 		return pick(hurt_phrases)
 	/// Random trimming for larger sentences
 	if(length(entry) > 50)
@@ -31,30 +31,19 @@
  *  boolean - on success or failure
  */
 /datum/tgui_say/proc/delegate_speech(entry, channel)
+	if(channel == OOC_CHANNEL)
+		client.ooc(entry)
+		return TRUE
 	switch(channel)
-		if(SAY_CHANNEL)
-			client.mob.say_verb(entry)
-			return TRUE
 		if(RADIO_CHANNEL)
-			client.mob.say_verb(".r" + entry)
+			client.mob.say_verb(";" + entry)
 			return TRUE
 		if(ME_CHANNEL)
 			client.mob.me_verb(entry)
 			return TRUE
-		if(OOC_CHANNEL)
-			client.ooc(entry)
+		if(SAY_CHANNEL)
+			client.mob.say_verb(entry)
 			return TRUE
-		if(ADMIN_CHANNEL)
-			client.cmd_admin_say(entry)
-			return TRUE
-		// TFN EDIT START
-		if(LOOC_CHANNEL)
-			client.looc(entry)
-			return TRUE
-		if(WHIS_CHANNEL)
-			client.mob.whisper_verb(entry)
-			return TRUE
-		// TFN EDIT END
 	return FALSE
 
 /**

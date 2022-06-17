@@ -208,6 +208,15 @@
 
 	/// If the client is currently under the restrictions of the interview system
 	var/interviewee = FALSE
-	// ! For our server's purposes, the following will ALWAYS be enabled.
+
+	/// Whether or not this client has standard hotkeys enabled
+	var/hotkeys = TRUE
+
+	/// Whether or not this client has the combo HUD enabled
+	var/combo_hud_enabled = FALSE
+
+	/// If this client has been fully initialized or not
+	var/fully_created = FALSE
+
 	/// Does this client have typing indicators enabled?
-	var/typing_indicators = TRUE
+	var/typing_indicators = FALSE

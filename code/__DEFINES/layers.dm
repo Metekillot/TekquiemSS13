@@ -141,12 +141,9 @@
 ///Popup Chat Messages
 #define RUNECHAT_PLANE 21
 /// Plane for balloon text (text that fades up)
-#define BALLOON_CHAT_PLANE 22
-
-#define ATMOS_GROUP_PLANE 23
-#define ATMOS_GROUP_LAYER 23
-
-#define TYPING_LAYER 24
+#define BALLOON_CHAT_PLANE 502
+/// Bubble for typing indicators
+#define TYPING_LAYER 500
 
 //HUD layer defines
 

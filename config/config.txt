@@ -75,6 +75,9 @@ ENABLE_LOCALHOST_RANK
 ## Allows admins to bypass job playtime requirements.
 #USE_EXP_RESTRICTIONS_ADMIN_BYPASS
 
+## log speech indicators
+LOG_SPEECH_INDICATORS
+
 ##Log camera pictures - Must have picture logging enabled
 PICTURE_LOGGING_CAMERA
 

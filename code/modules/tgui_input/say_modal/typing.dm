@@ -1,3 +1,9 @@
+/// Thinking
+GLOBAL_DATUM_INIT(thinking_indicator, /mutable_appearance, mutable_appearance('icons/mob/talk.dmi', "default3", TYPING_LAYER))
+/// Typing
+GLOBAL_DATUM_INIT(typing_indicator, /mutable_appearance, mutable_appearance('icons/mob/talk.dmi', "default0", TYPING_LAYER))
+
+
 /** Creates a thinking indicator over the mob. */
 /mob/proc/create_thinking_indicator()
 	return
@@ -27,6 +33,15 @@
 	remove_all_indicators()
 	return ..()
 
+/// Whether or not to show a typing indicator when speaking. Defaults to on.
+/datum/preference/toggle/typing_indicator
+	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+	savefile_key = "typingIndicator"
+	savefile_identifier = PREFERENCE_PLAYER
+
+/datum/preference/toggle/typing_indicator/apply_to_client(client/client, value)
+	client?.typing_indicators = value
+
 /** Sets the mob as "thinking" - with indicator and variable thinking_IC */
 /datum/tgui_say/proc/start_thinking()
 	if(!window_open || !client.typing_indicators)
@@ -50,7 +65,7 @@
 	if(!window_open || !client.typing_indicators || !client.mob.thinking_IC)
 		return FALSE
 	client.mob.create_typing_indicator()
-	addtimer(CALLBACK(src, PROC_REF(stop_typing)), 5 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_STOPPABLE)
+	addtimer(CALLBACK(src, .proc/stop_typing), 5 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_STOPPABLE)
 
 /**
  * Callback to remove the typing indicator after a brief period of inactivity.
@@ -66,28 +81,28 @@
 
 /// Overrides for overlay creation
 /mob/living/create_thinking_indicator()
-	if(active_thinking_indicator || active_typing_indicator || !thinking_IC || stat != CONSCIOUS )
+	if(thinking_indicator || typing_indicator || !thinking_IC || stat != CONSCIOUS )
 		return FALSE
-	active_thinking_indicator = mutable_appearance('icons/mob/talk.dmi', "[bubble_icon]3", TYPING_LAYER)
-	add_overlay(active_thinking_indicator)
+	add_overlay(GLOB.thinking_indicator)
+	thinking_indicator = TRUE
 
 /mob/living/remove_thinking_indicator()
-	if(!active_thinking_indicator)
+	if(!thinking_indicator)
 		return FALSE
-	cut_overlay(active_thinking_indicator)
-	active_thinking_indicator = null
+	cut_overlay(GLOB.thinking_indicator)
+	thinking_indicator = FALSE
 
 /mob/living/create_typing_indicator()
-	if(active_typing_indicator || active_thinking_indicator || !thinking_IC || stat != CONSCIOUS)
+	if(typing_indicator || thinking_indicator || !thinking_IC || stat != CONSCIOUS)
 		return FALSE
-	active_typing_indicator = mutable_appearance('icons/mob/talk.dmi', "[bubble_icon]0", TYPING_LAYER)
-	add_overlay(active_typing_indicator)
+	add_overlay(GLOB.typing_indicator)
+	typing_indicator = TRUE
 
 /mob/living/remove_typing_indicator()
-	if(!active_typing_indicator)
+	if(!typing_indicator)
 		return FALSE
-	cut_overlay(active_typing_indicator)
-	active_typing_indicator = null
+	cut_overlay(GLOB.typing_indicator)
+	typing_indicator = FALSE
 
 /mob/living/remove_all_indicators()
 	thinking_IC = FALSE

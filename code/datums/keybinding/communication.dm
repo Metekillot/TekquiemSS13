@@ -7,28 +7,14 @@
 	full_name = "IC Say"
 	keybind_signal = COMSIG_KB_CLIENT_SAY_DOWN
 
-/datum/keybinding/client/communication/say/down(client/user)
-	. = ..()
-	if(.)
-		return
-	winset(user, null, "command=[user.tgui_say_create_open_command(SAY_CHANNEL)]")
-	return TRUE
-
 /datum/keybinding/client/communication/radio
 	hotkey_keys = list("Y")
 	name = RADIO_CHANNEL
 	full_name = "IC Radio (;)"
 	keybind_signal = COMSIG_KB_CLIENT_RADIO_DOWN
 
-/datum/keybinding/client/communication/radio/down(client/user)
-	. = ..()
-	if(.)
-		return
-	winset(user, null, "command=[user.tgui_say_create_open_command(RADIO_CHANNEL)]")
-	return TRUE
-
 /datum/keybinding/client/communication/ooc
-	hotkey_keys = list("P")
+	hotkey_keys = list("O")
 	name = OOC_CHANNEL
 	full_name = "Out Of Character Say (OOC)"
 	keybind_signal = COMSIG_KB_CLIENT_OOC_DOWN

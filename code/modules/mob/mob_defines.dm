@@ -241,12 +241,11 @@
 	//imported variables from all around the code
 	var/taxist = FALSE
 
-	///If the blood cell cursor is currently active due to a Discipline being targeted
-	var/discipline_targeting = FALSE
+	var/interaction_range = 0 //how far a mob has to be to interact with something without caring about obsctruction, defaulted to 0 tiles
 
-	///the icon currently used for the typing indicator's bubble
-	var/active_typing_indicator
-	///the icon currently used for the thinking indicator's bubble
-	var/active_thinking_indicator
+	/// Typing indicator - mob is typing into a input
+	var/typing_indicator = FALSE
+	/// Thinking indicator - mob has input window open
+	var/thinking_indicator = FALSE
 	/// User is thinking in character. Used to revert to thinking state after stop_typing
 	var/thinking_IC = FALSE
