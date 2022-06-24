@@ -4,8 +4,9 @@
  * @license MIT
  */
 
-const createBabelConfig = options => {
-  const { mode, presets = [], plugins = [] } = options;
+const createBabelConfig = (options) => {
+  const { presets = [], plugins = [], removeConsole } = options;
+  // prettier-ignore
   return {
     presets: [
       ['@babel/preset-env', {

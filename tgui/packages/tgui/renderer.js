@@ -18,7 +18,12 @@ export const suspendRenderer = () => {
   suspended = true;
 };
 
-export const createRenderer = getVNode => () => {
+type CreateRenderer = <T extends unknown[] = [unknown]>(
+  getVNode?: (...args: T) => any
+) => (...args: T) => void;
+
+// prettier-ignore
+export const createRenderer: CreateRenderer = (getVNode) => (...args) => {
   perf.mark('render/start');
   // Start rendering
   if (!reactRoot) {

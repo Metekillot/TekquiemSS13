@@ -29,8 +29,10 @@ export const DestinationTagger = (props, context) => {
                   <Button.Checkbox
                     checked={locations[currentTag - 1] === location}
                     height={2}
-                    key={location}
-                    onClick={() => act('change', { index: index + 1 })}
+                    key={location.sorting_id}
+                    onClick={() =>
+                      act('change', { index: location.sorting_id })
+                    }
                     width={15}>
                     {location.toUpperCase()}
                   </Button.Checkbox>

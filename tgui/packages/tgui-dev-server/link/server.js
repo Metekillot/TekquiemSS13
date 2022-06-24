@@ -30,9 +30,9 @@ class LinkServer {
   setupWebSocketLink() {
     const port = 3000;
     this.wss = new WebSocket.Server({ port });
-    this.wss.on('connection', ws => {
+    this.wss.on('connection', (ws) => {
       logger.log('client connected');
-      ws.on('message', json => {
+      ws.on('message', (json) => {
         const msg = deserializeObject(json);
         this.handleLinkMessage(ws, msg);
       });
@@ -49,7 +49,7 @@ class LinkServer {
     this.httpServer = http.createServer((req, res) => {
       if (req.method === 'POST') {
         let body = '';
-        req.on('data', chunk => {
+        req.on('data', (chunk) => {
           body += chunk.toString();
         });
         req.on('end', () => {
@@ -74,6 +74,7 @@ class LinkServer {
       if (level <= 0 && !DEBUG) {
         return;
       }
+      // prettier-ignore
       directLog(ns, ...args.map(arg => {
         if (typeof arg === 'object') {
           return inspect(arg, {
@@ -115,7 +116,7 @@ class LinkServer {
   }
 }
 
-const deserializeObject = str => {
+const deserializeObject = (str) => {
   return JSON.parse(str, (key, value) => {
     if (typeof value === 'object' && value !== null) {
       if (value.__undefined__) {

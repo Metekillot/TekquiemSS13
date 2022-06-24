@@ -35,10 +35,10 @@ export const Interview = (props, context) => {
       <Window.Content scrollable>
         {(!read_only && (
           <Section title="Welcome!">
-            <p>
-              {welcome_message}
-            </p>
-          </Section>)) || rendered_status(status)}
+            <p>{linkify_text(welcome_message)}</p>
+          </Section>
+        )) ||
+          rendered_status(status)}
         <Section
           title="Questionnaire"
           buttons={(
@@ -77,13 +77,17 @@ export const Interview = (props, context) => {
                   height={10}
                   maxLength={500}
                   placeholder="Write your response here, max of 500 characters."
-                  onChange={(e, input) => input !== response
-                    && act('update_answer', {
+                  onChange={(e, input) =>
+                    input !== response &&
+                    act('update_answer', {
                       qidx: qidx,
                       answer: input,
-                    })} />)}
-            </Section>)
-          )}
+                    })
+                  }
+                />
+              )}
+            </Section>
+          ))}
         </Section>
       </Window.Content>
     </Window>

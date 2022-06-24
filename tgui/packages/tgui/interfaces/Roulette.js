@@ -3,9 +3,12 @@ import { useBackend, useLocalState } from '../backend';
 import { Box, Button, Grid, NumberInput } from '../components';
 import { Window } from '../layouts';
 
-const getNumberColor = number => {
-  if (number === 0) {
-    return 'green';
+const getNumberColor = (number) => {
+  const inRedOddRange =
+    (number >= 1 && number <= 10) || (number >= 19 && number <= 28);
+
+  if (number % 2 === 1) {
+    return inRedOddRange ? 'red' : 'black';
   }
 
   const evenRedRanges = [
@@ -27,23 +30,34 @@ const getNumberColor = number => {
   return (oddRed ? isOdd : !isOdd) ? 'red' : 'black';
 };
 
-export const RouletteNumberButton = (props, context) => {
-  const { number } = props;
+export const RouletteNumberCell = (props, context) => {
+  const {
+    buttonClass = null,
+    cellClass = null,
+    color,
+    colspan = '1',
+    rowspan = '1',
+    text,
+    value,
+  } = props;
   const { act } = useBackend(context);
 
   return (
-    <Button
-      bold
-      content={number}
-      color={getNumberColor(number)}
-      width="40px"
-      height="28px"
-      fontSize="20px"
-      textAlign="center"
-      mb={0}
-      className="Roulette__board-extrabutton"
-      onClick={() => act('ChangeBetType', { type: number.toString() })}
-    />
+    <Table.Cell
+      className={classes([
+        'Roulette__board-cell',
+        'Roulette__board-cell-number',
+        cellClass,
+      ])}
+      colspan={colspan}
+      rowspan={rowspan}>
+      <Button
+        color={color}
+        className={classes(['Roulette__board-button', buttonClass])}
+        onClick={() => act('ChangeBetType', { type: value })}>
+        <span className="Roulette__board-button-text">{text}</span>
+      </Button>
+    </Table.Cell>
   );
 };
 
@@ -53,6 +67,19 @@ export const RouletteBoard = (props, context) => {
   const firstRow = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
   const secondRow = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35];
   const thirdRow = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34];
+  const fourthRow = {
+    's1-12': '1st 12',
+    's13-24': '2nd 12',
+    's25-36': '3rd 12',
+  };
+  const fifthRow = [
+    { color: 'transparent', text: '1-18', value: 's1-18' },
+    { color: 'transparent', text: 'Even', value: 'even' },
+    { color: 'black', text: 'Black', value: 'black' },
+    { color: 'red', text: 'Red', value: 'red' },
+    { color: 'transparent', text: 'Odd', value: 'odd' },
+    { color: 'transparent', text: '19-36', value: 's19-36' },
+  ];
 
   return (
     <table
@@ -72,174 +99,87 @@ export const RouletteBoard = (props, context) => {
             className="Roulette__board-extrabutton"
             onClick={() => act('ChangeBetType', { type: "0" })}
           />
-        </td>
-        {firstRow.map(number => (
-          <td
-            key={number}
-            className="Roulette__board-cell Table__cell-collapsing">
-            <RouletteNumberButton number={number} />
-          </td>
-        ))}
-        <td className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="2 to 1"
+          {firstRow.map((number) => (
+            <RouletteNumberCell
+              color={getNumberColor(number)}
+              key={number}
+              text={number.toString()}
+              value={number.toString()}
+            />
+          ))}
+          <RouletteNumberCell
             color="transparent"
             className="Roulette__board-extrabutton"
             onClick={() => act('ChangeBetType', { type: "s3rd col" })}
           />
-        </td>
-      </tr>
-      <tr>
-        {secondRow.map(number => (
-          <td
-            key={number}
-            className="Roulette__board-cell Table__cell-collapsing">
-            <RouletteNumberButton number={number} />
-          </td>
-        ))}
-        <td className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="2 to 1"
+        </Table.Row>
+        <Table.Row>
+          {secondRow.map((number) => (
+            <RouletteNumberCell
+              color={getNumberColor(number)}
+              key={number}
+              text={number.toString()}
+              value={number.toString()}
+            />
+          ))}
+          <RouletteNumberCell
             color="transparent"
             className="Roulette__board-extrabutton"
             onClick={() => act('ChangeBetType', { type: "s2nd col" })}
           />
-        </td>
-      </tr>
-      <tr>
-        {thirdRow.map(number => (
-          <td
-            key={number}
-            className="Roulette__board-cell Table__cell-collapsing">
-            <RouletteNumberButton number={number} />
-          </td>
-        ))}
-        <td className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="2 to 1"
+        </Table.Row>
+        <Table.Row>
+          {thirdRow.map((number) => (
+            <RouletteNumberCell
+              color={getNumberColor(number)}
+              key={number}
+              text={number.toString()}
+              value={number.toString()}
+            />
+          ))}
+          <RouletteNumberCell
             color="transparent"
             className="Roulette__board-extrabutton"
             onClick={() => act('ChangeBetType', { type: "s1st col" })}
           />
-        </td>
-      </tr>
-      <tr>
-        <td />
-        <td colSpan="4" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="1st 12"
-            color="transparent"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "s1-12" })}
-          />
-        </td>
-        <td colSpan="4" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="2nd 12"
-            color="transparent"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "s13-24" })}
-          />
-        </td>
-        <td colSpan="4" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="3rd 12"
-            color="transparent"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "s25-36" })}
-          />
-        </td>
-      </tr>
-      <tr>
-        <td />
-        <td colSpan="2" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="1-18"
-            color="transparent"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "s1-18" })}
-          />
-        </td>
-        <td colSpan="2" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="Even"
-            color="transparent"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "even" })}
-          />
-        </td>
-        <td colSpan="2" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="Black"
-            color="black"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "black" })}
-          />
-        </td>
-        <td colSpan="2" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="Red"
-            color="red"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "red" })}
-          />
-        </td>
-        <td colSpan="2" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="Odd"
-            color="transparent"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "odd" })}
-          />
-        </td>
-        <td colSpan="2" className="Roulette__board-cell">
-          <Button
-            fluid
-            bold
-            content="19-36"
-            color="transparent"
-            className="Roulette__board-extrabutton"
-            onClick={() => act('ChangeBetType', { type: "s19-36" })}
-          />
-        </td>
-      </tr>
-    </table>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell />
+          {Object.entries(fourthRow).map(([value, text]) => (
+            <RouletteNumberCell
+              cellClass="Roulette__board-cell-number--colspan-4"
+              color="transparent"
+              colspan="4"
+              key={value}
+              text={text}
+              value={value}
+            />
+          ))}
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell />
+          {fifthRow.map((cell) => (
+            <RouletteNumberCell
+              cellClass="Roulette__board-cell-number--colspan-2"
+              color={cell.color}
+              colspan="2"
+              key={cell.value}
+              text={cell.text}
+              value={cell.value}
+            />
+          ))}
+        </Table.Row>
+      </Table>
+    </Box>
   );
 };
 
 export const RouletteBetTable = (props, context) => {
   const { act, data } = useBackend(context);
 
-  const [
-    customBet,
-    setCustomBet,
-  ] = useLocalState(context, 'customBet', 500);
+  const [customBet, setCustomBet] = useLocalState(context, 'customBet', 500);
 
-  let {
-    BetType,
-  } = data;
+  let { BetType } = data;
 
   if (BetType.startsWith('s')) {
     BetType = BetType.substring(1, BetType.length);
@@ -263,67 +203,74 @@ export const RouletteBetTable = (props, context) => {
             'Roulette__lowertable--header',
           ])}>
           Current Bet:
-        </th>
-      </tr>
-      <tr>
-        <td className={classes([
-          'Roulette',
-          'Roulette__lowertable--cell',
-          'Roulette__lowertable--spinresult',
-          'Roulette__lowertable--spinresult-' + getNumberColor(data.LastSpin),
-        ])}>
+        </Table.Cell>
+      </Table.Row>
+      <Table.Row>
+        <Table.Cell
+          className={classes([
+            'Roulette',
+            'Roulette__lowertable--cell',
+            'Roulette__lowertable--spinresult',
+            'Roulette__lowertable--spinresult-' + getNumberColor(data.LastSpin),
+          ])}>
           {data.LastSpin}
-        </td>
-        <td className={classes([
-          'Roulette',
-          'Roulette__lowertable--cell',
-          'Roulette__lowertable--betscell',
-        ])}>
-          <Box
-            bold
-            mt={1}
-            mb={1}
-            fontSize="25px"
-            textAlign="center">
+        </Table.Cell>
+        <Table.Cell
+          className={classes([
+            'Roulette',
+            'Roulette__lowertable--cell',
+            'Roulette__lowertable--betscell',
+          ])}>
+          <Box bold mt={1} mb={1} fontSize="20px" textAlign="center">
             {data.BetAmount} cr on {BetType}
           </Box>
           <Box ml={1} mr={1}>
             <Button
               fluid
               content="Bet 10 cr"
-              onClick={() => act('ChangeBetAmount', {
-                amount: 10,
-              })}
+              onClick={() =>
+                act('ChangeBetAmount', {
+                  amount: 10,
+                })
+              }
             />
             <Button
               fluid
               content="Bet 50 cr"
-              onClick={() => act('ChangeBetAmount', {
-                amount: 50,
-              })}
+              onClick={() =>
+                act('ChangeBetAmount', {
+                  amount: 50,
+                })
+              }
             />
             <Button
               fluid
               content="Bet 100 cr"
-              onClick={() => act('ChangeBetAmount', {
-                amount: 100,
-              })}
+              onClick={() =>
+                act('ChangeBetAmount', {
+                  amount: 100,
+                })
+              }
             />
             <Button
               fluid
               content="Bet 500 cr"
-              onClick={() => act('ChangeBetAmount', {
-                amount: 500,
-              })}
+              onClick={() =>
+                act('ChangeBetAmount', {
+                  amount: 500,
+                })
+              }
             />
             <Grid>
               <Grid.Column>
                 <Button
                   fluid
                   content="Bet custom amount..."
-                  onClick={() => act('ChangeBetAmount', {
-                    amount: customBet,
-                  })}
+                  onClick={() =>
+                    act('ChangeBetAmount', {
+                      amount: customBet,
+                    })
+                  }
                 />
               </Grid.Column>
               <Grid.Column size={0.1}>
@@ -339,15 +286,11 @@ export const RouletteBetTable = (props, context) => {
               </Grid.Column>
             </Grid>
           </Box>
-        </td>
-      </tr>
-      <tr>
-        <td colSpan="2">
-          <Box
-            bold
-            m={1}
-            fontSize="14px"
-            textAlign="center">
+        </Table.Cell>
+      </Table.Row>
+      <Table.Row>
+        <Table.Cell colSpan="2">
+          <Box bold m={1} fontSize="14px" textAlign="center">
             Swipe an ID card with a connected account to spin!
           </Box>
         </td>
@@ -358,13 +301,13 @@ export const RouletteBetTable = (props, context) => {
             House Balance:
           </Box>
           <Box inline>
-            {data.HouseBalance ? data.HouseBalance + ' cr': "None"}
+            {data.HouseBalance ? data.HouseBalance + ' cr' : 'None'}
           </Box>
         </td>
         <td className="Roulette__lowertable--cell">
           <Button
             fluid
-            content={data.IsAnchored ? "Bolted" : "Unbolted"}
+            content={data.IsAnchored ? 'Bolted' : 'Unbolted'}
             m={1}
             color="transparent"
             textAlign="center"
@@ -378,10 +321,7 @@ export const RouletteBetTable = (props, context) => {
 
 export const Roulette = (props, context) => {
   return (
-    <Window
-      width={603}
-      height={475}
-      theme="cardtable">
+    <Window width={570} height={520} theme="cardtable">
       <Window.Content>
         <RouletteBoard />
         <RouletteBetTable />

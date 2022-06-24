@@ -7,7 +7,24 @@
 import { canRender, classes } from 'common/react';
 import { Component, createRef } from 'inferno';
 import { addScrollableNode, removeScrollableNode } from '../events';
-import { computeBoxClassName, computeBoxProps } from './Box';
+import { BoxProps, computeBoxClassName, computeBoxProps } from './Box';
+
+type SectionProps = BoxProps & {
+  className?: string;
+  title?: InfernoNode;
+  buttons?: InfernoNode;
+  fill?: boolean;
+  fitted?: boolean;
+  scrollable?: boolean;
+  /** @deprecated This property no longer works, please remove it. */
+  level?: boolean;
+  /** @deprecated Please use `scrollable` property */
+  overflowY?: any;
+};
+
+export class Section extends Component<SectionProps> {
+  scrollableRef: RefObject<HTMLDivElement>;
+  scrollable: boolean;
 
 export class Section extends Component {
   constructor(props) {
@@ -66,12 +83,8 @@ export class Section extends Component {
         {...computeBoxProps(rest)}>
         {hasTitle && (
           <div className="Section__title">
-            <span className="Section__titleText">
-              {title}
-            </span>
-            <div className="Section__buttons">
-              {buttons}
-            </div>
+            <span className="Section__titleText">{title}</span>
+            <div className="Section__buttons">{buttons}</div>
           </div>
         )}
         <div className="Section__rest">

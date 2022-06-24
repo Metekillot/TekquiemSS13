@@ -25,8 +25,7 @@ export const resolveGlob = async (...sections) => {
     try {
       await promisify(fs.stat)(path);
       safePaths.push(path);
-    }
-    catch {}
+    } catch {}
   }
   return safePaths;
 };
