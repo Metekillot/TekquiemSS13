@@ -42,11 +42,6 @@
 			else
 				owner.reset_perspective(null)
 
-/datum/orbit_menu/ui_data(mob/user)
-	var/list/data = list()
-	data["auto_observe"] = auto_observe
-	return data
-
 /datum/orbit_menu/ui_static_data(mob/user)
 	var/list/data = list()
 
