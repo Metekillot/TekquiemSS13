@@ -53,7 +53,25 @@
 	var/comp_light_color			//The color of that light
 
 
-/obj/item/modular_computer/Initialize()
+	var/honkamnt = 0 /// honk honk honk honk honk honkh onk honkhnoohnk
+
+	var/list/idle_threads // Idle programs on background. They still receive process calls but can't be interacted with.
+	var/obj/physical = null // Object that represents our computer. It's used for Adjacent() and UI visibility checks.
+	var/has_light = FALSE //If the computer has a flashlight/LED light/what-have-you installed
+
+	/// How far the computer's light can reach, is not editable by players.
+	var/comp_light_luminosity = 3
+	/// The built-in light's color, editable by players.
+	var/comp_light_color = "#FFFFFF"
+
+	var/invisible = FALSE // whether or not the tablet is invisible in messenger and other apps
+
+	var/datum/picture/saved_image // the saved image used for messaging purpose like come on dude
+
+	/// Stored pAI in the computer
+	var/obj/item/pai_card/inserted_pai = null
+
+/obj/item/modular_computer/Initialize(mapload)
 	. = ..()
 	START_PROCESSING(SSobj, src)
 	if(!physical)
@@ -442,7 +460,25 @@
 
 /obj/item/modular_computer/attackby(obj/item/W as obj, mob/user as mob)
 	// Check for ID first
-	if(istype(W, /obj/item/card/id) && InsertID(W))
+	if(istype(attacking_item, /obj/item/card/id) && InsertID(attacking_item))
+		return
+
+	// Insert a PAI.
+	if(istype(attacking_item, /obj/item/pai_card) && !inserted_pai)
+		if(!user.transferItemToLoc(attacking_item, src))
+			return
+		inserted_pai = attacking_item
+		to_chat(user, span_notice("You slot \the [attacking_item] into [src]."))
+		return
+
+	// Scan a photo.
+	if(istype(attacking_item, /obj/item/photo))
+		var/obj/item/computer_hardware/hard_drive/hdd = all_components[MC_HDD]
+		var/obj/item/photo/pic = attacking_item
+		if(hdd)
+			for(var/datum/computer_file/program/messenger/messenger in hdd.stored_files)
+				saved_image = pic.picture
+				messenger.ProcessPhoto()
 		return
 
 	// Insert items into the components

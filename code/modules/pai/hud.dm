@@ -7,9 +7,9 @@
 /atom/movable/screen/pai/Click()
 	if(isobserver(usr) || usr.incapacitated())
 		return FALSE
-	var/mob/living/silicon/pai/pAI = usr
-	if(required_software && !pAI.software.Find(required_software))
-		to_chat(pAI, PAI_MISSING_SOFTWARE_MESSAGE)
+	var/mob/living/silicon/pai/user = usr
+	if(required_software && !user.installed_software.Find(required_software))
+		to_chat(user, PAI_MISSING_SOFTWARE_MESSAGE)
 		return FALSE
 	return TRUE
 
@@ -69,7 +69,7 @@
 /atom/movable/screen/pai/newscaster
 	name = "pAI Newscaster"
 	icon_state = "newscaster"
-	required_software = "newscaster"
+	required_software = "Newscaster"
 
 /atom/movable/screen/pai/newscaster/Click()
 	if(!..())
@@ -80,19 +80,20 @@
 /atom/movable/screen/pai/host_monitor
 	name = "Host Health Scan"
 	icon_state = "host_monitor"
-	required_software = "host scan"
+	required_software = "Host Scan"
 
 /atom/movable/screen/pai/host_monitor/Click()
 	. = ..()
 	if(!.)
 		return
 	var/mob/living/silicon/pai/pAI = usr
-	if(iscarbon(pAI.card.loc))
-		pAI.hostscan.attack(pAI.card.loc, pAI)
-	else
-		to_chat(src, "<span class='warning'>You are not being carried by anyone!</span>")
-		return FALSE
-
+	var/list/modifiers = params2list(params)
+	if(LAZYACCESS(modifiers, LEFT_CLICK))
+		pAI.host_scan(PAI_SCAN_TARGET)
+		return TRUE
+	if(LAZYACCESS(modifiers, RIGHT_CLICK))
+		pAI.host_scan(PAI_SCAN_MASTER)
+		return TRUE
 /atom/movable/screen/pai/crew_manifest
 	name = "Crew Manifest"
 	icon_state = "manifest"
@@ -117,10 +118,23 @@
 /atom/movable/screen/pai/pda_msg_send
 	name = "PDA - Send Message"
 	icon_state = "pda_send"
-	required_software = "digital messenger"
+	required_software = "Digital Messenger"
+	var/mob/living/silicon/pai/pAI
 
-/atom/movable/screen/pai/pda_msg_send/Click()
-	if(!..())
+/atom/movable/screen/pai/modpc/Click()
+	. = ..()
+	if(!.) // this works for some reason.
+		return
+	pAI.modularInterface?.interact(pAI)
+
+/atom/movable/screen/pai/internal_gps
+	name = "Internal GPS"
+	icon_state = "internal_gps"
+	required_software = "Internal GPS"
+
+/atom/movable/screen/pai/internal_gps/Click()
+	. = ..()
+	if(!.)
 		return
 	var/mob/living/silicon/pai/pAI = usr
 	pAI.cmd_send_pdamesg(usr)
@@ -139,24 +153,24 @@
 /atom/movable/screen/pai/image_take
 	name = "Take Image"
 	icon_state = "take_picture"
-	required_software = "photography module"
+	required_software = "Photography Module"
 
 /atom/movable/screen/pai/image_take/Click()
 	if(!..())
 		return
 	var/mob/living/silicon/pai/pAI = usr
-	pAI.aicamera.toggle_camera_mode(usr)
+	pAI.camera.toggle_camera_mode(usr)
 
 /atom/movable/screen/pai/image_view
 	name = "View Images"
 	icon_state = "view_images"
-	required_software = "photography module"
+	required_software = "Photography Module"
 
 /atom/movable/screen/pai/image_view/Click()
 	if(!..())
 		return
 	var/mob/living/silicon/pai/pAI = usr
-	pAI.aicamera.viewpictures(usr)
+	pAI.camera.viewpictures(usr)
 
 /atom/movable/screen/pai/radio
 	name = "radio"
@@ -227,6 +241,9 @@
 	using = new /atom/movable/screen/pai/pda_msg_send()
 	using.screen_loc = ui_pai_pda_send
 	static_inventory += using
+	mypai.pda_button = using
+	var/atom/movable/screen/pai/modpc/tablet_button = using
+	tablet_button.pAI = mypai
 
 // PDA log
 	using = new /atom/movable/screen/pai/pda_msg_show()
@@ -254,6 +271,6 @@
 	var/mob/living/silicon/pai/owner = mymob
 	for(var/atom/movable/screen/pai/button in static_inventory)
 		if(button.required_software)
-			button.color = owner.software.Find(button.required_software) ? null : "#808080"
+			button.color = owner.installed_software.Find(button.required_software) ? null : "#808080"
 
 #undef PAI_MISSING_SOFTWARE_MESSAGE

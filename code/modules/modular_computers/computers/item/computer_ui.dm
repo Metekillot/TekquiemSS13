@@ -212,6 +212,18 @@
 					cardholder.try_eject(user)
 
 
+			UpdateDisplay()
+
+			playsound(src, 'sound/machines/terminal_processing.ogg', 15, TRUE)
+		if("PC_Pai_Interact")
+			switch(params["option"])
+				if("eject")
+					usr.put_in_hands(inserted_pai)
+					to_chat(usr, span_notice("You remove [inserted_pai] from the [name]."))
+					inserted_pai = null
+				if("interact")
+					inserted_pai.attack_self(usr)
+			return UI_UPDATE
 		else
 			return
 

@@ -40,23 +40,21 @@
 			fold_in(force = 1)
 			Paralyze(200)
 
-/mob/living/silicon/pai/attack_hand(mob/living/carbon/human/user)
-	switch(user.a_intent)
-		if("help")
-			visible_message("<span class='notice'>[user] gently pats [src] on the head, eliciting an off-putting buzzing from its holographic field.</span>")
-		if("disarm")
-			visible_message("<span class='notice'>[user] boops [src] on the head!</span>")
-		if("harm")
-			user.do_attack_animation(src)
-			if (user.name == master)
-				visible_message("<span class='notice'>Responding to its master's touch, [src] disengages its holochassis emitter, rapidly losing coherence.</span>")
-				if(do_after(user, 1 SECONDS, src))
-					fold_in()
-					if(user.put_in_hands(card))
-						user.visible_message("<span class='notice'>[user] promptly scoops up [user.p_their()] pAI's card.</span>")
-			else
-				visible_message("<span class='danger'>[user] stomps on [src]!.</span>")
-				take_holo_damage(2)
+/mob/living/silicon/pai/attack_hand(mob/living/carbon/human/user, list/modifiers)
+	if(!user.combat_mode)
+		visible_message(span_notice("[user] gently pats [src] on the head, eliciting an off-putting buzzing from its holographic field."))
+		return
+	user.do_attack_animation(src)
+	if(user.name != master_name)
+		visible_message(span_danger("[user] stomps on [src]!."))
+		take_holo_damage(2)
+		return
+	visible_message(span_notice("Responding to its master's touch, [src] disengages its holochassis emitter, rapidly losing coherence."))
+	if(!do_after(user, 1 SECONDS, TRUE, src))
+		return
+	fold_in()
+	if(user.put_in_hands(card))
+		user.visible_message(span_notice("[user] promptly scoops up [user.p_their()] pAI's card."))
 
 /mob/living/silicon/pai/bullet_act(obj/projectile/Proj)
 	if(Proj.stun)
@@ -74,8 +72,8 @@
 	return FALSE //No we're not flammable
 
 /mob/living/silicon/pai/proc/take_holo_damage(amount)
-	emitterhealth = clamp((emitterhealth - amount), -50, emittermaxhealth)
-	if(emitterhealth < 0)
+	holochassis_health = clamp((holochassis_health - amount), -50, HOLOCHASSIS_MAX_HEALTH)
+	if(holochassis_health < 0)
 		fold_in(force = TRUE)
 	to_chat(src, "<span class='userdanger'>The impact degrades your holochassis!</span>")
 	return amount
@@ -93,7 +91,7 @@
 		take_holo_damage(amount * 0.25)
 
 /mob/living/silicon/pai/getBruteLoss()
-	return emittermaxhealth - emitterhealth
+	return HOLOCHASSIS_MAX_HEALTH - holochassis_health
 
 /mob/living/silicon/pai/getFireLoss()
-	return emittermaxhealth - emitterhealth
+	return HOLOCHASSIS_MAX_HEALTH - holochassis_health

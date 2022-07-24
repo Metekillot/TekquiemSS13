@@ -38,8 +38,20 @@
 	var/allow_pai = 1 // Are we even allowed to insert a pai card.
 	var/bot_name
 
-	var/list/player_access = list() //Additonal access the bots gets when player controlled
-	var/emagged = FALSE
+	///Access required to access this Bot's maintenance protocols
+	var/maints_access_required = list(ACCESS_ROBOTICS)
+	///The Robot arm attached to this robot - has a 50% chance to drop on death.
+	var/robot_arm = /obj/item/bodypart/r_arm/robot
+	///People currently looking into a bot's UI panel.
+	var/list/users = list()
+	///The inserted (if any) pAI in this bot.
+	var/obj/item/pai_card/paicard
+	///The type of bot it is, for radio control.
+	var/bot_type = NONE
+
+	///Additonal access given to player-controlled bots.
+	var/list/player_access = list()
+	///All initial access this bot started with.
 	var/list/prev_access = list()
 	var/on = TRUE
 	var/open = FALSE//Maint panel
@@ -328,11 +340,41 @@
 	to_chat(user, "<span class='notice'>Controls are now [locked ? "locked" : "unlocked"].</span>")
 	return TRUE
 
-/mob/living/simple_animal/bot/attackby(obj/item/W, mob/user, params)
-	if(W.tool_behaviour == TOOL_SCREWDRIVER)
-		if(!locked)
-			open = !open
-			to_chat(user, "<span class='notice'>The maintenance panel is now [open ? "opened" : "closed"].</span>")
+/mob/living/simple_animal/bot/screwdriver_act(mob/living/user, obj/item/tool)
+	if(bot_cover_flags & BOT_COVER_LOCKED)
+		to_chat(user, span_warning("The maintenance panel is locked!"))
+		return TOOL_ACT_TOOLTYPE_SUCCESS
+
+	tool.play_tool_sound(src)
+	bot_cover_flags ^= BOT_COVER_OPEN
+	to_chat(user, span_notice("The maintenance panel is now [bot_cover_flags & BOT_COVER_OPEN ? "opened" : "closed"]."))
+	return TOOL_ACT_TOOLTYPE_SUCCESS
+
+/mob/living/simple_animal/bot/welder_act(mob/living/user, obj/item/tool)
+	user.changeNext_move(CLICK_CD_MELEE)
+	if(user.combat_mode)
+		return FALSE
+
+	if(health >= maxHealth)
+		to_chat(user, span_warning("[src] does not need a repair!"))
+		return TOOL_ACT_TOOLTYPE_SUCCESS
+	if(!(bot_cover_flags & BOT_COVER_OPEN))
+		to_chat(user, span_warning("Unable to repair with the maintenance panel closed!"))
+		return TOOL_ACT_TOOLTYPE_SUCCESS
+
+	if(tool.use_tool(src, user, 0 SECONDS, volume=40))
+		adjustHealth(-10)
+		user.visible_message(span_notice("[user] repairs [src]!"),span_notice("You repair [src]."))
+		return TOOL_ACT_TOOLTYPE_SUCCESS
+
+/mob/living/simple_animal/bot/attackby(obj/item/attacking_item, mob/living/user, params)
+	if(attacking_item.GetID())
+		unlock_with_id(user)
+	else if(istype(attacking_item, /obj/item/pai_card))
+		insertpai(user, attacking_item)
+	else if(attacking_item.tool_behaviour == TOOL_HEMOSTAT && paicard)
+		if(bot_cover_flags & BOT_COVER_OPEN)
+			to_chat(user, span_warning("Close the access panel before manipulating the personality slot!"))
 		else
 			to_chat(user, "<span class='warning'>The maintenance panel is locked!</span>")
 	else if(W.GetID())
@@ -923,7 +965,7 @@ Pass a positive integer as an argument to override a bot's default speed.
 			return TRUE
 	return FALSE
 
-/mob/living/simple_animal/bot/proc/insertpai(mob/user, obj/item/paicard/card)
+/mob/living/simple_animal/bot/proc/insertpai(mob/user, obj/item/pai_card/card)
 	if(paicard)
 		to_chat(user, "<span class='warning'>A [paicard] is already inserted!</span>")
 	else if(allow_pai && !key)
