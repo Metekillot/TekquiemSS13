@@ -20,13 +20,15 @@
  * Text sanitization
  */
 
+
+///returns nothing with an alert instead of the message if it contains something in the ic filter, and sanitizes normally if the name is fine. It returns nothing so it backs out of the input the same way as if you had entered nothing.
 /proc/sanitize_name(target, allow_numbers = FALSE, cap_after_symbols = TRUE)
-	if(CHAT_FILTER_CHECK(target))
-		alert(usr, "You cannot set a name that contains a word prohibited in IC chat!")
+	if(is_ic_filtered(target) || is_soft_ic_filtered(target))
+		tgui_alert(usr, "You cannot set a name that contains a word prohibited in IC chat!")
 		return ""
 	var/result = reject_bad_name(target, allow_numbers = allow_numbers, strict = TRUE, cap_after_symbols = cap_after_symbols)
 	if(!result)
-		alert(usr, "Invalid name.")
+		tgui_alert(usr, "Invalid name.")
 		return ""
 	return sanitize(result)
 
@@ -179,7 +181,7 @@
 				last_char_group = LETTERS_DETECTED
 
 			// a  .. z
-			if(97 to 122)			//Lowercase Letters
+			if(97 to 122) //Lowercase Letters
 				if(last_char_group == NO_CHARS_DETECTED || last_char_group == SPACES_DETECTED || cap_after_symbols && last_char_group == SYMBOLS_DETECTED) //start of a word
 					char = uppertext(char)
 				number_of_alphanumeric++
@@ -193,7 +195,6 @@
 					continue
 				number_of_alphanumeric++
 				last_char_group = NUMBERS_DETECTED
-
 			// '  -  .
 			if(39,45,46)			//Common name punctuation
 				if(last_char_group == NO_CHARS_DETECTED)
