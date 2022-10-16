@@ -55,7 +55,12 @@
 	var/list/pois = getpois(skip_mindless = TRUE, specify_dead_role = FALSE)
 	for (var/name in pois)
 		var/list/serialized = list()
-		serialized["name"] = name
+
+		var/mob/mob_poi = new_mob_pois[name]
+
+		var/poi_ref = REF(mob_poi)
+		serialized["ref"] = poi_ref
+		serialized["full_name"] = name
 
 		var/poi = pois[name]
 
@@ -88,10 +93,21 @@
 						antagonists += list(serialized)
 						break
 
-				if (!was_antagonist)
-					alive += list(serialized)
-		else
-			misc += list(serialized)
+		serialized["job"] = mind?.assigned_role?.title
+		serialized["name"] = mob_poi.real_name
+		serialized["health"] = null
+		// Cast the mob so we can get health
+		var/mob/living/player
+		if(isliving(mob_poi)) // Kind of silly here since we've already checked for dead mobs
+			player = mob_poi
+			serialized["health"] = FLOOR((player.health / player.maxHealth * 100), 1)
+
+		for(var/datum/antagonist/antag_datum as anything in mind.antag_datums)
+			if (antag_datum.show_to_ghosts)
+				was_antagonist = TRUE
+				serialized["antag"] = antag_datum.name
+				antagonists += list(serialized)
+				break
 
 	data["alive"] = alive
 	data["antagonists"] = antagonists
@@ -101,6 +117,59 @@
 	data["npcs"] = npcs
 	return data
 
-/datum/orbit_menu/ui_assets()
-	. = ..() || list()
-	. += get_asset_datum(/datum/asset/simple/orbit)
+	for(var/name in new_other_pois)
+		var/atom/atom_poi = new_other_pois[name]
+
+		misc += list(list(
+			"ref" = REF(atom_poi),
+			"name" = name,
+			"extra" = null, // Just in case you want to add anything
+		))
+
+		// Display the supermatter crystal integrity
+		if(istype(atom_poi, /obj/machinery/power/supermatter_crystal))
+			var/obj/machinery/power/supermatter_crystal/crystal = atom_poi
+			misc[length(misc)]["extra"] = "Integrity: [crystal.get_integrity_percent()]%"
+			continue
+		// Display the nuke timer
+		if(istype(atom_poi, /obj/machinery/nuclearbomb))
+			var/obj/machinery/nuclearbomb/bomb = atom_poi
+			if(bomb.timing)
+				misc[length(misc)]["extra"] = "Timer: [bomb.countdown?.displayed_text]s"
+			continue
+		// Display the holder if its a nuke disk
+		if(istype(atom_poi, /obj/item/disk/nuclear))
+			var/obj/item/disk/nuclear/disk = atom_poi
+			var/mob/holder = disk.pulledby || get(disk, /mob)
+			misc[length(misc)]["extra"] = "Location: [holder?.real_name || "Unsecured"]"
+			continue
+
+	return list(
+		"alive" = alive,
+		"antagonists" = antagonists,
+		"dead" = dead,
+		"ghosts" = ghosts,
+		"misc" = misc,
+		"npcs" = npcs,
+	)
+
+/// Shows the UI to the specified user.
+/datum/orbit_menu/proc/show(mob/user)
+	ui_interact(user)
+
+/**
+ * Helper POI validation function passed as a callback to various SSpoints_of_interest procs.
+ *
+ * Provides extended validation above and beyond standard, limiting mob POIs without minds or ckeys
+ * unless they're mobs, camera mobs or megafauna.
+ *
+ * If they satisfy that requirement, falls back to default validation for the POI.
+ */
+/datum/orbit_menu/proc/validate_mob_poi(datum/point_of_interest/mob_poi/potential_poi)
+	var/mob/potential_mob_poi = potential_poi.target
+	// Skip mindless and ckeyless mobs except bots, cameramobs and megafauna.
+	if(!potential_mob_poi.mind && !potential_mob_poi.ckey)
+		if(!isbot(potential_mob_poi) && !iscameramob(potential_mob_poi) && !ismegafauna(potential_mob_poi))
+			return FALSE
+
+	return potential_poi.validate()
