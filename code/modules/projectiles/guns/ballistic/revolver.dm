@@ -179,6 +179,9 @@
 		spun = FALSE
 
 		if(chambered)
+			if(HAS_TRAIT(user, TRAIT_CURSED)) // I cannot live, I cannot die, trapped in myself, body my holding cell.
+				to_chat(user, span_warning("What a horrible night... To have a curse!"))
+				return
 			var/obj/item/ammo_casing/AC = chambered
 			if(AC.fire_casing(user, user))
 				playsound(user, fire_sound, fire_sound_volume, vary_fire_sound)

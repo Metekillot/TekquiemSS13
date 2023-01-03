@@ -84,22 +84,35 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 		return list()// no message spam
 	return ..()
 
-/obj/structure/mirror/obj_break(damage_flag, mapload)
-	if(!broken && !(flags_1 & NODECONSTRUCT_1))
-		icon_state = "mirror_broke"
-		if(!mapload)
-			playsound(src, "shatter", 70, TRUE)
-		if(desc == initial(desc))
-			desc = "Oh no, seven years of bad luck!"
-		broken = TRUE
-		if(!ref)
-			var/obj/effect/reflection/reflection = new(src.loc)
-			reflection.setup_visuals(src)
-			ref = WEAKREF(reflection)
-		var/obj/effect/reflection/reflection = ref.resolve()
-		if(istype(reflection))
-			reflection.alpha_icon_state = "mirror_mask_broken"
-			reflection.update_mirror_filters()
+/obj/structure/mirror/attacked_by(obj/item/I, mob/living/user)
+	if(broken || !istype(user) || !I.force)
+		return ..()
+
+	. = ..()
+	if(broken) // breaking a mirror truly gets you bad luck!
+		to_chat(user, span_warning("A chill runs down your spine as [src] shatters..."))
+		user.AddComponent(/datum/component/omen)
+
+/obj/structure/mirror/bullet_act(obj/projectile/P)
+	if(broken || !isliving(P.firer) || !P.damage)
+		return ..()
+
+	. = ..()
+	if(broken) // breaking a mirror truly gets you bad luck!
+		var/mob/living/unlucky_dude = P.firer
+		to_chat(unlucky_dude, span_warning("A chill runs down your spine as [src] shatters..."))
+		unlucky_dude.AddComponent(/datum/component/omen)
+
+/obj/structure/mirror/atom_break(damage_flag, mapload)
+	. = ..()
+	if(broken || (flags_1 & NODECONSTRUCT_1))
+		return
+	icon_state = "mirror_broke"
+	if(!mapload)
+		playsound(src, SFX_SHATTER, 70, TRUE)
+	if(desc == initial(desc))
+		desc = "Oh no, seven years of bad luck!"
+	broken = TRUE
 
 /obj/structure/mirror/deconstruct(disassembled = TRUE)
 	if(!(flags_1 & NODECONSTRUCT_1))
