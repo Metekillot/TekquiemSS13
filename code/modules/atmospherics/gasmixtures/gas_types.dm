@@ -34,10 +34,10 @@ GLOBAL_LIST_INIT(nonreactive_gases, typecacheof(list(/datum/gas/oxygen, /datum/g
 /*||||||||||||||/----------\||||||||||||||*\
 ||||||||||||||||[GAS DATUMS]||||||||||||||||
 ||||||||||||||||\__________/||||||||||||||||
-||||These should never be instantiated. ||||
-||||They exist only to make it easier   ||||
-||||to add a new gas. They are accessed ||||
-||||only by meta_gas_list().            ||||
+|||| These should never be instantiated. ||||
+|||| They exist only to make it easier   ||||
+|||| to add a new gas. They are accessed ||||
+|||| only by meta_gas_list().            ||||
 \*||||||||||||||||||||||||||||||||||||||||*/
 
 /datum/gas

@@ -559,7 +559,7 @@
 	if(!M.has_dna())
 		return FALSE
 	if(se)
-		for(var/i=1, i<=DNA_MUTATION_BLOCKS, i++)
+		for(var/i=1, i <= DNA_MUTATION_BLOCKS, i++)
 			if(prob(probability))
 				M.dna.generate_dna_blocks()
 		M.domutcheck()

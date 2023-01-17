@@ -391,11 +391,11 @@
 /mob/living/simple_animal/bot/cleanbot/ui_data(mob/user)
 	var/list/data = ..()
 
-	if(!locked || issilicon(user)|| isAdminGhostAI(user))
-		data["custom_controls"]["clean_blood"] = blood
-		data["custom_controls"]["clean_trash"] = trash
-		data["custom_controls"]["clean_graffiti"] = drawn
-		data["custom_controls"]["pest_control"] = pests
+	if(!(bot_cover_flags & BOT_COVER_LOCKED) || issilicon(user) || isAdminGhostAI(user))
+		data["custom_controls"]["clean_blood"] = janitor_mode_flags & CLEANBOT_CLEAN_BLOOD
+		data["custom_controls"]["clean_trash"] = janitor_mode_flags & CLEANBOT_CLEAN_TRASH
+		data["custom_controls"]["clean_graffiti"] = janitor_mode_flags & CLEANBOT_CLEAN_DRAWINGS
+		data["custom_controls"]["pest_control"] = janitor_mode_flags & CLEANBOT_CLEAN_PESTS
 	return data
 
 // Actions received from TGUI

@@ -80,12 +80,12 @@
 
 	var/i
 	var/obj/item/toy/plush/P
-	for(i=1, i<=scorned.len, i++)
+	for(i=1, i <= scorned.len, i++)
 		P = scorned[i]
 		P.bad_news(src)
 	scorned = null
 
-	for(i=1, i<=scorned_by.len, i++)
+	for(i=1, i <= scorned_by.len, i++)
 		P = scorned_by[i]
 		P.bad_news(src)
 	scorned_by = null

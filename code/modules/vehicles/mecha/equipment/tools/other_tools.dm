@@ -96,9 +96,8 @@
 						to_chat(source, "[icon2html(src, source)]<span class='warning'>[target] immune to gravitational impulses, unable to lock!</span>")
 						return
 				movable_target = target
-				to_chat(source, "[icon2html(src, source)]<span class='notice'>locked on [target].</span>")
-				send_byjax(source,"exosuit.browser","[REF(src)]", get_equip_info())
-			else if(target!=movable_target)
+				to_chat(source, "[icon2html(src, source)][span_notice("locked on [target].")]")
+			else if(target != movable_target)
 				if(movable_target in view(chassis))
 					var/turf/targ = get_turf(target)
 					var/turf/orig = get_turf(movable_target)
@@ -419,7 +418,8 @@
 /obj/item/mecha_parts/mecha_equipment/generator/process(delta_time)
 	if(!chassis)
 		return PROCESS_KILL
-	if(fuel.amount<=0)
+	if(fuel.amount <= 0)
+		activated = FALSE
 		log_message("Deactivated - no fuel.", LOG_MECHA)
 		to_chat(chassis.occupants, "[icon2html(src, chassis.occupants)]<span class='notice'>Fuel reserves depleted.</span>")
 		return PROCESS_KILL

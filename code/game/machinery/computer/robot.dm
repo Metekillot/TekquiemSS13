@@ -93,12 +93,19 @@
 			if(allowed(usr))
 				var/mob/living/silicon/robot/R = locate(params["ref"]) in GLOB.silicon_mobs
 				if(can_control(usr, R) && !..())
-					message_admins("<span class='notice'>[ADMIN_LOOKUPFLW(usr)] [!R.lockcharge ? "locked down" : "released"] [ADMIN_LOOKUPFLW(R)]!</span>")
-					log_game("[key_name(usr)] [!R.lockcharge ? "locked down" : "released"] [key_name(R)]!")
-					R.SetLockdown(!R.lockcharge)
-					to_chat(R, "[!R.lockcharge ? "<span class='notice'>Your lockdown has been lifted!" : "<span class='alert'>You have been locked down!"]</span>")
-					if(R.connected_ai)
-						to_chat(R.connected_ai, "[!R.lockcharge ? "<span class='notice'>NOTICE - Cyborg lockdown lifted" : "<span class='alert'>ALERT - Cyborg lockdown detected"]: <a href='byond://?src=[REF(R.connected_ai)];track=[html_encode(R.name)]'>[R.name]</a></span><br>")
+					if(isAI(usr) && (R.ai_lockdown && R.lockcharge || !R.lockcharge) || !isAI(usr))
+						R.ai_lockdown = FALSE
+						if(isAI(usr) && !R.lockcharge)
+							R.ai_lockdown = TRUE
+						message_admins(span_notice("[ADMIN_LOOKUPFLW(usr)] [!R.lockcharge ? "locked down" : "released"] [ADMIN_LOOKUPFLW(R)]!"))
+						log_silicon("[key_name(usr)] [!R.lockcharge ? "locked down" : "released"] [key_name(R)]!")
+						log_combat(usr, R, "[!R.lockcharge ? "locked down" : "released"] cyborg")
+						R.SetLockdown(!R.lockcharge)
+						to_chat(R, !R.lockcharge ? span_notice("Your lockdown has been lifted!") : span_alert("You have been locked down!"))
+						if(R.connected_ai)
+							to_chat(R.connected_ai, "[!R.lockcharge ? span_notice("NOTICE - Cyborg lockdown lifted") : span_alert("ALERT - Cyborg lockdown detected")]: <a href='?src=[REF(R.connected_ai)];track=[html_encode(R.name)]'>[R.name]</a><br>")
+					else
+						to_chat(usr, span_danger("Cyborg locked by an user with superior permissions."))
 			else
 				to_chat(usr, "<span class='danger'>Access Denied.</span>")
 		if("magbot")

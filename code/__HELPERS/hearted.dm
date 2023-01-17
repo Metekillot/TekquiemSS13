@@ -20,15 +20,9 @@
 		var/mob/heart_winner = i
 		if(!heart_winner.mind || !heart_winner.client)
 			continue
-		heart_winner.client.prefs.hearted_until = world.realtime + 24 HOURS // make configable
-		if(!heart_winner.client)
-			return
-
-		heart_winner.client.prefs.hearted = TRUE // so they get it right away
-		if(!heart_winner.client)
-			return
-		heart_winner.client.prefs.save_preferences()
-		tgui_alert(heart_winner, "Someone anonymously thanked you for being kind during the last round!", "<3!", list("Okay"))
+		hearted_mob.client.adjust_heart()
+		message += "[hearted_ckey][i == hearts.len ? "" : ", "]"
+	message_admins(message.Join())
 
 /// Ask someone if they'd like to award a commendation for the round, 3 tries to get the name they want before we give up
 /mob/proc/query_heart(attempt=1)

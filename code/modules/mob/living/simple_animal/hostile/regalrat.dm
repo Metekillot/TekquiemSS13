@@ -78,9 +78,20 @@
 		if(ratself.faction_check_mob(src, TRUE))
 			. += "<span class='notice'>This is your king. Long live his majesty!</span>"
 		else
-			. += "<span class='warning'>This is a false king! Strike him down!</span>"
-	else if(user != src && istype(user,/mob/living/simple_animal/hostile/regalrat))
-		. += "<span class='warning'>Who is this foolish false king? This will not stand!</span>"
+			. += span_warning("This is a false king! Strike [p_them()] down!")
+
+	else if(user != src && isregalrat(user))
+		. += span_warning("Who is this foolish false king? This will not stand!")
+
+/mob/living/simple_animal/hostile/regalrat/handle_environment(datum/gas_mixture/environment)
+	. = ..()
+	if(stat == DEAD || !environment || !environment.gases[/datum/gas/miasma])
+		return
+	var/miasma_percentage = environment.gases[/datum/gas/miasma][MOLES] / environment.total_moles()
+	if(miasma_percentage >= 0.25)
+		heal_bodypart_damage(1)
+
+#define REGALRAT_INTERACTION "regalrat"
 
 /mob/living/simple_animal/hostile/regalrat/AttackingTarget()
 	. = ..()

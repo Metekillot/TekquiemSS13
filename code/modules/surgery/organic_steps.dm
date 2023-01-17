@@ -100,9 +100,14 @@
 
 //saw bone
 /datum/surgery_step/saw
-	name = "saw bone"
-	implements = list(TOOL_SAW = 100,/obj/item/melee/arm_blade = 75,
-	/obj/item/fireaxe = 50, /obj/item/hatchet = 35, /obj/item/kitchen/knife/butcher = 25, /obj/item = 20) //20% success (sort of) with any sharp item with a force>=10
+	name = "saw bone (circular saw)"
+	implements = list(
+		TOOL_SAW = 100,
+		/obj/item/melee/arm_blade = 75,
+		/obj/item/fireaxe = 50,
+		/obj/item/hatchet = 35,
+		/obj/item/knife/butcher = 25,
+		/obj/item = 20) //20% success (sort of) with any sharp item with a force >= 10
 	time = 54
 
 /datum/surgery_step/saw/preop(mob/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery)

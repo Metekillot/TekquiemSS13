@@ -501,8 +501,8 @@
 			var/animetype = alert("Would you like to have the clothes be changed?",,"Yes","No","Cancel")
 
 			var/droptype
-			if(animetype =="Yes")
-				droptype = alert("Make the uniforms Nodrop?",,"Yes","No","Cancel")
+			if(animetype == "Yes")
+				droptype = tgui_alert(usr,"Make the uniforms Nodrop?",,list("Yes","No","Cancel"))
 
 			if(animetype == "Cancel" || droptype == "Cancel")
 				return

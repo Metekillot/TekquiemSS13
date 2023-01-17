@@ -92,7 +92,7 @@
 	if(..())
 		return
 	if(href_list["edit_area"])
-		if(get_area_type()!=AREA_STATION)
+		if(get_area_type() != AREA_STATION)
 			return
 		if(in_use)
 			return
@@ -188,7 +188,7 @@
 	var/area/A = get_area(usr)
 	var/prevname = "[A.name]"
 	var/str = tgui_input_text(usr, "New area name", "Area Creation", max_length = MAX_NAME_LEN)
-	if(!str || !length(str) || str==prevname) //cancel
+	if(!str || !length(str) || str == prevname) //cancel
 		return
 	if(length(str) > 50)
 		to_chat(usr, "<span class='warning'>The given name is too long. The area's name is unchanged.</span>")

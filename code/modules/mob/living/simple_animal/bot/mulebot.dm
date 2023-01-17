@@ -528,8 +528,9 @@
 					return
 				if(isturf(next))
 					var/oldloc = loc
-					var/moved = step_towards(src, next)	// attempt to move
-					if(moved && oldloc!=loc)	// successful move
+					var/moved = step_towards(src, next) // attempt to move
+					if(moved && oldloc != loc) // successful move
+						SEND_SIGNAL(src, COMSIG_MOB_BOT_STEP)
 						blockcount = 0
 						path -= loc
 

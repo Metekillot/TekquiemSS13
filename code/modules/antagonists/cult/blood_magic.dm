@@ -166,7 +166,7 @@
 		"<span class='cultitalic'>You speak the cursed words, emitting an EMP blast from your hand.</span>")
 	empulse(owner, 2, 5)
 	charges--
-	if(charges<=0)
+	if(charges <= 0)
 		qdel(src)
 
 /datum/action/innate/cult/blood_spell/shackles
@@ -324,7 +324,7 @@
 		revealing = FALSE
 		name = "Conceal Runes"
 		button_icon_state = "gone"
-	if(charges<= 0)
+	if(charges <= 0)
 		qdel(src)
 	desc = base_desc
 	desc += "<br><b><u>Has [charges] use\s remaining</u></b>."
@@ -738,9 +738,9 @@
 					if(ratio>1)
 						ratio = 1
 						uses -= round(overall_damage)
-						H.visible_message("<span class='warning'>[H] is fully healed by [H==user ? "[H.p_their()]":"[H]'s"]'s blood magic!</span>")
+						H.visible_message(span_warning("[H] is fully healed by [H == user ? "[H.p_their()]":"[H]'s"] blood magic!"))
 					else
-						H.visible_message("<span class='warning'>[H] is partially healed by [H==user ? "[H.p_their()]":"[H]'s"] blood magic.</span>")
+						H.visible_message(span_warning("[H] is partially healed by [H == user ? "[H.p_their()]":"[H]'s"] blood magic."))
 						uses = 0
 					ratio *= -1
 					H.adjustOxyLoss((overall_damage*ratio) * (H.getOxyLoss() / overall_damage), 0)

@@ -154,8 +154,8 @@
 			if (M.use(1))
 				var/obj/item/bot_assembly/ed209/B = new
 				B.forceMove(drop_location())
-				to_chat(user, "<span class='notice'>You arm the robot frame.</span>")
-				var/holding_this = user.get_inactive_held_item()==src
+				to_chat(user, span_notice("You arm the robot frame."))
+				var/holding_this = user.get_inactive_held_item() == src
 				qdel(src)
 				if (holding_this)
 					user.put_in_inactive_hand(B)

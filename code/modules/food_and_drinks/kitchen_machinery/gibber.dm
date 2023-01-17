@@ -80,8 +80,8 @@
 			to_chat(user, "<span class='warning'>This item is not suitable for the gibber!</span>")
 			return
 		var/mob/living/carbon/C = L
-		if(C.buckled ||C.has_buckled_mobs())
-			to_chat(user, "<span class='warning'>[C] is attached to something!</span>")
+		if(C.buckled || C.has_buckled_mobs())
+			to_chat(user, span_warning("[C] is attached to something!"))
 			return
 
 		if(!ignore_clothing)

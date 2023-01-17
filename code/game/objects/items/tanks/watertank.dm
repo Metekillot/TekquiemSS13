@@ -296,7 +296,8 @@
 		addtimer(VARSET_CALLBACK(src, resin_cooldown, FALSE), 10 SECONDS)
 		return
 	if(nozzle_mode == RESIN_FOAM)
-		if(!Adj|| !isturf(target))
+		if(!Adj || !isturf(target))
+			balloon_alert(user, "too far!")
 			return
 		for(var/S in target)
 			if(istype(S, /obj/effect/particle_effect/foam/metal/resin) || istype(S, /obj/structure/foamedmetal/resin))

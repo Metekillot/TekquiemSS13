@@ -122,7 +122,7 @@ GLOBAL_LIST_INIT(possible_abductor_names, list("Alpha","Beta","Gamma","Delta","E
 	var/mob/living/carbon/human/H = owner.current
 	var/gear = alert(admin,"Agent or Scientist Gear","Gear","Agent","Scientist")
 	if(gear)
-		if(gear=="Agent")
+		if(gear == "Agent")
 			H.equipOutfit(/datum/outfit/abductor/agent)
 		else
 			H.equipOutfit(/datum/outfit/abductor/scientist)

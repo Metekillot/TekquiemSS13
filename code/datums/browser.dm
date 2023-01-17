@@ -457,8 +457,8 @@
 	set hidden = TRUE						// hide this verb from the user's panel
 	set name = ".windowclose"			// no autocomplete on cmd line
 
-	if(atomref!="null")				// if passed a real atomref
-		var/hsrc = locate(atomref)	// find the reffed atom
+	if(atomref != "null") // if passed a real atomref
+		var/hsrc = locate(atomref) // find the reffed atom
 		var/href = "close=1"
 		if(hsrc)
 			usr = src.mob

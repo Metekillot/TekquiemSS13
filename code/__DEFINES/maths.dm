@@ -1,3 +1,15 @@
+// Remove these once we have Byond implementation.
+// ------------------------------------
+#define IS_NAN(a) (a != a)
+
+#define IS_INF__UNSAFE(a) (a == a && a-a != a-a)
+#define IS_INF(a) (isnum(a) && IS_INF__UNSAFE(a))
+
+#define IS_FINITE__UNSAFE(a) (a-a == a-a)
+#define IS_FINITE(a) (isnum(a) && IS_FINITE__UNSAFE(a))
+// ------------------------------------
+// Aight dont remove the rest
+
 // Credits to Nickr5 for the useful procs I've taken from his library resource.
 // This file is quadruple wrapped for your pleasure
 // (
@@ -154,7 +166,7 @@
 			R1 = rand(-ACCURACY,ACCURACY)/ACCURACY
 			R2 = rand(-ACCURACY,ACCURACY)/ACCURACY
 			working = R1*R1 + R2*R2
-		while(working >= 1 || working==0)
+		while(working >= 1 || working == 0)
 		working = sqrt(-2 * log(working) / working)
 		R1 *= working
 		gaussian_next = R2 * working
