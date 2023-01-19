@@ -110,6 +110,7 @@
 			if (antag_datum.show_to_ghosts)
 				was_antagonist = TRUE
 				serialized["antag"] = antag_datum.name
+				serialized["antag_group"] = antag_datum.antagpanel_category
 				antagonists += list(serialized)
 				break
 

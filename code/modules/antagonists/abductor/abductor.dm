@@ -4,7 +4,7 @@ GLOBAL_LIST_INIT(possible_abductor_names, list("Alpha","Beta","Gamma","Delta","E
 /datum/antagonist/abductor
 	name = "Abductor"
 	roundend_category = "abductors"
-	antagpanel_category = "Abductor"
+	antagpanel_category = ANTAG_GROUP_ABDUCTORS
 	job_rank = ROLE_ABDUCTOR
 	antag_hud_type = ANTAG_HUD_ABDUCTOR
 	antag_hud_name = "abductor"

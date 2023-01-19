@@ -5,7 +5,7 @@
 	prevent_roundtype_conversion = FALSE
 	var/datum/mind/date
 
-/datum/antagonist/valentine/proc/forge_objectives()
+/datum/antagonist/valentine/forge_objectives()
 	var/datum/objective/protect/protect_objective = new /datum/objective/protect
 	protect_objective.owner = owner
 	protect_objective.target = date

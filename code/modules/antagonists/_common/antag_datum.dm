@@ -39,14 +39,92 @@ GLOBAL_LIST_EMPTY(antagonists)
 	owner = null
 	return ..()
 
+/datum/antagonist/Topic(href,href_list)
+	if(!check_rights(R_ADMIN))
+		return
+
+	//Some commands might delete/modify this datum clearing or changing owner
+	var/datum/mind/persistent_owner = owner
+
+	var/commands = get_admin_commands()
+	var/admin_command = href_list["command"]
+	if(!(admin_command in commands))
+		return
+	var/datum/callback/call_async = commands[admin_command]
+	call_async.Invoke(usr)
+	persistent_owner.traitor_panel()
+
+//This one is created by admin tools for custom objectives
+/datum/antagonist/custom
+	antagpanel_category = "Custom"
+	show_name_in_check_antagonists = TRUE //They're all different
+	var/datum/team/custom_team
+
+/datum/antagonist/custom/create_team(datum/team/team)
+	custom_team = team
+
+/datum/antagonist/custom/get_team()
+	return custom_team
+
+/datum/antagonist/custom/admin_add(datum/mind/new_owner,mob/admin)
+	var/custom_name = stripped_input(admin, "Custom antagonist name:", "Custom antag", "Antagonist")
+	if(!custom_name)
+		return
+	name = custom_name
+	..()
+
+///ANTAGONIST UI STUFF
+
+/datum/antagonist/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, ui_name, name)
+		ui.open()
+
+/datum/antagonist/ui_state(mob/user)
+	return GLOB.always_state
+
+/datum/antagonist/ui_static_data(mob/user)
+	var/list/data = list()
+	data["antag_name"] = name
+	data["objectives"] = get_objectives()
+	return data
+
+//button for antags to review their descriptions/info
+/datum/action/antag_info
+	name = "Open Antag Information:"
+	button_icon_state = "round_end"
+	show_to_observers = FALSE
+
+/datum/action/antag_info/New(Target)
+	. = ..()
+	name += " [target]"
+
+/datum/action/antag_info/Trigger(trigger_flags)
+	. = ..()
+	if(!.)
+		return
+
+	target.ui_interact(owner)
+
+/datum/action/antag_info/IsAvailable(feedback = FALSE)
+	if(!target)
+		stack_trace("[type] was used without a target antag datum!")
+		return FALSE
+	. = ..()
+	if(!.)
+		return
+	if(!owner.mind || !(target in owner.mind.antag_datums))
+		return FALSE
+	return TRUE
+
 /datum/antagonist/proc/can_be_owned(datum/mind/new_owner)
 	. = TRUE
 	var/datum/mind/tested = new_owner || owner
 	if(tested.has_antag_datum(type))
 		return FALSE
-	for(var/i in tested.antag_datums)
-		var/datum/antagonist/A = i
-		if(is_type_in_typecache(src, A.typecache_datum_blacklist))
+	for(var/datum/antagonist/badguy as anything in tested.antag_datums)
+		if(is_type_in_typecache(src, badguy.typecache_datum_blacklist))
 			return FALSE
 
 //This will be called in add_antag_datum before owner assignment.
@@ -118,10 +196,18 @@ GLOBAL_LIST_EMPTY(antagonists)
 	if(owner.current.stat != DEAD)
 		owner.current.add_to_current_living_antags()
 
-/datum/antagonist/proc/is_banned(mob/M)
-	if(!M)
+	SEND_SIGNAL(owner, COMSIG_ANTAGONIST_GAINED, src)
+
+/**
+ * Proc that checks the sent mob aganst the banlistfor this antagonist.
+ * Returns FALSE if no mob is sent, or the mob is not found to be banned.
+ *
+ *  * mob/player: The mob that you are looking for on the banlist.
+ */
+/datum/antagonist/proc/is_banned(mob/player)
+	if(!player)
 		return FALSE
-	. = (is_banned_from(M.ckey, list(ROLE_SYNDICATE, job_rank)) || QDELETED(M))
+	. = (is_banned_from(player.ckey, list(ROLE_SYNDICATE, job_rank)) || QDELETED(player))
 
 /datum/antagonist/proc/replace_banned_player()
 	set waitfor = FALSE
@@ -239,9 +325,9 @@ GLOBAL_LIST_EMPTY(antagonists)
 /datum/antagonist/proc/antag_panel_data()
 	return ""
 
-/datum/antagonist/proc/enabled_in_preferences(datum/mind/M)
+/datum/antagonist/proc/enabled_in_preferences(datum/mind/noggin)
 	if(job_rank)
-		if(M.current && M.current.client && (job_rank in M.current.client.prefs.be_special))
+		if(noggin.current && noggin.current.client && (job_rank in noggin.current.client.prefs.be_special))
 			return TRUE
 		else
 			return FALSE
@@ -251,25 +337,40 @@ GLOBAL_LIST_EMPTY(antagonists)
 /datum/antagonist/proc/get_admin_commands()
 	. = list()
 
-/datum/antagonist/Topic(href,href_list)
-	if(!check_rights(R_ADMIN))
-		return
-	//Antag memory edit
-	if (href_list["memory_edit"])
-		edit_memory(usr)
-		owner.traitor_panel()
-		return
+/// Creates an icon from the preview outfit.
+/// Custom implementors of `get_preview_icon` should use this, as the
+/// result of `get_preview_icon` is expected to be the completed version.
+/datum/antagonist/proc/render_preview_outfit(datum/outfit/outfit, mob/living/carbon/human/dummy)
+	dummy = dummy || new /mob/living/carbon/human/dummy/consistent
+	dummy.equipOutfit(outfit, visualsOnly = TRUE)
+	var/icon = getFlatIcon(dummy)
 
-	//Some commands might delete/modify this datum clearing or changing owner
-	var/datum/mind/persistent_owner = owner
+	// We don't want to qdel the dummy right away, since its items haven't initialized yet.
+	SSatoms.prepare_deletion(dummy)
 
-	var/commands = get_admin_commands()
-	for(var/admin_command in commands)
-		if(href_list["command"] == admin_command)
-			var/datum/callback/C = commands[admin_command]
-			C.Invoke(usr)
-			persistent_owner.traitor_panel()
-			return
+	return icon
+
+/// Given an icon, will crop it to be consistent of those in the preferences menu.
+/// Not necessary, and in fact will look bad if it's anything other than a human.
+/datum/antagonist/proc/finish_preview_icon(icon/icon)
+	// Zoom in on the top of the head and the chest
+	// I have no idea how to do this dynamically.
+	icon.Scale(115, 115)
+
+	// This is probably better as a Crop, but I cannot figure it out.
+	icon.Shift(WEST, 8)
+	icon.Shift(SOUTH, 30)
+
+	icon.Crop(1, 1, ANTAGONIST_PREVIEW_ICON_SIZE, ANTAGONIST_PREVIEW_ICON_SIZE)
+
+	return icon
+
+/// Returns the icon to show on the preferences menu.
+/datum/antagonist/proc/get_preview_icon()
+	if (isnull(preview_outfit))
+		return null
+
+	return finish_preview_icon(render_preview_outfit(preview_outfit))
 
 /datum/antagonist/proc/edit_memory(mob/user)
 	var/new_memo = tgui_input_text(user, "Write a new memory", "Antag Memory", antag_memory, multiline = TRUE)
@@ -282,22 +383,45 @@ GLOBAL_LIST_EMPTY(antagonists)
 	var/datum/objective/hijack/H = locate() in objectives
 	return H?.hijack_speed_override || hijack_speed
 
-//This one is created by admin tools for custom objectives
-/datum/antagonist/custom
-	antagpanel_category = "Custom"
-	show_name_in_check_antagonists = TRUE //They're all different
-	var/datum/team/custom_team
+/// Adds a HUD that will show you other members with the same antagonist.
+/// If an antag typepath is passed to `antag_to_check`, will check that, otherwise will use the source type.
+/datum/antagonist/proc/add_team_hud(mob/target, antag_to_check)
+	QDEL_NULL(team_hud_ref)
 
-/datum/antagonist/custom/create_team(datum/team/team)
-	custom_team = team
+	team_hud_ref = WEAKREF(target.add_alt_appearance(
+		/datum/atom_hud/alternate_appearance/basic/has_antagonist,
+		"antag_team_hud_[REF(src)]",
+		hud_image_on(target),
+		antag_to_check || type,
+	))
 
-/datum/antagonist/custom/get_team()
-	return custom_team
+	// Add HUDs that they couldn't see before
+	for (var/datum/atom_hud/alternate_appearance/basic/has_antagonist/antag_hud as anything in GLOB.has_antagonist_huds)
+		if (antag_hud.mobShouldSee(owner.current))
+			antag_hud.show_to(owner.current)
 
-/datum/antagonist/custom/admin_add(datum/mind/new_owner,mob/admin)
-	var/custom_name = stripped_input(admin, "Custom antagonist name:", "Custom antag", "Antagonist")
-	if(custom_name)
-		name = custom_name
-	else
-		return
-	..()
+/// Takes a location, returns an image drawing "on" it that matches this antag datum's hud icon
+/datum/antagonist/proc/hud_image_on(mob/hud_loc)
+	var/image/hud = image(hud_icon, hud_loc, antag_hud_name)
+	SET_PLANE_EXPLICIT(hud, ABOVE_GAME_PLANE, hud_loc)
+	return hud
+
+///generic helper to send objectives as data through tgui.
+/datum/antagonist/proc/get_objectives()
+	var/objective_count = 1
+	var/list/objective_data = list()
+	//all obj
+	for(var/datum/objective/objective in objectives)
+		objective_data += list(list(
+			"count" = objective_count,
+			"name" = objective.objective_name,
+			"explanation" = objective.explanation_text,
+			"complete" = objective.completed,
+		))
+		objective_count++
+	return objective_data
+
+/// Used to create objectives for the antagonist.
+/datum/antagonist/proc/forge_objectives()
+	return
+

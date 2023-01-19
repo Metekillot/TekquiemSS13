@@ -6,6 +6,10 @@
 	job_rank = ROLE_ALIEN
 	show_in_antagpanel = FALSE
 	show_to_ghosts = TRUE
+	antagpanel_category = ANTAG_GROUP_WIZARDS
+	var/fluff = "You're a Demon of Wrath, often dragged into reality by wizards to terrorize their enemies."
+	var/objective_verb = "Kill"
+	var/datum/mind/summoner
 
 /datum/antagonist/slaughter/on_gain()
 	forge_objectives()
@@ -16,7 +20,7 @@
 	owner.announce_objectives()
 	to_chat(owner, "<span class='warning'>You have a powerful alt-attack that slams people backwards that you can activate by shift+ctrl+clicking your target!</span>")
 
-/datum/antagonist/slaughter/proc/forge_objectives()
+/datum/antagonist/slaughter/forge_objectives()
 	if(summoner)
 		var/datum/objective/assassinate/new_objective = new /datum/objective/assassinate
 		new_objective.owner = owner

@@ -2,7 +2,7 @@
 /datum/antagonist/nukeop/clownop
 	name = "Clown Operative"
 	roundend_category = "clown operatives"
-	antagpanel_category = "ClownOp"
+	antagpanel_category = ANTAG_GROUP_CLOWNOPS
 	nukeop_outfit = /datum/outfit/syndicate/clownop
 
 /datum/antagonist/nukeop/clownop/admin_add(datum/mind/new_owner,mob/admin)
@@ -38,7 +38,7 @@
 /datum/antagonist/nukeop/leader/clownop
 	name = "Clown Operative Leader"
 	roundend_category = "clown operatives"
-	antagpanel_category = "ClownOp"
+	antagpanel_category = ANTAG_GROUP_CLOWNOPS
 	nukeop_outfit = /datum/outfit/syndicate/clownop/leader
 	challengeitem = /obj/item/nuclear_challenge/clownops
 

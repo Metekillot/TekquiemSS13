@@ -1,6 +1,6 @@
 /datum/antagonist/ninja
-	name = "Space Ninja"
-	antagpanel_category = "Space Ninja"
+	name = "\improper Space Ninja"
+	antagpanel_category = ANTAG_GROUP_NINJAS
 	job_rank = ROLE_NINJA
 	antag_hud_type = ANTAG_HUD_NINJA
 	antag_hud_name = "space_ninja"

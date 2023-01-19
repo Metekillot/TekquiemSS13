@@ -288,12 +288,6 @@ GLOBAL_LIST_EMPTY(objectives)
 	var/target_role_type = FALSE
 	var/human_check = TRUE
 
-/datum/objective/protect/find_target_by_role(role, role_type=FALSE,invert=FALSE)
-	if(!invert)
-		target_role_type = role_type
-	..()
-	return target
-
 /datum/objective/protect/check_completion()
 	var/obj/item/organ/brain/brain_target
 	if(human_check)

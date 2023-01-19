@@ -4,7 +4,7 @@
 	show_name_in_check_antagonists = TRUE
 	var/greet_message = ""
 
-/datum/antagonist/survivalist/proc/forge_objectives()
+/datum/antagonist/survivalist/forge_objectives()
 	var/datum/objective/survive/survive = new
 	survive.owner = owner
 	objectives += survive

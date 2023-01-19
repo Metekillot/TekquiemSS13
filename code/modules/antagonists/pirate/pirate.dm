@@ -2,7 +2,8 @@
 	name = "Space Pirate"
 	job_rank = ROLE_TRAITOR
 	roundend_category = "space pirates"
-	antagpanel_category = "Pirate"
+	antagpanel_category = ANTAG_GROUP_PIRATES
+	show_in_antagpanel = FALSE
 	show_to_ghosts = TRUE
 	var/datum/team/pirate/crew
 

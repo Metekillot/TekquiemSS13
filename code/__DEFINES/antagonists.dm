@@ -84,3 +84,47 @@ GLOBAL_LIST_INIT(heretic_start_knowledge,list(/datum/eldritch_knowledge/spell/ba
 /// TC to charge someone if they get a free implant through choice or
 /// because they have nothing else that supports an implant.
 #define UPLINK_IMPLANT_TELECRYSTAL_COST 4
+
+/// Items with this stock key do not share stock with other items
+#define UPLINK_SHARED_STOCK_UNIQUE "uplink_shared_stock_unique"
+/// Stock keys for items that share inventory stock
+#define UPLINK_SHARED_STOCK_KITS "uplink_shared_stock_kits"
+#define UPLINK_SHARED_STOCK_SURPLUS "uplink_shared_stock_surplus"
+
+// Used for traitor objectives
+/// If the objective hasn't been taken yet
+#define OBJECTIVE_STATE_INACTIVE 1
+/// If the objective is active and ongoing
+#define OBJECTIVE_STATE_ACTIVE 2
+/// If the objective has been completed.
+#define OBJECTIVE_STATE_COMPLETED 3
+/// If the objective has failed.
+#define OBJECTIVE_STATE_FAILED 4
+/// If the objective is no longer valid
+#define OBJECTIVE_STATE_INVALID 5
+
+/// Weights for traitor objective categories
+#define OBJECTIVE_WEIGHT_TINY 5
+#define OBJECTIVE_WEIGHT_SMALL 7
+#define OBJECTIVE_WEIGHT_DEFAULT 10
+#define OBJECTIVE_WEIGHT_BIG 15
+#define OBJECTIVE_WEIGHT_HUGE 20
+
+#define REVENANT_NAME_FILE "revenant_names.json"
+
+/// Antag panel groups
+#define ANTAG_GROUP_ABDUCTORS "Abductors"
+#define ANTAG_GROUP_ABOMINATIONS "Extradimensional Abominations"
+#define ANTAG_GROUP_ARACHNIDS "Arachnid Infestation"
+#define ANTAG_GROUP_ASHWALKERS "Ash Walkers"
+#define ANTAG_GROUP_BIOHAZARDS "Biohazards"
+#define ANTAG_GROUP_CLOWNOPS "Clown Operatives"
+#define ANTAG_GROUP_ERT "Emergency Response Team"
+#define ANTAG_GROUP_HORRORS "Eldritch Horrors"
+#define ANTAG_GROUP_LEVIATHANS "Spaceborne Leviathans"
+#define ANTAG_GROUP_NINJAS "Ninja Clan"
+#define ANTAG_GROUP_OVERGROWTH "Invasive Overgrowth"
+#define ANTAG_GROUP_PIRATES "Pirate Crew"
+#define ANTAG_GROUP_SYNDICATE "Syndicate"
+#define ANTAG_GROUP_WIZARDS "Wizard Federation"
+#define ANTAG_GROUP_XENOS "Xenomorph Infestation"

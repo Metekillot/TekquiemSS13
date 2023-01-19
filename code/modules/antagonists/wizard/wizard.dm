@@ -1,7 +1,7 @@
 /datum/antagonist/wizard
 	name = "Space Wizard"
 	roundend_category = "wizards/witches"
-	antagpanel_category = "Wizard"
+	antagpanel_category = ANTAG_GROUP_WIZARDS
 	job_rank = ROLE_WIZARD
 	antag_hud_type = ANTAG_HUD_WIZ
 	antag_hud_name = "wizard"
@@ -15,6 +15,52 @@
 	var/outfit_type = /datum/outfit/wizard
 	var/wiz_age = WIZARD_AGE_MIN /* Wizards by nature cannot be too young. */
 	show_to_ghosts = TRUE
+
+/datum/antagonist/wizard/New()
+	if(move_to_lair) // kick off loading of your lair, if you want to be moved to it
+		INVOKE_ASYNC(SSmapping, TYPE_PROC_REF(/datum/controller/subsystem/mapping, lazy_load_template), LAZY_TEMPLATE_KEY_WIZARDDEN)
+	return ..()
+
+/datum/antagonist/wizard_minion
+	name = "Wizard Minion"
+	antagpanel_category = "Wizard Federation"
+	antag_hud_name = "apprentice"
+	show_in_roundend = FALSE
+	show_name_in_check_antagonists = TRUE
+	/// The wizard team this wizard minion is part of.
+	var/datum/team/wizard/wiz_team
+
+/datum/antagonist/wizard_minion/create_team(datum/team/wizard/new_team)
+	if(!new_team)
+		return
+	if(!istype(new_team))
+		stack_trace("Wrong team type passed to [type] initialization.")
+	wiz_team = new_team
+
+/datum/antagonist/wizard_minion/apply_innate_effects(mob/living/mob_override)
+	var/mob/living/current_mob = mob_override || owner.current
+	current_mob.faction |= ROLE_WIZARD
+	add_team_hud(current_mob)
+
+/datum/antagonist/wizard_minion/remove_innate_effects(mob/living/mob_override)
+	var/mob/living/last_mob = mob_override || owner.current
+	last_mob.faction -= ROLE_WIZARD
+
+/datum/antagonist/wizard_minion/on_gain()
+	create_objectives()
+	return ..()
+
+/datum/antagonist/wizard_minion/proc/create_objectives()
+	if(!wiz_team)
+		return
+	var/datum/objective/custom/custom_objective = new()
+	custom_objective.owner = owner
+	custom_objective.name = "Serve [wiz_team.master_wizard?.owner]"
+	custom_objective.explanation_text = "Serve [wiz_team.master_wizard?.owner]"
+	objectives += custom_objective
+
+/datum/antagonist/wizard_minion/get_team()
+	return wiz_team
 
 /datum/antagonist/wizard/on_gain()
 	register()
