@@ -629,8 +629,8 @@
 				if("Station Member")
 					var/list/personnel_list = list()
 
-			for(var/datum/data/record/t in GLOB.data_core.locked)//Look in data core locked.
-				personnel_list["[t.fields["name"]]: [t.fields["rank"]]"] = t.fields["image"]//Pull names, rank, and image.
+					for(var/datum/record/crew/record in GLOB.manifest.locked)//Look in data core locked.
+						personnel_list["[record.name]: [record.rank]"] = record.character_appearance//Pull names, rank, and image.
 
 					if(!length(personnel_list))
 						tgui_alert(usr,"No suitable records found. Aborting.")

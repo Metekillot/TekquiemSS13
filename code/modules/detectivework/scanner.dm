@@ -42,7 +42,7 @@
 	// Create our paper
 	var/obj/item/paper/P = new(get_turf(src))
 
-	//This could be a global count like sec and med record printouts. See GLOB.data_core.medicalPrintCount AKA datacore.dm
+	//This could be a global count like sec and med record printouts. See GLOB.manifest.generalPrintCount AKA datacore.dm
 	var/frNum = ++forensicPrintCount
 
 	P.name = text("FR-[] 'Forensic Record'", frNum)

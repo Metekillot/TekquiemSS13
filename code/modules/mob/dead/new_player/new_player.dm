@@ -405,8 +405,8 @@
 	if(ishuman(character))
 		humanc = character	//Let's retypecast the var to be human,
 
-	if(humanc)	//These procs all expect humans
-		GLOB.data_core.manifest_inject(humanc)
+	if(humanc) //These procs all expect humans
+		GLOB.manifest.inject(humanc)
 		if(SSshuttle.arrivals)
 			SSshuttle.arrivals.QueueAnnounce(humanc, rank)
 		else

@@ -147,7 +147,7 @@ The console is located at computer/gulag_teleporter.dm
 				else
 					W.forceMove(src)
 
-/obj/machinery/gulag_teleporter/proc/handle_prisoner(obj/item/id, datum/data/record/R)
+/obj/machinery/gulag_teleporter/proc/handle_prisoner(obj/item/id, datum/record/crew/target)
 	if(!ishuman(occupant))
 		return
 	strip_occupant()
@@ -161,8 +161,8 @@ The console is located at computer/gulag_teleporter.dm
 		prisoner.equip_to_appropriate_slot(new shoes_type, qdel_on_fail = TRUE)
 	if(id)
 		prisoner.equip_to_appropriate_slot(id, qdel_on_fail = TRUE)
-	if(R)
-		R.fields["criminal"] = "Incarcerated"
+	if(target)
+		target.wanted_status = WANTED_PRISONER
 
 /obj/item/circuitboard/machine/gulag_teleporter
 	name = "labor camp teleporter (Machine Board)"
