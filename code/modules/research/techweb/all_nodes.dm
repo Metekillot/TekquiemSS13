@@ -58,6 +58,19 @@
 		"space_heater",
 		"tech_disk",
 		"titaniumglass",
+		"toner_large",
+		"toner",
+		"toy_armblade",
+		"toy_balloon",
+		"toygun",
+		"trapdoor_electronics",
+		"turbine_part_compressor",
+		"turbine_part_rotor",
+		"turbine_part_stator",
+		"turret_control",
+		"universal_scanner",
+		"voice_analyzer",
+		"watering_can",
 	)
 
 /datum/techweb_node/mmi
@@ -183,11 +196,54 @@
 	display_name = "Industrial Engineering"
 	description = "A refresher course on modern engineering technology."
 	prereq_ids = list("base")
-	design_ids = list("solarcontrol", "recharger", "powermonitor", "rped", "pacman", "adv_capacitor", "adv_scanning", "w-recycler" , "emitter", "high_cell", "adv_matter_bin", "scanner_gate",
-	"atmosalerts", "atmos_control", "recycler", "autolathe", "high_micro_laser", "nano_mani", "mesons", "welding_goggles", "thermomachine", "rad_collector", "tesla_coil", "grounding_rod",
-	"apc_control", "cell_charger", "power control", "airlock_board", "firelock_board", "airalarm_electronics", "firealarm_electronics", "cell_charger", "stack_console", "stack_machine",
-	"oxygen_tank", "plasma_tank", "emergency_oxygen", "emergency_oxygen_engi", "plasmaman_tank_belt", "electrolyzer", "adv_electrolite", "pneumatic_seal")
-	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 7500)
+	design_ids = list(
+		"adv_capacitor",
+		"adv_matter_bin",
+		"adv_scanning",
+		"airalarm_electronics",
+		"airlock_board",
+		"anomaly_refinery",
+		"apc_control",
+		"atmos_control",
+		"atmos_thermal",
+		"atmosalerts",
+		"autolathe",
+		"cell_charger",
+		"crystallizer",
+		"electrolyzer",
+		"emergency_oxygen_engi",
+		"emergency_oxygen",
+		"emitter",
+		"firealarm_electronics",
+		"firelock_board",
+		"generic_tank",
+		"grounding_rod",
+		"high_cell",
+		"high_micro_laser",
+		"mesons",
+		"nano_mani",
+		"oxygen_tank",
+		"pacman",
+		"plasma_tank",
+		"plasmaman_tank_belt",
+		"pneumatic_seal",
+		"power_control",
+		"powermonitor",
+		"recharger",
+		"recycler",
+		"rped",
+		"scanner_gate",
+		"solarcontrol",
+		"stack_console",
+		"stack_machine",
+		"tank_compressor",
+		"tesla_coil",
+		"thermomachine",
+		"w-recycler",
+		"welding_goggles",
+	)
+	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 12500)
+	discount_experiments = list(/datum/experiment/scanning/random/material/easy = 7500)
 
 /datum/techweb_node/adv_engi
 	id = "adv_engi"
