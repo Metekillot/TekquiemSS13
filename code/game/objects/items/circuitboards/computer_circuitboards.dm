@@ -344,9 +344,9 @@
 	build_path = /obj/machinery/computer/crew
 
 /obj/item/circuitboard/computer/med_data
-	name = "Medical Records Console (Computer Board)"
-	icon_state = "medical"
-	build_path = /obj/machinery/computer/med_data
+	name = "Medical Records Console"
+	greyscale_colors = CIRCUIT_COLOR_MEDICAL
+	build_path = /obj/machinery/computer/records/medical
 
 /obj/item/circuitboard/computer/operating
 	name = "Operating Computer (Computer Board)"
@@ -453,9 +453,9 @@
 	build_path = /obj/machinery/computer/prisoner/management
 
 /obj/item/circuitboard/computer/secure_data
-	name = "Security Records Console (Computer Board)"
-	icon_state = "security"
-	build_path = /obj/machinery/computer/secure_data
+	name = "Security Records Console"
+	greyscale_colors = CIRCUIT_COLOR_SECURITY
+	build_path = /obj/machinery/computer/records/security
 
 /obj/item/circuitboard/computer/warrant
 	name = "Security Warrant Viewer (Computer Board)"

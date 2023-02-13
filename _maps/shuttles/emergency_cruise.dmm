@@ -102,14 +102,15 @@
 /obj/effect/turf_decal/tile/blue{
 	dir = 8
 	},
-/obj/structure/table/reinforced,
-/obj/item/clipboard,
-/obj/item/folder/white,
-/obj/item/pen/blue,
-/obj/machinery/light{
-	dir = 1
-	},
-/turf/open/floor/plasteel/white,
+/obj/machinery/light/directional/north,
+/obj/machinery/computer/records/medical,
+/turf/open/floor/iron/white,
+/area/shuttle/escape)
+"dQ" = (
+/obj/effect/turf_decal/tile/blue/fourcorners,
+/obj/effect/turf_decal/tile/blue/fourcorners,
+/obj/machinery/door/airlock/shuttle,
+/turf/open/floor/iron/white,
 /area/shuttle/escape)
 "dR" = (
 /obj/structure/shuttle/engine/heater,
@@ -232,14 +233,9 @@
 	},
 /obj/effect/turf_decal/tile/blue,
 /obj/effect/turf_decal/tile/blue,
-/obj/structure/table/reinforced,
-/obj/item/clipboard,
-/obj/item/folder/red,
-/obj/item/pen/red,
-/obj/machinery/light{
-	dir = 1
-	},
-/turf/open/floor/plasteel/white,
+/obj/machinery/light/directional/north,
+/obj/machinery/computer/records/security,
+/turf/open/floor/iron/white,
 /area/shuttle/escape)
 "jT" = (
 /obj/item/kirbyplants/photosynthetic,
