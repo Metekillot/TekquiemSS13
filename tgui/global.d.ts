@@ -112,6 +112,18 @@ interface ByondType {
    * Loads a script into the document.
    */
   loadJs(url: string): void;
+};
+
+/**
+ * Object that provides access to Byond Skin API and is available in
+ * any tgui application.
+ */
+const Byond: ByondType;
+
+interface Window {
+  Byond: ByondType;
+  __store__: Store<unknown, AnyAction>;
+  __augmentStack__: (store: Store) => StackAugmentor;
 }
 
 declare const Byond: ByondType;
