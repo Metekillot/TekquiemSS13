@@ -3,6 +3,46 @@ import { multiline } from 'common/string';
 import { useBackend } from '../backend';
 import { Box, Button, Collapsible, Flex, NoticeBox, Section, Stack, TimeDisplay } from '../components';
 import { Window } from '../layouts';
+import { formatTime } from '../format';
+
+type RoleInfo = {
+  role_theme: string;
+  role: string;
+  desc: string;
+  hud_icon: string;
+  revealed_icon: string;
+};
+
+type PlayerInfo = {
+  name: string;
+  ref: string;
+  alive: string;
+  possible_actions: ActionInfo[];
+  votes: number;
+};
+
+type ActionInfo = {
+  name: string;
+  ref: string;
+};
+
+type LobbyData = {
+  name: string;
+  status: string;
+  spectating: string;
+};
+
+type MafiaData = {
+  players: PlayerInfo[];
+  lobbydata: LobbyData[];
+  user_notes: string;
+  roleinfo: RoleInfo;
+  phase: string;
+  turn: number;
+  timeleft: number;
+  all_roles: string[];
+  admin_controls: boolean;
+};
 
 export const MafiaPanel = (props, context) => {
   const { act, data } = useBackend(context);
