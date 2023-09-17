@@ -324,20 +324,13 @@
 			var/datum/design/alloy = stored_research.isDesignResearchedID(alloy_id)
 			var/obj/item/card/id/I
 			if(isliving(usr))
-				var/mob/living/L = usr
-				I = L.get_idcard(TRUE)
-			if((check_access(I) || allowed(usr)) && alloy)
-				var/smelt_amount = can_smelt_alloy(alloy)
-				var/desired = 0
-				if (params["sheets"])
-					desired = text2num(params["sheets"])
-				else
-					desired = tgui_input_number(usr, "How many sheets would you like to smelt?", "Smelt", max_value = smelt_amount)
-					if(!desired || QDELETED(usr) || QDELETED(src) || !usr.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-						return
-				var/amount = round(min(desired,50,smelt_amount))
-				mat_container.use_materials(alloy.materials, amount)
-				materials.silo_log(src, "released", -amount, "sheets", alloy.materials)
+				var/mob/living/user = usr
+				user_id_card = user.get_idcard(TRUE)
+			if((check_access(user_id_card) || allowed(usr)) && alloy)
+				var/amount = round(min(text2num(params["sheets"]), 50, can_smelt_alloy(alloy)))
+				if(amount < 1) //no negative mats
+					return
+				materials.use_materials(alloy.materials, multiplier = amount, action = "released", name = "sheets")
 				var/output
 				if(ispath(alloy.build_path, /obj/item/stack/sheet))
 					output = new alloy.build_path(src, amount)
