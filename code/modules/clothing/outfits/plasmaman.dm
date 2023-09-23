@@ -235,3 +235,41 @@
 	head = /obj/item/clothing/head/helmet/space/plasmaman/centcom_intern
 	uniform = /obj/item/clothing/under/plasmaman/centcom_intern
 	gloves = /obj/item/clothing/gloves/color/plasmaman/centcom_intern
+	head = /obj/item/clothing/head/helmet/space/plasmaman/centcom_intern
+
+/datum/outfit/plasmaman/party_janitor
+	name = "ERP Cleaning Plasmaman"
+
+	uniform = /obj/item/clothing/under/plasmaman/janitor
+	gloves = /obj/item/clothing/gloves/color/plasmaman/janny
+	head = /obj/item/clothing/head/helmet/space/plasmaman/janitor
+
+/datum/outfit/plasmaman/party_bouncer
+	name = "ERP Bouncer Plasmaman"
+
+	uniform = /obj/item/clothing/under/plasmaman/enviroslacks
+	gloves = /obj/item/clothing/gloves/color/plasmaman/white
+	head = /obj/item/clothing/head/helmet/space/plasmaman/white
+
+/datum/outfit/plasmaman/party_constructor
+	name = "ERP Constructor Plasmaman"
+
+	uniform = /obj/item/clothing/under/plasmaman/engineering
+	gloves = /obj/item/clothing/gloves/color/plasmaman/engineer
+	head = /obj/item/clothing/head/helmet/space/plasmaman/engineering
+	mask = /obj/item/clothing/mask/gas/atmos/plasmaman
+
+/datum/outfit/plasmaman/party_comedian
+	name = "ERP Comedian Plasmaman"
+
+	uniform = /obj/item/clothing/under/plasmaman/clown
+	gloves = /obj/item/clothing/gloves/color/plasmaman/clown
+	head = /obj/item/clothing/head/helmet/space/plasmaman/clown
+	mask = /obj/item/clothing/mask/gas/clown_hat/plasmaman
+
+/datum/outfit/plasmaman/bitrunner
+	name = "Bitrunner Plasmaman"
+
+	uniform = /obj/item/clothing/under/plasmaman/bitrunner
+	gloves = /obj/item/clothing/gloves/color/plasmaman/black
+	head = /obj/item/clothing/head/helmet/space/plasmaman/bitrunner

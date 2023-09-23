@@ -529,6 +529,19 @@
 	name = "Supply Request Console (Computer Board)"
 	build_path = /obj/machinery/computer/cargo/request
 
+/obj/item/circuitboard/computer/order_console/mining
+	name = "Mining Vending Console"
+	greyscale_colors = CIRCUIT_COLOR_SUPPLY
+	build_path = /obj/machinery/computer/order_console/mining
+
+/obj/item/circuitboard/computer/order_console/mining/golem
+	name = "Golem Ship Equipment Vendor Console"
+	build_path = /obj/machinery/computer/order_console/mining/golem
+
+/obj/item/circuitboard/computer/order_console/bitrunning
+	name = "Bitrunning Vendor Console"
+	build_path = /obj/machinery/computer/order_console/bitrunning
+
 /obj/item/circuitboard/computer/ferry
 	name = "Transport Ferry (Computer Board)"
 	icon_state = "supply"
@@ -552,3 +565,46 @@
 /obj/item/circuitboard/computer/mining_shuttle/common
 	name = "Lavaland Shuttle (Computer Board)"
 	build_path = /obj/machinery/computer/shuttle/mining/common
+
+/obj/item/circuitboard/computer/emergency_pod
+	name = "Emergency Pod Controls"
+	greyscale_colors = CIRCUIT_COLOR_GENERIC
+	build_path = /obj/machinery/computer/shuttle/pod
+
+/obj/item/circuitboard/computer/exoscanner_console
+	name = "Scanner Array Control Console"
+	build_path = /obj/machinery/computer/exoscanner_control
+
+/obj/item/circuitboard/computer/exodrone_console
+	name = "Exploration Drone Control Console"
+	build_path = /obj/machinery/computer/exodrone_control_console
+
+/obj/item/circuitboard/computer/service_orders
+	name = "Service Order"
+	greyscale_colors = CIRCUIT_COLOR_SUPPLY
+	build_path = /obj/machinery/computer/department_orders/service
+
+/obj/item/circuitboard/computer/engineering_orders
+	name = "Engineering Order"
+	greyscale_colors = CIRCUIT_COLOR_SUPPLY
+	build_path = /obj/machinery/computer/department_orders/engineering
+
+/obj/item/circuitboard/computer/science_orders
+	name = "Science Order"
+	greyscale_colors = CIRCUIT_COLOR_SUPPLY
+	build_path = /obj/machinery/computer/department_orders/science
+
+/obj/item/circuitboard/computer/security_orders
+	name = "Security Order"
+	greyscale_colors = CIRCUIT_COLOR_SUPPLY
+	build_path = /obj/machinery/computer/department_orders/security
+
+/obj/item/circuitboard/computer/medical_orders
+	name = "Medical Order"
+	greyscale_colors = CIRCUIT_COLOR_SUPPLY
+	build_path = /obj/machinery/computer/department_orders/medical
+
+/obj/item/circuitboard/computer/quantum_console
+	name = "Quantum Server Console"
+	greyscale_colors = CIRCUIT_COLOR_SUPPLY
+	build_path = /obj/machinery/computer/quantum_console

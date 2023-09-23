@@ -25,6 +25,7 @@ GLOBAL_LIST_INIT(posibrain_names, world.file2list("strings/names/posibrain.txt")
 GLOBAL_LIST_INIT(nightmare_names, world.file2list("strings/names/nightmare.txt"))
 GLOBAL_LIST_INIT(megacarp_first_names, world.file2list("strings/names/megacarp1.txt"))
 GLOBAL_LIST_INIT(megacarp_last_names, world.file2list("strings/names/megacarp2.txt"))
+GLOBAL_LIST_INIT(cyberauth_names, world.file2list("strings/names/cyberauth.txt"))
 
 //Book Quotes
 GLOBAL_LIST_INIT(bahari_quotes, world.file2list("strings/quotes/bahari.txt"))
