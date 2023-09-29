@@ -80,7 +80,10 @@
 	return ..()
 
 /mob/living/simple_animal/hostile/megafauna/death(gibbed, list/force_grant)
-	if(health > 0)
+	if(gibbed) // in case they've been force dusted
+		return ..()
+
+	if(health > 0) // prevents instakills
 		return
 	var/datum/status_effect/crusher_damage/crusher_dmg = has_status_effect(STATUS_EFFECT_CRUSHERDAMAGETRACKING)
 	var/crusher_kill = FALSE
@@ -103,14 +106,17 @@
 /mob/living/simple_animal/hostile/megafauna/gib()
 	if(health > 0)
 		return
-	else
-		..()
+
+	return ..()
 
 /mob/living/simple_animal/hostile/megafauna/dust(just_ash, drop_items, force)
 	if(!force && health > 0)
 		return
-	else
-		..()
+
+	crusher_loot.Cut()
+	loot.Cut()
+
+	return ..()
 
 /mob/living/simple_animal/hostile/megafauna/AttackingTarget()
 	if(recovery_time >= world.time)
