@@ -242,52 +242,17 @@
 				if(user != T)
 					to_chat(user, "<span class='info'><b>Capture successful!</b>:</span> [T.real_name]'s soul has been captured and stored within [src].")
 
-		if("CONSTRUCT")
-			var/obj/structure/constructshell/T = target
-			var/mob/living/simple_animal/shade/A = locate() in src
-			if(A)
-				var/list/constructs = list(
-					"Juggernaut" = image(icon = 'icons/mob/cult.dmi', icon_state = "juggernaut"),
-					"Wraith" = image(icon = 'icons/mob/cult.dmi', icon_state = "wraith"),
-					"Artificer" = image(icon = 'icons/mob/cult.dmi', icon_state = "artificer")
-					)
-				var/construct_class = show_radial_menu(user, src, constructs, custom_check = CALLBACK(src, PROC_REF(check_menu), user), require_near = TRUE, tooltips = TRUE)
-				if(!T || !T.loc)
-					return
-				switch(construct_class)
-					if("Juggernaut")
-						if(iscultist(user) || iswizard(user))
-							makeNewConstruct(/mob/living/simple_animal/hostile/construct/juggernaut, A, user, 0, T.loc)
-						else
-							if(purified)
-								makeNewConstruct(/mob/living/simple_animal/hostile/construct/juggernaut/angelic, A, user, 0, T.loc)
-							else
-								makeNewConstruct(/mob/living/simple_animal/hostile/construct/juggernaut/noncult, A, user, 0, T.loc)
-					if("Wraith")
-						if(iscultist(user) || iswizard(user))
-							makeNewConstruct(/mob/living/simple_animal/hostile/construct/wraith, A, user, 0, T.loc)
-						else
-							if(purified)
-								makeNewConstruct(/mob/living/simple_animal/hostile/construct/wraith/angelic, A, user, 0, T.loc)
-							else
-								makeNewConstruct(/mob/living/simple_animal/hostile/construct/wraith/noncult, A, user, 0, T.loc)
-					if("Artificer")
-						if(iscultist(user) || iswizard(user))
-							makeNewConstruct(/mob/living/simple_animal/hostile/construct/artificer, A, user, 0, T.loc)
-						else
-							if(purified)
-								makeNewConstruct(/mob/living/simple_animal/hostile/construct/artificer/angelic, A, user, 0, T.loc)
-							else
-								makeNewConstruct(/mob/living/simple_animal/hostile/construct/artificer/noncult, A, user, 0, T.loc)
-					else
-						return
-				for(var/datum/mind/B in SSticker.mode.cult)
-					if(B == A.mind)
-						SSticker.mode.remove_cultist(A.mind)
-				qdel(T)
-				qdel(src)
-			else
-				to_chat(user, "<span class='userdanger'>Creation failed!</span>: [src] is empty! Go kill someone!")
+	to_chat(user, "[span_userdanger("Capture failed!")]: The soul has already fled its mortal frame. You attempt to bring it back...")
+
+	var/datum/callback/to_call = CALLBACK(src, PROC_REF(on_poll_concluded), user, victim)
+	AddComponent(/datum/component/orbit_poll, \
+		ignore_key = POLL_IGNORE_SHADE, \
+		job_bans = ROLE_CULTIST, \
+		to_call = to_call, \
+		title = "A shade" \
+	)
+
+	return TRUE //it'll probably get someone ;)
 
 /obj/item/soulstone/proc/check_menu(mob/user)
 	if(!istype(user))
@@ -296,7 +261,123 @@
 		return FALSE
 	return TRUE
 
-/proc/makeNewConstruct(mob/living/simple_animal/hostile/construct/ctype, mob/target, mob/stoner = null, cultoverride = 0, loc_override = null)
+/**
+ * Creates a new shade mob to inhabit the stone.
+ *
+ * victim - the body that's being shaded
+ * user - the person doing the shading. Optional.
+ * message_user - if TRUE, we send the user (if present) a message that a shade has been created / captured.
+ * shade_controller - the mob (usually, a ghost) that will take over control of the victim / new shade. Optional, if not passed the victim itself will take control.
+ */
+/obj/item/soulstone/proc/init_shade(mob/living/carbon/human/victim, mob/user, message_user = FALSE, mob/shade_controller)
+	if(!shade_controller)
+		shade_controller = victim
+	victim.stop_sound_channel(CHANNEL_HEARTBEAT)
+	var/mob/living/simple_animal/shade/soulstone_spirit = new /mob/living/simple_animal/shade(src)
+	soulstone_spirit.AddComponent(/datum/component/soulstoned, src)
+	soulstone_spirit.name = "Shade of [victim.real_name]"
+	soulstone_spirit.real_name = "Shade of [victim.real_name]"
+	soulstone_spirit.key = shade_controller.key
+	soulstone_spirit.copy_languages(victim, LANGUAGE_MIND)//Copies the old mobs languages into the new mob holder.
+	if(user)
+		soulstone_spirit.copy_languages(user, LANGUAGE_MASTER)
+	soulstone_spirit.get_language_holder().omnitongue = TRUE //Grants omnitongue
+	if(user)
+		soulstone_spirit.faction |= "[REF(user)]" //Add the master as a faction, allowing inter-mob cooperation
+		if(IS_CULTIST(user))
+			soulstone_spirit.mind.add_antag_datum(/datum/antagonist/cult)
+
+	soulstone_spirit.cancel_camera()
+	update_appearance()
+	if(user)
+		if(IS_CULTIST(user))
+			to_chat(soulstone_spirit, span_bold("Your soul has been captured! \
+				You are now bound to the cult's will. Help them succeed in their goals at all costs."))
+		else if(role_check(user))
+			to_chat(soulstone_spirit, span_bold("Your soul has been captured! You are now bound to [user.real_name]'s will. \
+				Help [user.p_them()] succeed in [user.p_their()] goals at all costs."))
+			assign_master(soulstone_spirit, user)
+
+		if(message_user)
+			to_chat(user, "[span_info("<b>Capture successful!</b>:")] [victim.real_name]'s soul has been ripped \
+				from [victim.p_their()] body and stored within [src].")
+
+	victim.dust(drop_items = TRUE)
+
+/**
+ * Assigns the bearer as the new master of a shade.
+ */
+/obj/item/soulstone/proc/assign_master(mob/shade, mob/user)
+	if (!shade || !user || !shade.mind)
+		return
+
+	// Cult shades get cult datum
+	if (user.mind.has_antag_datum(/datum/antagonist/cult))
+		shade.mind.remove_antag_datum(/datum/antagonist/shade_minion)
+		shade.mind.add_antag_datum(/datum/antagonist/cult)
+		return
+
+	// Only blessed soulstones can de-cult shades
+	if(theme == THEME_HOLY)
+		shade.mind.remove_antag_datum(/datum/antagonist/cult)
+
+	var/datum/antagonist/shade_minion/shade_datum = shade.mind.has_antag_datum(/datum/antagonist/shade_minion)
+	if (!shade_datum)
+		shade_datum = shade.mind.add_antag_datum(/datum/antagonist/shade_minion)
+	shade_datum.update_master(user.real_name)
+
+/// Called when a ghost is chosen to become a shade.
+/obj/item/soulstone/proc/on_poll_concluded(mob/living/master, mob/living/victim, mob/dead/observer/ghost)
+	if(isnull(victim) || master.incapacitated() || !master.is_holding(src) || !master.CanReach(victim, src))
+		return FALSE
+	if(isnull(ghost?.client))
+		to_chat(master, span_danger("There were no spirits willing to become a shade."))
+		return FALSE
+	if(length(contents)) //If they used the soulstone on someone else in the meantime
+		return FALSE
+	to_chat(master, "[span_info("<b>Capture successful!</b>:")] A spirit has entered [src], \
+		taking upon the identity of [victim].")
+	init_shade(victim, master, shade_controller = ghost)
+
+	return TRUE
+
+/proc/make_new_construct_from_class(construct_class, theme, mob/target, mob/creator, cultoverride, loc_override)
+	switch(construct_class)
+		if(CONSTRUCT_JUGGERNAUT)
+			if(IS_CULTIST(creator))
+				makeNewConstruct(/mob/living/simple_animal/hostile/construct/juggernaut, target, creator, cultoverride, loc_override) // ignore themes, the actual giving of cult info is in the makeNewConstruct proc
+				return
+			switch(theme)
+				if(THEME_WIZARD)
+					makeNewConstruct(/mob/living/simple_animal/hostile/construct/juggernaut/mystic, target, creator, cultoverride, loc_override)
+				if(THEME_HOLY)
+					makeNewConstruct(/mob/living/simple_animal/hostile/construct/juggernaut/angelic, target, creator, cultoverride, loc_override)
+				if(THEME_CULT)
+					makeNewConstruct(/mob/living/simple_animal/hostile/construct/juggernaut/noncult, target, creator, cultoverride, loc_override)
+		if(CONSTRUCT_WRAITH)
+			if(IS_CULTIST(creator))
+				makeNewConstruct(/mob/living/simple_animal/hostile/construct/wraith, target, creator, cultoverride, loc_override) // ignore themes, the actual giving of cult info is in the makeNewConstruct proc
+				return
+			switch(theme)
+				if(THEME_WIZARD)
+					makeNewConstruct(/mob/living/simple_animal/hostile/construct/wraith/mystic, target, creator, cultoverride, loc_override)
+				if(THEME_HOLY)
+					makeNewConstruct(/mob/living/simple_animal/hostile/construct/wraith/angelic, target, creator, cultoverride, loc_override)
+				if(THEME_CULT)
+					makeNewConstruct(/mob/living/simple_animal/hostile/construct/wraith/noncult, target, creator, cultoverride, loc_override)
+		if(CONSTRUCT_ARTIFICER)
+			if(IS_CULTIST(creator))
+				makeNewConstruct(/mob/living/basic/construct/artificer, target, creator, cultoverride, loc_override) // ignore themes, the actual giving of cult info is in the makeNewConstruct proc
+				return
+			switch(theme)
+				if(THEME_WIZARD)
+					makeNewConstruct(/mob/living/basic/construct/artificer/mystic, target, creator, cultoverride, loc_override)
+				if(THEME_HOLY)
+					makeNewConstruct(/mob/living/basic/construct/artificer/angelic, target, creator, cultoverride, loc_override)
+				if(THEME_CULT)
+					makeNewConstruct(/mob/living/basic/construct/artificer/noncult, target, creator, cultoverride, loc_override)
+
+/proc/makeNewConstruct(mob/living/simple_animal/hostile/construct/ctype, mob/target, mob/stoner = null, cultoverride = FALSE, loc_override = null)
 	if(QDELETED(target))
 		return
 	var/mob/living/simple_animal/hostile/construct/newstruct = new ctype((loc_override) ? (loc_override) : (get_turf(target)))

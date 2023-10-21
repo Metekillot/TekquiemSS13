@@ -30,17 +30,26 @@
 	var/obj/effect/proc_holder/spell/targeted/personality_commune/owner_spell = new(src)
 	owner_backseat.AddSpell(owner_spell)
 
-
+/// Attempts to get a ghost to play the personality
 /datum/brain_trauma/severe/split_personality/proc/get_ghost()
-	set waitfor = FALSE
-	var/list/mob/dead/observer/candidates = pollCandidatesForMob("Do you want to play as [owner.real_name]'s split personality?", ROLE_PAI, null, null, 75, stranger_backseat, POLL_IGNORE_SPLITPERSONALITY)
-	if(LAZYLEN(candidates))
-		var/mob/dead/observer/C = pick(candidates)
-		stranger_backseat.key = C.key
-		log_game("[key_name(stranger_backseat)] became [key_name(owner)]'s split personality.")
-		message_admins("[ADMIN_LOOKUPFLW(stranger_backseat)] became [ADMIN_LOOKUPFLW(owner)]'s split personality.")
-	else
+	var/datum/callback/to_call = CALLBACK(src, PROC_REF(schism))
+	owner.AddComponent(/datum/component/orbit_poll, \
+		ignore_key = POLL_IGNORE_SPLITPERSONALITY, \
+		job_bans = ROLE_PAI, \
+		title = "[owner.real_name]'s [poll_role]", \
+		to_call = to_call, \
+	)
+
+/// Ghost poll has concluded
+/datum/brain_trauma/severe/split_personality/proc/schism(mob/dead/observer/ghost)
+	if(isnull(ghost))
 		qdel(src)
+		return
+
+	stranger_backseat.key = ghost.key
+	stranger_backseat.log_message("became [key_name(owner)]'s split personality.", LOG_GAME)
+	message_admins("[ADMIN_LOOKUPFLW(stranger_backseat)] became [ADMIN_LOOKUPFLW(owner)]'s split personality.")
+
 
 /datum/brain_trauma/severe/split_personality/on_life()
 	if(owner.stat == DEAD)
