@@ -713,21 +713,24 @@ so as to remain in compliance with the most up-to-date laws."
 	G.reenter_corpse()
 
 /atom/movable/screen/alert/notify_action
-	name = "Body created"
-	desc = "A body was created. You can enter it."
+	name = "Something interesting is happening!"
+	desc = "This can be clicked on to perform an action."
 	icon_state = "template"
-	timeout = 300
-	var/atom/target = null
+	timeout = 30 SECONDS
+	/// The target to use the action on
+	var/atom/target
+	/// Which on click action to use
 	var/action = NOTIFY_JUMP
 
 /atom/movable/screen/alert/notify_action/Click()
-	if(!usr || !usr.client || usr != owner)
+	. = ..()
+	if(isnull(target))
 		return
-	if(!target)
+
+	var/mob/dead/observer/ghost_owner = owner
+	if(!istype(ghost_owner))
 		return
-	var/mob/dead/observer/G = usr
-	if(!istype(G))
-		return
+
 	switch(action)
 		if(NOTIFY_ATTACK)
 			target.attack_ghost(G)
