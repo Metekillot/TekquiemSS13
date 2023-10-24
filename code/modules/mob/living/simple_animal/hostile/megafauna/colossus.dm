@@ -646,7 +646,7 @@
 	if(..() && !ready_to_deploy)
 		AddElement(/datum/element/point_of_interest)
 		ready_to_deploy = TRUE
-		notify_ghosts("An anomalous crystal has been activated in [get_area(src)]! This crystal can always be used by ghosts hereafter.", enter_link = "<a href=byond://?src=[REF(src)];ghostjoin=1>(Click to enter)</a>", ghost_sound = 'sound/effects/ghost2.ogg', source = src, action = NOTIFY_ATTACK, header = "Anomalous crystal activated")
+		notify_ghosts("An anomalous crystal has been activated in [get_area(src)]! This crystal can always be used by ghosts hereafter.", ghost_sound = 'sound/effects/ghost2.ogg', source = src, action = NOTIFY_PLAY, header = "Anomalous crystal activated")
 
 /obj/machinery/anomalous_crystal/helpers/attack_ghost(mob/dead/observer/user)
 	. = ..()
@@ -657,100 +657,6 @@
 		if(be_helper == "Yes" && !QDELETED(src) && isobserver(user))
 			var/mob/living/simple_animal/hostile/lightgeist/W = new /mob/living/simple_animal/hostile/lightgeist(get_turf(loc))
 			W.key = user.key
-
-
-/obj/machinery/anomalous_crystal/helpers/Topic(href, href_list)
-	if(href_list["ghostjoin"])
-		var/mob/dead/observer/ghost = usr
-		if(istype(ghost))
-			attack_ghost(ghost)
-
-/mob/living/simple_animal/hostile/lightgeist
-	name = "lightgeist"
-	desc = "This small floating creature is a completely unknown form of life... being near it fills you with a sense of tranquility."
-	icon_state = "lightgeist"
-	icon_living = "lightgeist"
-	icon_dead = "butterfly_dead"
-	turns_per_move = 1
-	response_help_continuous = "waves away"
-	response_help_simple = "wave away"
-	response_disarm_continuous = "brushes aside"
-	response_disarm_simple = "brush aside"
-	response_harm_continuous = "disrupts"
-	response_harm_simple = "disrupt"
-	speak_emote = list("oscillates")
-	maxHealth = 2
-	health = 2
-	harm_intent_damage = 5
-	melee_damage_lower = 5
-	melee_damage_upper = 5
-	friendly_verb_continuous = "taps"
-	friendly_verb_simple = "tap"
-	density = FALSE
-	is_flying_animal = TRUE
-	pass_flags = PASSTABLE | PASSGRILLE | PASSMOB
-	ventcrawler = VENTCRAWLER_ALWAYS
-	mob_size = MOB_SIZE_TINY
-	gold_core_spawnable = HOSTILE_SPAWN
-	verb_say = "warps"
-	verb_ask = "floats inquisitively"
-	verb_exclaim = "zaps"
-	verb_yell = "bangs"
-	initial_language_holder = /datum/language_holder/lightbringer
-	damage_coeff = list(BRUTE = 1, BURN = 1, TOX = 0, CLONE = 0, STAMINA = 0, OXY = 0)
-	light_range = 4
-	faction = list("neutral")
-	del_on_death = TRUE
-	unsuitable_atmos_damage = 0
-	minbodytemp = 0
-	maxbodytemp = 1500
-	obj_damage = 0
-	environment_smash = ENVIRONMENT_SMASH_NONE
-	AIStatus = AI_OFF
-	stop_automated_movement = TRUE
-
-/mob/living/simple_animal/hostile/lightgeist/Initialize()
-	. = ..()
-	remove_verb(src, /mob/living/verb/pulled)
-	remove_verb(src, /mob/verb/me_verb)
-	var/datum/atom_hud/medsensor = GLOB.huds[DATA_HUD_MEDICAL_ADVANCED]
-	medsensor.add_hud_to(src)
-
-/mob/living/simple_animal/hostile/lightgeist/AttackingTarget()
-	if(isliving(target) && target != src)
-		var/mob/living/L = target
-		if(L.stat != DEAD)
-			L.heal_overall_damage(melee_damage_upper, melee_damage_upper)
-			new /obj/effect/temp_visual/heal(get_turf(target), "#80F5FF")
-			visible_message("<span class='notice'>[src] mends the wounds of [target].</span>","<span class='notice'>You mend the wounds of [target].</span>")
-
-/mob/living/simple_animal/hostile/lightgeist/ghost()
-	. = ..()
-	if(.)
-		death()
-
-
-/obj/machinery/anomalous_crystal/refresher //Deletes and recreates a copy of the item, "refreshing" it.
-	observer_desc = "This crystal \"refreshes\" items that it affects, rendering them as new."
-	activation_method = ACTIVATE_TOUCH
-	cooldown_add = 50
-	activation_sound = 'sound/magic/timeparadox2.ogg'
-	var/static/list/banned_items_typecache = typecacheof(list(/obj/item/storage, /obj/item/implant, /obj/item/implanter, /obj/item/disk/nuclear, /obj/projectile, /obj/item/spellbook))
-
-/obj/machinery/anomalous_crystal/refresher/ActivationReaction(mob/user, method)
-	if(..())
-		var/list/L = list()
-		var/turf/T = get_step(src, dir)
-		new /obj/effect/temp_visual/emp/pulse(T)
-		for(var/i in T)
-			if(isitem(i) && !is_type_in_typecache(i, banned_items_typecache))
-				var/obj/item/W = i
-				if(!(W.flags_1 & ADMIN_SPAWNED_1) && !(W.flags_1 & HOLOGRAM_1) && !(W.item_flags & ABSTRACT))
-					L += W
-		if(L.len)
-			var/obj/item/CHOSEN = pick(L)
-			new CHOSEN.type(T)
-			qdel(CHOSEN)
 
 /obj/machinery/anomalous_crystal/possessor //Allows you to bodyjack small animals, then exit them at your leisure, but you can only do this once per activation. Because they blow up. Also, if the bodyjacked animal dies, SO DO YOU.
 	observer_desc = "When activated, this crystal allows you to take over small animals, and then exit them at the possessors leisure. Exiting the animal kills it, and if you die while possessing the animal, you die as well."

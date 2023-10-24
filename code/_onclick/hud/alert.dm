@@ -732,8 +732,8 @@ so as to remain in compliance with the most up-to-date laws."
 		return
 
 	switch(action)
-		if(NOTIFY_ATTACK)
-			target.attack_ghost(G)
+		if(NOTIFY_PLAY)
+			target.attack_ghost(ghost_owner)
 		if(NOTIFY_JUMP)
 			var/turf/T = get_turf(target)
 			if(T && isturf(T))
