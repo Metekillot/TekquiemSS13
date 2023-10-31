@@ -38,15 +38,6 @@
 		return FALSE
 	return TRUE
 
-/obj/machinery/computer/launchpad/proc/teleport(mob/user, obj/machinery/launchpad/pad, sending)
-	if(QDELETED(pad))
-		to_chat(user, "<span class='warning'>ERROR: Launchpad not responding. Check launchpad integrity.</span>")
-		return
-	if(!pad.isAvailable())
-		to_chat(user, "<span class='warning'>ERROR: Launchpad not operative. Make sure the launchpad is ready and powered.</span>")
-		return
-	pad.doteleport(user, sending)
-
 /obj/machinery/computer/launchpad/proc/get_pad(number)
 	var/obj/machinery/launchpad/pad = launchpads[number]
 	return pad
@@ -121,10 +112,19 @@
 				selected_id = null
 			. = TRUE
 		if("launch")
-			teleport(usr, current_pad, TRUE)
+			var/checks = current_pad.teleport_checks()
+			if(isnull(checks))
+				current_pad.doteleport(usr, TRUE)
+			else
+				to_chat(usr, span_warning(checks))
 			. = TRUE
 
 		if("pull")
-			teleport(usr, current_pad, FALSE)
+			var/checks = current_pad.teleport_checks()
+			if(isnull(checks))
+				current_pad.doteleport(usr, FALSE)
+			else
+				to_chat(usr, span_warning(checks))
+
 			. = TRUE
 	. = TRUE

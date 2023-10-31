@@ -8,68 +8,76 @@
 	active_power_usage = 2500
 	hud_possible = list(DIAG_LAUNCHPAD_HUD)
 	circuit = /obj/item/circuitboard/machine/launchpad
+	/// The beam icon
 	var/icon_teleport = "lpad-beam"
-	var/stationary = TRUE //to prevent briefcase pad deconstruction and such
+	/// To prevent briefcase pad deconstruction and such
+	var/stationary = TRUE
+	/// What to name the launchpad in the console
 	var/display_name = "Launchpad"
+	/// The speed of the teleportation
 	var/teleport_speed = 35
-	var/range = 15
-	var/teleporting = FALSE //if it's in the process of teleporting
+	/// Max range of the launchpad
+	var/range = 10
+	/// If it's in the process of teleporting
+	var/teleporting = FALSE
+	/// The power efficiency of the launchpad
 	var/power_efficiency = 1
+	/// Current x target
 	var/x_offset = 0
+	/// Current y target
 	var/y_offset = 0
+	/// The icon to use for the indicator
 	var/indicator_icon = "launchpad_target"
 
-/obj/machinery/launchpad/RefreshParts()
-	var/E = 0
-	for(var/obj/item/stock_parts/manipulator/M in component_parts)
-		E += M.rating
-	range = initial(range)
-	range *= E
-
-/obj/machinery/launchpad/Initialize()
+/obj/machinery/launchpad/Initialize(mapload)
 	. = ..()
 	prepare_huds()
 	for(var/datum/atom_hud/data/diagnostic/diag_hud in GLOB.huds)
 		diag_hud.add_to_hud(src)
 
-	var/image/holder = hud_list[DIAG_LAUNCHPAD_HUD]
-	var/mutable_appearance/MA = new /mutable_appearance()
-	MA.icon = 'icons/effects/effects.dmi'
-	MA.icon_state = "launchpad_target"
-	MA.layer = ABOVE_OPEN_TURF_LAYER
-	MA.plane = 0
-	holder.appearance = MA
+	update_hud()
 
-	update_indicator()
+/obj/machinery/launchpad/RefreshParts()
+	. = ..()
+	var/max_range_multiplier = 0
+	for(var/datum/stock_part/servo/servo in component_parts)
+		max_range_multiplier += servo.tier
+	range = initial(range)
+	range *= max_range_multiplier
+
+/obj/machinery/launchpad/on_changed_z_level(turf/old_turf, turf/new_turf, same_z_layer, notify_contents)
+	if(same_z_layer && !QDELETED(src))
+		update_hud()
+	return ..()
 
 /obj/machinery/launchpad/Destroy()
-	qdel(hud_list[DIAG_LAUNCHPAD_HUD])
+	for(var/datum/atom_hud/data/diagnostic/diag_hud in GLOB.huds)
+		diag_hud.remove_atom_from_hud(src)
 	return ..()
 
 /obj/machinery/launchpad/examine(mob/user)
 	. = ..()
 	if(in_range(user, src) || isobserver(user))
-		. += "<span class='notice'>The status display reads: Maximum range: <b>[range]</b> units.</span>"
+		. += span_notice("The status display reads: Maximum range: <b>[range]</b> units.")
 
-/obj/machinery/launchpad/attackby(obj/item/I, mob/user, params)
-	if(stationary)
-		if(default_deconstruction_screwdriver(user, "lpad-idle-o", "lpad-idle", I))
-			update_indicator()
+/obj/machinery/launchpad/attackby(obj/item/weapon, mob/user, params)
+	if(!stationary)
+		return ..()
+
+	if(default_deconstruction_screwdriver(user, "lpad-idle-open", "lpad-idle", weapon))
+		update_indicator()
+		return
+
+	if(panel_open && weapon.tool_behaviour == TOOL_MULTITOOL)
+		if(!multitool_check_buffer(user, weapon))
 			return
+		var/obj/item/multitool/multi = weapon
+		multi.set_buffer(src)
+		balloon_alert(user, "saved to buffer")
+		return TRUE
 
-		if(panel_open)
-			if(I.tool_behaviour == TOOL_MULTITOOL)
-				if(!multitool_check_buffer(user, I))
-					return
-				var/obj/item/multitool/M = I
-				M.buffer = src
-				to_chat(user, "<span class='notice'>You save the data in the [I.name]'s buffer.</span>")
-				return 1
-
-		if(default_deconstruction_crowbar(I))
-			return
-
-	return ..()
+	if(default_deconstruction_crowbar(weapon))
+		return
 
 /obj/machinery/launchpad/attack_ghost(mob/dead/observer/ghost)
 	. = ..()
@@ -80,17 +88,34 @@
 	var/turf/target = locate(target_x, target_y, z)
 	ghost.forceMove(target)
 
-/obj/machinery/launchpad/proc/isAvailable()
-	if(machine_stat & NOPOWER)
-		return FALSE
-	if(panel_open)
+/// Updates diagnostic huds
+/obj/machinery/launchpad/proc/update_hud()
+	var/image/holder = hud_list[DIAG_LAUNCHPAD_HUD]
+	var/mutable_appearance/MA = new /mutable_appearance()
+	MA.icon = 'icons/effects/effects.dmi'
+	MA.icon_state = "launchpad_target"
+	MA.layer = ABOVE_OPEN_TURF_LAYER
+	MA.plane = 0
+	holder.appearance = MA
+
+	update_indicator()
+
+	if(stationary)
+		AddComponent(/datum/component/usb_port, list(
+			/obj/item/circuit_component/bluespace_launchpad,
+		))
+
+/// Whether this launchpad can send or receive.
+/obj/machinery/launchpad/proc/is_available()
+	if(QDELETED(src) || !is_operational || panel_open)
 		return FALSE
 	return TRUE
 
+/// Updates the indicator icon.
 /obj/machinery/launchpad/proc/update_indicator()
 	var/image/holder = hud_list[DIAG_LAUNCHPAD_HUD]
 	var/turf/target_turf
-	if(isAvailable())
+	if(is_available())
 		target_turf = locate(x + x_offset, y + y_offset, z)
 	if(target_turf)
 		holder.icon_state = indicator_icon
@@ -98,6 +123,7 @@
 	else
 		holder.icon_state = null
 
+/// Sets the offset of the launchpad.
 /obj/machinery/launchpad/proc/set_offset(x, y)
 	if(teleporting)
 		return
@@ -107,10 +133,28 @@
 		y_offset = clamp(y, -range, range)
 	update_indicator()
 
-/obj/machinery/launchpad/proc/doteleport(mob/user, sending)
+/obj/effect/ebeam/launchpad/Initialize(mapload)
+	. = ..()
+	animate(src, alpha = 0, flags = ANIMATION_PARALLEL, time = BEAM_FADE_TIME)
+
+/// Checks if the launchpad can teleport.
+/obj/machinery/launchpad/proc/teleport_checks()
+	if(!is_available())
+		return "ERROR: Launchpad not operative. Make sure the launchpad is ready and powered."
+
 	if(teleporting)
-		to_chat(user, "<span class='warning'>ERROR: Launchpad busy.</span>")
-		return
+		return "ERROR: Launchpad busy."
+
+	var/area/surrounding = get_area(src)
+	if(is_centcom_level(z) || istype(surrounding, /area/shuttle))
+		return "ERROR: Launchpad not operative. Heavy area shielding makes teleporting impossible."
+
+	return null
+
+/// Performs the teleport.
+/// sending - TRUE/FALSE depending on if the launch pad is teleporting *to* or *from* the target.
+/// alternate_log_name - An alternative name to use in logs, if `user` is not present..
+/obj/machinery/launchpad/proc/doteleport(mob/user, sending, alternate_log_name = null)
 
 	var/turf/dest = get_turf(src)
 
@@ -142,7 +186,7 @@
 	indicator_icon = "launchpad_target"
 	update_indicator()
 
-	if(QDELETED(src) || !isAvailable())
+	if(!is_available())
 		return
 
 	teleporting = FALSE
@@ -235,7 +279,7 @@
 	QDEL_NULL(briefcase)
 	return ..()
 
-/obj/machinery/launchpad/briefcase/isAvailable()
+/obj/machinery/launchpad/briefcase/is_available()
 	if(closed)
 		return FALSE
 	return ..()
