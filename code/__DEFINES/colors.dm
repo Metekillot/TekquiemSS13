@@ -161,4 +161,151 @@
 /// Extremely diluted yellow, close to skin color (for some reason). rgb(250, 225, 175)
 #define LIGHT_COLOR_TUNGSTEN   "#FAE1AF"
 /// Barely visible cyan-ish hue, as the doctor prescribed. rgb(240, 250, 250)
-#define LIGHT_COLOR_HALOGEN    "#F0FAFA"
+#define LIGHT_COLOR_HALOGEN "#F0FAFA"
+/// Nearly red. rgb(226, 78, 118)
+#define LIGHT_COLOR_BUBBLEGUM "#e24e76"
+
+//The GAGS greyscale_colors for each department's computer/machine circuits
+#define CIRCUIT_COLOR_GENERIC "#1A7A13"
+#define CIRCUIT_COLOR_COMMAND "#1B4594"
+#define CIRCUIT_COLOR_SECURITY "#9A151E"
+#define CIRCUIT_COLOR_SCIENCE "#BC4A9B"
+#define CIRCUIT_COLOR_SERVICE "#92DCBA"
+#define CIRCUIT_COLOR_MEDICAL "#00CCFF"
+#define CIRCUIT_COLOR_ENGINEERING "#F8D700"
+#define CIRCUIT_COLOR_SUPPLY "#C47749"
+
+/// Colors for pride week
+#define COLOR_PRIDE_RED "#FF6666"
+#define COLOR_PRIDE_ORANGE "#FC9F3C"
+#define COLOR_PRIDE_YELLOW "#EAFF51"
+#define COLOR_PRIDE_GREEN "#41FC66"
+#define COLOR_PRIDE_BLUE "#42FFF2"
+#define COLOR_PRIDE_PURPLE "#5D5DFC"
+
+/// Colors for status/tram/incident displays
+#define COLOR_DISPLAY_RED "#BE3455"
+#define COLOR_DISPLAY_ORANGE "#FF9900"
+#define COLOR_DISPLAY_YELLOW "#FFF743"
+#define COLOR_DISPLAY_GREEN "#3CF046"
+#define COLOR_DISPLAY_CYAN "#22FFCC"
+#define COLOR_DISPLAY_BLUE "#22CCFF"
+#define COLOR_DISPLAY_PURPLE "#5D5DFC"
+
+/// The default color for admin say, used as a fallback when the preference is not enabled
+#define DEFAULT_ASAY_COLOR COLOR_MOSTLY_PURE_RED
+
+#define DEFAULT_HEX_COLOR_LEN 6
+
+// Color filters
+/// Icon filter that creates ambient occlusion
+#define AMBIENT_OCCLUSION filter(type="drop_shadow", x=0, y=-2, size=4, color="#04080FAA")
+/// Icon filter that creates gaussian blur
+#define GAUSSIAN_BLUR(filter_size) filter(type="blur", size=filter_size)
+
+// Colors related to items used in construction
+#define CABLE_COLOR_BLUE "blue"
+	#define CABLE_HEX_COLOR_BLUE COLOR_STRONG_BLUE
+#define CABLE_COLOR_BROWN "brown"
+	#define CABLE_HEX_COLOR_BROWN COLOR_ORANGE_BROWN
+#define CABLE_COLOR_CYAN "cyan"
+	#define CABLE_HEX_COLOR_CYAN COLOR_CYAN
+#define CABLE_COLOR_GREEN "green"
+	#define CABLE_HEX_COLOR_GREEN COLOR_DARK_LIME
+#define CABLE_COLOR_ORANGE "orange"
+	#define CABLE_HEX_COLOR_ORANGE COLOR_MOSTLY_PURE_ORANGE
+#define CABLE_COLOR_PINK "pink"
+	#define CABLE_HEX_COLOR_PINK COLOR_LIGHT_PINK
+#define CABLE_COLOR_RED "red"
+	#define CABLE_HEX_COLOR_RED COLOR_RED
+#define CABLE_COLOR_WHITE "white"
+	#define CABLE_HEX_COLOR_WHITE COLOR_WHITE
+#define CABLE_COLOR_YELLOW "yellow"
+	#define CABLE_HEX_COLOR_YELLOW COLOR_YELLOW
+//windows affected by Nar'Sie turn this color.
+#define NARSIE_WINDOW_COLOUR "#7D1919"
+
+
+#define COLOR_CARP_PURPLE "#aba2ff"
+#define COLOR_CARP_PINK "#da77a8"
+#define COLOR_CARP_GREEN "#70ff25"
+#define COLOR_CARP_GRAPE "#df0afb"
+#define COLOR_CARP_SWAMP "#e5e75a"
+#define COLOR_CARP_TURQUOISE "#04e1ed"
+#define COLOR_CARP_BROWN "#ca805a"
+#define COLOR_CARP_TEAL "#20e28e"
+#define COLOR_CARP_LIGHT_BLUE "#4d88cc"
+#define COLOR_CARP_RUSTY "#dd5f34"
+#define COLOR_CARP_RED "#fd6767"
+#define COLOR_CARP_YELLOW "#f3ca4a"
+#define COLOR_CARP_BLUE "#09bae1"
+#define COLOR_CARP_PALE_GREEN "#7ef099"
+#define COLOR_CARP_SILVER "#fdfbf3"
+#define COLOR_CARP_DARK_BLUE "#3a384d"
+#define COLOR_CARP_DARK_GREEN "#358102"
+
+#define COLOR_SLIME_ADAMANTINE "#135f49"
+#define COLOR_SLIME_BLACK "#3b3b3b"
+#define COLOR_SLIME_BLUE "#19ffff"
+#define COLOR_SLIME_BLUESPACE "#ebebeb"
+#define COLOR_SLIME_CERULEAN "#5783aa"
+#define COLOR_SLIME_DARK_BLUE "#2e9dff"
+#define COLOR_SLIME_DARK_PURPLE "#9948f7"
+#define COLOR_SLIME_GOLD "#c38b07"
+#define COLOR_SLIME_GREEN "#07f024"
+#define COLOR_SLIME_GREY "#c2c2c2"
+#define COLOR_SLIME_LIGHT_PINK "#ffe1fa"
+#define COLOR_SLIME_METAL "#676767"
+#define COLOR_SLIME_OIL "#242424"
+#define COLOR_SLIME_ORANGE "#ffb445"
+#define COLOR_SLIME_PINK "#fe5bbd"
+#define COLOR_SLIME_PURPLE "#d138ff"
+#define COLOR_SLIME_PYRITE "#ffc427"
+#define COLOR_SLIME_RAINBOW COLOR_SLIME_GREY // only for consistency
+#define COLOR_SLIME_RED "#fb4848"
+#define COLOR_SLIME_SEPIA "#9b8a7a"
+#define COLOR_SLIME_SILVER "#dadada"
+#define COLOR_SLIME_YELLOW "#fff419"
+
+#define COLOR_GNOME_RED_ONE "#f10b0b"
+#define COLOR_GNOME_RED_TWO "#bc5347"
+#define COLOR_GNOME_RED_THREE "#b40f1a"
+#define COLOR_GNOME_BLUE_ONE "#2e8ff7"
+#define COLOR_GNOME_BLUE_TWO "#312bd6"
+#define COLOR_GNOME_BLUE_THREE "#4e409a"
+#define COLOR_GNOME_GREEN_ONE "#28da1c"
+#define COLOR_GNOME_GREEN_TWO "#50a954"
+#define COLOR_GNOME_YELLOW "#f6da3c"
+#define COLOR_GNOME_ORANGE "#d56f2f"
+#define COLOR_GNOME_BROWN_ONE "#874e2a"
+#define COLOR_GNOME_BROWN_TWO "#543d2e"
+#define COLOR_GNOME_PURPLE "#ac1dd7"
+#define COLOR_GNOME_WHITE "#e8e8e8"
+#define COLOR_GNOME_GREY "#a9a9a9"
+#define COLOR_GNOME_BLACK "#303030"
+
+#define SOFA_BROWN "#a75400"
+#define SOFA_MAROON "#830000"
+
+#define COLOR_ICECREAM_VANILLA "#f2eede"
+#define COLOR_ICECREAM_CHOCOLATE "#93683c"
+#define COLOR_ICECREAM_STRAWBERRY "#f4cbcb"
+#define COLOR_ICECREAM_BLUE "#cbd5f4"
+#define COLOR_ICECREAM_LEMON "#ffff9f"
+#define COLOR_ICECREAM_CARAMEL "#d98736"
+#define COLOR_ICECREAM_ORANGESICLE "#ffa980"
+#define COLOR_ICECREAM_PEACH "#ffcc66"
+#define COLOR_ICECREAM_CUSTOM "#f3f3f3"
+#define COLOR_ICECREAM_CHERRY_CHOCOLATE "#800000"
+
+GLOBAL_LIST_INIT(cable_colors, list(
+	CABLE_COLOR_BLUE = CABLE_HEX_COLOR_BLUE,
+	CABLE_COLOR_CYAN = CABLE_HEX_COLOR_CYAN,
+	CABLE_COLOR_GREEN = CABLE_HEX_COLOR_GREEN,
+	CABLE_COLOR_ORANGE = CABLE_HEX_COLOR_ORANGE,
+	CABLE_COLOR_PINK = CABLE_HEX_COLOR_PINK,
+	CABLE_COLOR_RED = CABLE_HEX_COLOR_RED,
+	CABLE_COLOR_WHITE = CABLE_HEX_COLOR_WHITE,
+	CABLE_COLOR_YELLOW = CABLE_HEX_COLOR_YELLOW,
+	CABLE_COLOR_BROWN = CABLE_HEX_COLOR_BROWN
+))
