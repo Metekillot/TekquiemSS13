@@ -275,13 +275,13 @@
 				to_chat(source, "[icon2html(src, source)]<span class='notice'>Building Floor...</span>")
 				if(!do_after_cooldown(S, source))
 					return
-				S.PlaceOnTop(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
-			else if(isfloorturf(target))
-				var/turf/open/floor/F = target
-				to_chat(source, "[icon2html(src, source)]<span class='notice'>Building Wall...</span>")
-				if(!do_after_cooldown(F, source))
+				floor_turf.place_on_top(/turf/closed/wall)
+			else if(isopenturf(target))
+				var/turf/open/open_turf = target
+				to_chat(source, "[icon2html(src, source)][span_notice("Building Floor...")]")
+				if(!do_after_cooldown(open_turf, source))
 					return
-				F.PlaceOnTop(/turf/closed/wall)
+				open_turf.place_on_top(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
 		if(MODE_AIRLOCK)
 			if(isfloorturf(target))
 				to_chat(source, "[icon2html(src, source)]<span class='notice'>Building Airlock...</span>")

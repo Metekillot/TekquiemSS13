@@ -254,11 +254,18 @@
 			return list("mode" = RCD_FURNISHING, "delay" = the_rcd.furnish_delay, "cost" = the_rcd.furnish_cost)
 	return FALSE
 
-/turf/open/floor/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)
-	switch(passed_mode)
-		if(RCD_FLOORWALL)
-			to_chat(user, "<span class='notice'>You build a wall.</span>")
-			PlaceOnTop(/turf/closed/wall)
+/// if you are updating this make to to update /turf/open/misc/rcd_act() too
+/turf/open/floor/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	switch(rcd_data["[RCD_DESIGN_MODE]"])
+		if(RCD_TURF)
+			if(rcd_data["[RCD_DESIGN_PATH]"] != /turf/open/floor/plating/rcd)
+				return FALSE
+
+			var/obj/structure/girder/girder = locate() in src
+			if(girder)
+				return girder.rcd_act(user, the_rcd, rcd_data)
+
+			place_on_top(/turf/closed/wall)
 			return TRUE
 		if(RCD_AIRLOCK)
 			for(var/obj/machinery/door/door in src)

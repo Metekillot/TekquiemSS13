@@ -59,12 +59,17 @@
 	if(the_rcd.mode == RCD_FLOORWALL)
 		return list("mode" = RCD_FLOORWALL, "delay" = 0, "cost" = 2)
 
-/obj/structure/lattice/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)
-	if(passed_mode == RCD_FLOORWALL)
-		to_chat(user, "<span class='notice'>You build a floor.</span>")
-		var/turf/T = src.loc
-		if(isspaceturf(T))
-			T.PlaceOnTop(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
+/obj/structure/lattice/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	if(rcd_data["[RCD_DESIGN_MODE]"] == RCD_TURF)
+		var/design_structure = rcd_data["[RCD_DESIGN_PATH]"]
+		if(design_structure == /turf/open/floor/plating)
+			var/turf/T = src.loc
+			if(isgroundlessturf(T))
+				T.place_on_top(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
+				qdel(src)
+				return TRUE
+		if(design_structure == /obj/structure/lattice/catwalk)
+			var/turf/turf = loc
 			qdel(src)
 			return TRUE
 	return FALSE

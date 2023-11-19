@@ -287,13 +287,137 @@
 				usr.put_in_hands(O)
 			O.add_fingerprint(usr)
 
-			//BubbleWrap - so newly formed boxes are empty
-			if(istype(O, /obj/item/storage))
-				for (var/obj/item/I in O)
-					qdel(I)
-			//BubbleWrap END
-			return TRUE
-	*/
+		if(recipe.desc)
+			option.info = recipe.desc
+
+		options[recipe.title] = option
+		titles_to_recipes[recipe.title] = recipe
+
+	// After everything's been added to the radial, add an option
+	// that lets the user see the whole list of buildables
+	options[FULL_LIST] = image(
+		icon = 'icons/hud/radial.dmi',
+		icon_state = "radial_full_list",
+	)
+
+	var/selection = show_radial_menu(
+		user = builder,
+		anchor = builder,
+		choices = options,
+		custom_check = CALLBACK(src, PROC_REF(radial_check), builder),
+		radius = radial_radius,
+		tooltips = TRUE,
+	)
+
+	if(!selection)
+		return
+	// Run normal UI interact if we wanna see the full list
+	if(selection == FULL_LIST)
+		ui_interact(builder)
+		return
+
+	// Otherwise go straight to building
+	var/datum/stack_recipe/picked_recipe = titles_to_recipes[selection]
+	if(!istype(picked_recipe))
+		return
+
+	make_item(builder, picked_recipe, 1)
+
+/// Used as a callback for radial building.
+/obj/item/stack/proc/radial_check(mob/builder)
+	if(QDELETED(builder) || QDELETED(src))
+		return FALSE
+	if(builder.incapacitated())
+		return FALSE
+	if(!builder.is_holding(src))
+		return FALSE
+	return TRUE
+
+#undef FULL_LIST
+
+/// Makes the item with the given recipe.
+/obj/item/stack/proc/make_item(mob/builder, datum/stack_recipe/recipe, multiplier)
+	if(get_amount() < 1 && !is_cyborg) //sanity check as this shouldn't happen
+		qdel(src)
+		return
+	if(!is_valid_recipe(recipe, recipes)) //href exploit protection
+		return
+	if(!multiplier || multiplier < 1 || !IS_FINITE(multiplier)) //href exploit protection
+		stack_trace("Invalid multiplier value in stack creation [multiplier], [usr] is likely attempting an exploit")
+		return
+	if(!building_checks(builder, recipe, multiplier))
+		return
+	if(recipe.time)
+		var/adjusted_time = 0
+		builder.balloon_alert(builder, "building...")
+		builder.visible_message(
+			span_notice("[builder] starts building \a [recipe.title]."),
+			span_notice("You start building \a [recipe.title]..."),
+		)
+		if(HAS_TRAIT(builder, recipe.trait_booster))
+			adjusted_time = (recipe.time * recipe.trait_modifier)
+		else
+			adjusted_time = recipe.time
+		if(!do_after(builder, adjusted_time, target = builder))
+			builder.balloon_alert(builder, "interrupted!")
+			return
+		if(!building_checks(builder, recipe, multiplier))
+			return
+
+	var/atom/created
+	if(recipe.max_res_amount > 1) // Is it a stack?
+		created = new recipe.result_type(builder.drop_location(), recipe.res_amount * multiplier)
+		builder.balloon_alert(builder, "built items")
+
+	else if(ispath(recipe.result_type, /turf))
+		var/turf/covered_turf = builder.drop_location()
+		if(!isturf(covered_turf))
+			return
+		var/turf/created_turf = covered_turf.place_on_top(recipe.result_type, flags = CHANGETURF_INHERIT_AIR)
+		builder.balloon_alert(builder, "placed [ispath(recipe.result_type, /turf/open) ? "floor" : "wall"]")
+		if(recipe.applies_mats && LAZYLEN(mats_per_unit))
+			created_turf.set_custom_materials(mats_per_unit, recipe.req_amount / recipe.res_amount)
+
+	else
+		created = new recipe.result_type(builder.drop_location())
+		builder.balloon_alert(builder, "built item")
+
+	if(created)
+		created.setDir(builder.dir)
+		on_item_crafted(builder, created)
+
+	// Use up the material
+	use(recipe.req_amount * multiplier)
+	builder.investigate_log("crafted [recipe.title]", INVESTIGATE_CRAFTING)
+
+	// Apply mat datums
+	if(recipe.applies_mats && LAZYLEN(mats_per_unit))
+		if(isstack(created))
+			var/obj/item/stack/crafted_stack = created
+			crafted_stack.set_mats_per_unit(mats_per_unit, recipe.req_amount / recipe.res_amount)
+		else
+			created.set_custom_materials(mats_per_unit, recipe.req_amount / recipe.res_amount)
+
+	// We could be qdeleted - like if it's a stack and has already been merged
+	if(QDELETED(created))
+		return TRUE
+
+	// Add fingerprints first, otherwise created might already be deleted because of stack merging
+	created.add_fingerprint(builder)
+	if(isitem(created))
+		builder.put_in_hands(created)
+
+	//BubbleWrap - so newly formed boxes are empty
+	if(istype(created, /obj/item/storage))
+		for (var/obj/item/thing in created)
+			qdel(thing)
+	//BubbleWrap END
+
+	return TRUE
+
+/// Run special logic on created items after they've been successfully crafted.
+/obj/item/stack/proc/on_item_crafted(mob/builder, atom/created)
+	return
 
 /obj/item/stack/vv_edit_var(vname, vval)
 	if(vname == NAMEOF(src, amount))

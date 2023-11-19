@@ -81,7 +81,7 @@
 					S.use(5)
 					to_chat(user, "<span class='notice'>You add the plating.</span>")
 					var/turf/T = get_turf(src)
-					T.PlaceOnTop(/turf/closed/wall/mineral/iron)
+					T.place_on_top(/turf/closed/wall/mineral/iron)
 					transfer_fingerprints_to(T)
 					qdel(src)
 				return
@@ -118,7 +118,7 @@
 					S.use(2)
 					to_chat(user, "<span class='notice'>You add the plating.</span>")
 					var/turf/T = get_turf(src)
-					T.PlaceOnTop(/turf/closed/wall)
+					T.place_on_top(/turf/closed/wall)
 					transfer_fingerprints_to(T)
 					qdel(src)
 				return
@@ -147,7 +147,7 @@
 					S.use(1)
 					to_chat(user, "<span class='notice'>You fully reinforce the wall.</span>")
 					var/turf/T = get_turf(src)
-					T.PlaceOnTop(/turf/closed/wall/r_wall)
+					T.place_on_top(/turf/closed/wall/r_wall)
 					transfer_fingerprints_to(T)
 					qdel(src)
 				return
@@ -194,10 +194,10 @@
 					S.use(2)
 					to_chat(user, "<span class='notice'>You add the plating.</span>")
 					var/turf/T = get_turf(src)
-					if(S.walltype)
-						T.PlaceOnTop(S.walltype)
+					if(sheets.walltype)
+						T.place_on_top(sheets.walltype)
 					else
-						var/turf/newturf = T.PlaceOnTop(/turf/closed/wall/material)
+						var/turf/newturf = T.place_on_top(/turf/closed/wall/material)
 						var/list/material_list = list()
 						if(S.material_type)
 							material_list[GET_MATERIAL_REF(S.material_type)] = MINERAL_MATERIAL_AMOUNT * 2
@@ -369,7 +369,7 @@
 			user.visible_message("<span class='notice'>[user] plates [src] with runed metal.</span>", "<span class='notice'>You construct a runed wall.</span>")
 			R.use(1)
 			var/turf/T = get_turf(src)
-			T.PlaceOnTop(/turf/closed/wall/mineral/cult)
+			T.place_on_top(/turf/closed/wall/mineral/cult)
 			qdel(src)
 
 	else
@@ -391,12 +391,14 @@
 			return list("mode" = RCD_DECONSTRUCT, "delay" = 20, "cost" = 13)
 	return FALSE
 
-/obj/structure/girder/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)
-	var/turf/T = get_turf(src)
-	switch(passed_mode)
-		if(RCD_FLOORWALL)
-			to_chat(user, "<span class='notice'>You finish a wall.</span>")
-			T.PlaceOnTop(/turf/closed/wall)
+/obj/structure/girder/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	switch(rcd_data["[RCD_DESIGN_MODE]"])
+		if(RCD_TURF)
+			if(the_rcd.rcd_design_path != /turf/open/floor/plating/rcd)
+				return FALSE
+
+			var/turf/T = get_turf(src)
+			T.place_on_top(/turf/closed/wall)
 			qdel(src)
 			return TRUE
 		if(RCD_DECONSTRUCT)
@@ -436,7 +438,7 @@
 			user.visible_message("<span class='notice'>[user] plates [src] with bronze!</span>", "<span class='notice'>You construct a bronze wall.</span>")
 			B.use(2)
 			var/turf/T = get_turf(src)
-			T.PlaceOnTop(/turf/closed/wall/mineral/bronze)
+			T.place_on_top(/turf/closed/wall/mineral/bronze)
 			qdel(src)
 
 	else

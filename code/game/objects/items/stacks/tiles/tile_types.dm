@@ -54,6 +54,10 @@
 		if(get_amount() < 4)
 			to_chat(user, "<span class='warning'>You need at least four tiles to do this!</span>")
 			return
+		target_plating = target_plating.place_on_top(placed_turf_path, flags = CHANGETURF_INHERIT_AIR)
+		target_plating.setDir(turf_dir)
+		playsound(target_plating, 'sound/weapons/genhit.ogg', 50, TRUE)
+		return target_plating // Most executions should end here.
 
 		if(!mineralType)
 			to_chat(user, "<span class='warning'>You can not reform this!</span>")

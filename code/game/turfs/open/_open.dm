@@ -33,6 +33,23 @@
 /turf/open/zAirOut(direction, turf/source)
 	return (direction == UP)
 
+/turf/open/update_icon()
+	. = ..()
+	update_visuals()
+
+/**
+ * Replace an open turf with another open turf while avoiding the pitfall of replacing plating with a floor tile, leaving a hole underneath.
+ * This replaces the current turf if it is plating and is passed plating, is tile and is passed tile.
+ * It places the new turf on top of itself if it is plating and is passed a tile.
+ * It also replaces the turf if it is tile and is passed plating, essentially destroying the over turf.
+ * Flags argument is passed directly to ChangeTurf or PlaceOnTop
+ */
+/turf/open/proc/replace_floor(turf/open/new_floor_path, flags)
+	if (!overfloor_placed && initial(new_floor_path.overfloor_placed))
+		place_on_top(new_floor_path, flags = flags)
+		return
+	ChangeTurf(new_floor_path, flags = flags)
+
 /turf/open/indestructible
 	name = "floor"
 	icon = 'icons/turf/floors.dmi'
@@ -306,7 +323,7 @@
 		return
 
 	playsound(src, 'sound/weapons/genhit.ogg', 50, TRUE)
-	var/turf/open/floor/plating/new_plating = PlaceOnTop(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
+	var/turf/open/floor/plating/new_plating = place_on_top(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
 	if(lattice)
 		qdel(lattice)
 	else

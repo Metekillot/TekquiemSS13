@@ -20,16 +20,16 @@
 	var/alt_click = pa.Find("alt")
 
 	if(istype(object,/turf) && left_click && !alt_click && !ctrl_click)
-		var/turf/T = object
-		if(isspaceturf(object))
-			T.PlaceOnTop(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
-		else if(isplatingturf(object))
-			T.PlaceOnTop(/turf/open/floor/plasteel, flags = CHANGETURF_INHERIT_AIR)
+		var/turf/clicked_turf = object
+		if(isplatingturf(object))
+			clicked_turf.place_on_top(/turf/open/floor/iron, flags = CHANGETURF_INHERIT_AIR)
 		else if(isfloorturf(object))
-			T.PlaceOnTop(/turf/closed/wall)
+			clicked_turf.place_on_top(/turf/closed/wall)
 		else if(iswallturf(object))
-			T.PlaceOnTop(/turf/closed/wall/r_wall)
-		log_admin("Build Mode: [key_name(c)] built [T] at [AREACOORD(T)]")
+			clicked_turf.place_on_top(/turf/closed/wall/r_wall)
+		else
+			clicked_turf.place_on_top(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR) // Gotta do something
+		log_admin("Build Mode: [key_name(c)] built [clicked_turf] at [AREACOORD(clicked_turf)]")
 		return
 	else if(right_click)
 		log_admin("Build Mode: [key_name(c)] deleted [object] at [AREACOORD(object)]")

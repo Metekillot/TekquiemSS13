@@ -326,7 +326,34 @@
 		if(crds)
 			instance.contents.Add(crds)
 
-		if(GLOB.use_preloader && instance)
+		if(!new_z)
+			old_area = crds.loc
+			old_area.turfs_to_uncontain += crds
+			area_instance.contained_turfs.Add(crds)
+		area_instance.contents.Add(crds)
+
+		if(GLOB.use_preloader)
+			world.preloader_load(area_instance)
+
+	// Index right before /area is /turf
+	index--
+	var/atom/instance
+	//then instance the /turf
+	//NOTE: this used to place any turfs before the last "underneath" it using .appearance and underlays
+	//We don't actually use this, and all it did was cost cpu, so we don't do this anymore
+	if(members[index] != /turf/template_noop)
+		if(members_attributes[index] != default_list)
+			world.preloader_setup(members_attributes[index], members[index])
+
+		// Note: we make the assertion that the last path WILL be a turf. if it isn't, this will fail.
+		if(placeOnTop)
+			instance = crds.load_on_top(members[index], CHANGETURF_DEFER_CHANGE | (no_changeturf ? CHANGETURF_SKIP : NONE))
+		else if(no_changeturf)
+			instance = create_atom(members[index], crds)//first preloader pass
+		else
+			instance = crds.ChangeTurf(members[index], null, CHANGETURF_DEFER_CHANGE)
+
+		if(GLOB.use_preloader && instance)//second preloader pass, for those atoms that don't ..() in New()
 			world.preloader_load(instance)
 
 	//then instance the /turf and, if multiple tiles are presents, simulates the DMM underlays piling effect

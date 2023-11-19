@@ -107,6 +107,47 @@
 	else
 		payload(airlock)
 
+/obj/effect/mapping_helpers/airlock/LateInitialize()
+	. = ..()
+	var/obj/machinery/door/airlock/airlock = locate(/obj/machinery/door/airlock) in loc
+	if(!airlock)
+		qdel(src)
+		return
+	if(airlock.cyclelinkeddir)
+		airlock.cyclelinkairlock()
+	if(airlock.closeOtherId)
+		airlock.update_other_id()
+	if(airlock.abandoned)
+		var/outcome = rand(1,100)
+		switch(outcome)
+			if(1 to 9)
+				var/turf/here = get_turf(src)
+				for(var/turf/closed/T in range(2, src))
+					here.place_on_top(T.type)
+					qdel(airlock)
+					qdel(src)
+					return
+				here.place_on_top(/turf/closed/wall)
+				qdel(airlock)
+				qdel(src)
+				return
+			if(9 to 11)
+				airlock.lights = FALSE
+				// These do not use airlock.bolt() because we want to pretend it was always locked. That means no sound effects.
+				airlock.locked = TRUE
+			if(12 to 15)
+				airlock.locked = TRUE
+			if(16 to 23)
+				airlock.welded = TRUE
+			if(24 to 30)
+				airlock.set_panel_open(TRUE)
+	if(airlock.cutAiWire)
+		airlock.wires.cut(WIRE_AI)
+	if(airlock.autoname)
+		airlock.name = get_area_name(src, TRUE)
+	airlock.update_appearance()
+	qdel(src)
+
 /obj/effect/mapping_helpers/airlock/proc/payload(obj/machinery/door/airlock/payload)
 	return
 

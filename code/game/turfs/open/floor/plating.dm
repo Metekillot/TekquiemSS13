@@ -55,7 +55,7 @@
 			to_chat(user, "<span class='notice'>You begin reinforcing the floor...</span>")
 			if(do_after(user, 30, target = src))
 				if (R.get_amount() >= 2 && !istype(src, /turf/open/floor/engine))
-					PlaceOnTop(/turf/open/floor/engine, flags = CHANGETURF_INHERIT_AIR)
+					place_on_top(/turf/open/floor/engine, flags = CHANGETURF_INHERIT_AIR)
 					playsound(src, 'sound/items/deconstruct.ogg', 80, TRUE)
 					R.use(2)
 					to_chat(user, "<span class='notice'>You reinforce the floor.</span>")
@@ -80,6 +80,24 @@
 			icon_state = base_icon_state
 			burnt = FALSE
 			broken = FALSE
+			update_appearance()
+	else if(istype(C, /obj/item/stack/sheet/plasteel) && upgradable) //Reinforcement!
+		if(!broken && !burnt)
+			var/obj/item/stack/sheet/sheets = C
+			if(sheets.get_amount() < PLATE_REINFORCE_COST)
+				return
+			balloon_alert(user, "reinforcing plating...")
+			if(do_after(user, 12 SECONDS, target = src))
+				if(sheets.get_amount() < PLATE_REINFORCE_COST)
+					return
+				sheets.use(PLATE_REINFORCE_COST)
+				playsound(src, 'sound/machines/creak.ogg', 100, vary = TRUE)
+				place_on_top(/turf/open/floor/plating/reinforced)
+		else
+			if(!iscyborg(user))
+				balloon_alert(user, "too damaged, use a welding tool!")
+			else
+				balloon_alert(user, "too damaged, use a welding or plating repair tool!")
 
 
 /turf/open/floor/plating/welder_act(mob/living/user, obj/item/I)

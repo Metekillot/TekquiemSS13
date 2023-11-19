@@ -243,11 +243,10 @@
 				return list("mode" = RCD_FLOORWALL, "delay" = 0, "cost" = 3)
 	return FALSE
 
-/turf/open/space/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)
-	switch(passed_mode)
-		if(RCD_FLOORWALL)
-			to_chat(user, "<span class='notice'>You build a floor.</span>")
-			PlaceOnTop(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
+/turf/open/space/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	if(the_rcd.mode == RCD_TURF)
+		if(rcd_data["[RCD_DESIGN_PATH]"] == /turf/open/floor/plating/rcd)
+			place_on_top(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
 			return TRUE
 	return FALSE
 
@@ -259,3 +258,98 @@
 	destination_x = dest_x
 	destination_y = dest_y
 	destination_z = dest_z
+
+/turf/open/space/can_cross_safely(atom/movable/crossing)
+	return HAS_TRAIT(crossing, TRAIT_SPACEWALK)
+
+/turf/open/space/openspace
+	icon = 'icons/turf/floors.dmi'
+	icon_state = MAP_SWITCH("pure_white", "invisible")
+	plane = TRANSPARENT_FLOOR_PLANE
+
+/turf/open/space/openspace/Initialize(mapload) // handle plane and layer here so that they don't cover other obs/turfs in Dream Maker
+	. = ..()
+	if(PERFORM_ALL_TESTS(focus_only/openspace_clear) && !GET_TURF_BELOW(src))
+		stack_trace("[src] was inited as openspace with nothing below it at ([x], [y], [z])")
+	icon_state = "pure_white"
+	// We make the assumption that the space plane will never be blacklisted, as an optimization
+	if(SSmapping.max_plane_offset)
+		plane = TRANSPARENT_FLOOR_PLANE - (PLANE_RANGE * SSmapping.z_level_to_plane_offset[z])
+	return INITIALIZE_HINT_LATELOAD
+
+/turf/open/space/openspace/LateInitialize()
+	. = ..()
+	AddElement(/datum/element/turf_z_transparency)
+
+/turf/open/space/openspace/Destroy()
+	// Signals persist through destroy, GO HOME
+	var/turf/below = GET_TURF_BELOW(src)
+	if(below)
+		UnregisterSignal(below, COMSIG_TURF_CHANGE)
+	return ..()
+
+/turf/open/space/openspace/zAirIn()
+	return TRUE
+
+/turf/open/space/openspace/zAirOut()
+	return TRUE
+
+/turf/open/space/openspace/zPassIn(direction)
+	if(direction == DOWN)
+		for(var/obj/contained_object in contents)
+			if(contained_object.obj_flags & BLOCK_Z_IN_DOWN)
+				return FALSE
+		return TRUE
+	if(direction == UP)
+		for(var/obj/contained_object in contents)
+			if(contained_object.obj_flags & BLOCK_Z_IN_UP)
+				return FALSE
+		return TRUE
+	return FALSE
+
+/turf/open/space/openspace/zPassOut(direction)
+	if(direction == DOWN)
+		for(var/obj/contained_object in contents)
+			if(contained_object.obj_flags & BLOCK_Z_OUT_DOWN)
+				return FALSE
+		return TRUE
+	if(direction == UP)
+		for(var/obj/contained_object in contents)
+			if(contained_object.obj_flags & BLOCK_Z_OUT_UP)
+				return FALSE
+		return TRUE
+	return FALSE
+
+/turf/open/space/openspace/enable_starlight()
+	var/turf/below = GET_TURF_BELOW(src)
+	// Override = TRUE beacuse we could have our starlight updated many times without a failure, which'd trigger this
+	RegisterSignal(below, COMSIG_TURF_CHANGE, PROC_REF(on_below_change), override = TRUE)
+	if(!isspaceturf(below) || light_on)
+		return
+	set_light(l_on = TRUE, l_range = GLOB.starlight_range, l_power = GLOB.starlight_power, l_color = GLOB.starlight_color)
+	GLOB.starlight += src
+
+/turf/open/space/openspace/update_starlight()
+	. = ..()
+	if(.)
+		return
+	// If we're here, the starlight is not to be
+	var/turf/below = GET_TURF_BELOW(src)
+	UnregisterSignal(below, COMSIG_TURF_CHANGE)
+
+/turf/open/space/openspace/proc/on_below_change(turf/source, path, list/new_baseturfs, flags, list/post_change_callbacks)
+	SIGNAL_HANDLER
+	if(isspaceturf(source) && !ispath(path, /turf/open/space))
+		GLOB.starlight += src
+		set_light(l_on = TRUE, l_range = GLOB.starlight_range, l_power = GLOB.starlight_power, l_color = GLOB.starlight_color)
+	else if(!isspaceturf(source) && ispath(path, /turf/open/space))
+		GLOB.starlight -= src
+		set_light(l_on = FALSE)
+
+/turf/open/space/replace_floor(turf/open/new_floor_path, flags)
+	if (!initial(new_floor_path.overfloor_placed))
+		ChangeTurf(new_floor_path, flags = flags)
+		return
+	// Create plating under tiled floor we try to create directly onto space
+	place_on_top(/turf/open/floor/plating, flags = flags)
+	place_on_top(new_floor_path, flags = flags)
