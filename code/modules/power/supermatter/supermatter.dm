@@ -412,9 +412,42 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	final_countdown = TRUE
 	update_icon()
 
-	var/speaking = "[emergency_alert] The supermatter has reached critical integrity failure. Emergency causality destabilization field has been activated."
-	radio.talk_into(src, speaking, common_channel, language = get_selected_language())
-	for(var/i in SUPERMATTER_COUNTDOWN_TIME to 0 step -10)
+	notify_ghosts(
+		"[src] has begun the delamination process!",
+		source = src,
+		header = "Meltdown Incoming",
+	)
+
+	var/datum/sm_delam/last_delamination_strategy = delamination_strategy
+	var/list/count_down_messages = delamination_strategy.count_down_messages()
+
+	radio.talk_into(
+		src,
+		count_down_messages[1],
+		emergency_channel,
+		list(SPAN_COMMAND)
+	)
+
+	var/delamination_countdown_time = SUPERMATTER_COUNTDOWN_TIME
+	// If a sliver was removed from the supermatter, the countdown time is significantly decreased
+	if (supermatter_sliver_removed == TRUE)
+		delamination_countdown_time = SUPERMATTER_SLIVER_REMOVED_COUNTDOWN_TIME
+		radio.talk_into(
+			src,
+			"WARNING: Projected time until full crystal delamination significantly lower than expected. \
+			Please inspect crystal for structural abnormalities or sabotage!",
+			emergency_channel,
+			list(SPAN_COMMAND)
+			)
+
+	for(var/i in delamination_countdown_time to 0 step -10)
+		if(last_delamination_strategy != delamination_strategy)
+			count_down_messages = delamination_strategy.count_down_messages()
+			last_delamination_strategy = delamination_strategy
+
+		var/message
+		var/healed = FALSE
+
 		if(damage < explosion_point) // Cutting it a bit close there engineers
 			radio.talk_into(src, "[safe_alert] Failsafe has been disengaged.", common_channel)
 			final_countdown = FALSE

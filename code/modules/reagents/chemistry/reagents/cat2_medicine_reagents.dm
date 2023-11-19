@@ -33,7 +33,12 @@
 			good_kind_of_healing = TRUE
 	M.adjustBruteLoss(-thou_shall_heal, FALSE)
 
-	if(good_kind_of_healing && !reaping && prob(0.0001)) //janken with the grim reaper!
+	if(good_kind_of_healing && !reaping && SPT_PROB(0.00005, seconds_per_tick)) //janken with the grim reaper!
+		notify_ghosts(
+			"[affected_mob] has entered a game of rock-paper-scissors with death!",
+			source = affected_mob,
+			header = "Who Will Win?",
+		)
 		reaping = TRUE
 		var/list/RockPaperScissors = list("rock" = "paper", "paper" = "scissors", "scissors" = "rock") //choice = loses to
 		if(M.apply_status_effect(/datum/status_effect/necropolis_curse,CURSE_BLINDING))

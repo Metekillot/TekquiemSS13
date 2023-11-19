@@ -212,9 +212,19 @@
 	user.mind?.add_memory(MEMORY_BOMB_PRIMED, list(DETAIL_BOMB_TYPE = src), story_value = STORY_VALUE_AMAZING)
 	update_appearance()
 	add_fingerprint(user)
-	if(payload && !istype(payload, /obj/item/bombcore/training))
-		log_bomber(user, "has primed a", src, "for detonation (Payload: [payload.name])")
-		payload.adminlog = "The [name] that [key_name(user)] had primed detonated!"
+	// We don't really concern ourselves with duds or fakes after this
+	if(isnull(payload) || istype(payload, /obj/machinery/syndicatebomb/training))
+		return
+
+	notify_ghosts(
+		"\A [src] has been activated at [get_area(src)]!",
+		source = src,
+		header = "Bomb Planted",
+	)
+	user.add_mob_memory(/datum/memory/bomb_planted/syndicate, antagonist = src)
+	log_bomber(user, "has primed a", src, "for detonation (Payload: [payload.name])")
+	payload.adminlog = "The [name] that [key_name(user)] had primed detonated!"
+	user.log_message("primed the [src]. (Payload: [payload.name])", LOG_GAME, log_globally = FALSE)
 
 ///Bomb Subtypes///
 

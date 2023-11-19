@@ -39,7 +39,14 @@
 	on_removal = _on_removal
 	if(deadchat_mode == DEMOCRACY_MODE)
 		timerid = addtimer(CALLBACK(src, PROC_REF(democracy_loop)), input_cooldown, TIMER_STOPPABLE | TIMER_LOOP)
-	notify_ghosts("[parent] is now deadchat controllable!", source = parent, action = NOTIFY_ORBIT, header="Something Interesting!")
+	notify_ghosts(
+		"[parent] is now deadchat controllable!",
+		source = parent,
+		header = "Ghost Possession!",
+	)
+	if(!ismob(parent) && !SSpoints_of_interest.is_valid_poi(parent))
+		SSpoints_of_interest.make_point_of_interest(parent)
+		generated_point_of_interest = TRUE
 
 /datum/component/deadchat_control/Destroy(force, silent)
 	on_removal?.Invoke()

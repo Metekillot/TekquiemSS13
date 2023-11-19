@@ -122,7 +122,17 @@
 	var/mob/camera/blob/blob_cam = new /mob/camera/blob(get_turf(old_body), blobtag.starting_points_human_blob)
 	owner.mind.transfer_to(blob_cam)
 	old_body.gib()
-	B.place_blob_core(placement_override = TRUE, pop_override = TRUE)
+	blob_cam.place_blob_core(placement_override, pop_override = TRUE)
+	playsound(get_turf(blob_cam), 'sound/ambience/antag/blobalert.ogg', 50, FALSE)
+	blobtag.has_already_popped = TRUE
+
+	notify_ghosts(
+		"A Blob host has burst in [get_area_name(blob_cam.blob_core)]",
+		source = blob_cam.blob_core,
+		ghost_sound = 'sound/ambience/antag/blobalert.ogg',
+		header = "Blob Awakening!",
+		notify_volume = 75,
+	)
 
 /datum/antagonist/blob/antag_listing_status()
 	. = ..()

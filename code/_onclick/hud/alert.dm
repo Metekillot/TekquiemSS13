@@ -717,29 +717,25 @@ so as to remain in compliance with the most up-to-date laws."
 	desc = "This can be clicked on to perform an action."
 	icon_state = "template"
 	timeout = 30 SECONDS
-	/// The target to use the action on
-	var/atom/target
-	/// Which on click action to use
-	var/action = NOTIFY_JUMP
+	/// Weakref to the target atom to use the action on
+	var/datum/weakref/target_ref
+	/// If we want to interact on click rather than jump/orbit
+	var/click_interact = FALSE
 
 /atom/movable/screen/alert/notify_action/Click()
 	. = ..()
-	if(isnull(target))
+
+	var/atom/target = target_ref?.resolve()
+	if(isnull(target) || !isobserver(owner) || target == owner)
 		return
 
 	var/mob/dead/observer/ghost_owner = owner
-	if(!istype(ghost_owner))
+
+	if(click_interact)
+		ghost_owner.jump_to_interact(target)
 		return
 
-	switch(action)
-		if(NOTIFY_PLAY)
-			target.attack_ghost(ghost_owner)
-		if(NOTIFY_JUMP)
-			var/turf/T = get_turf(target)
-			if(T && isturf(T))
-				G.forceMove(T)
-		if(NOTIFY_ORBIT)
-			G.ManualFollow(target)
+	ghost_owner.observer_view(target)
 
 //OBJECT-BASED
 

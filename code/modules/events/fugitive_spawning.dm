@@ -114,4 +114,23 @@
 		CRASH("Fugitive Hunters (Created from fugitive event) found no turf to load in")
 	if(!ship.load(T))
 		CRASH("Loading [backstory] ship failed!")
+
+	for(var/turf/shuttle_turf in ship.get_affected_turfs(placement_turf))
+		for(var/obj/effect/mob_spawn/ghost_role/human/fugitive/spawner in shuttle_turf)
+			if(length(candidates))
+				var/mob/our_candidate = candidates[1]
+				var/mob/spawned_mob = spawner.create_from_ghost(our_candidate)
+				candidates -= our_candidate
+				notify_ghosts(
+					"[spawner.prompt_name] has awoken: [spawned_mob]!",
+					source = spawned_mob,
+					header = "Come look!",
+				)
+			else
+				notify_ghosts(
+					"[spawner.prompt_name] spawner has been created!",
+					source = spawner,
+					header = "Spawn Here!",
+				)
+
 	priority_announce("Unidentified ship detected near the station.")

@@ -57,7 +57,13 @@
 			break
 
 	if (!mapload)
-		notify_ghosts("IT'S LOOSE", source = src, action = NOTIFY_ORBIT, flashwindow = FALSE, ghost_sound = 'sound/machines/warning-buzzer.ogg', header = "IT'S LOOSE", notify_volume = 75)
+		notify_ghosts(
+			ghost_notification_message,
+			source = src,
+			header = ghost_notification_message,
+			ghost_sound = 'sound/machines/warning-buzzer.ogg',
+			notify_volume = 75,
+		)
 
 /obj/singularity/Destroy()
 	STOP_PROCESSING(SSobj, src)
