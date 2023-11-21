@@ -7,8 +7,11 @@
 import { createLogger, directLog } from 'common/logging.js';
 import http from 'http';
 import { inspect } from 'util';
-import WebSocket from 'ws';
-import { retrace, loadSourceMaps } from './retrace.js';
+import { createLogger, directLog } from '../logging';
+import { require } from '../require';
+import { loadSourceMaps, retrace } from './retrace';
+
+const WebSocket = require('ws');
 
 const logger = createLogger('link');
 

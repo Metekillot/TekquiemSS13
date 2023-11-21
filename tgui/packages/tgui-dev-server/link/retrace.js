@@ -7,9 +7,9 @@
 import { createLogger } from 'common/logging.js';
 import fs from 'fs';
 import { basename } from 'path';
-import SourceMap from 'source-map';
-import { parse as parseStackTrace } from 'stacktrace-parser';
-import { resolveGlob } from '../util.js';
+import { createLogger } from '../logging';
+import { require } from '../require';
+import { resolveGlob } from '../util';
 
 const logger = createLogger('retrace');
 

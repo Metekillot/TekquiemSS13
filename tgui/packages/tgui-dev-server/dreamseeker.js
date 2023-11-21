@@ -8,6 +8,8 @@ import axios from 'axios';
 import { exec } from 'child_process';
 import { createLogger } from 'common/logging.js';
 import { promisify } from 'util';
+import { createLogger } from './logging';
+import { require } from './require';
 
 const logger = createLogger('dreamseeker');
 
