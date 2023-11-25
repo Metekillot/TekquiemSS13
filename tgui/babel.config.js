@@ -20,10 +20,13 @@ const createBabelConfig = (options) => {
       ...presets,
     ],
     plugins: [
-      '@babel/plugin-transform-jscript',
-      'babel-plugin-inferno',
-      'babel-plugin-transform-remove-console',
-      'common/string.babel-plugin.cjs',
+      [require.resolve('@babel/plugin-transform-class-properties'), {
+        loose: true,
+      }],
+      require.resolve('@babel/plugin-transform-jscript'),
+      require.resolve('babel-plugin-inferno'),
+      removeConsole && require.resolve('babel-plugin-transform-remove-console'),
+      require.resolve('common/string.babel-plugin.cjs'),
       ...plugins,
     ],
   };
