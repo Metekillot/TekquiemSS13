@@ -24,13 +24,12 @@ const createStats = (verbose) => ({
   version: verbose,
 });
 
-// prettier-ignore
 module.exports = (env = {}, argv) => {
   const mode = argv.mode === 'production' ? 'production' : 'development';
   const config = {
     mode,
     context: path.resolve(__dirname),
-    target: ['web', 'es3', 'browserslist:ie 8'],
+    target: ['web', 'es5', 'browserslist:ie 11'],
     entry: {
       'tgui': ['./packages/tgui-polyfill', './packages/tgui'],
       'tgui-panel': ['./packages/tgui-polyfill', './packages/tgui-panel'],
@@ -131,7 +130,7 @@ module.exports = (env = {}, argv) => {
     const { EsbuildPlugin } = require('esbuild-loader');
     config.optimization.minimizer = [
       new EsbuildPlugin({
-        target: 'ie8',
+        target: 'ie11',
         css: true,
       }),
     ];
