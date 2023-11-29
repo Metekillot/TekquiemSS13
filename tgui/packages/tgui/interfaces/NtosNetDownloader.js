@@ -2,8 +2,34 @@ import { useBackend } from '../backend';
 import { Box, Button, Flex, Icon, LabeledList, NoticeBox, ProgressBar, Section } from '../components';
 import { NtosWindow } from '../layouts';
 
-export const NtosNetDownloader = (props, context) => {
-  const { act, data } = useBackend(context);
+type Data = {
+  disk_size: number;
+  disk_used: number;
+  downloadcompletion: number;
+  downloading: BooleanLike;
+  downloadname: string;
+  downloadsize: number;
+  error: string;
+  emagged: BooleanLike;
+  categories: string[];
+  programs: ProgramData[];
+};
+
+type ProgramData = {
+  icon: string;
+  filename: string;
+  filedesc: string;
+  fileinfo: string;
+  category: string;
+  installed: BooleanLike;
+  compatible: BooleanLike;
+  size: number;
+  access: BooleanLike;
+  verifiedsource: BooleanLike;
+};
+
+export const NtosNetDownloader = (props) => {
+  const { act, data } = useBackend<Data>();
   const {
     PC_device_theme,
     disk_size,
@@ -18,9 +44,13 @@ export const NtosNetDownloader = (props, context) => {
     scale(downloadcompletion, 0, downloadsize) * 100
   );
   const [selectedCategory, setSelectedCategory] = useLocalState(
-    context,
     'category',
-    all_categories[0]
+    categories[0]
+  );
+  const [searchItem, setSearchItem] = useLocalState('searchItem', '');
+  const search = createSearch<ProgramData>(
+    searchItem,
+    (program) => program.filedesc
   );
   const items = flow([
     // This filters the list to only contain programs with category
@@ -125,9 +155,9 @@ export const NtosNetDownloader = (props, context) => {
   );
 };
 
-const Program = (props, context) => {
+const Program = (props) => {
   const { program } = props;
-  const { act, data } = useBackend(context);
+  const { act, data } = useBackend<Data>();
   const {
     disk_size,
     disk_used,

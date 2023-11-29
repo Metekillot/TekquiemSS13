@@ -298,23 +298,40 @@ export const FeatureNumberInput = (
   );
 };
 
-export const FeatureValueInput = (
-  props: {
-    feature: Feature<unknown>;
-    featureId: string;
-    shrink?: boolean;
-    value: unknown;
-
-    act: typeof sendAct;
-  },
-  context
+export const FeatureSliderInput = (
+  props: FeatureValueProps<number, number, FeatureNumericData>
 ) => {
-  const { data } = useBackend<PreferencesMenuData>(context);
+  if (!props.serverData) {
+    return <Box>Loading...</Box>;
+  }
+
+  return (
+    <Slider
+      onChange={(e, value) => {
+        props.handleSetValue(value);
+      }}
+      minValue={props.serverData.minimum}
+      maxValue={props.serverData.maximum}
+      step={props.serverData.step}
+      value={props.value}
+      stepPixelSize={10}
+    />
+  );
+};
+
+export const FeatureValueInput = (props: {
+  feature: Feature<unknown>;
+  featureId: string;
+  shrink?: boolean;
+  value: unknown;
+
+  act: typeof sendAct;
+}) => {
+  const { data } = useBackend<PreferencesMenuData>();
 
   const feature = props.feature;
 
   const [predictedValue, setPredictedValue] = useLocalState(
-    context,
     `${props.featureId}_predictedValue_${data.active_slot}`,
     props.value
   );

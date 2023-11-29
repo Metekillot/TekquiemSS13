@@ -2,8 +2,22 @@ import { useBackend } from '../backend';
 import { Button, LabeledList, Section } from '../components';
 import { Window } from '../layouts';
 
-export const TurbineComputer = (props, context) => {
-  const { act, data } = useBackend(context);
+type TurbineInfo = {
+  connected: BooleanLike;
+  active: BooleanLike;
+  rpm: number;
+  power: number;
+  temp: number;
+  integrity: number;
+  parts_linked: BooleanLike;
+  parts_ready: BooleanLike;
+  max_rpm: number;
+  max_temperature: number;
+  regulator: number;
+};
+
+export const TurbineComputer = (props) => {
+  const { act, data } = useBackend<TurbineInfo>();
   const parts_not_connected = !data.parts_linked && (
     <Modal>
       <Box

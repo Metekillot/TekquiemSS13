@@ -44,7 +44,10 @@ type Info = {
   objectives: Objective[];
 };
 
-export const AntagInfoWizard = (props, context) => {
+export const AntagInfoWizard = (props) => {
+  const { data, act } = useBackend<Info>();
+  const { ritual, objectives, can_change_objective } = data;
+
   return (
     <Window width={620} height={580} theme="wizard">
       <Window.Content>
@@ -132,9 +135,11 @@ export const AntagInfoWizard = (props, context) => {
   );
 };
 
-const ObjectivePrintout = (props, context) => {
-  const { data } = useBackend<Info>(context);
-  const { objectives } = data;
+const RitualPrintout = (props: { ritual: GrandRitual }) => {
+  const { ritual } = props;
+  if (!ritual.next_area) {
+    return null;
+  }
   return (
     <Stack vertical>
       <Stack.Item bold>

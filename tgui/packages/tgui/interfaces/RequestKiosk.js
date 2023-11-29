@@ -3,7 +3,34 @@ import { Box, Button, Collapsible, Flex, LabeledList, NumberInput, Section, Stac
 import { formatMoney } from '../format';
 import { Window } from '../layouts';
 
-export const RequestKiosk = (props, context) => {
+type Data = {
+  accountName: string;
+  requests: Request[];
+  applicants: Applicant[];
+  bountyValue: number;
+  bountyText: string;
+  user: User;
+};
+
+type Request = {
+  name: string;
+  owner: string;
+  description: string;
+  value: number;
+  acc_number: number;
+};
+
+type Applicant = {
+  name: string;
+  request_id: number;
+  requestee_id: number;
+};
+
+type User = {
+  name: string;
+};
+
+export const BountyBoard = (props) => {
   return (
     <Window width={550} height={600}>
       <Window.Content scrollable>
@@ -13,8 +40,8 @@ export const RequestKiosk = (props, context) => {
   );
 };
 
-export const RequestKioskContent = (props, context) => {
-  const { act, data } = useBackend(context);
+export const BountyBoardContent = (props) => {
+  const { act, data } = useBackend<Data>();
   const {
     accountName,
     requests = [],

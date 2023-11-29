@@ -2,8 +2,8 @@ import { useBackend } from '../backend';
 import { Button, ColorBox, Section, Table } from '../components';
 import { NtosWindow } from '../layouts';
 
-export const NtosMain = (props, context) => {
-  const { act, data } = useBackend(context);
+export const NtosMain = (props) => {
+  const { act, data } = useBackend();
   const {
     device_theme,
     programs = [],
@@ -217,5 +217,53 @@ export const NtosMain = (props, context) => {
         )}
       </NtosWindow.Content>
     </NtosWindow>
+  );
+};
+
+const ProgramsTable = (props) => {
+  const { act, data } = useBackend();
+  const { programs = [] } = data;
+  // add the program filename to this list to have it excluded from the main menu program list table
+  const filtered_programs = programs.filter(
+    (program) => !program.header_program
+  );
+
+  return (
+    <Section title="Programs">
+      <Table>
+        {filtered_programs.map((program) => (
+          <Table.Row key={program.name}>
+            <Table.Cell>
+              <Button
+                fluid
+                color={program.alert ? 'yellow' : 'transparent'}
+                icon={program.icon}
+                content={program.desc}
+                onClick={() =>
+                  act('PC_runprogram', {
+                    name: program.name,
+                  })
+                }
+              />
+            </Table.Cell>
+            <Table.Cell collapsing width="18px">
+              {!!program.running && (
+                <Button
+                  color="transparent"
+                  icon="times"
+                  tooltip="Close program"
+                  tooltipPosition="left"
+                  onClick={() =>
+                    act('PC_killprogram', {
+                      name: program.name,
+                    })
+                  }
+                />
+              )}
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table>
+    </Section>
   );
 };

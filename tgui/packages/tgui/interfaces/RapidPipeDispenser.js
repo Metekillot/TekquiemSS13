@@ -50,9 +50,66 @@ const TOOLS = [
   },
 ];
 
-export const RapidPipeDispenser = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { selected_color } = data;
+type DirectionsAllowed = {
+  north: BooleanLike;
+  south: BooleanLike;
+  east: BooleanLike;
+  west: BooleanLike;
+};
+
+type Colors = {
+  green: string;
+  blue: string;
+  red: string;
+  orange: string;
+  cyan: string;
+  dark: string;
+  yellow: string;
+  brown: string;
+  pink: string;
+  purple: string;
+  violet: string;
+  omni: string;
+};
+
+type Category = {
+  cat_name: string;
+  recipes: Recipe[];
+};
+
+type Recipe = {
+  pipe_name: string;
+  pipe_index: number;
+  previews: Preview[];
+};
+
+type Preview = {
+  selected: BooleanLike;
+  dir: string;
+  dir_name: string;
+  icon_state: string;
+  flipped: BooleanLike;
+};
+
+type Data = {
+  // Dynamic
+  category: number;
+  piping_layer: number;
+  ducting_layer: number;
+  categories: Category[];
+  selected_recipe: string;
+  selected_color: string;
+  selected_category: string;
+  mode: number;
+  init_directions: DirectionsAllowed;
+  // Static
+  paint_colors: Colors;
+};
+
+export const ColorItem = (props) => {
+  const { act, data } = useBackend<Data>();
+  const { selected_color, paint_colors } = data;
+  const colorNames = Object.keys(paint_colors);
   return (
     <LabeledList.Item label="Color">
       <Box inline width="64px" color={data.paint_colors[selected_color]}>
@@ -74,8 +131,8 @@ export const RapidPipeDispenser = (props, context) => {
   );
 };
 
-const ModeItem = (props, context) => {
-  const { act, data } = useBackend(context);
+const ModeItem = (props) => {
+  const { act, data } = useBackend<Data>();
   const { mode } = data;
   return (
     <LabeledList.Item label="Modes">
@@ -99,8 +156,8 @@ const ModeItem = (props, context) => {
   );
 };
 
-const CategoryItem = (props, context) => {
-  const { act, data } = useBackend(context);
+const CategoryItem = (props) => {
+  const { act, data } = useBackend<Data>();
   const { category: rootCategoryIndex } = data;
   return (
     <LabeledList.Item label="Category">
@@ -118,8 +175,9 @@ const CategoryItem = (props, context) => {
   );
 };
 
-const SelectionSection = (props, context) => {
-  const { act, data } = useBackend(context);
+const SelectionSection = (props) => {
+  const { act, data } = useBackend<Data>();
+  const { category: rootCategoryIndex } = data;
   return (
     <Section>
       <LabeledList>
@@ -131,8 +189,8 @@ const SelectionSection = (props, context) => {
   );
 };
 
-export const LayerSelect = (props, context) => {
-  const { act, data } = useBackend(context);
+export const LayerSelect = (props) => {
+  const { act, data } = useBackend<Data>();
   const { piping_layer } = data;
   return (
     <Stack vertical mb={1}>
@@ -153,10 +211,8 @@ export const LayerSelect = (props, context) => {
   );
 };
 
-const PreviewSelect = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { category: rootCategoryIndex } = data;
-  const previews = data.preview_rows.flatMap((row) => row.previews);
+const PreviewSelect = (props) => {
+  const { act, data } = useBackend<Data>();
   return (
     <Box width="120px">
       {previews.map((preview) => (
@@ -191,24 +247,12 @@ const PreviewSelect = (props, context) => {
   );
 };
 
-const LayerSection = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { category: rootCategoryIndex, piping_layer } = data;
-  const previews = data.preview_rows.flatMap((row) => row.previews);
-  return (
-    <Section fill width={7.5}>
-      {rootCategoryIndex === 0 && <LayerSelect />}
-      <PreviewSelect />
-    </Section>
-  );
-};
-
-const PipeTypeSection = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { categories = [] } = data;
+const PipeTypeSection = (props) => {
+  const { act, data } = useBackend<Data>();
+  const { categories = [], selected_category, selected_recipe } = data;
   const [categoryName, setCategoryName] = useLocalState(
-    context,
-    'categoryName'
+    'categoryName',
+    selected_category
   );
   const shownCategory =
     categories.find((category) => category.cat_name === categoryName) ||
@@ -247,10 +291,9 @@ const PipeTypeSection = (props, context) => {
   );
 };
 
-export const SmartPipeBlockSection = (props, context) => {
-  const { act, data } = useBackend(context);
-  const init_directions = data.init_directions || [];
-  const { category: rootCategoryIndex } = data;
+export const SmartPipeBlockSection = (props) => {
+  const { act, data } = useBackend<Data>();
+  const { init_directions = [] } = data;
   return (
     <Section height={7.5}>
       <Stack fill vertical textAlign="center">
@@ -327,8 +370,8 @@ export const SmartPipeBlockSection = (props, context) => {
   );
 };
 
-export const RapidPipeDispenser = (props, context) => {
-  const { act, data } = useBackend(context);
+export const RapidPipeDispenser = (props) => {
+  const { act, data } = useBackend<Data>();
   const { category: rootCategoryIndex } = data;
   return (
     <Window width={450} height={575}>

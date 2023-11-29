@@ -7,8 +7,32 @@ type DestinationTaggerData = {
   currentTag: number;
 };
 
-export const DestinationTagger = (props, context) => {
-  const { act, data } = useBackend<DestinationTaggerData>(context);
+/**
+ * Info about destinations that survives being re-ordered.
+ */
+type DestinationInfo = {
+  name: string;
+  sorting_id: number;
+};
+
+/**
+ * Sort destinations in alphabetical order,
+ * and wrap them in a way that preserves what ID to return.
+ * @param locations The raw, official list of destination tags.
+ * @returns The alphetically sorted list of destinations.
+ */
+const sortDestinations = (locations: string[]): DestinationInfo[] => {
+  return flow([
+    map<string, DestinationInfo>((name, index) => ({
+      name: name.toUpperCase(),
+      sorting_id: index + 1,
+    })),
+    sortBy<DestinationInfo>((dest) => dest.name),
+  ])(locations);
+};
+
+export const DestinationTagger = (props) => {
+  const { act, data } = useBackend<DestinationTaggerData>();
   const { locations, currentTag } = data;
 
   return (

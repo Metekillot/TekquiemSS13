@@ -51,9 +51,9 @@ const ExperimentStageRow = (props) => {
   );
 };
 
-export const TechwebServer = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { servers } = props;
+export const TechwebServer = (props) => {
+  const { act, data } = useBackend();
+  const { techwebs } = props;
 
   return (
     <Box m={1} className="ExperimentTechwebServer__Web">
@@ -97,8 +97,8 @@ export const TechwebServer = (props, context) => {
   );
 };
 
-export const ExperimentConfigure = (props, context) => {
-  const { act, data } = useBackend(context);
+export const ExperimentConfigure = (props) => {
+  const { act, data } = useBackend();
   const { always_active, has_start_callback } = data;
   let servers = data.servers ?? [];
 
@@ -172,19 +172,11 @@ export const ExperimentConfigure = (props, context) => {
   );
 };
 
-export const Experiment = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { exp, controllable } = props;
-  const {
-    name,
-    description,
-    tag,
-    selectable,
-    selected,
-    progress,
-    performance_hint,
-    ref,
-  } = exp;
+export const Experiment = (props) => {
+  const { act, data } = useBackend();
+  const { exp } = props;
+  const { name, description, tag, selected, progress, performance_hint, ref } =
+    exp;
 
   return (
     <Box m={1} key={ref} className="ExperimentConfigure__ExperimentPanel">

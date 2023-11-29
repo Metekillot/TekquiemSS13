@@ -349,7 +349,7 @@ type ObjectiveElementProps = {
   handleAbort: (event: MouseEvent) => void;
 };
 
-const ObjectiveElement = (props: ObjectiveElementProps, context) => {
+export const ObjectiveElement = (props: ObjectiveElementProps) => {
   const {
     name,
     reputation,

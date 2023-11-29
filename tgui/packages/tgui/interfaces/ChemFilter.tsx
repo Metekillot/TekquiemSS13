@@ -15,9 +15,9 @@ type Props = {
   onReagentInput: (str: string) => void;
 };
 
-export const ChemFilterPane = (props: Props, context) => {
-  const { act } = useBackend(context);
-  const { title, list, reagentName, onReagentInput } = props;
+export const ChemFilterPane = (props: Props) => {
+  const { act } = useBackend();
+  const { title, list, buttonColor } = props;
   const titleKey = title.toLowerCase();
 
   return (
@@ -62,8 +62,8 @@ export const ChemFilterPane = (props: Props, context) => {
   );
 };
 
-export const ChemFilter = (props, context) => {
-  const { data } = useBackend<Data>(context);
+export const ChemFilter = (props) => {
+  const { data } = useBackend<Data>();
   const { left = [], right = [] } = data;
   const [leftName, setLeftName] = useLocalState(context, 'leftName', '');
   const [rightName, setRightName] = useLocalState(context, 'rightName', '');

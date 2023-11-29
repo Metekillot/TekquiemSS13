@@ -3,8 +3,21 @@ import { useBackend } from '../backend';
 import { Button, NoticeBox, Section, Table } from '../components';
 import { Window } from '../layouts';
 
-export const SmartVend = (props, context) => {
-  const { act, data } = useBackend(context);
+type Item = {
+  name: string;
+  amount: number;
+};
+
+type Data = {
+  contents: Item[];
+  name: string;
+  isdryer: BooleanLike;
+  drying: BooleanLike;
+};
+
+export const SmartVend = (props) => {
+  const { act, data } = useBackend<Data>();
+  const { contents = [] } = data;
   return (
     <Window width={440} height={550}>
       <Window.Content scrollable>

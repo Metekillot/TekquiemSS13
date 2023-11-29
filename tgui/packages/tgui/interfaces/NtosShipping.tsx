@@ -12,7 +12,7 @@ type Data = {
   has_id_slot: BooleanLike;
 };
 
-export const NtosShipping = () => {
+export const NtosShipping = (props) => {
   return (
     <NtosWindow width={450} height={350}>
       <NtosWindow.Content scrollable>
@@ -24,10 +24,9 @@ export const NtosShipping = () => {
 };
 
 /** Returns information about the current user, available paper, etc */
-const ShippingHub = (props, context) => {
-  const { act, data } = useBackend<Data>(context);
-  const { current_user, card_owner, has_printer, paperamt, barcode_split } =
-    data;
+const ShippingHub = (props) => {
+  const { act, data } = useBackend<Data>();
+  const { current_user, card_owner, paperamt, barcode_split } = data;
 
   return (
     <Section
@@ -58,9 +57,9 @@ const ShippingHub = (props, context) => {
 };
 
 /** Returns shipping options */
-const ShippingOptions = (props, context) => {
-  const { act, data } = useBackend<Data>(context);
-  const { has_id_slot, has_printer, current_user } = data;
+const ShippingOptions = (props) => {
+  const { act, data } = useBackend<Data>();
+  const { has_id_slot, current_user } = data;
 
   return (
     <Section title="Shipping Options">

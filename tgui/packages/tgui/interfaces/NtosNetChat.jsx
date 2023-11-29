@@ -7,15 +7,7 @@ const CLIENT_ONLINE = 2;
 const CLIENT_AWAY = 1;
 const CLIENT_OFFLINE = 0;
 
-const STATUS2TEXT = {
-  0: 'Offline',
-  1: 'Away',
-  2: 'Online',
-};
-
-const NoChannelDimmer = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { owner } = data;
+const NoChannelDimmer = (props) => {
   return (
     <Dimmer>
       <Stack align="baseline" vertical>
@@ -43,8 +35,8 @@ const NoChannelDimmer = (props, context) => {
   );
 };
 
-export const NtosNetChat = (props, context) => {
-  const { act, data } = useBackend(context);
+export const NtosNetChat = (props) => {
+  const { act, data } = useBackend();
   const {
     can_admin,
     adminmode,

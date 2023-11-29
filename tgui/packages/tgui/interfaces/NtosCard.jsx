@@ -3,7 +3,7 @@ import { Box, Button, Flex, Input, NoticeBox, Section, Tabs } from '../component
 import { NtosWindow } from '../layouts';
 import { AccessList } from './common/AccessList';
 
-export const NtosCard = (props, context) => {
+export const NtosCard = (props) => {
   return (
     <NtosWindow width={500} height={670}>
       <NtosWindow.Content scrollable>
@@ -13,9 +13,8 @@ export const NtosCard = (props, context) => {
   );
 };
 
-export const NtosCardContent = (props, context) => {
-  const { act, data } = useBackend(context);
-  const [tab, setTab] = useLocalState(context, 'tab', 1);
+export const NtosCardContent = (props) => {
+  const { act, data } = useBackend();
   const {
     authenticated,
     regions = [],
@@ -153,38 +152,17 @@ export const NtosCardContent = (props, context) => {
   );
 };
 
-const IDCardTabs = (props, context) => {
-  const [selectedTab, setSelectedTab] = useSharedState(
-    context,
-    'selectedTab',
-    'login'
-  );
-
-  return (
-    <Tabs vertical fill>
-      <Tabs.Tab
-        minWidth={'100%'}
-        altSelection
-        selected={'login' === selectedTab}
-        color={'login' === selectedTab ? 'green' : 'default'}
-        onClick={() => setSelectedTab('login')}>
-        Login ID
-      </Tabs.Tab>
-      <Tabs.Tab
-        minWidth={'100%'}
-        altSelection
-        selected={'modify' === selectedTab}
-        color={'modify' === selectedTab ? 'green' : 'default'}
-        onClick={() => setSelectedTab('modify')}>
-        Target ID
-      </Tabs.Tab>
-    </Tabs>
-  );
-};
-
-export const IDCardLogin = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { authenticatedUser, has_id, have_printer, authIDName } = data;
+const IdCardPage = (props) => {
+  const { act, data } = useBackend();
+  const {
+    authenticatedUser,
+    id_rank,
+    id_owner,
+    has_id,
+    id_name,
+    id_age,
+    authIDName,
+  } = data;
 
   return (
     <Section
@@ -289,8 +267,8 @@ const IDCardTarget = (props, context) => {
   );
 };
 
-const TemplateDropdown = (props, context) => {
-  const { act } = useBackend(context);
+const TemplateDropdown = (props) => {
+  const { act } = useBackend();
   const { templates } = props;
 
   const templateKeys = Object.keys(templates);

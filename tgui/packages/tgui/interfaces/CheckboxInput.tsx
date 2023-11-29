@@ -16,18 +16,20 @@ type Data = {
 };
 
 /** Renders a list of checkboxes per items for input. */
-export const CheckboxInput = (props, context) => {
-  const { data } = useBackend<Data>(context);
-  const { items = [], max_checked, message, timeout, title } = data;
+export const CheckboxInput = (props) => {
+  const { data } = useBackend<Data>();
+  const {
+    items = [],
+    min_checked,
+    max_checked,
+    message,
+    timeout,
+    title,
+  } = data;
 
-  const [selections, setSelections] = useLocalState<string[]>(
-    context,
-    'selections',
-    []
-  );
+  const [selections, setSelections] = useLocalState<string[]>('selections', []);
 
   const [searchQuery, setSearchQuery] = useLocalState<string>(
-    context,
     'searchQuery',
     ''
   );

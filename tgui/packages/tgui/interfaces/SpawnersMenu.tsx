@@ -15,8 +15,8 @@ type spawner = {
   important_info?: string;
 };
 
-export const SpawnersMenu = (props, context) => {
-  const { act, data } = useBackend<SpawnersMenuContext>(context);
+export const SpawnersMenu = (props) => {
+  const { act, data } = useBackend<SpawnersMenuContext>();
   const spawners = data.spawners || [];
   return (
     <Window title="Spawners Menu" width={700} height={525}>

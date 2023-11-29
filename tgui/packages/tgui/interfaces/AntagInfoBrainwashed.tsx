@@ -16,7 +16,9 @@ type Info = {
   objectives: Objective[];
 };
 
-export const AntagInfoBrainwashed = () => {
+export const AntagInfoBrainwashed = (porps) => {
+  const { data } = useBackend<Data>();
+
   return (
     <Window width={400} height={400} theme="abductor">
       <Window.Content backgroundColor="#722e7d">

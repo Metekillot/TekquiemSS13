@@ -4,27 +4,20 @@ import { useBackend } from '../backend';
 import { AnimatedNumber, Box, Button, Icon, LabeledList, ProgressBar, Section } from '../components';
 import { Window } from '../layouts';
 
-export const ChemDispenser = (props, context) => {
-  const { act, data } = useBackend(context);
+export const ChemDispenser = (props) => {
+  const { act, data } = useBackend<Data>();
   const recording = !!data.recordingRecipe;
-  const { recipeReagents = [] } = data;
-  const [hasCol, setHasCol] = useLocalState(context, 'has_col', false);
-  // TODO: Change how this piece of shit is built on server side
-  // It has to be a list, not a fucking OBJECT!
-  const recipes = Object.keys(data.recipes).map((name) => ({
-    name,
-    contents: data.recipes[name],
-  }));
-  const beakerTransferAmounts = data.beakerTransferAmounts || [];
-  const beakerContents =
-    (recording &&
-      Object.keys(data.recordingRecipe).map((id) => ({
-        id,
-        name: toTitleCase(id.replace(/_/, ' ')),
-        volume: data.recordingRecipe[id],
-      }))) ||
-    data.beakerContents ||
-    [];
+  const { recipeReagents = [], recipes = [], beaker } = data;
+  const [hasCol, setHasCol] = useLocalState('has_col', false);
+
+  const beakerTransferAmounts = beaker ? beaker.transferAmounts : [];
+  const recordedContents =
+    recording &&
+    Object.keys(data.recordingRecipe).map((id) => ({
+      id,
+      name: toTitleCase(id.replace(/_/, ' ')),
+      volume: data.recordingRecipe[id],
+    }));
   return (
     <Window width={565} height={620}>
       <Window.Content scrollable>

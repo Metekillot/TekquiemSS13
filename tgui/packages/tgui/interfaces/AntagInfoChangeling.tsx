@@ -46,27 +46,70 @@ type Info = {
   objectives: Objective[];
 };
 
-const ObjectivePrintout = (props, context) => {
-  const { data } = useBackend<Info>(context);
-  const { objectives } = data;
+export const AntagInfoChangeling = (props) => {
   return (
-    <Stack vertical>
-      <Stack.Item bold>Your current objectives:</Stack.Item>
-      <Stack.Item>
-        {(!objectives && 'None!') ||
-          objectives.map((objective) => (
-            <Stack.Item key={objective.count}>
-              #{objective.count}: {objective.explanation}
-            </Stack.Item>
-          ))}
-      </Stack.Item>
-    </Stack>
+    <Window width={720} height={750}>
+      <Window.Content
+        style={{
+          'backgroundImage': 'none',
+        }}>
+        <Stack vertical fill>
+          <Stack.Item maxHeight={16}>
+            <IntroductionSection />
+          </Stack.Item>
+          <Stack.Item grow={4}>
+            <AbilitiesSection />
+          </Stack.Item>
+          <Stack.Item>
+            <HivemindSection />
+          </Stack.Item>
+          <Stack.Item grow={3}>
+            <Stack fill>
+              <Stack.Item grow basis={0}>
+                <MemoriesSection />
+              </Stack.Item>
+              <Stack.Item grow basis={0}>
+                <VictimPatternsSection />
+              </Stack.Item>
+            </Stack>
+          </Stack.Item>
+        </Stack>
+      </Window.Content>
+    </Window>
   );
 };
 
-const IntroductionSection = (props, context) => {
-  const { act, data } = useBackend<Info>(context);
-  const { hive_name, objectives } = data;
+const HivemindSection = (props) => {
+  const { act, data } = useBackend<Info>();
+  const { true_name } = data;
+  return (
+    <Section fill title="Hivemind">
+      <Stack vertical fill>
+        <Stack.Item textColor="label">
+          All Changelings, regardless of origin, are linked together by the{' '}
+          <span style={hivemindstyle}>hivemind</span>. You may communicate to
+          other Changelings under your mental alias,{' '}
+          <span style={hivemindstyle}>{true_name}</span>, by starting a message
+          with <span style={hivemindstyle}>:g</span>. Work together, and you
+          will bring the station to new heights of terror.
+        </Stack.Item>
+        <Stack.Item>
+          <NoticeBox danger>
+            Other Changelings are strong allies, but some Changelings may betray
+            you. Changelings grow in power greatly by absorbing their kind, and
+            getting absorbed by another Changeling will leave you as a{' '}
+            <span style={fallenstyle}>Fallen Changeling</span>. There is no
+            greater humiliation.
+          </NoticeBox>
+        </Stack.Item>
+      </Stack>
+    </Section>
+  );
+};
+
+const IntroductionSection = (props) => {
+  const { act, data } = useBackend<Info>();
+  const { true_name, hive_name, objectives, can_change_objective } = data;
   return (
     <Section
       fill
@@ -85,8 +128,8 @@ const IntroductionSection = (props, context) => {
   );
 };
 
-const AbilitiesSection = (props, context) => {
-  const { data } = useBackend<Info>(context);
+const AbilitiesSection = (props) => {
+  const { data } = useBackend<Info>();
   return (
     <Section fill title="Abilities">
       <Stack fill>
@@ -135,11 +178,10 @@ const AbilitiesSection = (props, context) => {
   );
 };
 
-const MemoriesSection = (props, context) => {
-  const { act, data } = useBackend<Info>(context);
-  const { memories, stolen_antag_info } = data;
+const MemoriesSection = (props) => {
+  const { data } = useBackend<Info>();
+  const { memories } = data;
   const [selectedMemory, setSelectedMemory] = useSharedState(
-    context,
     'memory',
     (!!memories && memories[0]) || null
   );
@@ -191,8 +233,8 @@ const MemoriesSection = (props, context) => {
   );
 };
 
-const VictimPatternsSection = (props, context) => {
-  const { data } = useBackend<Info>(context);
+const VictimPatternsSection = (props) => {
+  const { data } = useBackend<Info>();
   const { stolen_antag_info } = data;
   return (
     <Section

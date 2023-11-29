@@ -2,7 +2,7 @@ import { useBackend } from '../backend';
 import { Box, Button, LabeledList, NoticeBox, Section } from '../components';
 import { NtosWindow } from '../layouts';
 
-export const NtosCyborgRemoteMonitor = (props, context) => {
+export const NtosCyborgRemoteMonitor = (props) => {
   return (
     <NtosWindow width={600} height={800}>
       <NtosWindow.Content>
@@ -29,9 +29,9 @@ export const ProgressSwitch = (param) => {
   }
 };
 
-export const NtosCyborgRemoteMonitorContent = (props, context) => {
-  const { act, data } = useBackend(context);
-  const [tab_main, setTab_main] = useSharedState(context, 'tab_main', 1);
+export const NtosCyborgRemoteMonitorContent = (props) => {
+  const { act, data } = useBackend();
+  const [tab_main, setTab_main] = useSharedState('tab_main', 1);
   const { card, cyborgs = [], DL_progress } = data;
   const storedlog = data.borglog || [];
 

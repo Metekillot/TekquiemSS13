@@ -4,7 +4,7 @@ import { AnimatedNumber, Box, Button, Flex, LabeledList, Section, Table, Tabs } 
 import { formatMoney } from '../format';
 import { Window } from '../layouts';
 
-export const Cargo = (props, context) => {
+export const Cargo = (props) => {
   return (
     <Window width={780} height={750}>
       <Window.Content scrollable>
@@ -14,12 +14,11 @@ export const Cargo = (props, context) => {
   );
 };
 
-export const CargoContent = (props, context) => {
-  const { act, data } = useBackend(context);
-  const [tab, setTab] = useSharedState(context, 'tab', 'catalog');
-  const { requestonly } = data;
-  const cart = data.cart || [];
-  const requests = data.requests || [];
+export const CargoContent = (props) => {
+  const { data } = useBackend();
+  const [tab, setTab] = useSharedState('tab', 'catalog');
+  const { cart = [], requests = [], requestonly } = data;
+  const cart_length = cart.reduce((total, entry) => total + entry.amount, 0);
   return (
     <Box>
       <CargoStatus />
@@ -65,8 +64,8 @@ export const CargoContent = (props, context) => {
   );
 };
 
-const CargoStatus = (props, context) => {
-  const { act, data } = useBackend(context);
+const CargoStatus = (props) => {
+  const { act, data } = useBackend();
   const {
     away,
     docked,
@@ -146,25 +145,20 @@ const searchForSupplies = (supplies, search) => {
   ])(supplies);
 };
 
-export const CargoCatalog = (props, context) => {
+export const CargoCatalog = (props) => {
   const { express } = props;
-  const { act, data } = useBackend(context);
+  const { act, data } = useBackend();
 
   const { self_paid, app_cost } = data;
 
   const supplies = Object.values(data.supplies);
 
   const [activeSupplyName, setActiveSupplyName] = useSharedState(
-    context,
     'supply',
     supplies[0]?.name
   );
 
-  const [searchText, setSearchText] = useSharedState(
-    context,
-    'search_text',
-    ''
-  );
+  const [searchText, setSearchText] = useSharedState('search_text', '');
 
   const activeSupply =
     activeSupplyName === 'search_results'
@@ -284,8 +278,8 @@ export const CargoCatalog = (props, context) => {
   );
 };
 
-const CargoRequests = (props, context) => {
-  const { act, data } = useBackend(context);
+const CargoRequests = (props) => {
+  const { act, data } = useBackend();
   const { requestonly, can_send, can_approve_requests } = data;
   const requests = data.requests || [];
   // Labeled list reimplementation to squeeze extra columns out of it
@@ -350,8 +344,8 @@ const CargoRequests = (props, context) => {
   );
 };
 
-const CargoCartButtons = (props, context) => {
-  const { act, data } = useBackend(context);
+const CargoCartButtons = (props) => {
+  const { act, data } = useBackend();
   const { requestonly, can_send, can_approve_requests } = data;
   const cart = data.cart || [];
   const total = cart.reduce((total, entry) => total + entry.cost, 0);
@@ -376,9 +370,34 @@ const CargoCartButtons = (props, context) => {
   );
 };
 
-const CargoCart = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { requestonly, away, docked, location, can_send } = data;
+const CartHeader = (props) => {
+  const { data } = useBackend();
+  return (
+    <Section>
+      <Stack>
+        <Stack.Item mt="4px">Current-Cart</Stack.Item>
+        <Stack.Item ml="200px" mt="3px">
+          Quantity
+        </Stack.Item>
+        <Stack.Item ml="72px">
+          <CargoCartButtons />
+        </Stack.Item>
+      </Stack>
+    </Section>
+  );
+};
+
+const CargoCart = (props) => {
+  const { act, data } = useBackend();
+  const {
+    requestonly,
+    away,
+    docked,
+    location,
+    can_send,
+    amount_by_name,
+    max_order,
+  } = data;
   const cart = data.cart || [];
   return (
     <Section title="Current Cart" buttons={<CargoCartButtons />}>
@@ -440,7 +459,7 @@ const CargoCart = (props, context) => {
   );
 };
 
-const CargoHelp = (props, context) => {
+const CargoHelp = (props) => {
   return (
     <>
       <Section title="Department Orders">

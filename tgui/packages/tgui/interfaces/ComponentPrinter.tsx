@@ -61,8 +61,9 @@ const MaterialCost = (props: { materials: Design['materials'] }) => {
   );
 };
 
-export const ComponentPrinter = (props, context) => {
-  const { act, data } = useBackend<ComponentPrinterData>(context);
+export const ComponentPrinter = (props) => {
+  const { act, data } = useBackend<ComponentPrinterData>();
+  const { materials, designs, SHEET_MATERIAL_AMOUNT } = data;
 
   const [currentCategory, setCurrentCategory] = useLocalState(
     context,
@@ -179,5 +180,63 @@ export const ComponentPrinter = (props, context) => {
         </Stack>
       </Window.Content>
     </Window>
+  );
+};
+
+type RecipeProps = {
+  design: Design;
+  available: MaterialMap;
+  SHEET_MATERIAL_AMOUNT: number;
+};
+
+const Recipe = (props: RecipeProps) => {
+  const { act } = useBackend<ComponentPrinterData>();
+  const { design, available, SHEET_MATERIAL_AMOUNT } = props;
+
+  const canPrint = !Object.entries(design.cost).some(
+    ([material, amount]) =>
+      !available[material] || amount > (available[material] ?? 0)
+  );
+
+  return (
+    <div className="FabricatorRecipe">
+      <Tooltip content={design.desc} position="right">
+        <div
+          className={classes([
+            'FabricatorRecipe__Button',
+            'FabricatorRecipe__Button--icon',
+            !canPrint && 'FabricatorRecipe__Button--disabled',
+          ])}>
+          <Icon name="question-circle" />
+        </div>
+      </Tooltip>
+      <Tooltip
+        content={
+          <MaterialCostSequence
+            design={design}
+            amount={1}
+            SHEET_MATERIAL_AMOUNT={SHEET_MATERIAL_AMOUNT}
+            available={available}
+          />
+        }>
+        <div
+          className={classes([
+            'FabricatorRecipe__Title',
+            !canPrint && 'FabricatorRecipe__Title--disabled',
+          ])}
+          onClick={() =>
+            canPrint && act('print', { designId: design.id, amount: 1 })
+          }>
+          <div className="FabricatorRecipe__Icon">
+            <Box
+              width={'32px'}
+              height={'32px'}
+              className={classes(['design32x32', design.icon])}
+            />
+          </div>
+          <div className="FabricatorRecipe__Label">{design.name}</div>
+        </div>
+      </Tooltip>
+    </div>
   );
 };

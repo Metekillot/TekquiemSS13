@@ -2,8 +2,25 @@ import { useBackend } from '../backend';
 import { Box, Button, Grid, LabeledList, NumberInput, ProgressBar, Section } from '../components';
 import { Window } from '../layouts';
 
-export const SolarControl = (props, context) => {
-  const { act, data } = useBackend(context);
+type Data = {
+  supply: number;
+  capacity: number;
+  azimuth_current: number;
+  azimuth_rate: number;
+  max_rotation_rate: number;
+  tracking_state: number;
+  connected_panels: number;
+  connected_tracker: BooleanLike;
+  history: History;
+};
+
+type History = {
+  supply: number[];
+  capacity: number[];
+};
+
+export const SolarControl = (props) => {
+  const { act, data } = useBackend<Data>();
   const {
     generated,
     generated_ratio,

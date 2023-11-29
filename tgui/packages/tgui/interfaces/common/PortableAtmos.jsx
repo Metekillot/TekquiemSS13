@@ -1,9 +1,16 @@
 import { useBackend } from '../../backend';
 import { AnimatedNumber, Box, Button, LabeledList, Section } from '../../components';
 
-export const PortableBasicInfo = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { connected, holding, on, pressure } = data;
+export const PortableBasicInfo = (props) => {
+  const { act, data } = useBackend();
+  const {
+    connected,
+    holding,
+    on,
+    pressure,
+    hasHypernobCrystal,
+    reactionSuppressionEnabled,
+  } = data;
   return (
     <>
       <Section

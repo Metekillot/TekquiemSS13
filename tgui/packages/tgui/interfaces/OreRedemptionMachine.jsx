@@ -3,9 +3,17 @@ import { useBackend, useLocalState } from '../backend';
 import { BlockQuote, Box, Button, NumberInput, Section, Table } from '../components';
 import { Window } from '../layouts';
 
-export const OreRedemptionMachine = (props, context) => {
-  const { act, data } = useBackend(context);
-  const { unclaimedPoints, materials, alloys, diskDesigns, hasDisk } = data;
+export const OreRedemptionMachine = (props) => {
+  const { act, data } = useBackend();
+  const { disconnected, unclaimedPoints, materials, user } = data;
+  const [tab, setTab] = useSharedState('tab', 1);
+  const [searchItem, setSearchItem] = useLocalState('searchItem', '');
+  const [compact, setCompact] = useSharedState('compact', false);
+  const search = createSearch(searchItem, (materials) => materials.name);
+  const material_filtered =
+    searchItem.length > 0
+      ? data.materials.filter(search)
+      : materials.filter((material) => material && material.category === tab);
   return (
     <Window title="Ore Redemption Machine" width={440} height={550}>
       <Window.Content scrollable>
@@ -104,8 +112,11 @@ export const OreRedemptionMachine = (props, context) => {
   );
 };
 
-const MaterialRow = (props, context) => {
+const MaterialRow = (props) => {
+  const { data } = useBackend();
+  const { material_icons } = data;
   const { material, onRelease } = props;
+  const [compact, setCompact] = useLocalState('compact', false);
 
   const [amount, setAmount] = useLocalState(
     context,

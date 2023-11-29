@@ -6,8 +6,8 @@ import { Box, Button, Dropdown, Input, Modal, NoticeBox, NumberInput, LabeledLis
 import { Window } from '../layouts';
 import { sanitizeText } from '../sanitize';
 
-export const LibraryConsole = (props, context) => {
-  const { act, data } = useBackend(context);
+export const LibraryConsole = (props) => {
+  const { act, data } = useBackend();
   const { display_lore } = data;
   return (
     <Window
@@ -29,8 +29,8 @@ export const LibraryConsole = (props, context) => {
   );
 };
 
-export const PopoutMenu = (props, context) => {
-  const { act, data } = useBackend(context);
+export const PopoutMenu = (props) => {
+  const { act, data } = useBackend();
   const { screen_state, show_dropdown, display_lore } = data;
   return (
     <Section fill maxWidth={show_dropdown ? '150px' : '36px'}>
@@ -64,8 +64,8 @@ export const PopoutMenu = (props, context) => {
   );
 };
 
-export const PageDisplay = (props, context) => {
-  const { act, data } = useBackend(context);
+export const PageDisplay = (props) => {
+  const { act, data } = useBackend();
   const { screen_state } = data;
   /* eslint-disable indent */
   /* eslint-disable operator-linebreak */
@@ -86,8 +86,8 @@ export const PageDisplay = (props, context) => {
   /* eslint-enable operator-linebreak */
 };
 
-export const Inventory = (props, context) => {
-  const { act, data } = useBackend(context);
+export const Inventory = (props) => {
+  const { act, data } = useBackend();
   const { inventory_page_count, inventory_page, has_inventory } = data;
   if (!has_inventory) {
     return (
@@ -118,8 +118,8 @@ export const Inventory = (props, context) => {
   );
 };
 
-export const InventoryDetails = (props, context) => {
-  const { act, data } = useBackend(context);
+export const InventoryDetails = (props) => {
+  const { act, data } = useBackend();
   const inventory = flow([
     map((book, i) => ({
       ...book,
@@ -159,15 +159,11 @@ export const InventoryDetails = (props, context) => {
   );
 };
 
-export const Checkout = (props, context) => {
-  const { act, data } = useBackend(context);
+export const Checkout = (props) => {
+  const { act, data } = useBackend();
   const { checkout_page, checkout_page_count } = data;
 
-  const [checkoutBook, setCheckoutBook] = useLocalState(
-    context,
-    'CheckoutBook',
-    false
-  );
+  const [checkoutBook, setCheckoutBook] = useLocalState('CheckoutBook', false);
   return (
     <Stack vertical height="100%" justify="space-between">
       <Stack.Item grow>
@@ -206,8 +202,8 @@ export const Checkout = (props, context) => {
   );
 };
 
-export const CheckoutEntries = (props, context) => {
-  const { act, data } = useBackend(context);
+export const CheckoutEntries = (props) => {
+  const { act, data } = useBackend();
   const { checkouts, has_checkout } = data;
 
   if (!has_checkout) {
@@ -246,27 +242,24 @@ export const CheckoutEntries = (props, context) => {
   );
 };
 
-const CheckoutModal = (props, context) => {
-  const { act, data } = useBackend(context);
+const CheckoutModal = (props) => {
+  const { act, data } = useBackend();
+  const inventory = flow([
+    map((book, i) => ({
+      ...book,
+      // Generate a unique id
+      key: i,
+    })),
+    sortBy((book) => book.key),
+  ])(data.inventory);
 
-  const { checking_out } = data;
-  const [checkoutBook, setCheckoutBook] = useLocalState(
-    context,
-    'CheckoutBook',
-    false
-  );
+  const [checkoutBook, setCheckoutBook] = useLocalState('CheckoutBook', false);
   const [bookName, setBookName] = useLocalState(
-    context,
     'CheckoutBookName',
     checking_out || 'Book'
   );
-  const [checkoutee, setCheckoutee] = useLocalState(
-    context,
-    'Checkoutee',
-    'Recipient'
-  );
+  const [checkoutee, setCheckoutee] = useLocalState('Checkoutee', 'Recipient');
   const [checkoutPeriod, setCheckoutPeriod] = useLocalState(
-    context,
     'CheckoutPeriod',
     5
   );
@@ -334,8 +327,8 @@ const CheckoutModal = (props, context) => {
   );
 };
 
-export const Archive = (props, context) => {
-  const { act, data } = useBackend(context);
+export const Archive = (props) => {
+  const { act, data } = useBackend();
   const { can_connect, can_db_request, page_count, our_page } = data;
   if (!can_connect) {
     return (
@@ -370,8 +363,8 @@ export const Archive = (props, context) => {
   );
 };
 
-export const SearchAndDisplay = (props, context) => {
-  const { act, data } = useBackend(context);
+export const SearchAndDisplay = (props) => {
+  const { act, data } = useBackend();
   const {
     search_categories = [],
     title,
@@ -480,8 +473,8 @@ export const SearchAndDisplay = (props, context) => {
   );
 };
 
-export const Upload = (props, context) => {
-  const { act, data } = useBackend(context);
+export const Upload = (props) => {
+  const { act, data } = useBackend();
   const {
     can_db_request,
     has_scanner,
@@ -490,7 +483,7 @@ export const Upload = (props, context) => {
     cache_author,
     cache_content,
   } = data;
-  const [uploadToDB, setUploadToDB] = useLocalState(context, 'UploadDB', false);
+  const [uploadToDB, setUploadToDB] = useLocalState('UploadDB', false);
   if (!has_scanner) {
     return (
       <NoticeBox>
@@ -600,16 +593,12 @@ export const Upload = (props, context) => {
   );
 };
 
-const UploadModal = (props, context) => {
-  const { act, data } = useBackend(context);
+const UploadModal = (props) => {
+  const { act, data } = useBackend();
 
   const { upload_categories, default_category, can_db_request } = data;
-  const [uploadToDB, setUploadToDB] = useLocalState(context, 'UploadDB', false);
-  const [uploadCategory, setUploadCategory] = useLocalState(
-    context,
-    'ModalUpload',
-    ''
-  );
+  const [uploadToDB, setUploadToDB] = useLocalState('UploadDB', false);
+  const [uploadCategory, setUploadCategory] = useLocalState('ModalUpload', '');
 
   const display_category = uploadCategory || default_category;
   return (
@@ -658,11 +647,10 @@ const UploadModal = (props, context) => {
   );
 };
 
-export const Print = (props, context) => {
-  const { act, data } = useBackend(context);
+export const Print = (props) => {
+  const { act, data } = useBackend();
   const { deity, religion, bible_name, bible_sprite, posters } = data;
   const [selectedPoster, setSelectedPoster] = useLocalState(
-    context,
     'selected_poster',
     posters[0]
   );
@@ -749,8 +737,8 @@ export const Print = (props, context) => {
   );
 };
 
-const ForbiddenModal = (props, context) => {
-  const { act, data } = useBackend(context);
+const ForbiddenModal = (props) => {
+  const { act, data } = useBackend();
   return (
     <Modal>
       <Box className="LibraryComputer__CultText" fontSize="28px">
@@ -792,7 +780,7 @@ const ForbiddenModal = (props, context) => {
   );
 };
 
-export const Forbidden = (props, context) => {
+export const Forbidden = (props) => {
   const description =
     'Abf vqrnz cebprffhf pbzchgngvbanyvf fghqrer vapvcvrzhf\nCebprffhf pbzchgngvbanyrf fhag erf nofgenpgnr dhnr pbzchgngberf vapbyhag\nHg ribyihag, cebprffhf nyvn nofgenpgn dhnr qngn znavchyner qvphaghe\nRibyhgvbavf cebprffhf qvevtvghe cre rkrzcyhz erthynr cebtenzzngvf ibpngv\nUbzvarf cebtenzzngn nq cebprffhf erpgbf rssvpvhag\nEriren fcvevghf pbzchgngbevv phz vapnagnzragvf pbavhatvzhf\nCebprffhf pbzchgngvbanyvf rfg zhyghz fvzvyvf vqrnr irarsvpnr fcvevghf\nivqrev nhg gnatv aba cbgrfg\nAba rfg rk zngrevn pbzcbfvgn\nFrq vq cynpreng vcfhz\nAba cbgrfg bcrenev bchf vagryyrpghnyr\nErfcbaqrev cbgrfg\nZhaqhz nssvprer cbgrfg rebtnaqb crphavnz nq evcnz iry cre oenppuvhz \nebobgv snoevpnaqb zbqrenaqb\nPbafvyvvf hgvzhe cebprffvohf nhthenaqv fhag fvphg vapnagnzragn irarsvpvv';
   return (
@@ -803,7 +791,7 @@ export const Forbidden = (props, context) => {
   );
 };
 
-export const ScrollableSection = (props, context) => {
+export const ScrollableSection = (props) => {
   const { header, contents } = props;
 
   return (
@@ -818,8 +806,8 @@ export const ScrollableSection = (props, context) => {
   );
 };
 
-export const PopoutEntry = (props, context) => {
-  const { act, data } = useBackend(context);
+export const PopoutEntry = (props) => {
+  const { act, data } = useBackend();
   const { id, text, icon, color, font } = props;
   const { show_dropdown, screen_state } = data;
   const selected_color = color || 'good';
@@ -845,7 +833,7 @@ export const PopoutEntry = (props, context) => {
   );
 };
 
-export const PageSelect = (props, context) => {
+export const PageSelect = (props) => {
   const {
     minimum_page_count,
     page_count,

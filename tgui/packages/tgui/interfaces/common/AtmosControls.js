@@ -3,9 +3,37 @@ import { useBackend } from '../../backend';
 import { Button, LabeledList, NumberInput, Section } from '../../components';
 import { getGasLabel } from '../../constants';
 
-export const Vent = (props, context) => {
-  const { vent } = props;
-  const { act } = useBackend(context);
+export type VentProps = {
+  refID: string;
+  long_name: string;
+  power: BooleanLike;
+  overclock: BooleanLike;
+  integrity: number;
+  checks: number;
+  excheck: BooleanLike;
+  incheck: BooleanLike;
+  direction: number;
+  external: number;
+  internal: number;
+  extdefault: number;
+  intdefault: number;
+};
+
+export type ScrubberProps = {
+  refID: string;
+  long_name: string;
+  power: BooleanLike;
+  scrubbing: BooleanLike;
+  widenet: BooleanLike;
+  filter_types: {
+    gas_id: string;
+    gas_name: string;
+    enabled: BooleanLike;
+  }[];
+};
+
+export const Vent = (props: VentProps) => {
+  const { act } = useBackend();
   const {
     id_tag,
     long_name,
@@ -135,11 +163,9 @@ export const Vent = (props, context) => {
   );
 };
 
-export const Scrubber = (props, context) => {
-  const { scrubber } = props;
-  const { act } = useBackend(context);
-  const { long_name, power, scrubbing, id_tag, widenet, filter_types } =
-    scrubber;
+export const Scrubber = (props: ScrubberProps) => {
+  const { act } = useBackend();
+  const { long_name, power, scrubbing, refID, widenet, filter_types } = props;
   return (
     <Section
       level={2}

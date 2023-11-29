@@ -2,9 +2,20 @@ import { useBackend } from '../../backend';
 import { Stack, Button, Box } from '../../components';
 import { OperatorData, InternalDamageToDamagedDesc, InternalDamageToNormalDesc } from './data';
 
-export const AlertPane = (props, context) => {
-  const { act, data } = useBackend<OperatorData>(context);
-  const { internal_damage, internal_damage_keys } = data;
+export const AlertPane = (props) => {
+  const { act, data } = useBackend<MainData>();
+  const {
+    internal_damage,
+    internal_damage_keys,
+    servo_rating,
+    scanmod_rating,
+    capacitor_rating,
+    can_use_overclock,
+    overclock_safety_available,
+    overclock_safety,
+    overclock_mode,
+    overclock_temp_percentage,
+  } = data;
   return (
     <Stack fill vertical>
       {Object.keys(internal_damage_keys).map((t) => (
