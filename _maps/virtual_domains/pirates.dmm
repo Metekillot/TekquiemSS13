@@ -199,10 +199,68 @@
 /obj/effect/turf_decal/weather/sand{
 	dir = 4
 	},
-/obj/effect/decal/cleanable/cobweb/cobweb2,
-/obj/machinery/jukebox,
-/turf/open/floor/wood{
-	icon_state = "wood_large"
+/obj/effect/turf_decal/siding/wood{
+	dir = 1
+	},
+/turf/open/floor/wood,
+/area/virtual_domain/fullbright)
+"Vx" = (
+/obj/structure/flora/rock/style_4,
+/turf/open/water/beach,
+/area/virtual_domain/fullbright)
+"VE" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/wood,
+/area/virtual_domain/fullbright)
+"VG" = (
+/obj/effect/turf_decal/siding/wood{
+	dir = 8
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/blue,
+/area/virtual_domain)
+"Wu" = (
+/obj/structure/fermenting_barrel/gunpowder{
+	pixel_x = -4;
+	pixel_y = 17
+	},
+/obj/structure/fermenting_barrel/gunpowder{
+	pixel_x = 4
+	},
+/obj/item/stack/cannonball/four{
+	pixel_x = -9;
+	pixel_y = -10
+	},
+/obj/item/stack/cannonball{
+	pixel_x = 3;
+	pixel_y = 8
+	},
+/obj/item/reagent_containers/cup/bucket/wooden{
+	pixel_y = -10
+	},
+/turf/open/misc/beach/sand,
+/area/virtual_domain/fullbright)
+"Wx" = (
+/obj/effect/turf_decal/siding/wood,
+/turf/open/floor/wood,
+/area/virtual_domain/fullbright)
+"WW" = (
+/turf/template_noop,
+/area/virtual_domain/fullbright)
+"Xn" = (
+/obj/modular_map_root/safehouse{
+	key = "wood"
+	},
+/turf/template_noop,
+/area/virtual_domain/safehouse)
+"XP" = (
+/obj/structure/barricade/wooden/crude,
+/turf/closed/wall/mineral/wood/nonmetal,
+/area/virtual_domain/fullbright)
+"XW" = (
+/obj/effect/mob_spawn/corpse/human/pirate,
+/turf/open/misc/beach/coast{
+	dir = 8
 	},
 /area/virtual_domain/fullbright)
 "jC" = (
