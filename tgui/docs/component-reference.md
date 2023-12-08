@@ -65,19 +65,13 @@ it is used a lot in this framework.
 
 **Event handlers.**
 Event handlers are callbacks that you can attack to various element to
-listen for browser events. Inferno supports camelcase (`onClick`) and
-lowercase (`onclick`) event names.
+listen for browser events. React supports camelcase (`onClick`) event names.
 
 - Camel case names are what's called *synthetic* events, and are the
 **preferred way** of handling events in React, for efficiency and
 performance reasons. Please read
-[Inferno Event Handling](https://infernojs.org/docs/guides/event-handling)
+[React Event Handling](https://react.dev/learn/responding-to-events)
 to understand what this is about.
-- Lower case names are native browser events and should be used sparingly,
-for example when you need an explicit IE8 support. **DO NOT** use
-lowercase event handlers unless you really know what you are doing.
-- [Button](#button) component does not support the lowercase `onclick` event.
-Use the camel case `onClick` instead.
 
 ## `tgui/components`
 
@@ -370,8 +364,7 @@ dropdown when open
 - `over: boolean` - Dropdown renders over instead of below
 - `color: string` - Color of dropdown button
 - `nochevron: boolean` - Whether or not the arrow on the right hand side of the dropdown button is visible
-- `noscroll: boolean` - Whether or not the dropdown menu should have a scroll bar
-- `displayText: string` - Text to always display in place of the selected text
+- `displayText: string | number | ReactNode` - Text to always display in place of the selected text
 - `onClick: (e) => void` - Called when dropdown button is clicked
 - `onSelected: (value) => void` - Called when a value is picked from the list, `value` is the value that was picked
 
@@ -665,8 +658,20 @@ to perform some sort of action), there is a way to do that:
 
 **Props:**
 
-- `label: string` - Item label.
-- `color: string` - Sets the color of the text.
+- `className: string` - Applies a CSS class to the element.
+- `label: string|ReactNode` - Item label.
+- `labelWrap: boolean` - Lets the label wrap and makes it not take the minimum width.
+- `labelColor: string` - Sets the color of the label.
+- `color: string` - Sets the color of the content text.
+- `textAlign: string` - Align the content text.
+  - `left` (default)
+  - `center`
+  - `right`
+- `verticalAlign: string` - Align both the label and the content vertically.
+  - `baseline` (default)
+  - `top`
+  - `middle`
+  - `bottom`
 - `buttons: any` - Buttons to render aside the content.
 - `children: any` - Content of this labeled item.
 
@@ -742,6 +747,16 @@ Default is about 250ms, increase it if you still see flickering.
 the input, or successfully enter a number.
 - `onDrag: (e, value) => void` - An event, which fires about every 500ms
 when you drag the input up and down, on release and on manual editing.
+
+### `Popper`
+
+Popper lets you position elements so that they don't go out of the bounds of the window. See [popper.js](https://popper.js.org/) for more information.
+
+**Props:**
+
+- `popperContent: ReactNode` - The content that will be put inside the popper.
+- `options?: { ... }` - An object of options to pass to `createPopper`. See [https://popper.js.org/docs/v2/constructors/#options], but the one you want most is `placement`. Valid placements are "bottom", "top", "left", and "right". You can affix "-start" and "-end" to achieve something like top left or top right respectively. You can also use "auto" (with an optional "-start" or "-end"), where a best fit will be chosen.
+- `additionalStyles: { ... }` - A map of CSS styles to add to the element that will contain the popper.
 
 ### `ProgressBar`
 

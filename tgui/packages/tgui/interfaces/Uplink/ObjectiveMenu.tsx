@@ -1,5 +1,5 @@
 import { BooleanLike, classes } from 'common/react';
-import { Component } from 'inferno';
+import { Component } from 'react';
 import { Section, Stack, Box, Button, Flex, Tooltip, NoticeBox, Dimmer, Icon } from '../../components';
 import { calculateProgression, getReputation, Rank } from './calculateReputationLevel';
 import { ObjectiveState } from './constants';
@@ -50,8 +50,8 @@ export class ObjectiveMenu extends Component<
   ObjectiveMenuProps,
   ObjectiveMenuState
 > {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       draggingObjective: null,
       objectiveX: 0,
@@ -206,7 +206,7 @@ export class ObjectiveMenu extends Component<
                         )) || (
                         <Box
                           style={{
-                            'border': '2px dashed black',
+                            border: '2px dashed black',
                           }}
                           width="100%"
                           height="100%"
@@ -225,16 +225,7 @@ export class ObjectiveMenu extends Component<
                   </Dimmer>
                 )) ||
                   (potentialObjectives.length < maximumPotentialObjectives && (
-                    <Flex.Item
-                      basis="100%"
-                      style={
-                        {
-                          // "background-color": "rgba(0, 0, 0, 0.5)",
-                        }
-                      }
-                      mb={1}
-                      mx="0.5%"
-                      minHeight="100px">
+                    <Flex.Item basis="100%" mb={1} mx="0.5%" minHeight="100px">
                       <Stack
                         align="center"
                         height="100%"
@@ -262,7 +253,7 @@ export class ObjectiveMenu extends Component<
             left={`${objectiveX - 180}px`}
             top={`${objectiveY}px`}
             style={{
-              'pointer-events': 'none',
+              pointerEvents: 'none',
             }}>
             {ObjectiveFunction(draggingObjective, false)}
           </Box>
@@ -438,39 +429,46 @@ export const ObjectiveElement = (props: ObjectiveElementProps) => {
       <Flex.Item>
         <Box className="UplinkObjective__Footer">
           <Stack vertical>
-            <Stack.Item>
-              <Stack align="center" justify="center">
-                <Box
-                  style={{
-                    'border': '2px solid rgba(0, 0, 0, 0.5)',
-                    'border-left': 'none',
-                    'border-right': 'none',
-                    'border-bottom': objectiveFinished ? 'none' : undefined,
-                  }}
-                  className={reputation.gradient}
-                  py={0.5}
-                  width="100%"
-                  textAlign="center">
-                  {telecrystalReward} TC,
-                  <Box ml={1} as="span">
-                    {calculateProgression(progressionReward)} Reputation
-                    {Math.abs(progressionDiff) > 10 && (
-                      <Tooltip
-                        content={
-                          <Box>
-                            You will get
-                            <Box
-                              mr={1}
-                              ml={1}
-                              color={
-                                progressionDiff > 0
-                                  ? progressionDiff > 25
-                                    ? 'red'
-                                    : 'orange'
-                                  : 'green'
-                              }
-                              as="span">
-                              {Math.abs(progressionDiff)}%
+            {!hideTcRep && (
+              <Stack.Item>
+                <Stack align="center" justify="center">
+                  <Box
+                    style={{
+                      border: '2px solid rgba(0, 0, 0, 0.5)',
+                      borderLeft: 'none',
+                      borderRight: 'none',
+                      borderBottom: objectiveFinished ? 'none' : undefined,
+                    }}
+                    className={dangerLevel.gradient}
+                    py={0.5}
+                    width="100%"
+                    textAlign="center">
+                    {telecrystalReward} TC,
+                    <Box ml={1} as="span">
+                      {calculateProgression(progressionReward)} Threat Level
+                      {Math.abs(progressionDiff) > 10 && (
+                        <Tooltip
+                          content={
+                            <Box>
+                              You will get
+                              <Box
+                                mr={1}
+                                ml={1}
+                                color={
+                                  progressionDiff > 0
+                                    ? progressionDiff > 25
+                                      ? 'red'
+                                      : 'orange'
+                                    : 'green'
+                                }
+                                as="span">
+                                {Math.abs(progressionDiff)}%
+                              </Box>
+                              {progressionDiff > 0 ? 'less' : 'more'} threat
+                              from this objective. This is because your threat
+                              level is{' '}
+                              {progressionDiff > 0 ? 'ahead ' : 'behind '}
+                              where it normally should be at.
                             </Box>
                             {progressionDiff > 0 ? 'less' : 'more'} reputation
                             from this objective. This is because your reputation
@@ -511,29 +509,43 @@ export const ObjectiveElement = (props: ObjectiveElementProps) => {
                   textAlign="center"
                   bold>
                   <Box
-                    width="100%"
-                    height="100%"
-                    backgroundColor={
-                      objectiveFailed
-                        ? 'rgba(255, 0, 0, 0.1)'
-                        : 'rgba(0, 255, 0, 0.1)'
-                    }
-                    position="absolute"
-                    left={0}
-                    top={0}
-                  />
-                  <Button
-                    onClick={handleCompletion}
-                    color={objectiveFailed ? 'bad' : 'good'}
+                    inline
+                    className={dangerLevel.gradient}
                     style={{
-                      'border': '1px solid rgba(0, 0, 0, 0.65)',
+                      borderRadius: '0',
+                      border: '2px solid rgba(0, 0, 0, 0.5)',
+                      borderLeft: 'none',
+                      borderRight: 'none',
                     }}
-                    my={1}>
-                    TURN IN
-                  </Button>
-                </Box>
-              ) : null}
-            </Stack.Item>
+                    position="relative"
+                    width="100%"
+                    textAlign="center"
+                    bold>
+                    <Box
+                      width="100%"
+                      height="100%"
+                      backgroundColor={
+                        objectiveFailed
+                          ? 'rgba(255, 0, 0, 0.1)'
+                          : 'rgba(0, 255, 0, 0.1)'
+                      }
+                      position="absolute"
+                      left={0}
+                      top={0}
+                    />
+                    <Button
+                      onClick={handleCompletion}
+                      color={objectiveFailed ? 'bad' : 'good'}
+                      style={{
+                        border: '1px solid rgba(0, 0, 0, 0.65)',
+                      }}
+                      my={1}>
+                      TURN IN
+                    </Button>
+                  </Box>
+                ) : null}
+              </Stack.Item>
+            )}
             {!!uiButtons && !objectiveFinished && (
               <Stack.Item>{uiButtons}</Stack.Item>
             )}

@@ -33,6 +33,38 @@ export const StackingConsoleContent = (props) => {
           <LabeledList.Item label="Stacking Amount">
             {stacking_amount || 'Unknown'}
           </LabeledList.Item>
+          <LabeledList.Item
+            label="Input"
+            buttons={
+              <Button
+                icon="rotate"
+                content="Rotate"
+                onClick={() =>
+                  act('rotate', {
+                    input: 1,
+                  })
+                }
+              />
+            }>
+            <Box style={{ textTransform: 'capitalize' }}>{input_direction}</Box>
+          </LabeledList.Item>
+          <LabeledList.Item
+            label="Output"
+            buttons={
+              <Button
+                icon="rotate"
+                content="Rotate"
+                onClick={() =>
+                  act('rotate', {
+                    input: 0,
+                  })
+                }
+              />
+            }>
+            <Box style={{ textTransform: 'capitalize' }}>
+              {output_direction}
+            </Box>
+          </LabeledList.Item>
         </LabeledList>
       </Section>
       <Section title="Stored Materials">

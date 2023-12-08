@@ -1,6 +1,6 @@
-import { Fragment } from 'inferno';
-import { useBackend, useLocalState } from '../backend';
-import { Button, Input, Section, Stack } from '../components';
+import { Fragment } from 'react';
+import { useBackend } from '../backend';
+import { Button, Section, Stack } from '../components';
 import { Window } from '../layouts';
 
 type Data = {

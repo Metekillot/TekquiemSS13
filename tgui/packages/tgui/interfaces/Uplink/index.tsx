@@ -1,7 +1,7 @@
 import { useBackend } from '../../backend';
 import { Window } from '../../layouts';
 import { GenericUplink, Item } from './GenericUplink';
-import { Component } from 'inferno';
+import { Component, Fragment } from 'react';
 import { fetchRetry } from '../../http';
 import { resolveAsset } from '../../assets';
 import { BooleanLike } from 'common/react';
@@ -71,8 +71,8 @@ type ItemExtraData = {
 let fetchServerData: Promise<ServerData> | undefined;
 
 export class Uplink extends Component<{}, UplinkState> {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       allItems: [],
       allCategories: [],
@@ -313,11 +313,18 @@ export class Uplink extends Component<{}, UplinkState> {
                   <Stack.Item grow={1}>
                     <Tabs fluid textAlign="center">
                       {!!has_objectives && (
-                        <Tabs.Tab
-                          selected={currentTab === 0}
-                          onClick={() => this.setState({ currentTab: 0 })}>
-                          Objectives
-                        </Tabs.Tab>
+                        <>
+                          <Tabs.Tab
+                            selected={currentTab === 0}
+                            onClick={() => this.setState({ currentTab: 0 })}>
+                            Primary Objectives
+                          </Tabs.Tab>
+                          <Tabs.Tab
+                            selected={currentTab === 1}
+                            onClick={() => this.setState({ currentTab: 1 })}>
+                            Secondary Objectives
+                          </Tabs.Tab>
+                        </>
                       )}
                       <Tabs.Tab
                         selected={currentTab === 1 || !has_objectives}

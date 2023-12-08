@@ -1,7 +1,6 @@
 import { map, sortBy } from 'common/collections';
 import { flow } from 'common/fp';
 import { toFixed } from 'common/math';
-import { pureComponentHooks } from 'common/react';
 import { useBackend, useLocalState } from '../backend';
 import { Box, Button, Chart, ColorBox, Flex, Icon, LabeledList, ProgressBar, Section, Table } from '../components';
 import { Window } from '../layouts';
@@ -183,8 +182,6 @@ export const AreaCharge = (props) => {
   );
 };
 
-AreaCharge.defaultHooks = pureComponentHooks;
-
 const AreaStatusColorBox = (props) => {
   const { status } = props;
   const power = Boolean(status & 2);
@@ -198,5 +195,3 @@ const AreaStatusColorBox = (props) => {
     />
   );
 };
-
-AreaStatusColorBox.defaultHooks = pureComponentHooks;

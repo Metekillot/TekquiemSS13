@@ -126,11 +126,26 @@ const MaterialRow = (props) => {
 
   const amountAvailable = Math.floor(material.amount);
   return (
-    <Table.Row>
-      <Table.Cell>{toTitleCase(material.name).replace('Alloy', '')}</Table.Cell>
-      <Table.Cell collapsing textAlign="right">
-        <Box mr={2} color="label" inline>
-          {material.value && material.value + ' cr'}
+    <Table.Row className="candystripe" collapsing>
+      {!compact && (
+        <Table.Cell collapsing>
+          <Box
+            as="img"
+            m={1}
+            src={`data:image/jpeg;base64,${display.product_icon}`}
+            height="18px"
+            width="18px"
+            style={{
+              verticalAlign: 'middle',
+            }}
+          />
+        </Table.Cell>
+      )}
+      <Table.Cell>{toTitleCase(material.name)}</Table.Cell>
+      <Table.Cell collapsing textAlign="left">
+        <Box color="label">
+          {formatSiUnit(sheet_amounts, 0)}{' '}
+          {material.amount === 1 ? 'sheet' : 'sheets'}
         </Box>
       </Table.Cell>
       <Table.Cell collapsing textAlign="right">

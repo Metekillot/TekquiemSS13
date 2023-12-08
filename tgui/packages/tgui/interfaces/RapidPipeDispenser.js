@@ -271,22 +271,25 @@ const PipeTypeSection = (props) => {
           </Tabs.Tab>
         ))}
       </Tabs>
-      {shownCategory?.recipes.map((recipe) => (
-        <Button.Checkbox
-          key={recipe.pipe_index}
-          fluid
-          ellipsis
-          checked={recipe.selected}
-          content={recipe.pipe_name}
-          title={recipe.pipe_name}
-          onClick={() =>
-            act('pipe_type', {
-              pipe_type: recipe.pipe_index,
-              category: shownCategory.cat_name,
-            })
-          }
-        />
-      ))}
+      <Table>
+        {shownCategory?.recipes.map((recipe) => (
+          <Table.Row
+            key={recipe.pipe_index}
+            style={{ borderBottom: '1px solid #333' }}>
+            <Table.Cell collapsing py="2px" pb="1px">
+              <PreviewSelect
+                previews={recipe.previews}
+                pipe_type={recipe.pipe_index}
+                category={shownCategory.cat_name}
+              />
+            </Table.Cell>
+            <Table.Cell />
+            <Table.Cell style={{ verticalAlign: 'middle' }}>
+              {recipe.pipe_name}
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table>
     </Section>
   );
 };

@@ -44,7 +44,7 @@ const MemoryQuality = (props) => {
       <Button
         icon="star"
         style={{
-          'background':
+          background:
             'linear-gradient(to right, #964B30, #D68B60, #B66B30, #D68B60, #964B30);',
         }}
         tooltipPosition="right"
@@ -60,7 +60,7 @@ const MemoryQuality = (props) => {
       <Button
         icon="star"
         style={{
-          'background':
+          background:
             'linear-gradient(to right, #636363, #a3a3a3, #6e6e6e, #a3a3a3, #636363);',
         }}
         tooltipPosition="right"
@@ -76,7 +76,7 @@ const MemoryQuality = (props) => {
       <Button
         icon="star"
         style={{
-          'background':
+          background:
             'linear-gradient(to right, #AA771C, #BCB68A, #B38728, #BCB68A, #AA771C);',
         }}
         tooltipPosition="right"
@@ -87,6 +87,23 @@ const MemoryQuality = (props) => {
       />
     );
   }
+  if (quality === STORY_VALUE_LEGENDARY) {
+    return (
+      <Button
+        icon="crown"
+        style={{
+          background:
+            'linear-gradient(to right, #56A5B3, #75D4E2, #56A5B3, #75D4E2, #56A5B3)',
+        }}
+        tooltipPosition="right"
+        tooltip={multiline`
+          This memory is the stuff of legends! It would make for
+          legendary art and is likely to pass to future generations.
+        `}
+      />
+    );
+  }
+  // Default return / error
   return (
     <Button
       icon="crown"

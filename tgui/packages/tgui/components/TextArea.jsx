@@ -6,7 +6,7 @@
  */
 
 import { classes } from 'common/react';
-import { Component, createRef } from 'inferno';
+import { Component, createRef } from 'react';
 import { Box } from './Box';
 import { toInputValue } from './Input';
 import { KEY_ENTER, KEY_ESCAPE, KEY_TAB } from 'common/keycodes';
@@ -170,12 +170,27 @@ export class TextArea extends Component {
       placeholder,
       ...boxProps
     } = this.props;
+
     // Box props
     const { className, fluid, ...rest } = boxProps;
     return (
       <Box
         className={classes(['TextArea', fluid && 'TextArea--fluid', className])}
         {...rest}>
+        {!!displayedValue && (
+          <Box position="absolute" width="100%" height="100%" overflow="hidden">
+            <div
+              className={classes([
+                'TextArea__textarea',
+                'TextArea__textarea_custom',
+              ])}
+              style={{
+                transform: `translateY(-${scrolledAmount}px)`,
+              }}>
+              {displayedValue}
+            </div>
+          </Box>
+        )}
         <textarea
           ref={this.textareaRef}
           className="TextArea__textarea"
@@ -187,6 +202,9 @@ export class TextArea extends Component {
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           maxLength={maxLength}
+          style={{
+            color: displayedValue ? 'rgba(0, 0, 0, 0)' : 'inherit',
+          }}
         />
       </Box>
     );

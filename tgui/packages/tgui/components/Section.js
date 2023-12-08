@@ -5,99 +5,78 @@
  */
 
 import { BoxProps, computeBoxClassName, computeBoxProps } from './Box';
-import { Component, InfernoNode, RefObject, createRef } from 'inferno';
+import { ReactNode, RefObject, createRef, useEffect } from 'react';
 import { addScrollableNode, removeScrollableNode } from '../events';
 import { canRender, classes } from 'common/react';
 
-type SectionProps = BoxProps & {
-  className?: string;
-  title?: InfernoNode;
-  buttons?: InfernoNode;
-  fill?: boolean;
-  fitted?: boolean;
-  scrollable?: boolean;
-  /** @deprecated This property no longer works, please remove it. */
-  level?: never;
-  /** @deprecated Please use `scrollable` property */
-  overflowY?: never;
-  /** @member Allows external control of scrolling. */
-  scrollableRef?: RefObject<HTMLDivElement>;
-  /** @member Callback function for the `scroll` event */
-  onScroll?: (this: GlobalEventHandlers, ev: Event) => any;
-};
-
-export class Section extends Component<SectionProps> {
-  scrollableRef: RefObject<HTMLDivElement>;
+export type SectionProps = Partial<{
+  buttons: ReactNode;
+  fill: boolean;
+  fitted: boolean;
   scrollable: boolean;
+  scrollableHorizontal: boolean;
+  title: ReactNode;
+  /** @member Allows external control of scrolling. */
+  scrollableRef: RefObject<HTMLDivElement>;
+  /** @member Callback function for the `scroll` event */
+  onScroll: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+}> &
+  BoxProps;
 
-export class Section extends Component {
-  constructor(props) {
-    super(props);
-    this.ref = createRef();
-    this.scrollable = props.scrollable;
-  }
+export const Section = (props: SectionProps) => {
+  const {
+    className,
+    title,
+    buttons,
+    fill,
+    fitted,
+    scrollable,
+    scrollableHorizontal,
+    children,
+    onScroll,
+    ...rest
+  } = props;
 
-  componentDidMount() {
-    if (this.scrollable || this.scrollableHorizontal) {
-      addScrollableNode(this.scrollableRef.current as HTMLElement);
-      if (this.onScroll && this.scrollableRef.current) {
-        this.scrollableRef.current.onscroll = this.onScroll;
+  const scrollableRef = props.scrollableRef || createRef();
+  const hasTitle = canRender(title) || canRender(buttons);
+
+  useEffect(() => {
+    if (scrollable || scrollableHorizontal) {
+      addScrollableNode(scrollableRef.current as HTMLElement);
+      if (onScroll && scrollableRef.current) {
+        scrollableRef.current.onscroll = onScroll;
       }
     }
-  }
+    return () => {
+      if (scrollable || scrollableHorizontal) {
+        removeScrollableNode(scrollableRef.current as HTMLElement);
+      }
+    };
+  }, []);
 
-  componentWillUnmount() {
-    if (this.scrollable || this.scrollableHorizontal) {
-      removeScrollableNode(this.scrollableRef.current as HTMLElement);
-    }
-  }
-
-  render() {
-    const {
-      className,
-      title,
-      level = 1,
-      buttons,
-      fill,
-      fitted,
-      scrollable,
-      children,
-      ...rest
-    } = this.props;
-    const hasTitle = canRender(title) || canRender(buttons);
-    const content = fitted
-      ? children
-      : (
-        <div
-          ref={this.ref}
-          className="Section__content">
+  return (
+    <div
+      className={classes([
+        'Section',
+        fill && 'Section--fill',
+        fitted && 'Section--fitted',
+        scrollable && 'Section--scrollable',
+        scrollableHorizontal && 'Section--scrollableHorizontal',
+        className,
+        computeBoxClassName(rest),
+      ])}
+      {...computeBoxProps(rest)}>
+      {hasTitle && (
+        <div className="Section__title">
+          <span className="Section__titleText">{title}</span>
+          <div className="Section__buttons">{buttons}</div>
+        </div>
+      )}
+      <div className="Section__rest">
+        <div onScroll={onScroll as any} className="Section__content">
           {children}
         </div>
-      );
-    return (
-      <div
-        ref={fitted ? this.ref : undefined}
-        className={classes([
-          'Section',
-          'Section--level--' + level,
-          Byond.IS_LTE_IE8 && 'Section--iefix',
-          fill && 'Section--fill',
-          fitted && 'Section--fitted',
-          scrollable && 'Section--scrollable',
-          className,
-          ...computeBoxClassName(rest),
-        ])}
-        {...computeBoxProps(rest)}>
-        {hasTitle && (
-          <div className="Section__title">
-            <span className="Section__titleText">{title}</span>
-            <div className="Section__buttons">{buttons}</div>
-          </div>
-        )}
-        <div className="Section__rest">
-          {content}
-        </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
