@@ -1,5 +1,13 @@
 import { useBackend } from '../backend';
-import { Button, LabeledList, Section } from '../components';
+import {
+  Button,
+  LabeledList,
+  Section,
+  Box,
+  Modal,
+  ProgressBar,
+  NumberInput,
+} from '../components';
 import { Window } from '../layouts';
 
 type TurbineInfo = {
@@ -24,7 +32,8 @@ export const TurbineComputer = (props) => {
         style={{ margin: 'auto' }}
         width="200px"
         textAlign="center"
-        minHeight="39px">
+        minHeight="39px"
+      >
         {
           'Parts not connected, use a multitool on the core rotor before trying again'
         }
@@ -37,7 +46,8 @@ export const TurbineComputer = (props) => {
         style={{ margin: 'auto' }}
         width="200px"
         textAlign="center"
-        minHeight="39px">
+        minHeight="39px"
+      >
         {
           'Some parts have open maintenance hatchet, please close them before starting'
         }
@@ -57,7 +67,8 @@ export const TurbineComputer = (props) => {
               disabled={!data.can_turn_off || !data.parts_linked}
               onClick={() => act('toggle_power')}
             />
-          }>
+          }
+        >
           {parts_not_connected}
           {parts_not_ready}
           <LabeledList>

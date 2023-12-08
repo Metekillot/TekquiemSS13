@@ -2,6 +2,11 @@ import { useBackend } from '../backend';
 import { Section, Stack } from '../components';
 import { BooleanLike } from 'common/react';
 import { Window } from '../layouts';
+import {
+  ObjectivePrintout,
+  Objective,
+  ReplaceObjectivesButton,
+} from './common/Objectives';
 
 const teleportstyle = {
   color: 'yellow',

@@ -40,8 +40,13 @@ export class RestrictedInput extends Component {
       }
     };
     this.handleChange = (e) => {
-      const { maxValue, minValue, onChange } = this.props;
-      e.target.value = getClampedNumber(e.target.value, minValue, maxValue);
+      const { maxValue, minValue, onChange, allowFloats } = this.props;
+      e.target.value = getClampedNumber(
+        e.target.value,
+        minValue,
+        maxValue,
+        allowFloats,
+      );
       if (onChange) {
         onChange(e, +e.target.value);
       }
@@ -65,7 +70,12 @@ export class RestrictedInput extends Component {
     this.handleKeyDown = (e) => {
       const { maxValue, minValue, onChange, onEnter } = this.props;
       if (e.keyCode === KEY_ENTER) {
-        const safeNum = getClampedNumber(e.target.value, minValue, maxValue);
+        const safeNum = getClampedNumber(
+          e.target.value,
+          minValue,
+          maxValue,
+          allowFloats,
+        );
         this.setEditing(false);
         if (onChange) {
           onChange(e, +safeNum);
@@ -94,7 +104,12 @@ export class RestrictedInput extends Component {
     const nextValue = this.props.value?.toString();
     const input = this.inputRef.current;
     if (input) {
-      input.value = getClampedNumber(nextValue, minValue, maxValue);
+      input.value = getClampedNumber(
+        nextValue,
+        minValue,
+        maxValue,
+        allowFloats,
+      );
     }
     if (this.props.autoFocus || this.props.autoSelect) {
       setTimeout(() => {
@@ -115,7 +130,12 @@ export class RestrictedInput extends Component {
     const input = this.inputRef.current;
     if (input && !editing) {
       if (nextValue !== prevValue && nextValue !== input.value) {
-        input.value = getClampedNumber(nextValue, minValue, maxValue);
+        input.value = getClampedNumber(
+          nextValue,
+          minValue,
+          maxValue,
+          allowFloats,
+        );
       }
     }
   }
@@ -136,7 +156,8 @@ export class RestrictedInput extends Component {
           monospace && 'Input--monospace',
           className,
         ])}
-        {...rest}>
+        {...rest}
+      >
         <div className="Input__baseline">.</div>
         <input
           className="Input__input"

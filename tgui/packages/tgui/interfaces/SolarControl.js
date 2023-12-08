@@ -1,5 +1,15 @@
 import { useBackend } from '../backend';
-import { Box, Button, Grid, LabeledList, NumberInput, ProgressBar, Section } from '../components';
+import {
+  Box,
+  Button,
+  LabeledList,
+  NumberInput,
+  ProgressBar,
+  Chart,
+  Section,
+  Stack,
+  Icon,
+} from '../components';
 import { Window } from '../layouts';
 
 type Data = {
@@ -34,6 +44,70 @@ export const SolarControl = (props) => {
   return (
     <Window width={380} height={230}>
       <Window.Content>
+        <Section title="Status">
+          <Box
+            mb={1}
+            position="relative"
+            overflow="visible"
+            height="64px"
+            backgroundColor={'black'}
+          >
+            <Chart.Line
+              p={1}
+              fillPositionedParent
+              data={capacityData}
+              rangeX={[0, capacityData.length - 1]}
+              rangeY={[0, maxValue]}
+              strokeColor="rgba(150, 117, 39, 1)"
+              fillColor="rgba(150, 117, 39, 0.5)"
+            />
+            <Chart.Line
+              p={1}
+              fillPositionedParent
+              data={supplyData}
+              rangeX={[0, supplyData.length - 1]}
+              rangeY={[0, maxValue]}
+              strokeColor="rgba(235, 210, 52, 1)"
+              fillColor="rgba(235, 210, 52, 0.5)"
+            />
+          </Box>
+          <Stack>
+            <Stack.Item>
+              <LabeledList>
+                <LabeledList.Item label="Power output">
+                  <ProgressBar
+                    value={capacity > 0 ? supply / capacity : 0}
+                    minValue={0}
+                    maxValue={1}
+                    ranges={{
+                      good: [0.66, Infinity],
+                      average: [0.33, 0.66],
+                      bad: [-Infinity, 0.33],
+                    }}
+                  >
+                    {capacity > 0
+                      ? `${formatPower(supply)} of ${formatPower(
+                          capacity,
+                        )} (${Math.round((100 * supply) / capacity)}%)`
+                      : formatPower(0)}
+                  </ProgressBar>
+                </LabeledList.Item>
+                <LabeledList.Item
+                  label="Solar panels"
+                  color={connected_panels > 0 ? 'good' : 'bad'}
+                >
+                  {connected_panels}
+                </LabeledList.Item>
+                <LabeledList.Item
+                  label="Solar tracker"
+                  color={connected_tracker ? 'good' : 'bad'}
+                >
+                  {connected_tracker ? 'OK' : 'N/A'}
+                </LabeledList.Item>
+              </LabeledList>
+            </Stack.Item>
+          </Stack>
+        </Section>
         <Section
           title="Status"
           buttons={
@@ -42,42 +116,8 @@ export const SolarControl = (props) => {
               content="Scan for new hardware"
               onClick={() => act('refresh')}
             />
-          }>
-          <Grid>
-            <Grid.Column>
-              <LabeledList>
-                <LabeledList.Item
-                  label="Solar tracker"
-                  color={connected_tracker ? 'good' : 'bad'}>
-                  {connected_tracker ? 'OK' : 'N/A'}
-                </LabeledList.Item>
-                <LabeledList.Item
-                  label="Solar panels"
-                  color={connected_panels > 0 ? 'good' : 'bad'}>
-                  {connected_panels}
-                </LabeledList.Item>
-              </LabeledList>
-            </Grid.Column>
-            <Grid.Column size={1.5}>
-              <LabeledList>
-                <LabeledList.Item label="Power output">
-                  <ProgressBar
-                    ranges={{
-                      good: [0.66, Infinity],
-                      average: [0.33, 0.66],
-                      bad: [-Infinity, 0.33],
-                    }}
-                    minValue={0}
-                    maxValue={1}
-                    value={generated_ratio}>
-                    {generated + ' W'}
-                  </ProgressBar>
-                </LabeledList.Item>
-              </LabeledList>
-            </Grid.Column>
-          </Grid>
-        </Section>
-        <Section title="Controls">
+          }
+        >
           <LabeledList>
             <LabeledList.Item label="Tracking">
               <Button

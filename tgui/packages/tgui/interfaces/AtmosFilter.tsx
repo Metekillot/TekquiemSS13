@@ -35,7 +35,8 @@ export const AtmosFilter = (props) => {
             />
           }
           fill
-          title="Gas Filter">
+          title="Gas Filter"
+        >
           <LabeledList>
             <LabeledList.Item label="Transfer Rate">
               <NumberInput
@@ -73,7 +74,8 @@ export const AtmosFilter = (props) => {
                     act('toggle_filter', {
                       val: gas_id,
                     })
-                  }>
+                  }
+                >
                   {getGasLabel(gas_id)}
                 </Button>
               ))}

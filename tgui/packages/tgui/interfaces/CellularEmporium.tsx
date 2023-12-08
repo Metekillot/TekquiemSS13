@@ -1,5 +1,15 @@
-import { useBackend } from '../backend';
-import { Button, Section, Icon, Stack, LabeledList, Box, NoticeBox } from '../components';
+import { BooleanLike } from '../../common/react';
+import { useBackend, useLocalState } from '../backend';
+import {
+  Button,
+  Section,
+  Icon,
+  Input,
+  Stack,
+  LabeledList,
+  Box,
+  NoticeBox,
+} from '../components';
 import { Window } from '../layouts';
 
 type CellularEmporiumContext = {
@@ -21,7 +31,7 @@ export const CellularEmporium = (props) => {
   const { act, data } = useBackend<CellularEmporiumContext>();
   const [searchAbilities, setSearchAbilities] = useLocalState(
     'searchAbilities',
-    ''
+    '',
   );
 
   const { can_readapt, genetic_points_count } = data;
@@ -47,7 +57,8 @@ export const CellularEmporium = (props) => {
                 />
               </Stack.Item>
             </Stack>
-          }>
+          }
+        >
           <AbilityList />
         </Section>
       </Window.Content>
@@ -66,8 +77,32 @@ const AbilityList = (props) => {
     dna_count,
   } = data;
 
-  if (!abilities) {
-    return <NoticeBox>None</NoticeBox>;
+  const filteredAbilities =
+    searchAbilities.length <= 1
+      ? abilities
+      : abilities.filter((ability) => {
+          return (
+            ability.name
+              .toLowerCase()
+              .includes(searchAbilities.toLowerCase()) ||
+            ability.desc
+              .toLowerCase()
+              .includes(searchAbilities.toLowerCase()) ||
+            ability.helptext
+              .toLowerCase()
+              .includes(searchAbilities.toLowerCase())
+          );
+        });
+
+  if (filteredAbilities.length === 0) {
+    return (
+      <NoticeBox>
+        {abilities.length === 0
+          ? 'No abilities available to purchase. \
+        This is in error, contact your local hivemind today.'
+          : 'No abilities found.'}
+      </NoticeBox>
+    );
   } else {
     return (
       <LabeledList>
@@ -98,7 +133,8 @@ const AbilityList = (props) => {
                   />
                 </Stack.Item>
               </Stack>
-            }>
+            }
+          >
             {ability.desc}
             <Box color="good">{ability.helptext}</Box>
           </LabeledList.Item>

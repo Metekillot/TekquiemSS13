@@ -94,7 +94,8 @@ export const reputationLevelsTooltip = (
                 display: 'inline-block',
               }}
               px={0.8}
-              py={0.6}>
+              py={0.6}
+            >
               {text}
             </Box>
           </Flex.Item>
@@ -119,7 +120,7 @@ export const getReputation = (progression_points: number) => {
 
 export const calculateReputationLevel = (
   progression_points: number,
-  textOnly: boolean
+  textOnly: boolean,
 ) => {
   const minutes = progression_points / 600;
   const displayedProgression = calculateProgression(progression_points);
@@ -140,8 +141,9 @@ export const calculateReputationLevel = (
         display: 'inline-block',
       }}
       px={0.8}
-      py={0.6}>
-      {reputation.title} ({displayedProgression})
+      py={0.6}
+    >
+      {dangerLevel.title} ({displayedProgression})
     </Box>
   );
 };

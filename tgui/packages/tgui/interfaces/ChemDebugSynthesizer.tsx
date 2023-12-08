@@ -68,28 +68,9 @@ export const ChemDebugSynthesizer = (props) => {
                 onClick={() => act('makecup')}
               />
             )
-          }>
-          {isBeakerLoaded ? (
-            <>
-              <Box>
-                <AnimatedNumber value={beakerCurrentVolume} />
-                {' / ' + beakerMaxVolume + ' u'}
-              </Box>
-              {beakerContents.length > 0 ? (
-                <LabeledList>
-                  {beakerContents.map((chem) => (
-                    <LabeledList.Item key={chem.name} label={chem.name}>
-                      {chem.volume} u
-                    </LabeledList.Item>
-                  ))}
-                </LabeledList>
-              ) : (
-                <Box color="bad">Recipient Empty</Box>
-              )}
-            </>
-          ) : (
-            <Box color="average">No Recipient</Box>
-          )}
+          }
+        >
+          <BeakerDisplay beaker={beaker} showpH />
         </Section>
       </Window.Content>
     </Window>

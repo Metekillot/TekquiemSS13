@@ -15,7 +15,9 @@ export const GhostPoolProtection = (props) => {
     <Window
       title="Ghost Pool Protection"
       width={400}
-      height={270}>
+      height={270}
+      theme="admin"
+    >
       <Window.Content>
         <Flex grow={1} height="100%">
           <Section
@@ -35,7 +37,8 @@ export const GhostPoolProtection = (props) => {
                   onClick={() => act('no_roles')}
                 />
               </>
-            }>
+            }
+          >
             <NoticeBox danger>
               For people creating a sneaky event: If you toggle Station Created
               Sentience, people may catch on that admins have disabled roles for

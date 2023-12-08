@@ -1,5 +1,13 @@
 import { useBackend, useLocalState } from '../backend';
-import { Button, Icon, LabeledList, NumberInput, Section, Stack, Table } from '../components';
+import {
+  Button,
+  Icon,
+  LabeledList,
+  NumberInput,
+  Section,
+  Stack,
+  Table,
+} from '../components';
 import { Window } from '../layouts';
 import { ReagentLookup } from './common/ReagentLookup';
 import { RecipeLookup } from './common/RecipeLookup';
@@ -81,7 +89,8 @@ export const Reagents = (props) => {
                         }
                       />
                     </>
-                  }>
+                  }
+                >
                   <RecipeLookup
                     recipe={reagent_mode_recipe}
                     bookmarkedReactions={bookmarkedReactions}
@@ -112,7 +121,8 @@ export const Reagents = (props) => {
                         }
                       />
                     </>
-                  }>
+                  }
+                >
                   <ReagentLookup reagent={reagent_mode_reagent} />
                 </Section>
               </Stack.Item>
@@ -146,7 +156,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_brute');
             setPage(1);
-          }}>
+          }}
+        >
           Brute
         </Button>
         <Button
@@ -155,7 +166,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_burn');
             setPage(1);
-          }}>
+          }}
+        >
           Burn
         </Button>
         <Button
@@ -164,7 +176,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_toxin');
             setPage(1);
-          }}>
+          }}
+        >
           Toxin
         </Button>
         <Button
@@ -173,7 +186,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_oxy');
             setPage(1);
-          }}>
+          }}
+        >
           Suffocation
         </Button>
         <Button
@@ -191,7 +205,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_organ');
             setPage(1);
-          }}>
+          }}
+        >
           Organ
         </Button>
         <Button
@@ -200,7 +215,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_chemical');
             setPage(1);
-          }}>
+          }}
+        >
           Chemical
         </Button>
         <Button
@@ -209,7 +225,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_plant');
             setPage(1);
-          }}>
+          }}
+        >
           Plants
         </Button>
         <Button
@@ -218,7 +235,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_other');
             setPage(1);
-          }}>
+          }}
+        >
           Other
         </Button>
       </LabeledList.Item>
@@ -229,7 +247,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_drink');
             setPage(1);
-          }}>
+          }}
+        >
           Drink
         </Button>
         <Button
@@ -238,7 +257,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_food');
             setPage(1);
-          }}>
+          }}
+        >
           Food
         </Button>
         <Button
@@ -247,7 +267,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_healing');
             setPage(1);
-          }}>
+          }}
+        >
           Healing
         </Button>
         <Button
@@ -256,7 +277,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_damaging');
             setPage(1);
-          }}>
+          }}
+        >
           Toxic
         </Button>
         <Button
@@ -265,7 +287,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_drug');
             setPage(1);
-          }}>
+          }}
+        >
           Drugs
         </Button>
         <Button
@@ -274,7 +297,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_slime');
             setPage(1);
-          }}>
+          }}
+        >
           Slime
         </Button>
         <Button
@@ -283,7 +307,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_explosive');
             setPage(1);
-          }}>
+          }}
+        >
           Explosive
         </Button>
         <Button
@@ -292,7 +317,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_unique');
             setPage(1);
-          }}>
+          }}
+        >
           Unique
         </Button>
       </LabeledList.Item>
@@ -303,7 +329,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_easy');
             setPage(1);
-          }}>
+          }}
+        >
           Easy
         </Button>
         <Button
@@ -312,7 +339,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_moderate');
             setPage(1);
-          }}>
+          }}
+        >
           Moderate
         </Button>
         <Button
@@ -321,7 +349,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_hard');
             setPage(1);
-          }}>
+          }}
+        >
           Hard
         </Button>
         <Button
@@ -330,7 +359,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_dangerous');
             setPage(1);
-          }}>
+          }}
+        >
           Dangerous
         </Button>
         <Button
@@ -339,7 +369,8 @@ const TagBox = (props) => {
           onClick={() => {
             act('toggle_tag_competitive');
             setPage(1);
-          }}>
+          }}
+        >
           Competitive
         </Button>
       </LabeledList.Item>
@@ -360,7 +391,7 @@ const RecipeLibrary = (props) => {
 
   const [reagentFilter, setReagentFilter] = useLocalState(
     'reagentFilter',
-    true
+    true,
   );
   const [bookmarkMode, setBookmarkMode] = useLocalState('bookmarkMode', false);
 
@@ -369,7 +400,7 @@ const RecipeLibrary = (props) => {
       return true;
     }
     let matches = reaction.reactants.filter((reactant) =>
-      currentReagents.includes(reactant.id)
+      currentReagents.includes(reactant.id),
     ).length;
     return matches === currentReagents.length;
   };
@@ -383,11 +414,11 @@ const RecipeLibrary = (props) => {
   const visibleReactions = bookmarkMode
     ? bookmarkArray
     : master_reaction_list.filter(
-      (reaction) =>
-        (selectedBitflags
-          ? matchBitflag(selectedBitflags, reaction.bitflags)
-          : true) && matchReagents(reaction)
-    );
+        (reaction) =>
+          (selectedBitflags
+            ? matchBitflag(selectedBitflags, reaction.bitflags)
+            : true) && matchReagents(reaction),
+      );
 
   const pageIndexMax = Math.ceil(visibleReactions.length / 50);
 
@@ -446,7 +477,8 @@ const RecipeLibrary = (props) => {
             onClick={() => setPage(Math.min(page + 1, pageIndexMax))}
           />
         </>
-      }>
+      }
+    >
       <Table>
         <Table.Row>
           <Table.Cell bold color="label">

@@ -1,11 +1,102 @@
 import { filter, sortBy } from 'common/collections';
-import { flow } from 'common/fp';
-import { BooleanLike, classes } from 'common/react';
-import { useBackend } from '../backend';
-import { Button, Dimmer, Icon, Section, Stack, Table } from '../components';
+import { useBackend, useLocalState } from '../backend';
+import {
+  Divider,
+  Button,
+  Section,
+  Tabs,
+  Stack,
+  Box,
+  Input,
+  Icon,
+  Tooltip,
+  NoticeBox,
+} from '../components';
 import { Window } from '../layouts';
 
-type RawRecipe = {
+const TYPE_ICONS = {
+  'Can Make': 'utensils',
+  [Food.Alcohol]: 'wine-glass',
+  [Food.Breakfast]: 'sun',
+  [Food.Bugs]: 'bug',
+  [Food.Cloth]: 'tshirt',
+  [Food.Dairy]: 'cheese',
+  [Food.Fried]: 'fire',
+  [Food.Fruit]: 'apple-alt',
+  [Food.Gore]: 'skull',
+  [Food.Grain]: 'wheat-awn',
+  [Food.Gross]: 'trash',
+  [Food.Junkfood]: 'pizza-slice',
+  [Food.Meat]: 'bacon',
+  [Food.Nuts]: 'seedling',
+  [Food.Oranges]: 'apple-alt',
+  [Food.Pineapple]: 'apple-alt',
+  [Food.Raw]: 'drumstick-bite',
+  [Food.Seafood]: 'fish',
+  [Food.Stone]: 'gem',
+  [Food.Sugar]: 'candy-cane',
+  [Food.Toxic]: 'biohazard',
+  [Food.Vegetables]: 'carrot',
+} as const;
+
+const CATEGORY_ICONS_CRAFTING = {
+  'Can Make': 'hammer',
+  'Weapons Melee': 'hand-fist',
+  'Weapons Ranged': 'gun',
+  'Weapon Ammo': 'box',
+  Robotics: 'robot',
+  Misc: 'shapes',
+  Tribal: 'campground',
+  Clothing: 'shirt',
+  Drinks: 'wine-bottle',
+  Chemistry: 'microscope',
+  Atmospherics: 'fan',
+  Structures: 'cube',
+  Tiles: 'border-all',
+  Windows: 'person-through-window',
+  Doors: 'door-open',
+  Furniture: 'chair',
+  Equipment: 'calculator',
+  Containers: 'briefcase',
+  Tools: 'screwdriver-wrench',
+  Entertainment: 'masks-theater',
+  'Blood Cult': 'users',
+} as const;
+
+const CATEGORY_ICONS_COOKING = {
+  'Can Make': 'utensils',
+  Breads: 'bread-slice',
+  Burgers: 'burger',
+  Cakes: 'cake-candles',
+  'Egg-Based Food': 'egg',
+  Frozen: 'ice-cream',
+  'Lizard Food': 'dragon',
+  Meats: 'bacon',
+  'Mexican Food': 'pepper-hot',
+  'Misc. Food': 'shapes',
+  'Mothic Food': 'shirt',
+  Pastries: 'cookie',
+  Pies: 'chart-pie',
+  Pizzas: 'pizza-slice',
+  Salads: 'leaf',
+  Sandwiches: 'hotdog',
+  Seafood: 'fish',
+  Soups: 'mug-hot',
+  Spaghettis: 'wheat-awn',
+} as const;
+
+enum MODE {
+  crafting,
+  cooking,
+}
+
+enum TABS {
+  category,
+  material,
+  foodtype,
+}
+
+type AtomData = {
   name: string;
   ref: string;
   req_text: string;
@@ -51,18 +142,18 @@ export const PersonalCrafting = (props) => {
       ? 'Can Make'
       : mode === MODE.cooking
         ? DEFAULT_CAT_COOKING
-        : DEFAULT_CAT_CRAFTING
+        : DEFAULT_CAT_CRAFTING,
   );
   const [activeType, setFoodType] = useLocalState(
     'foodtype',
-    Object.keys(craftability).length ? 'Can Make' : data.foodtypes[0]
+    Object.keys(craftability).length ? 'Can Make' : data.foodtypes[0],
   );
   const material_occurences = flow([
     sortBy<Material>((material) => -material.occurences),
   ])(data.material_occurences);
   const [activeMaterial, setMaterial] = useLocalState(
     'material',
-    material_occurences[0].atom_id
+    material_occurences[0].atom_id,
   );
   const [tabMode, setTabMode] = useLocalState('tabMode', 0);
   const searchName = createSearch(searchText, (item: Recipe) => item.name);
@@ -72,7 +163,22 @@ export const PersonalCrafting = (props) => {
         // Show selected category only
         isCategorySelected(data, recipe) &&
         // If craftable only is selected, then filter by craftability
-        (!display_craftable_only || recipe.craftable)
+        (!display_craftable_only || Boolean(craftability[recipe.ref])) &&
+        // Ignore categories and types when searching
+        (searchText.length > 0 ||
+          // Is foodtype mode and the active type matches
+          (tabMode === TABS.foodtype &&
+            mode === MODE.cooking &&
+            ((activeType === 'Can Make' && Boolean(craftability[recipe.ref])) ||
+              recipe.foodtypes?.includes(activeType))) ||
+          // Is material mode and the active material or catalysts match
+          (tabMode === TABS.material &&
+            Object.keys(recipe.reqs).includes(activeMaterial)) ||
+          // Is category mode and the active categroy matches
+          (tabMode === TABS.category &&
+            ((activeCategory === 'Can Make' &&
+              Boolean(craftability[recipe.ref])) ||
+              recipe.category === activeCategory))),
     ),
     sortBy<Recipe>((recipe) => [-recipe.craftable, recipe.name]),
   ])(recipes);
@@ -113,9 +219,10 @@ export const PersonalCrafting = (props) => {
                         setCategory(
                           Object.keys(craftability).length
                             ? 'Can Make'
-                            : data.categories[0]
+                            : data.categories[0],
                         );
-                      }}>
+                      }}
+                    >
                       Category
                     </Tabs.Tab>
                     {mode === MODE.cooking && (
@@ -130,9 +237,10 @@ export const PersonalCrafting = (props) => {
                           setFoodType(
                             Object.keys(craftability).length
                               ? 'Can Make'
-                              : data.foodtypes[0]
+                              : data.foodtypes[0],
                           );
-                        }}>
+                        }}
+                      >
                         Type
                       </Tabs.Tab>
                     )}
@@ -145,7 +253,8 @@ export const PersonalCrafting = (props) => {
                         setTabMode(TABS.material);
                         setPages(1);
                         setMaterial(material_occurences[0].atom_id);
-                      }}>
+                      }}
+                    >
                       {mode === MODE.cooking ? 'Ingredient' : 'Material'}
                     </Tabs.Tab>
                   </Tabs>
@@ -170,7 +279,8 @@ export const PersonalCrafting = (props) => {
                               if (searchText.length > 0) {
                                 setSearchText('');
                               }
-                            }}>
+                            }}
+                          >
                             <FoodtypeContent
                               type={foodtype}
                               diet={diet}
@@ -195,7 +305,8 @@ export const PersonalCrafting = (props) => {
                               if (searchText.length > 0) {
                                 setSearchText('');
                               }
-                            }}>
+                            }}
+                          >
                             <MaterialContent
                               atom_id={material.atom_id}
                               occurences={material.occurences}
@@ -219,7 +330,8 @@ export const PersonalCrafting = (props) => {
                               if (searchText.length > 0) {
                                 setSearchText('');
                               }
-                            }}>
+                            }}
+                          >
                             <Stack>
                               <Stack.Item width="14px" textAlign="center">
                                 <Icon
@@ -235,7 +347,8 @@ export const PersonalCrafting = (props) => {
                                 grow
                                 color={
                                   category === 'Blood Cult' ? 'red' : 'default'
-                                }>
+                                }
+                              >
                                 {category}
                               </Stack.Item>
                               {category === 'Can Make' && (
@@ -256,24 +369,56 @@ export const PersonalCrafting = (props) => {
                     checked={display_compact}
                     onClick={() => act('toggle_compact')}
                   />
-                  <Button.Checkbox
-                    content="Craftable Only"
-                    checked={display_craftable_only}
-                    onClick={() => act('toggle_recipes')}
-                  />
-                </>
-              }>
-              <Section fill scrollable>
-                {busy ? (
-                  <Dimmer fontSize="32px">
-                    <Icon name="cog" spin={1} />
-                    {' Crafting...'}
-                  </Dimmer>
-                ) : (
-                  <CraftingList
-                    recipes={shownRecipes}
-                    compact={Boolean(display_compact)}
-                  />
+                </Stack.Item>
+                {!forced_mode && (
+                  <Stack.Item>
+                    <Stack textAlign="center">
+                      <Stack.Item grow>
+                        <Button.Checkbox
+                          fluid
+                          lineHeight={2}
+                          content="Craft"
+                          checked={mode === MODE.crafting}
+                          icon="hammer"
+                          style={{
+                            border:
+                              '2px solid ' +
+                              (mode === MODE.crafting ? '#20b142' : '#333'),
+                          }}
+                          onClick={() => {
+                            if (mode === MODE.crafting) {
+                              return;
+                            }
+                            setTabMode(TABS.category);
+                            setCategory(DEFAULT_CAT_CRAFTING);
+                            act('toggle_mode');
+                          }}
+                        />
+                      </Stack.Item>
+                      <Stack.Item grow>
+                        <Button.Checkbox
+                          fluid
+                          lineHeight={2}
+                          content="Cook"
+                          checked={mode === MODE.cooking}
+                          icon="utensils"
+                          style={{
+                            border:
+                              '2px solid ' +
+                              (mode === MODE.cooking ? '#20b142' : '#333'),
+                          }}
+                          onClick={() => {
+                            if (mode === MODE.cooking) {
+                              return;
+                            }
+                            setTabMode(TABS.category);
+                            setCategory(DEFAULT_CAT_COOKING);
+                            act('toggle_mode');
+                          }}
+                        />
+                      </Stack.Item>
+                    </Stack>
+                  </Stack.Item>
                 )}
               </Section>
             </Section>
@@ -285,7 +430,8 @@ export const PersonalCrafting = (props) => {
               pr={1}
               pt={1}
               mr={-1}
-              style={{ overflowY: 'auto' }}>
+              style={{ overflowY: 'auto' }}
+            >
               {recipes.length > 0 ? (
                 recipes
                   .slice(0, displayLimit)
@@ -311,7 +457,7 @@ export const PersonalCrafting = (props) => {
                         mode={mode}
                         diet={diet}
                       />
-                    )
+                    ),
                   )
               ) : (
                 <NoticeBox m={1} p={1}>
@@ -322,8 +468,9 @@ export const PersonalCrafting = (props) => {
                 <Section
                   mb={2}
                   textAlign="center"
-                  style={{ 'cursor': 'pointer' }}
-                  onClick={() => setPages(pages + 1)}>
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setPages(pages + 1)}
+                >
                   Load {Math.min(pageSize, recipes.length - displayLimit)}{' '}
                   more...
                 </Section>
@@ -361,10 +508,11 @@ const MaterialContent = (props) => {
         grow
         style={{
           textTransform: 'capitalize',
-          'overflow': 'hidden',
+          overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
-        }}>
+        }}
+      >
         {name}
       </Stack.Item>
       <Stack.Item height="32px" lineHeight="32px">
@@ -425,7 +573,7 @@ const RecipeContentCompact = ({ item, craftable, busy, mode }) => {
                       : amount > 1
                         ? `${name}\xa0${amount}x`
                         : name;
-                  })
+                  }),
                 ).join(', ')}
 
                 {item.chem_catalysts &&
@@ -466,7 +614,8 @@ const RecipeContentCompact = ({ item, craftable, busy, mode }) => {
                 <Box>
                   {!!item.tool_behaviors && (
                     <Tooltip
-                      content={'Tools: ' + item.tool_behaviors.join(', ')}>
+                      content={'Tools: ' + item.tool_behaviors.join(', ')}
+                    >
                       <Icon p={1} name="screwdriver-wrench" />
                     </Tooltip>
                   )}
@@ -496,7 +645,8 @@ const RecipeContentCompact = ({ item, craftable, busy, mode }) => {
                   <Tooltip
                     content={item.steps.map((step) => (
                       <Box key={step}>{step}</Box>
-                    ))}>
+                    ))}
+                  >
                     <Box fontSize={1.5} p={1}>
                       <Icon name="circle-question-o" />
                     </Box>
@@ -520,7 +670,7 @@ const RecipeContent = ({ item, craftable, busy, mode, diet }) => {
           <Box width={'64px'} height={'64px'} mr={1}>
             <Box
               style={{
-                'transform': 'scale(1.5)',
+                transform: 'scale(1.5)',
               }}
               m={'16px'}
               className={item.icon}

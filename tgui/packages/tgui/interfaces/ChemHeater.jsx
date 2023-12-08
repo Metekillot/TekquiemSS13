@@ -1,6 +1,18 @@
 import { round, toFixed } from 'common/math';
 import { useBackend } from '../backend';
-import { AnimatedNumber, Box, Button, LabeledList, NumberInput, Section } from '../components';
+import {
+  AnimatedNumber,
+  Box,
+  Button,
+  Flex,
+  Icon,
+  NumberInput,
+  ProgressBar,
+  RoundGauge,
+  Section,
+  Table,
+} from '../components';
+import { COLORS } from '../constants';
 import { Window } from '../layouts';
 import { BeakerContents } from './common/BeakerContents';
 
@@ -37,7 +49,8 @@ export const ChemHeater = (props) => {
                 onClick={() => act('power')}
               />
             </Flex>
-          }>
+          }
+        >
           <Table>
             <Table.Row>
               <Table.Cell bold collapsing color="label">
@@ -103,7 +116,8 @@ export const ChemHeater = (props) => {
               </Table.Cell>
               <Table.Cell
                 color={COLORS.reagent.acidicbuffer}
-                textAlign="center">
+                textAlign="center"
+              >
                 {acidicBufferVol + 'u'}
               </Table.Cell>
               <Table.Cell>
@@ -181,34 +195,31 @@ export const ChemHeater = (props) => {
                   />
                 </Flex.Item>
                 <Flex.Item>
-                  <AnimatedNumber value={currentpH}>
-                    {(_, value) => (
-                      <RoundGauge
-                        size={1.6}
-                        value={value}
-                        minValue={0}
-                        maxValue={14}
-                        alertAfter={isFlashing}
-                        content={'test'}
-                        format={(value) => null}
-                        ranges={{
-                          'red': [-0.22, 1.5],
-                          'orange': [1.5, 3],
-                          'yellow': [3, 4.5],
-                          'olive': [4.5, 5],
-                          'good': [5, 6],
-                          'green': [6, 8.5],
-                          'teal': [8.5, 9.5],
-                          'blue': [9.5, 11],
-                          'purple': [11, 12.5],
-                          'violet': [12.5, 14],
-                        }}
-                      />
-                    )}
-                  </AnimatedNumber>
+                  <RoundGauge
+                    size={1.6}
+                    value={currentpH}
+                    minValue={0}
+                    maxValue={14}
+                    alertAfter={isFlashing}
+                    content={'test'}
+                    format={() => ''}
+                    ranges={{
+                      red: [-0.22, 1.5],
+                      orange: [1.5, 3],
+                      yellow: [3, 4.5],
+                      olive: [4.5, 5],
+                      good: [5, 6],
+                      green: [6, 8.5],
+                      teal: [8.5, 9.5],
+                      blue: [9.5, 11],
+                      purple: [11, 12.5],
+                      violet: [12.5, 14],
+                    }}
+                  />
                 </Flex.Item>
               </Flex>
-            }>
+            }
+          >
             {(activeReactions.length === 0 && (
               <Box color="label">No active reactions.</Box>
             )) || (
@@ -240,26 +251,22 @@ export const ChemHeater = (props) => {
                           ml={2.5}
                         />
                       )) || (
-                        <AnimatedNumber value={reaction.quality}>
-                          {(_, value) => (
-                            <RoundGauge
-                              size={1.3}
-                              value={value}
-                              minValue={0}
-                              maxValue={1}
-                              alertAfter={reaction.purityAlert}
-                              content={'test'}
-                              format={(value) => null}
-                              ml={5}
-                              ranges={{
-                                'red': [0, reaction.minPure],
-                                'orange': [reaction.minPure, reaction.inverse],
-                                'yellow': [reaction.inverse, 0.8],
-                                'green': [0.8, 1],
-                              }}
-                            />
-                          )}
-                        </AnimatedNumber>
+                        <RoundGauge
+                          size={1.3}
+                          value={reaction.quality}
+                          minValue={0}
+                          maxValue={1}
+                          alertAfter={reaction.purityAlert}
+                          content={'test'}
+                          format={(value) => ''}
+                          ml={5}
+                          ranges={{
+                            red: [0, reaction.minPure],
+                            orange: [reaction.minPure, reaction.inverse],
+                            yellow: [reaction.inverse, 0.8],
+                            green: [0.8, 1],
+                          }}
+                        />
                       )}
                     </Table.Cell>
                     <Table.Cell width={'70px'}>
@@ -271,7 +278,8 @@ export const ChemHeater = (props) => {
                           textAlign={'center'}
                           icon={reaction.overheat && 'thermometer-full'}
                           width={7}
-                          color={reaction.overheat ? 'red' : 'label'}>
+                          color={reaction.overheat ? 'red' : 'label'}
+                        >
                           {reaction.targetVol}u
                         </ProgressBar>
                       )) || (
@@ -308,7 +316,8 @@ export const ChemHeater = (props) => {
                 />
               </>
             )
-          }>
+          }
+        >
           <BeakerContents
             beakerLoaded={isBeakerLoaded}
             beakerContents={beakerContents}

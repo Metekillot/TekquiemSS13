@@ -1,6 +1,17 @@
-import { toTitleCase } from 'common/string';
-import { useBackend, useLocalState } from '../backend';
-import { BlockQuote, Box, Button, NumberInput, Section, Table } from '../components';
+import { createSearch, toTitleCase } from 'common/string';
+import { useBackend, useLocalState, useSharedState } from '../backend';
+import {
+  BlockQuote,
+  Box,
+  Button,
+  Table,
+  Tabs,
+  Input,
+  Stack,
+  Icon,
+  Section,
+  LabeledList,
+} from '../components';
 import { Window } from '../layouts';
 
 export const OreRedemptionMachine = (props) => {
@@ -46,6 +57,66 @@ export const OreRedemptionMachine = (props) => {
                   onClick={() => act('diskEject')}
                 />
               </Box>
+            </Stack.Item>
+          </Section>
+          <Section>
+            <Stack.Item>
+              <BlockQuote>
+                This machine only accepts ore. Gibtonite and Slag are not
+                accepted.
+              </BlockQuote>
+            </Stack.Item>
+          </Section>
+          <Tabs>
+            <Tabs.Tab
+              icon="list"
+              lineHeight="23px"
+              selected={tab === 'material'}
+              onClick={() => {
+                setTab('material');
+
+                if (searchItem.length > 0) {
+                  setSearchItem('');
+                }
+              }}
+            >
+              Materials
+            </Tabs.Tab>
+            <Tabs.Tab
+              icon="list"
+              lineHeight="23px"
+              selected={tab === 'alloy'}
+              onClick={() => {
+                setTab('alloy');
+
+                if (searchItem.length > 0) {
+                  setSearchItem('');
+                }
+              }}
+            >
+              Alloys
+            </Tabs.Tab>
+            <Input
+              autofocus
+              position="relative"
+              left="25%"
+              bottom="5%"
+              height="20px"
+              width="150px"
+              placeholder="Search Material..."
+              value={searchItem}
+              onInput={(e, value) => {
+                setSearchItem(value);
+
+                if (value.length > 0) {
+                  setTab(1);
+                }
+              }}
+              fluid
+            />
+          </Tabs>
+          <Stack.Item grow>
+            <Section fill scrollable>
               <Table>
                 {diskDesigns.map((design) => (
                   <Table.Row key={design.index}>
@@ -118,10 +189,8 @@ const MaterialRow = (props) => {
   const { material, onRelease } = props;
   const [compact, setCompact] = useLocalState('compact', false);
 
-  const [amount, setAmount] = useLocalState(
-    context,
-    'amount' + material.name,
-    1
+  const display = material_icons.find(
+    (mat_icon) => mat_icon.id === material.id,
   );
 
   const amountAvailable = Math.floor(material.amount);

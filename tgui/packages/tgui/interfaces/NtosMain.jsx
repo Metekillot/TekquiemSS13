@@ -14,6 +14,9 @@ export const NtosMain = (props) => {
     cardholder,
     login = [],
   } = data;
+  const filtered_programs = programs.filter(
+    (program) => program.header_program,
+  );
   return (
     <NtosWindow
       title={
@@ -22,9 +25,12 @@ export const NtosMain = (props) => {
       theme={device_theme}
       width={400}
       height={500}
-      resizable>
+    >
       <NtosWindow.Content scrollable>
-        {!!has_light && (
+        {Boolean(
+          removable_media.length ||
+            programs.some((program) => program.header_program),
+        ) && (
           <Section>
             <Stack>
               {!!has_light && (
@@ -77,20 +83,33 @@ export const NtosMain = (props) => {
                   }
                   onClick={() => act('PC_Imprint_ID', { name: 'ID' })}
                 />
-              </>
-            }>
-            <Table>
-              <Table.Row>
-                ID Name: {login.IDName}
-              </Table.Row>
-              <Table.Row>
-                Assignment: {login.IDJob}
-              </Table.Row>
-            </Table>
-          </Section>
-        )}
-        {!!removable_media.length && (
-          <Section title="Media Eject">
+              )}
+            </>
+          }
+        >
+          <Table>
+            <Table.Row>
+              ID Name:{' '}
+              {show_imprint
+                ? login.IDName +
+                  ' ' +
+                  (proposed_login.IDName
+                    ? '(' + proposed_login.IDName + ')'
+                    : '')
+                : proposed_login.IDName ?? ''}
+            </Table.Row>
+            <Table.Row>
+              Assignment:{' '}
+              {show_imprint
+                ? login.IDJob +
+                  ' ' +
+                  (proposed_login.IDJob ? '(' + proposed_login.IDJob + ')' : '')
+                : proposed_login.IDJob ?? ''}
+            </Table.Row>
+          </Table>
+        </Section>
+        {!!pai && (
+          <Section title="pAI">
             <Table>
               <Table.Row>
                 <Table.Cell>
@@ -225,7 +244,7 @@ const ProgramsTable = (props) => {
   const { programs = [] } = data;
   // add the program filename to this list to have it excluded from the main menu program list table
   const filtered_programs = programs.filter(
-    (program) => !program.header_program
+    (program) => !program.header_program,
   );
 
   return (

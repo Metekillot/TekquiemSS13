@@ -47,8 +47,9 @@ export const DestinationTagger = (props) => {
                 !currentTag
                   ? 'Please Select A Location'
                   : `Current Destination: ${locations[currentTag - 1]}`
-              }>
-              {locations.map((location, index) => {
+              }
+            >
+              {sortDestinations(locations).map((location) => {
                 return (
                   <Button.Checkbox
                     checked={locations[currentTag - 1] === location}
@@ -57,8 +58,9 @@ export const DestinationTagger = (props) => {
                     onClick={() =>
                       act('change', { index: location.sorting_id })
                     }
-                    width={15}>
-                    {location.toUpperCase()}
+                    width={15}
+                  >
+                    {location.name}
                   </Button.Checkbox>
                 );
               })}

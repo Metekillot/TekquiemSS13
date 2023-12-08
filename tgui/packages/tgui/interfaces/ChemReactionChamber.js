@@ -1,7 +1,16 @@
 import { map } from 'common/collections';
 import { classes } from 'common/react';
 import { useBackend, useLocalState } from '../backend';
-import { Box, Button, Input, LabeledList, NumberInput, Section } from '../components';
+import {
+  AnimatedNumber,
+  Box,
+  Button,
+  LabeledList,
+  NumberInput,
+  Section,
+  RoundGauge,
+  Stack,
+} from '../components';
 import { Window } from '../layouts';
 
 export const ChemReactionChamber = (props) => {
@@ -14,7 +23,7 @@ export const ChemReactionChamber = (props) => {
   );
   const [reagentQuantity, setReagentQuantity] = useLocalState(
     'reagentQuantity',
-    1
+    1,
   );
 
   const {
@@ -54,7 +63,8 @@ export const ChemReactionChamber = (props) => {
                     />
                   </Stack.Item>
                 </Stack>
-              }>
+              }
+            >
               <Stack vertical>
                 <Stack.Item>
                   <Stack fill>
@@ -78,16 +88,16 @@ export const ChemReactionChamber = (props) => {
                         top={0.5}
                         right={0.5}
                         ranges={{
-                          'red': [-0.22, 1.5],
-                          'orange': [1.5, 3],
-                          'yellow': [3, 4.5],
-                          'olive': [4.5, 5],
-                          'good': [5, 6],
-                          'green': [6, 8.5],
-                          'teal': [8.5, 9.5],
-                          'blue': [9.5, 11],
-                          'purple': [11, 12.5],
-                          'violet': [12.5, 14],
+                          red: [-0.22, 1.5],
+                          orange: [1.5, 3],
+                          yellow: [3, 4.5],
+                          olive: [4.5, 5],
+                          good: [5, 6],
+                          green: [6, 8.5],
+                          teal: [8.5, 9.5],
+                          blue: [9.5, 11],
+                          purple: [11, 12.5],
+                          violet: [12.5, 14],
                         }}
                       />
                     </Stack.Item>
@@ -132,11 +142,13 @@ export const ChemReactionChamber = (props) => {
                     fontSize="16px"
                     inline
                     bold
-                    color={emptying ? 'bad' : 'good'}>
+                    color={emptying ? 'bad' : 'good'}
+                  >
                     {emptying ? 'Emptying' : 'Filling'}
                   </Box>
                 )
-              }>
+              }
+            >
               <Stack vertical fill>
                 <Stack.Item>
                   <LabeledList>

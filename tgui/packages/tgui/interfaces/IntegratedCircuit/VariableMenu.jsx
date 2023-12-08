@@ -1,6 +1,19 @@
-import { Box, Stack, Section, Button, Input, Dropdown, Icon } from '../../components';
+import {
+  Box,
+  Stack,
+  Section,
+  Button,
+  Input,
+  Dropdown,
+  Icon,
+} from '../../components';
 import { Component } from 'react';
 import { shallowDiffers } from 'common/react';
+import {
+  VARIABLE_ASSOC_LIST,
+  VARIABLE_LIST,
+  VARIABLE_NOT_A_LIST,
+} from './constants';
 
 export class VariableMenu extends Component {
   constructor(props) {
@@ -48,7 +61,11 @@ export class VariableMenu extends Component {
         fill
         buttons={
           <Button icon="times" color="transparent" mr={2} onClick={onClose} />
-        }>
+        }
+        onMouseUp={(event) => {
+          event.preventDefault();
+        }}
+      >
         <Stack height="100%">
           <Stack.Item grow={1} mr={2}>
             <Section fill scrollable>
@@ -59,7 +76,8 @@ export class VariableMenu extends Component {
                       backgroundColor="transparent"
                       px="1px"
                       py="1px"
-                      height="100%">
+                      height="100%"
+                    >
                       <Stack>
                         <Stack.Item basis="50%" grow>
                           <Box width="100%" overflow="hidden">
@@ -148,9 +166,15 @@ export class VariableMenu extends Component {
                         height="100%"
                         color="green"
                         onClick={(e) =>
-                          onAddVariable(variable_name, variable_type, false, e)
+                          onAddVariable(
+                            variable_name,
+                            variable_type,
+                            VARIABLE_NOT_A_LIST,
+                            e,
+                          )
                         }
-                        fluid>
+                        fluid
+                      >
                         <IconButton icon="plus" />
                       </Button>
                     </Stack.Item>
@@ -159,10 +183,33 @@ export class VariableMenu extends Component {
                         height="100%"
                         color="green"
                         onClick={(e) =>
-                          onAddVariable(variable_name, variable_type, true, e)
+                          onAddVariable(
+                            variable_name,
+                            variable_type,
+                            VARIABLE_LIST,
+                            e,
+                          )
                         }
-                        fluid>
-                        <IconButton icon="list" />
+                        fluid
+                      >
+                        <IconButton icon="list-ol" />
+                      </Button>
+                    </Stack.Item>
+                    <Stack.Item grow>
+                      <Button
+                        height="100%"
+                        color="green"
+                        onClick={(e) =>
+                          onAddVariable(
+                            variable_name,
+                            variable_type,
+                            VARIABLE_ASSOC_LIST,
+                            e,
+                          )
+                        }
+                        fluid
+                      >
+                        <IconButton icon="table-list" />
                       </Button>
                     </Stack.Item>
                   </Stack>

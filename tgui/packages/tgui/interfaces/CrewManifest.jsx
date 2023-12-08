@@ -28,11 +28,17 @@ export const CrewManifest = (props) => {
               (dept !== 'Misc'
                 ? ` (${positions[dept].open} positions open)`
                 : '')
-            }>
+            }
+          >
             <Table>
               {Object.entries(crew).map(([crewIndex, crewMember]) => (
                 <Table.Row key={crewIndex}>
-                  <Table.Cell className={'CrewManifest__Cell'}>
+                  <Table.Cell
+                    className={'CrewManifest__Cell'}
+                    maxWidth="135px"
+                    overflow="hidden"
+                    width="50%"
+                  >
                     {crewMember.name}
                   </Table.Cell>
                   <Table.Cell
@@ -40,7 +46,10 @@ export const CrewManifest = (props) => {
                       'CrewManifest__Cell',
                       'CrewManifest__Icons',
                     ])}
-                    collapsing>
+                    collapsing
+                    minWidth="40px"
+                    width="40px"
+                  >
                     {positions[dept].exceptions.includes(crewMember.rank) && (
                       <Tooltip content="No position limit" position="bottom">
                         <Icon className="CrewManifest__Icon" name="infinity" />
@@ -75,7 +84,11 @@ export const CrewManifest = (props) => {
                       'CrewManifest__Cell',
                       'CrewManifest__Cell--Rank',
                     ])}
-                    collapsing>
+                    collapsing
+                    maxWidth="135px"
+                    overflow="hidden"
+                    width="50%"
+                  >
                     {crewMember.rank}
                   </Table.Cell>
                 </Table.Row>

@@ -25,24 +25,18 @@ export const ChemFilterPane = (props: Props) => {
       title={title}
       minHeight="240px"
       buttons={
-        <>
-          <Input
-            placeholder="Reagent"
-            width="140px"
-            onInput={(_, value) => onReagentInput(value)}
-          />
-          <Button
-            ml={1}
-            icon="plus"
-            onClick={() =>
-              act('add', {
-                which: titleKey,
-                name: reagentName,
-              })
-            }
-          />
-        </>
-      }>
+        <Button
+          content="Add Reagent"
+          icon="plus"
+          color={buttonColor}
+          onClick={() =>
+            act('add', {
+              which: titleKey,
+            })
+          }
+        />
+      }
+    >
       {list.map((filter) => (
         <Fragment key={filter}>
           <Button

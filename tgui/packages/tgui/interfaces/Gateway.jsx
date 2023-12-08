@@ -1,5 +1,12 @@
 import { useBackend } from '../backend';
-import { Box, Button, Icon, NoticeBox, ProgressBar, Section } from '../components';
+import {
+  Box,
+  Button,
+  ByondUi,
+  NoticeBox,
+  ProgressBar,
+  Section,
+} from '../components';
 import { Window } from '../layouts';
 
 export const Gateway = () => {
@@ -33,8 +40,19 @@ const GatewayContent = (props) => {
   if (current_target) {
     return (
       <Section title={current_target.name}>
-        <Icon name="rainbow" size={4} color="green" />
-        <Button fluid onClick={() => act('deactivate')}>
+        <ByondUi
+          height="320px"
+          params={{
+            id: gateway_mapkey,
+            type: 'map',
+          }}
+        />
+        <Button
+          mt="2px"
+          textAlign="center"
+          fluid
+          onClick={() => act('deactivate')}
+        >
           Deactivate
         </Button>
       </Section>
@@ -55,7 +73,8 @@ const GatewayContent = (props) => {
                 act('activate', {
                   destination: dest.ref,
                 })
-              }>
+              }
+            >
               Activate
             </Button>
           )) || (

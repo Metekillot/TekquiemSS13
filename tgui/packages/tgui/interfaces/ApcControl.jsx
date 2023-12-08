@@ -1,7 +1,16 @@
 import { map, sortBy } from 'common/collections';
 import { flow } from 'common/fp';
 import { useBackend, useLocalState } from '../backend';
-import { Box, Button, Dimmer, Flex, Icon, Table, Tabs } from '../components';
+import {
+  Box,
+  Button,
+  Dimmer,
+  Icon,
+  Table,
+  Tabs,
+  Stack,
+  Section,
+} from '../components';
 import { Window } from '../layouts';
 import { AreaCharge, powerRank } from './PowerMonitor';
 
@@ -43,7 +52,8 @@ const ApcLoggedIn = (props) => {
           onClick={() => {
             setTabIndex(1);
             act('check-apcs');
-          }}>
+          }}
+        >
           APC Control Panel
         </Tabs.Tab>
         <Tabs.Tab
@@ -51,7 +61,8 @@ const ApcLoggedIn = (props) => {
           onClick={() => {
             setTabIndex(2);
             act('check-logs');
-          }}>
+          }}
+        >
           Log View Panel
         </Tabs.Tab>
       </Tabs>
@@ -145,82 +156,85 @@ const ApcControlScene = (props) => {
     sortByField === 'draw' &&
       sortBy(
         (apc) => -powerRank(apc.load),
-        (apc) => -parseFloat(apc.load)
+        (apc) => -parseFloat(apc.load),
       ),
   ])(data.apcs);
   return (
-    <Table>
-      <Table.Row header>
-        <Table.Cell>On/Off</Table.Cell>
-        <Table.Cell>Area</Table.Cell>
-        <Table.Cell collapsing>Charge</Table.Cell>
-        <Table.Cell collapsing textAlign="right">
-          Draw
-        </Table.Cell>
-        <Table.Cell collapsing title="Equipment">
-          Eqp
-        </Table.Cell>
-        <Table.Cell collapsing title="Lighting">
-          Lgt
-        </Table.Cell>
-        <Table.Cell collapsing title="Environment">
-          Env
-        </Table.Cell>
-      </Table.Row>
-      {apcs.map((apc, i) => (
-        <tr key={apc.id} className="Table__row  candystripe">
-          <td>
-            <Button
-              icon={apc.operating ? 'power-off' : 'times'}
-              color={apc.operating ? 'good' : 'bad'}
-              onClick={() =>
-                act('breaker', {
-                  ref: apc.ref,
-                })
-              }
-            />
-          </td>
-          <td>
-            <Button
-              onClick={() =>
-                act('access-apc', {
-                  ref: apc.ref,
-                })
-              }>
-              {apc.name}
-            </Button>
-          </td>
-          <td className="Table__cell text-right text-nowrap">
-            <AreaCharge charging={apc.charging} charge={apc.charge} />
-          </td>
-          <td className="Table__cell text-right text-nowrap">{apc.load}</td>
-          <td className="Table__cell text-center text-nowrap">
-            <AreaStatusColorButton
-              target="equipment"
-              status={apc.eqp}
-              apc={apc}
-              act={act}
-            />
-          </td>
-          <td className="Table__cell text-center text-nowrap">
-            <AreaStatusColorButton
-              target="lighting"
-              status={apc.lgt}
-              apc={apc}
-              act={act}
-            />
-          </td>
-          <td className="Table__cell text-center text-nowrap">
-            <AreaStatusColorButton
-              target="environ"
-              status={apc.env}
-              apc={apc}
-              act={act}
-            />
-          </td>
-        </tr>
-      ))}
-    </Table>
+    <Box height={30}>
+      <Table>
+        <Table.Row header>
+          <Table.Cell>On/Off</Table.Cell>
+          <Table.Cell>Area</Table.Cell>
+          <Table.Cell collapsing>Charge</Table.Cell>
+          <Table.Cell collapsing textAlign="right">
+            Draw
+          </Table.Cell>
+          <Table.Cell collapsing title="Equipment">
+            Eqp
+          </Table.Cell>
+          <Table.Cell collapsing title="Lighting">
+            Lgt
+          </Table.Cell>
+          <Table.Cell collapsing title="Environment">
+            Env
+          </Table.Cell>
+        </Table.Row>
+        {apcs.map((apc, i) => (
+          <tr key={apc.id} className="Table__row  candystripe">
+            <td>
+              <Button
+                icon={apc.operating ? 'power-off' : 'times'}
+                color={apc.operating ? 'good' : 'bad'}
+                onClick={() =>
+                  act('breaker', {
+                    ref: apc.ref,
+                  })
+                }
+              />
+            </td>
+            <td>
+              <Button
+                onClick={() =>
+                  act('access-apc', {
+                    ref: apc.ref,
+                  })
+                }
+              >
+                {apc.name}
+              </Button>
+            </td>
+            <td className="Table__cell text-right text-nowrap">
+              <AreaCharge charging={apc.charging} charge={apc.charge} />
+            </td>
+            <td className="Table__cell text-right text-nowrap">{apc.load}</td>
+            <td className="Table__cell text-center text-nowrap">
+              <AreaStatusColorButton
+                target="equipment"
+                status={apc.eqp}
+                apc={apc}
+                act={act}
+              />
+            </td>
+            <td className="Table__cell text-center text-nowrap">
+              <AreaStatusColorButton
+                target="lighting"
+                status={apc.lgt}
+                apc={apc}
+                act={act}
+              />
+            </td>
+            <td className="Table__cell text-center text-nowrap">
+              <AreaStatusColorButton
+                target="environ"
+                status={apc.env}
+                apc={apc}
+                act={act}
+              />
+            </td>
+          </tr>
+        ))}
+      </Table>
+    </Box>
   );
 };
 

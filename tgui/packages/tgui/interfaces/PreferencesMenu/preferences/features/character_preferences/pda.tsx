@@ -1,4 +1,9 @@
-import { Feature, FeatureColorInput, FeatureDropdownInput } from '../base';
+import {
+  Feature,
+  FeatureChoiced,
+  FeatureDropdownInput,
+  FeatureShortTextInput,
+} from '../base';
 
 export const pda_color: Feature<string> = {
   name: 'PDA color',

@@ -71,7 +71,8 @@ const createHighlightNode = (text) => {
 export const highlightNode = (
   node,
   regex,
-  createNode = createHighlightNode
+  words,
+  createNode = createHighlightNode,
 ) => {
   if (!createNode) {
     createNode = createHighlightNode;

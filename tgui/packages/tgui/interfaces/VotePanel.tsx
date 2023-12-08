@@ -1,5 +1,14 @@
 import { BooleanLike } from 'common/react';
-import { Box, Icon, Stack, Button, Section, NoticeBox, LabeledList, Collapsible } from '../components';
+import {
+  Box,
+  Icon,
+  Stack,
+  Button,
+  Section,
+  NoticeBox,
+  LabeledList,
+  Collapsible,
+} from '../components';
 import { Window } from '../layouts';
 import { useBackend } from '../backend';
 
@@ -52,7 +61,7 @@ export const VotePanel = (props) => {
     windowTitle +=
       ': ' +
       (currentVote.question || currentVote.vote.name).replace(/^\w/, (c) =>
-        c.toUpperCase()
+        c.toUpperCase(),
       );
   }
 
@@ -133,7 +142,8 @@ const VotersList = (props) => {
       <Collapsible
         title={`View Voters${
           data.voting.length ? `: ${data.voting.length}` : ''
-        }`}>
+        }`}
+      >
         <Section height={8} fill scrollable>
           {data.voting.map((voter) => {
             return <Box key={voter}>{voter}</Box>;
@@ -166,13 +176,15 @@ const ChoicesPanel = (props) => {
                     <Button
                       disabled={user.selectedChoice === choice.name}
                       onClick={() => {
-                        act('vote', { voteOption: choice.name });
-                      }}>
+                        act('voteSingle', { voteOption: choice.name });
+                      }}
+                    >
                       Vote
                     </Button>
-                  }>
-                  {user.selectedChoice &&
-                    choice.name === user.selectedChoice && (
+                  }
+                >
+                  {user.singleSelection &&
+                    choice.name === user.singleSelection && (
                       <Icon
                         alignSelf="right"
                         mr={2}
@@ -186,11 +198,46 @@ const ChoicesPanel = (props) => {
               </Box>
             ))}
           </LabeledList>
-        ) : (
-          <NoticeBox>
-            {currentVote ? 'No choices available!' : 'No vote active!'}
-          </NoticeBox>
-        )}
+        ) : null}
+        {currentVote && currentVote.countMethod === VoteSystem.VOTE_MULTI ? (
+          <NoticeBox success>Select any number of options</NoticeBox>
+        ) : null}
+        {currentVote &&
+        currentVote.choices.length !== 0 &&
+        currentVote.countMethod === VoteSystem.VOTE_MULTI ? (
+          <LabeledList>
+            {currentVote.choices.map((choice) => (
+              <Box key={choice.name}>
+                <LabeledList.Item
+                  label={choice.name.replace(/^\w/, (c) => c.toUpperCase())}
+                  textAlign="right"
+                  buttons={
+                    <Button
+                      onClick={() => {
+                        act('voteMulti', { voteOption: choice.name });
+                      }}
+                    >
+                      Vote
+                    </Button>
+                  }
+                >
+                  {user.multiSelection &&
+                  user.multiSelection[user.ckey.concat(choice.name)] === 1 ? (
+                    <Icon
+                      alignSelf="right"
+                      mr={2}
+                      color="blue"
+                      name="vote-yea"
+                    />
+                  ) : null}
+                  {choice.votes} Votes
+                </LabeledList.Item>
+                <LabeledList.Divider />
+              </Box>
+            ))}
+          </LabeledList>
+        ) : null}
+        {currentVote ? null : <NoticeBox>No vote active!</NoticeBox>}
       </Section>
     </Stack.Item>
   );
@@ -216,7 +263,8 @@ const TimePanel = (props) => {
             <Button
               color="red"
               disabled={!user.isLowerAdmin || !currentVote}
-              onClick={() => act('cancel')}>
+              onClick={() => act('cancel')}
+            >
               Cancel Vote
             </Button>
           )}

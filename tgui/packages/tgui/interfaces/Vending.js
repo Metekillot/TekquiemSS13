@@ -1,7 +1,16 @@
 import { classes } from 'common/react';
 import { capitalizeAll } from 'common/string';
-import { useBackend } from 'tgui/backend';
-import { Box, Button, Icon, LabeledList, NoticeBox, Section, Stack, Table } from 'tgui/components';
+import { useBackend, useLocalState } from 'tgui/backend';
+import {
+  Box,
+  Button,
+  Icon,
+  LabeledList,
+  NoticeBox,
+  Section,
+  Stack,
+  Table,
+} from 'tgui/components';
 import { Window } from 'tgui/layouts';
 
 type VendingData = {
@@ -76,7 +85,7 @@ export const Vending = (props) => {
 
   const [selectedCategory, setSelectedCategory] = useLocalState<string>(
     'selectedCategory',
-    Object.keys(data.categories)[0]
+    Object.keys(data.categories)[0],
   );
 
   let inventory: (ProductRecord | CustomInput)[];
@@ -104,7 +113,7 @@ export const Vending = (props) => {
           return false;
         }
       });
-    })
+    }),
   );
 
   return (
@@ -197,7 +206,8 @@ const ProductDisplay = (props: {
             {(user && user.cash) || 0} cr <Icon name="coins" color="gold" />
           </Box>
         )
-      }>
+      }
+    >
       <Table>
         {inventory.map((product) => (
           <VendingRow
@@ -307,7 +317,8 @@ const ProductStock = (props) => {
         (remaining <= 0 && 'bad') ||
         (!custom && remaining <= product.max_amount / 2 && 'average') ||
         'good'
-      }>
+      }
+    >
       {remaining} left
     </Box>
   );
@@ -331,9 +342,10 @@ const ProductButton = (props) => {
       disabled={disabled}
       onClick={() =>
         act('dispense', {
-          'item': product.name,
+          item: product.name,
         })
-      }>
+      }
+    >
       {customPrice}
     </Button>
   ) : (
@@ -342,10 +354,44 @@ const ProductButton = (props) => {
       disabled={disabled}
       onClick={() =>
         act('vend', {
-          'ref': product.ref,
+          ref: product.ref,
         })
-      }>
+      }
+    >
       {standardPrice}
     </Button>
+  );
+};
+
+const CATEGORY_COLORS = {
+  Contraband: 'red',
+  Premium: 'yellow',
+};
+
+const CategorySelector = (props: {
+  categories: Record<string, Category>;
+  selectedCategory: string;
+  onSelect: (category: string) => void;
+}) => {
+  const { categories, selectedCategory, onSelect } = props;
+
+  return (
+    <Section>
+      <Stack grow>
+        <Stack.Item>
+          {Object.entries(categories).map(([name, category]) => (
+            <Button
+              key={name}
+              selected={name === selectedCategory}
+              color={CATEGORY_COLORS[name]}
+              icon={category.icon}
+              onClick={() => onSelect(name)}
+            >
+              {name}
+            </Button>
+          ))}
+        </Stack.Item>
+      </Stack>
+    </Section>
   );
 };

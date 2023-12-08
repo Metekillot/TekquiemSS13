@@ -1,4 +1,10 @@
-import { Button, TextArea, Section, BlockQuote, NoticeBox } from '../components';
+import {
+  Button,
+  TextArea,
+  Section,
+  BlockQuote,
+  NoticeBox,
+} from '../components';
 import { Window } from '../layouts';
 import { useBackend } from '../backend';
 
@@ -31,7 +37,8 @@ export const Interview = (props) => {
     <Window
       width={500}
       height={600}
-      noClose={!is_admin}>
+      canClose={is_admin || status === 'interview_approved'}
+    >
       <Window.Content scrollable>
         {(!read_only && (
           <Section title="Welcome!">
@@ -58,7 +65,8 @@ export const Interview = (props) => {
                 </span>
               )}
             </span>
-          )}>
+          }
+        >
           {!read_only && (
             <p>
               Please answer the following questions,
