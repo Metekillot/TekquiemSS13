@@ -1,5 +1,5 @@
 import { createSearch, toTitleCase } from 'common/string';
-import { useBackend, useLocalState, useSharedState } from '../backend';
+import { useBackend, useSharedState } from '../backend';
 import {
   BlockQuote,
   Box,
@@ -13,18 +13,21 @@ import {
   LabeledList,
 } from '../components';
 import { Window } from '../layouts';
+import { formatSiUnit } from '../format';
+import { useState } from 'react';
 
 export const OreRedemptionMachine = (props) => {
   const { act, data } = useBackend();
   const { disconnected, unclaimedPoints, materials, user } = data;
   const [tab, setTab] = useSharedState('tab', 1);
-  const [searchItem, setSearchItem] = useLocalState('searchItem', '');
-  const [compact, setCompact] = useSharedState('compact', false);
+  const [searchItem, setSearchItem] = useState('');
+  const [compact, setCompact] = useState(false);
   const search = createSearch(searchItem, (materials) => materials.name);
   const material_filtered =
     searchItem.length > 0
       ? data.materials.filter(search)
       : materials.filter((material) => material && material.category === tab);
+
   return (
     <Window title="Ore Redemption Machine" width={440} height={550}>
       <Window.Content scrollable>
@@ -118,23 +121,25 @@ export const OreRedemptionMachine = (props) => {
           <Stack.Item grow>
             <Section fill scrollable>
               <Table>
-                {diskDesigns.map((design) => (
-                  <Table.Row key={design.index}>
-                    <Table.Cell>
-                      File {design.index}: {design.name}
-                    </Table.Cell>
-                    <Table.Cell collapsing>
-                      <Button
-                        disabled={!design.canupload}
-                        content="Upload"
-                        onClick={() =>
-                          act('diskUpload', {
-                            design: design.index,
-                          })
-                        }
-                      />
-                    </Table.Cell>
-                  </Table.Row>
+                {material_filtered.map((material) => (
+                  <MaterialRow
+                    compact={compact}
+                    key={material.id}
+                    material={material}
+                    onRelease={(amount) => {
+                      if (material.category === 'material') {
+                        act('Release', {
+                          id: material.id,
+                          sheets: amount,
+                        });
+                      } else {
+                        act('Smelt', {
+                          id: material.id,
+                          sheets: amount,
+                        });
+                      }
+                    }}
+                  />
                 ))}
               </Table>
             </>
@@ -185,9 +190,9 @@ export const OreRedemptionMachine = (props) => {
 
 const MaterialRow = (props) => {
   const { data } = useBackend();
+  const { compact } = props;
   const { material_icons } = data;
   const { material, onRelease } = props;
-  const [compact, setCompact] = useLocalState('compact', false);
 
   const display = material_icons.find(
     (mat_icon) => mat_icon.id === material.id,

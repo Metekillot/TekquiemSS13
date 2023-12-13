@@ -331,9 +331,10 @@ export const useBackend = <TData>() => {
  *
  * It is a lot more performant than `setSharedState`.
  *
- * @param {any} context React context.
- * @param {string} key Key which uniquely identifies this state in Redux store.
- * @param {any} initialState Initializes your global variable with this value.
+ * @param context React context.
+ * @param key Key which uniquely identifies this state in Redux store.
+ * @param initialState Initializes your global variable with this value.
+ * @deprecated Use useState and useEffect when you can. Pass the state as a prop.
  */
 export const useLocalState = <T>(
   key: string,

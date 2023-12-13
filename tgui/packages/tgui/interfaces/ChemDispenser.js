@@ -1,6 +1,7 @@
 import { toFixed } from 'common/math';
 import { toTitleCase } from 'common/string';
-import { useBackend, useLocalState } from '../backend';
+import { useState } from 'react';
+import { useBackend } from '../backend';
 import {
   Box,
   Button,
@@ -15,7 +16,7 @@ export const ChemDispenser = (props) => {
   const { act, data } = useBackend<Data>();
   const recording = !!data.recordingRecipe;
   const { recipeReagents = [], recipes = [], beaker } = data;
-  const [hasCol, setHasCol] = useLocalState('has_col', false);
+  const [hasCol, setHasCol] = useState(false);
 
   const beakerTransferAmounts = beaker ? beaker.transferAmounts : [];
   const recordedContents =
@@ -25,6 +26,7 @@ export const ChemDispenser = (props) => {
       name: toTitleCase(id.replace(/_/, ' ')),
       volume: data.recordingRecipe[id],
     }));
+
   return (
     <Window width={565} height={620}>
       <Window.Content scrollable>

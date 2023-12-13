@@ -1,5 +1,8 @@
-import { classes } from 'common/react';
-import { useBackend, useLocalState } from '../backend';
+import { BooleanLike, classes } from 'common/react';
+import { multiline } from 'common/string';
+import { capitalizeAll } from 'common/string';
+import { useState } from 'react';
+import { useBackend } from '../backend';
 import {
   Box,
   Button,
@@ -268,13 +271,11 @@ const PreviewSelect = (props) => {
 const PipeTypeSection = (props) => {
   const { act, data } = useBackend<Data>();
   const { categories = [], selected_category, selected_recipe } = data;
-  const [categoryName, setCategoryName] = useLocalState(
-    'categoryName',
-    selected_category,
-  );
+  const [categoryName, setCategoryName] = useState(selected_category);
   const shownCategory =
     categories.find((category) => category.cat_name === categoryName) ||
     categories[0];
+
   return (
     <Section fill scrollable>
       <Tabs>

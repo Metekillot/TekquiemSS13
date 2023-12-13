@@ -28,6 +28,7 @@ export const NtosNetMonitor = (props) => {
     minlogs,
     ntnetlogs = [],
   } = data;
+
   return (
     <NtosWindow resizable>
       <NtosWindow.Content scrollable>
@@ -82,6 +83,7 @@ export const NtosNetMonitor = (props) => {
 const MainPage = (props) => {
   const { ntnetrelays, idsalarm, idsstatus, ntnetlogs = [] } = props;
   const { act, data } = useBackend();
+
   return (
     <Section>
       <NoticeBox>

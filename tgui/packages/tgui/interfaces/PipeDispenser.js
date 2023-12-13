@@ -1,4 +1,6 @@
-import { useBackend, useLocalState } from '../backend';
+import { BooleanLike } from 'common/react';
+import { useState } from 'react';
+import { useBackend } from '../backend';
 import { Button, LabeledList, Section, Stack, Tabs } from '../components';
 import { Window } from '../layouts';
 import {
@@ -56,13 +58,11 @@ type Recipe = {
 const PipeTypeSection = (props) => {
   const { act, data } = useBackend<Data>();
   const { categories = [] } = data;
-  const [categoryName, setCategoryName] = useLocalState(
-    'categoryName',
-    categories[0].cat_name,
-  );
+  const [categoryName, setCategoryName] = useState(categories[0].cat_name);
   const shownCategory =
     categories.find((category) => category.cat_name === categoryName) ||
     categories[0];
+
   return (
     <Section fill scrollable>
       <Tabs>
