@@ -165,14 +165,14 @@ const ReportText = (props) => {
         <Stack.Item>
           <Button.Checkbox
             fluid
-            checked={announce_contents}
+            checked={!!announce_contents}
             onClick={() => act('toggle_announce')}
           >
             Announce Contents
           </Button.Checkbox>
           <Button.Checkbox
             fluid
-            checked={print_report || !announce_contents}
+            checked={!!print_report || !announce_contents}
             disabled={!announce_contents}
             onClick={() => act('toggle_printing')}
             tooltip={
