@@ -1,9 +1,10 @@
 import { useBackend } from '../backend';
 import { Button, ColorBox, Section, Table } from '../components';
 import { NtosWindow } from '../layouts';
+import { NTOSData } from '../layouts/NtosWindow';
 
 export const NtosMain = (props) => {
-  const { act, data } = useBackend();
+  const { act, data } = useBackend<NTOSData>();
   const {
     device_theme,
     programs = [],
@@ -11,12 +12,14 @@ export const NtosMain = (props) => {
     light_on,
     comp_light_color,
     removable_media = [],
-    cardholder,
-    login = [],
+    login,
+    proposed_login,
+    pai,
   } = data;
   const filtered_programs = programs.filter(
     (program) => program.header_program,
   );
+
   return (
     <NtosWindow
       title={
@@ -25,6 +28,7 @@ export const NtosMain = (props) => {
       theme={device_theme}
       width={400}
       height={500}
+      z
     >
       <NtosWindow.Content scrollable>
         {Boolean(
@@ -33,8 +37,8 @@ export const NtosMain = (props) => {
         ) && (
           <Section>
             <Stack>
-              {!!has_light && (
-                <Stack.Item grow>
+              {filtered_programs.map((app) => (
+                <Stack.Item key={app.name}>
                   <Button
                     width="144px"
                     icon="lightbulb"
@@ -240,7 +244,7 @@ export const NtosMain = (props) => {
 };
 
 const ProgramsTable = (props) => {
-  const { act, data } = useBackend();
+  const { act, data } = useBackend<NTOSData>();
   const { programs = [] } = data;
   // add the program filename to this list to have it excluded from the main menu program list table
   const filtered_programs = programs.filter(

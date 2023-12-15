@@ -1,3 +1,4 @@
+import { BooleanLike } from 'common/react';
 import { useBackend } from '../backend';
 import {
   Box,
@@ -9,7 +10,39 @@ import {
   Stack,
 } from '../components';
 import { NtosWindow } from '../layouts';
+import { NTOSData } from '../layouts/NtosWindow';
 import { AccessList } from './common/AccessList';
+
+type Data = {
+  access_on_card: Array<string | number>;
+  accessFlagNames: Record<string, string>;
+  accessFlags: Record<string, number>;
+  hasTrim: BooleanLike;
+  id_age: number;
+  id_owner: string;
+  id_rank: string;
+  regions: Region[];
+  showBasic: BooleanLike;
+  templates: Record<string, string>;
+  trimAccess: string[];
+  wildcardFlags: Record<string, number>;
+  wildcardSlots: Record<string, Slot>;
+} & NTOSData;
+
+type Region = {
+  name: string;
+  accesses: Access[];
+};
+
+type Access = {
+  desc: string;
+  ref: string;
+};
+
+type Slot = {
+  limit: number;
+  usage: any[];
+};
 
 export const NtosCard = (props) => {
   return (
@@ -22,24 +55,19 @@ export const NtosCard = (props) => {
 };
 
 export const NtosCardContent = (props) => {
-  const { act, data } = useBackend();
+  const { act, data } = useBackend<Data>();
   const {
-    authenticated,
-    regions = [],
     access_on_card = [],
-    jobs = {},
-    id_rank,
-    id_owner,
-    has_id,
-    have_printer,
-    have_id_slot,
-    wildcardSlots,
-    wildcardFlags,
-    trimAccess,
-    accessFlags,
     accessFlagNames,
+    accessFlags,
+    authenticatedUser,
+    has_id,
+    regions = [],
     showBasic,
     templates = {},
+    trimAccess,
+    wildcardFlags,
+    wildcardSlots,
   } = data;
 
   if (!have_id_slot) {
@@ -162,16 +190,9 @@ export const NtosCardContent = (props) => {
 };
 
 const IdCardPage = (props) => {
-  const { act, data } = useBackend();
-  const {
-    authenticatedUser,
-    id_rank,
-    id_owner,
-    has_id,
-    id_name,
-    id_age,
-    authIDName,
-  } = data;
+  const { act, data } = useBackend<Data>();
+  const { authenticatedUser, id_rank, id_owner, has_id, id_age, authIDName } =
+    data;
 
   return (
     <Section
@@ -278,13 +299,13 @@ const IDCardTarget = (props, context) => {
 };
 
 const TemplateDropdown = (props) => {
-  const { act } = useBackend();
+  const { act } = useBackend<Data>();
   const { templates } = props;
 
   const templateKeys = Object.keys(templates);
 
   if (!templateKeys.length) {
-    return;
+    return <> </>;
   }
 
   return (
