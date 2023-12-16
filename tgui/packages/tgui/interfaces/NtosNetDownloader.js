@@ -129,6 +129,19 @@ export const NtosNetDownloader = (props) => {
             </LabeledList.Item>
           </LabeledList>
         </Section>
+        <Section>
+          <Input
+            autofocus
+            height="23px"
+            width="100%"
+            placeholder="Search program name..."
+            fluid
+            value={searchItem}
+            onChange={(e, value) => {
+              setSearchItem(value);
+            }}
+          />
+        </Section>
         <Stack>
           <Stack.Item minWidth="105px" shrink={0} basis={0}>
             <Tabs vertical>

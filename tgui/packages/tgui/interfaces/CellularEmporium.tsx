@@ -54,6 +54,14 @@ export const CellularEmporium = (props) => {
                   onClick={() => act('readapt')}
                 />
               </Stack.Item>
+              <Stack.Item>
+                <Input
+                  width="200px"
+                  onChange={(event, value) => setSearchAbilities(value)}
+                  placeholder="Search Abilities..."
+                  value={searchAbilities}
+                />
+              </Stack.Item>
             </Stack>
           }
         >
