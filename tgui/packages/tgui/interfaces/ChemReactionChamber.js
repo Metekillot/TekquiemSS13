@@ -1,5 +1,5 @@
-import { map } from 'common/collections';
-import { classes } from 'common/react';
+import { round, toFixed } from 'common/math';
+
 import { useBackend, useLocalState } from '../backend';
 import {
   AnimatedNumber,
@@ -7,11 +7,18 @@ import {
   Button,
   LabeledList,
   NumberInput,
-  Section,
   RoundGauge,
+  Section,
   Stack,
 } from '../components';
 import { Window } from '../layouts';
+import { MixingData } from './ChemMixingChamber';
+
+type ReactingData = MixingData & {
+  ph: number;
+  reagentAcidic: number;
+  reagentAlkaline: number;
+};
 
 export const ChemReactionChamber = (props) => {
   const { act, data } = useBackend<ReactingData>();

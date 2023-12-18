@@ -1,24 +1,14 @@
-import { createSearch } from 'common/string';
-import { useBackend, useLocalState } from '../backend';
-import { Material, MaterialAmount, MaterialFormatting, Materials, MATERIAL_KEYS } from './common/Materials';
+import { classes } from 'common/react';
+
+import { useBackend } from '../backend';
+import { Box, Icon, Section, Stack, Tooltip } from '../components';
 import { Window } from '../layouts';
-import { Box, Button, Input, Section, Stack, Tabs } from '../components';
-
-const CATEGORY_ALL = 'All';
-
-const searchFor = (searchText) =>
-  createSearch(searchText, ([_, thing]) => thing.name + thing.description);
-
-const getCategory = (category: string[]) => {
-  return category[0] === 'Circuitry' ? category[1] : category[0];
-};
-
-type Design = {
-  name: string;
-  description: string;
-  materials: Record<keyof typeof MATERIAL_KEYS, number>;
-  categories: string[];
-};
+import { DesignBrowser } from './Fabrication/DesignBrowser';
+import { MaterialAccessBar } from './Fabrication/MaterialAccessBar';
+import { MaterialCostSequence } from './Fabrication/MaterialCostSequence';
+import { Material } from './Fabrication/Types';
+import { Design } from './Fabrication/Types';
+import { MaterialMap } from './Fabrication/Types';
 
 type ComponentPrinterData = {
   designs: Record<string, Design>;

@@ -8,6 +8,7 @@ import glob from 'glob';
 import { resolve as resolvePath } from 'path';
 import fs from 'fs';
 import path from 'path';
+
 import { require } from './require.js';
 
 export { resolvePath };

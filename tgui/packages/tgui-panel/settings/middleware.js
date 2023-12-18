@@ -5,15 +5,43 @@
  */
 
 import { storage } from 'common/storage';
+
 import { setClientTheme } from '../themes';
 import {
-  loadSettings,
-  updateSettings,
   addHighlightSetting,
+  loadSettings,
   removeHighlightSetting,
   updateHighlightSetting,
+  updateSettings,
 } from './actions';
+import { FONTS_DISABLED } from './constants';
 import { selectSettings } from './selectors';
+
+let overrideRule = null;
+let overrideFontFamily = null;
+let overrideFontSize = null;
+
+const updateGlobalOverrideRule = () => {
+  let fontFamily = '';
+
+  if (overrideFontFamily !== null) {
+    fontFamily = `font-family: ${overrideFontFamily} !important;`;
+  }
+
+  const constructedRule = `body * :not(.Icon) {
+    ${fontFamily}
+  }`;
+
+  if (overrideRule === null) {
+    overrideRule = document.createElement('style');
+    document.querySelector('head').append(overrideRule);
+  }
+
+  // no other way to force a CSS refresh other than to update its innerText
+  overrideRule.innerText = constructedRule;
+
+  document.body.style.setProperty('font-size', overrideFontSize);
+};
 
 const setGlobalFontSize = (fontSize) => {
   document.documentElement.style.setProperty('font-size', fontSize + 'px');

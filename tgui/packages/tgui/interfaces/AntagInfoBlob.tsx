@@ -8,9 +8,8 @@ import {
   Section,
   Stack,
 } from '../components';
-import { Objective } from './common/Objectives';
-
 import { Window } from '../layouts';
+import { Objective } from './common/Objectives';
 
 type Data = {
   color: string;

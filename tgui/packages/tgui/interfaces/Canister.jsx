@@ -1,4 +1,6 @@
 import { toFixed } from 'common/math';
+import { BooleanLike } from 'common/react';
+
 import { useBackend } from '../backend';
 import {
   Box,

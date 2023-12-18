@@ -1,7 +1,21 @@
-import { useBackend } from '../backend';
-import { Box, Button, Grid, Section, NoticeBox } from '../components';
+import { BooleanLike } from 'common/react';
 import { toTitleCase } from 'common/string';
+
+import { useBackend } from '../backend';
+import { Box, Button, Grid, NoticeBox, Section } from '../components';
 import { Window } from '../layouts';
+
+type Data = {
+  shaking: BooleanLike;
+  question: string;
+  answers: Answer[];
+};
+
+type Answer = {
+  answer: string;
+  amount: number;
+  selected: BooleanLike;
+};
 
 export const EightBallVote = (props) => {
   const { act, data } = useBackend<Data>();

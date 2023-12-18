@@ -1,21 +1,18 @@
-import { useBackend } from '../../backend';
-import { Window } from '../../layouts';
 import { useBackend, useLocalState } from '../../backend';
 import {
-  ByondUi,
-  Stack,
   Button,
-  Section,
-  ProgressBar,
+  ByondUi,
   LabeledList,
+  ProgressBar,
+  Section,
+  Stack,
 } from '../../components';
 import { formatSiUnit } from '../../format';
-import { ModulesPane } from './ModulesPane';
-import { AlertPane } from './AlertPane';
+import { Window } from '../../layouts';
 import { AccessConfig } from '../common/AccessConfig';
+import { AlertPane } from './AlertPane';
 import { MainData } from './data';
-import { MaintMode } from './MaintMode';
-import { OperatorMode } from './OperatorMode';
+import { ModulesPane } from './ModulesPane';
 
 export const Mecha = (props) => {
   const { data } = useBackend<MainData>();

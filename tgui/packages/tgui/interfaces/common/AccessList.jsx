@@ -1,21 +1,7 @@
 import { sortBy } from 'common/collections';
-import { useLocalState } from '../../backend';
-import { Button, Flex, Grid, Section, Tabs } from '../../components';
 
-const diffMap = {
-  0: {
-    icon: 'times-circle',
-    color: 'bad',
-  },
-  1: {
-    icon: 'stop-circle',
-    color: null,
-  },
-  2: {
-    icon: 'check-circle',
-    color: 'good',
-  },
-};
+import { useSharedState } from '../../backend';
+import { Button, Flex, Section, Tabs } from '../../components';
 
 export const AccessList = (props) => {
   const {

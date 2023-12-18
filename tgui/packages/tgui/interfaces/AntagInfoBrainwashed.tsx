@@ -2,6 +2,7 @@ import { useBackend } from '../backend';
 import { Icon, Section, Stack } from '../components';
 import { BooleanLike } from 'common/react';
 import { Window } from '../layouts';
+import { Objective, ObjectivePrintout } from './common/Objectives';
 
 type Objective = {
   count: number;

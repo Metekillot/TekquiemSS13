@@ -1,4 +1,6 @@
-import { toArray } from 'common/collections';
+import { filter, sortBy } from 'common/collections';
+import { flow } from 'common/fp';
+
 import { useBackend, useSharedState } from '../backend';
 import {
   AnimatedNumber,
@@ -7,9 +9,9 @@ import {
   Flex,
   Icon,
   Input,
-  RestrictedInput,
   LabeledList,
   NoticeBox,
+  RestrictedInput,
   Section,
   Stack,
   Table,

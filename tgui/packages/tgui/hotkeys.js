@@ -4,8 +4,9 @@
  * @license MIT
  */
 
-import { KEY_CTRL, KEY_ENTER, KEY_ESCAPE, KEY_F, KEY_F5, KEY_R, KEY_SHIFT, KEY_SPACE, KEY_TAB } from 'common/keycodes';
-import { globalEvents } from './events';
+import * as keycodes from 'common/keycodes';
+
+import { globalEvents, KeyEvent } from './events';
 import { createLogger } from './logging';
 
 const logger = createLogger('hotkeys');

@@ -2,15 +2,7 @@ import { useBackend } from '../backend';
 import { Section, Stack } from '../components';
 import { BooleanLike } from 'common/react';
 import { Window } from '../layouts';
-
-type Objective = {
-  count: number;
-  name: string;
-  explanation: string;
-  complete: BooleanLike;
-  was_uncompleted: BooleanLike;
-  reward: number;
-};
+import { Objective, ObjectivePrintout } from './common/Objectives';
 
 type Info = {
   antag_name: string;
