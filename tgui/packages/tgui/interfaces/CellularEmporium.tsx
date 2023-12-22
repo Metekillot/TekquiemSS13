@@ -44,8 +44,7 @@ export const CellularEmporium = (props) => {
           buttons={
             <Stack>
               <Stack.Item fontSize="16px">
-                {genetic_points_remaining && genetic_points_remaining}{' '}
-                <Icon name="dna" color="#DD66DD" />
+                {genetic_points_count} <Icon name="dna" color="#DD66DD" />
               </Stack.Item>
               <Stack.Item>
                 <Button
