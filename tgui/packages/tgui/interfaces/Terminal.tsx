@@ -1,5 +1,5 @@
 import { useBackend } from '../backend';
-import { NoticeBox, Section } from '../components';
+import { Box, NoticeBox } from '../components';
 import { Window } from '../layouts';
 
 type Data = {
@@ -17,7 +17,12 @@ export const Terminal = (props) => {
       <Window.Content scrollable>
         <NoticeBox textAlign="left">{uppertext}</NoticeBox>
         {messages.map((message) => {
-          return <Section key={message.key}>{message}</Section>;
+          return (
+            <Box
+              key={message.key}
+              dangerouslySetInnerHTML={{ __html: message }}
+            />
+          );
         })}
       </Window.Content>
     </Window>

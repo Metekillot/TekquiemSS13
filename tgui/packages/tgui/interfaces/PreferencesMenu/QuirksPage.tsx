@@ -59,8 +59,6 @@ const QuirkList = (props: {
           <Box
             className={className}
             key={quirkKey}
-            role="button"
-            tabIndex="1"
             onClick={() => {
               props.onClick(quirkKey, quirk);
             }}

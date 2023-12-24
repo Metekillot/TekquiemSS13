@@ -132,7 +132,7 @@ export const NtosNetDownloader = (props) => {
         </Section>
         <Section>
           <Input
-            autofocus
+            autoFocus
             height="23px"
             width="100%"
             placeholder="Search program name..."
@@ -200,9 +200,10 @@ const Program = (props) => {
   } = data;
   const disk_free = disk_size - disk_used;
   return (
-    <Box mb={3}>
-      <Flex align="baseline">
-        <Flex.Item bold grow={1}>
+    <Section>
+      <Stack align="baseline">
+        <Stack.Item grow bold>
+          <Icon name={program.icon} mr={1} />
           {program.filedesc}
         </Stack.Item>
         <Stack.Item
