@@ -138,9 +138,7 @@ const FilterPanel = (props) => {
 
   return (
     <Popper
-      options={{
-        placement: 'bottom-start',
-      }}
+      placement="bottom-start"
       popperContent={
         <div
           className="RequestManager__filterPanel"
