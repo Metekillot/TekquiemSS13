@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import { useBackend } from '../backend';
 import { Button, Section, Stack } from '../components';
+import { CssColor } from '../constants';
 import { Window } from '../layouts';
 
 type Data = {
@@ -12,8 +13,7 @@ type Data = {
 type Props = {
   title: string;
   list: string[];
-  reagentName: string;
-  onReagentInput: (str: string) => void;
+  buttonColor: CssColor;
 };
 
 export const ChemFilterPane = (props: Props) => {
