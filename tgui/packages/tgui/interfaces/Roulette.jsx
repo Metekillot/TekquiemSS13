@@ -51,7 +51,7 @@ export const RouletteNumberCell = (props) => {
         'Roulette__board-cell-number',
         cellClass,
       ])}
-      colspan={colspan}
+      colSpan={colspan}
       rowspan={rowspan}
     >
       <Button
@@ -153,7 +153,7 @@ export const RouletteBoard = (props, context) => {
             <RouletteNumberCell
               cellClass="Roulette__board-cell-number--colspan-4"
               color="transparent"
-              colspan="4"
+              colSpan={4}
               key={value}
               text={text}
               value={value}
@@ -166,7 +166,7 @@ export const RouletteBoard = (props, context) => {
             <RouletteNumberCell
               cellClass="Roulette__board-cell-number--colspan-2"
               color={cell.color}
-              colspan="2"
+              colSpan={2}
               key={cell.value}
               text={cell.text}
               value={cell.value}
@@ -297,7 +297,7 @@ export const RouletteBetTable = (props) => {
         </Table.Cell>
       </Table.Row>
       <Table.Row>
-        <Table.Cell colSpan="2">
+        <Table.Cell colSpan={2}>
           <Box bold m={1} fontSize="14px" textAlign="center">
             Swipe an ID card with a connected account to spin!
           </Box>
