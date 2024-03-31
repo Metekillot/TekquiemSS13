@@ -1,5 +1,6 @@
 {
 	"recommendations": [
+		"platymuus.dm-langclient",
 		"arcanis.vscode-zipfs",
 		"dbaeumer.vscode-eslint",
 		"donkie.vscode-tgstation-test-adapter",
