@@ -61,9 +61,9 @@
 				if(S.get_amount() < 2)
 					to_chat(user, "<span class='warning'>You need at least two rods to create a false wall!</span>")
 					return
-				to_chat(user, "<span class='notice'>You start building a reinforced false wall...</span>")
-				if(do_after(user, 20, target = src))
-					if(S.get_amount() < 2)
+				balloon_alert(user, "concealing entrance...")
+				if(do_after(user, 2 SECONDS, target = src))
+					if(rod.get_amount() < amount)
 						return
 					S.use(2)
 					to_chat(user, "<span class='notice'>You create a false wall. Push on it to open or close the passage.</span>")
@@ -74,9 +74,9 @@
 				if(S.get_amount() < 5)
 					to_chat(user, "<span class='warning'>You need at least five rods to add plating!</span>")
 					return
-				to_chat(user, "<span class='notice'>You start adding plating...</span>")
-				if(do_after(user, 40, target = src))
-					if(S.get_amount() < 5)
+				balloon_alert(user, "adding plating...")
+				if(do_after(user, 4 SECONDS, target = src))
+					if(rod.get_amount() < amount)
 						return
 					S.use(5)
 					to_chat(user, "<span class='notice'>You add the plating.</span>")
@@ -128,9 +128,9 @@
 				if(S.get_amount() < 2)
 					to_chat(user, "<span class='warning'>You need at least two sheets to create a false wall!</span>")
 					return
-				to_chat(user, "<span class='notice'>You start building a reinforced false wall...</span>")
-				if(do_after(user, 20, target = src))
-					if(S.get_amount() < 2)
+				balloon_alert(user, "concealing entrance...")
+				if(do_after(user, 2 SECONDS, target = src))
+					if(sheets.get_amount() < amount)
 						return
 					S.use(2)
 					to_chat(user, "<span class='notice'>You create a reinforced false wall. Push on it to open or close the passage.</span>")
@@ -175,8 +175,9 @@
 				if(S.get_amount() < 2)
 					to_chat(user, "<span class='warning'>You need at least two sheets to create a false wall!</span>")
 					return
-				if(do_after(user, 20, target = src))
-					if(S.get_amount() < 2)
+				balloon_alert(user, "concealing entrance...")
+				if(do_after(user, 2 SECONDS, target = src))
+					if(sheets.get_amount() < amount)
 						return
 					S.use(2)
 					to_chat(user, "<span class='notice'>You create a false wall. Push on it to open or close the passage.</span>")
@@ -187,9 +188,9 @@
 				if(S.get_amount() < 2)
 					to_chat(user, "<span class='warning'>You need at least two sheets to add plating!</span>")
 					return
-				to_chat(user, "<span class='notice'>You start adding plating...</span>")
-				if (do_after(user, 40, target = src))
-					if(S.get_amount() < 2)
+				balloon_alert(user, "adding plating...")
+				if (do_after(user, 4 SECONDS, target = src))
+					if(sheets.get_amount() < amount)
 						return
 					S.use(2)
 					to_chat(user, "<span class='notice'>You add the plating.</span>")
@@ -362,9 +363,9 @@
 		if(R.get_amount() < 1)
 			to_chat(user, "<span class='warning'>You need at least one sheet of runed metal to construct a runed wall!</span>")
 			return
-		user.visible_message("<span class='notice'>[user] begins laying runed metal on [src]...</span>", "<span class='notice'>You begin constructing a runed wall...</span>")
-		if(do_after(user, 50, target = src))
-			if(R.get_amount() < 1)
+		balloon_alert(user, "adding plating...")
+		if(do_after(user, 5 SECONDS, target = src))
+			if(R.get_amount() < amount)
 				return
 			user.visible_message("<span class='notice'>[user] plates [src] with runed metal.</span>", "<span class='notice'>You construct a runed wall.</span>")
 			R.use(1)
@@ -431,9 +432,9 @@
 		if(B.get_amount() < 2)
 			to_chat(user, "<span class='warning'>You need at least two bronze sheets to build a bronze wall!</span>")
 			return
-		user.visible_message("<span class='notice'>[user] begins plating [src] with bronze...</span>", "<span class='notice'>You begin constructing a bronze wall...</span>")
-		if(do_after(user, 50, target = src))
-			if(B.get_amount() < 2)
+		balloon_alert(user, "adding plating...")
+		if(do_after(user, 5 SECONDS, target = src))
+			if(B.get_amount() < amount)
 				return
 			user.visible_message("<span class='notice'>[user] plates [src] with bronze!</span>", "<span class='notice'>You construct a bronze wall.</span>")
 			B.use(2)

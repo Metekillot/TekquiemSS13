@@ -653,12 +653,17 @@
 			playsound(src, 'sound/weapons/batonextend.ogg', 50, TRUE)
 
 /obj/item/melee/roastingstick/proc/finish_roasting(user, atom/target)
-	to_chat(user, "<span class='notice'>You finish roasting [held_sausage].</span>")
-	playsound(src,'sound/items/welder2.ogg',50,TRUE)
-	held_sausage.add_atom_colour(rgb(103,63,24), FIXED_COLOUR_PRIORITY)
-	held_sausage.name = "[target.name]-roasted [held_sausage.name]"
-	held_sausage.desc = "[held_sausage.desc] It has been cooked to perfection on \a [target]."
-	update_icon()
+	if(do_after(user, 10 SECONDS, target = user))
+		to_chat(user, span_notice("You finish roasting [held_sausage]."))
+		playsound(src, 'sound/items/welder2.ogg', 50, TRUE)
+		held_sausage.add_atom_colour(rgb(103, 63, 24), FIXED_COLOUR_PRIORITY)
+		held_sausage.name = "[target.name]-roasted [held_sausage.name]"
+		held_sausage.desc = "[held_sausage.desc] It has been cooked to perfection on \a [target]."
+		update_appearance()
+	else
+		QDEL_NULL(beam)
+		playsound(src, 'sound/weapons/batonextend.ogg', 50, TRUE)
+		to_chat(user, span_notice("You put [src] away."))
 
 /obj/item/melee/cleric_mace
 	name = "cleric mace"

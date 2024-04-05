@@ -286,11 +286,8 @@
 	. = ..()
 	update_icon_nopipes()
 
-/obj/machinery/atmospherics/components/unary/vent_pump/can_crawl_through()
-	return !welded
-
-/obj/machinery/atmospherics/components/unary/vent_pump/attack_alien(mob/user)
-	if(!welded || !(do_after(user, 20, target = src)))
+/obj/machinery/atmospherics/components/unary/vent_pump/attack_alien(mob/user, list/modifiers)
+	if(!welded || !(do_after(user, 2 SECONDS, target = src)))
 		return
 	user.visible_message("<span class='warning'>[user] furiously claws at [src]!</span>", "<span class='notice'>You manage to clear away the stuff blocking the vent.</span>", "<span class='hear'>You hear loud scraping noises.</span>")
 	welded = FALSE

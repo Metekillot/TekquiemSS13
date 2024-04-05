@@ -157,9 +157,9 @@
 			to_chat(user, "<span class='warning'>No sense replacing it with a broken bulb!</span>")
 			return
 		else
-			to_chat(user, "<span class='notice'>You begin to replace the bulb...</span>")
-			if(do_after(user, 20, target = user))
-				if(flash.burnt_out || !flash || QDELETED(flash))
+			to_chat(user, span_notice("You begin to replace the bulb..."))
+			if(do_after(user, 2 SECONDS, target = user))
+				if(QDELETED(flash) || flash.burnt_out)
 					return
 				playsound(src, 'sound/items/deconstruct.ogg', 50, TRUE)
 				qdel(embedded_flash)

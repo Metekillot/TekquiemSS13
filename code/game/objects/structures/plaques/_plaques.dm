@@ -108,41 +108,9 @@
 		if(!Adjacent(user)) //Make sure user is adjacent still
 			to_chat(user, "<span class='warning'>You need to stand next to the plaque to engrave it!</span>")
 			return
-		user.visible_message("<span class='notice'>[user] begins engraving [src].</span>", \
-			"<span class='notice'>You begin engraving [src].</span>")
+		user.visible_message(span_notice("[user] begins engraving [src]."), \
+			span_notice("You begin engraving [src]."))
 		if(!do_after(user, 4 SECONDS, target = src)) //This spits out a visible message that somebody is engraving a plaque, then has a delay.
-			return
-		name = "\improper [namechoice]" //We want improper here so examine doesn't get weird if somebody capitalizes the plaque title.
-		desc = "The plaque reads: '[descriptionchoice]'"
-		engraved = TRUE //The plaque now has a name, description, and can't be altered again.
-		user.visible_message("<span class='notice'>[user] engraves [src].</span>", \
-			"<span class='notice'>You engrave [src].</span>")
-		return
-	if(istype(I, /obj/item/pen))
-		if(engraved)
-			to_chat(user, "<span class='warning'>This plaque has already been engraved, and your pen isn't fancy enough to engrave it anyway! Find a fountain pen.</span>")
-			return
-		to_chat(user, "<span class='warning'>Your pen isn't fancy enough to engrave this! Find a fountain pen.</span>") //Go steal the Curator's.
-		return
-	return ..()
-
-/obj/item/plaque/attackby(obj/item/I, mob/user, params) //Same as part of the above, except for the item in hand instead of the structure.
-	if(istype(I, /obj/item/pen/fountain))
-		if(engraved)
-			to_chat(user, "<span class='warning'>This plaque has already been engraved.</span>")
-			return
-		var/namechoice = tgui_input_text(user, "Title this plaque. (e.g. 'Best HoP Award', 'Great Ashwalker War Memorial')", "Plaque Customization", max_length = MAX_NAME_LEN)
-		if(!namechoice)
-			return
-		var/descriptionchoice = tgui_input_text(user, "Engrave this plaque's text", "Plaque Customization")
-		if(!descriptionchoice)
-			return
-		if(!Adjacent(user)) //Make sure user is adjacent still
-			to_chat(user, "<span class='warning'>You need to stand next to the plaque to engrave it!</span>")
-			return
-		user.visible_message("<span class='notice'>[user] begins engraving [src].</span>", \
-			"<span class='notice'>You begin engraving [src].</span>")
-		if(!do_after(user, 40, target = src)) //This spits out a visible message that somebody is engraving a plaque, then has a delay.
 			return
 		name = "\improper [namechoice]" //We want improper here so examine doesn't get weird if somebody capitalizes the plaque title.
 		desc = "The plaque reads: '[descriptionchoice]'"

@@ -169,8 +169,8 @@ Chilling extracts:
 	for(var/mob/living/M in allies)
 		var/datum/status_effect/slimerecall/S = M.apply_status_effect(/datum/status_effect/slimerecall)
 		S.target = user
-	if(do_after(user, 100, target=src))
-		to_chat(user, "<span class='notice'>[src] shatters as it tears a hole in reality, snatching the linked individuals from the void!</span>")
+	if(do_after(user, 10 SECONDS, target=src))
+		to_chat(user, span_notice("[src] shatters as it tears a hole in reality, snatching the linked individuals from the void!"))
 		for(var/mob/living/M in allies)
 			var/datum/status_effect/slimerecall/S = M.has_status_effect(/datum/status_effect/slimerecall)
 			M.remove_status_effect(S)

@@ -129,8 +129,8 @@
 		to_chat(user, "<span class='notice'>You start building the power terminal...</span>")
 		playsound(src.loc, 'sound/items/deconstruct.ogg', 50, TRUE)
 
-		if(do_after(user, 20, target = src))
-			if(C.get_amount() < 10 || !C)
+		if(do_after(user, 2 SECONDS, target = src))
+			if(cable.get_amount() < 10 || !cable)
 				return
 			var/obj/structure/cable/N = T.get_cable_node() //get the connecting node cable, if there's one
 			if (prob(50) && electrocute_mob(usr, N, N, 1, TRUE)) //animate the electrocution if uncautious and unlucky

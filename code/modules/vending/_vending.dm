@@ -711,9 +711,16 @@ GLOBAL_LIST_EMPTY(vending_products)
 	obj_flags |= EMAGGED
 	to_chat(user, "<span class='notice'>You short out the product lock on [src].</span>")
 
-/obj/machinery/vending/_try_interact(mob/user)
-	if(seconds_electrified && !(machine_stat & NOPOWER))
-		if(shock(user, 100))
+/obj/machinery/vending/interact(mob/user)
+	if (!HAS_AI_ACCESS(user))
+		if(seconds_electrified && !(machine_stat & NOPOWER))
+			if(shock(user, 100))
+				return
+
+		if(tilted && !user.buckled && !isAdminGhostAI(user))
+			to_chat(user, span_notice("You begin righting [src]."))
+			if(do_after(user, 5 SECONDS, target=src))
+				untilt(user)
 			return
 
 	if(tilted && !user.buckled && !isAI(user))

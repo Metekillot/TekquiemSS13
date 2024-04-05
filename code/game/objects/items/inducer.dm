@@ -118,9 +118,11 @@
 			to_chat(user, "<span class='notice'>[A] is fully charged!</span>")
 			recharging = FALSE
 			return TRUE
-		user.visible_message("<span class='notice'>[user] starts recharging [A] with [src].</span>", "<span class='notice'>You start recharging [A] with [src].</span>")
-		while(C.charge < C.maxcharge)
-			if(do_after(user, 10, target = user) && cell.charge)
+
+		user.visible_message(span_notice("[user] starts recharging [target] with [src]."), span_notice("You start recharging [target] with [src]."))
+
+		while(target_cell.charge < target_cell.maxcharge)
+			if(do_after(user, 1 SECONDS, target = user) && our_cell.charge)
 				done_any = TRUE
 				induce(C, coefficient)
 				do_sparks(1, FALSE, A)

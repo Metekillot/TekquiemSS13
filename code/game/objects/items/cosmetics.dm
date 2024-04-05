@@ -82,22 +82,19 @@
 		if(!ismob(M))
 			return
 
-		if(ishuman(M))
-			var/mob/living/carbon/human/H = M
-			if(H == user)
-				to_chat(user, "<span class='notice'>You wipe off the lipstick with [src].</span>")
-				H.lip_style = null
-				H.update_body()
-			else
-				user.visible_message("<span class='warning'>[user] begins to wipe [H]'s lipstick off with \the [src].</span>", \
-					"<span class='notice'>You begin to wipe off [H]'s lipstick...</span>")
-				if(do_after(user, 10, target = H))
-					user.visible_message("<span class='notice'>[user] wipes [H]'s lipstick off with \the [src].</span>", \
-						"<span class='notice'>You wipe off [H]'s lipstick.</span>")
-					H.lip_style = null
-					H.update_body()
-	else
-		..()
+	var/mob/living/carbon/human/target = M
+	if(target == user)
+		to_chat(user, span_notice("You wipe off the lipstick with [src]."))
+		target.update_lips(null)
+		return
+
+	user.visible_message(span_warning("[user] begins to wipe [target]'s lipstick off with \the [src]."), \
+		span_notice("You begin to wipe off [target]'s lipstick..."))
+	if(!do_after(user, 1 SECONDS, target = target))
+		return
+	user.visible_message(span_notice("[user] wipes [target]'s lipstick off with \the [src]."), \
+		span_notice("You wipe off [target]'s lipstick."))
+	target.update_lips(null)
 
 /obj/item/razor
 	name = "electric razor"

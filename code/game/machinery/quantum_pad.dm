@@ -84,10 +84,10 @@
 			to_chat(user, "<span class='notice'>You insert [K] into [src]'s card slot, activating it.</span>")
 			interact(user, K.qpad)
 		else
-			to_chat(user, "<span class='notice'>You insert [K] into [src]'s card slot, initiating the link procedure.</span>")
-			if(do_after(user, 40, target = src))
-				to_chat(user, "<span class='notice'>You complete the link between [K] and [src].</span>")
-				K.qpad = src
+			to_chat(user, span_notice("You insert [K] into [src]'s card slot, initiating the link procedure."))
+			if(do_after(user, 4 SECONDS, target = src))
+				to_chat(user, span_notice("You complete the link between [K] and [src]."))
+				K.set_pad(src)
 
 	if(default_deconstruction_crowbar(I))
 		return

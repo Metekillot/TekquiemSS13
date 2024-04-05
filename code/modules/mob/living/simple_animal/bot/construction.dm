@@ -135,9 +135,9 @@
 				if(coil.get_amount() < 1)
 					to_chat(user, "<span class='warning'>You need one length of cable to wire the ED-209!</span>")
 					return
-				to_chat(user, "<span class='notice'>You start to wire [src]...</span>")
-				if(do_after(user, 40, target = src))
-					if(coil.get_amount() >= 1 && build_step == 6)
+				to_chat(user, span_notice("You start to wire [src]..."))
+				if(do_after(user, 4 SECONDS, target = src))
+					if(coil.get_amount() >= 1 && build_step == ASSEMBLY_SEVENTH_STEP)
 						coil.use(1)
 						to_chat(user, "<span class='notice'>You wire [src].</span>")
 						name = "wired ED-209 assembly"
@@ -505,11 +505,11 @@
 				if(D.get_amount() < 1)
 					to_chat(user, "<span class='warning'>You need one fluid duct to finish [src]</span>")
 					return
-				to_chat(user, "<span class='notice'>You start to pipe up [src]...</span>")
-				if(do_after(user, 40, target = src) && D.use(1))
-					to_chat(user, "<span class='notice'>You pipe up [src].</span>")
-					var/mob/living/simple_animal/bot/hygienebot/H = new(drop_location())
-					H.name = created_name
+				to_chat(user, span_notice("You start to pipe up [src]..."))
+				if(do_after(user, 4 SECONDS, target = src) && D.use(1))
+					to_chat(user, span_notice("You pipe up [src]."))
+					var/mob/living/basic/bot/hygienebot/new_bot = new(drop_location())
+					new_bot.name = created_name
 					qdel(src)
 			if(I.tool_behaviour == TOOL_SCREWDRIVER) //deconstruct
 				new /obj/item/assembly/prox_sensor(Tsec)

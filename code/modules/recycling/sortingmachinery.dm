@@ -50,10 +50,44 @@
 	if(istype(W, /obj/item/dest_tagger))
 		var/obj/item/dest_tagger/O = W
 
-		if(sortTag != O.currTag)
-			var/tag = uppertext(GLOB.TAGGERLOCATIONS[O.currTag])
-			to_chat(user, "<span class='notice'>*[tag]*</span>")
-			sortTag = O.currTag
+/obj/item/delivery/relay_container_resist_act(mob/living/user, obj/object)
+	if(ismovable(loc))
+		var/atom/movable/movable_loc = loc //can't unwrap the wrapped container if it's inside something.
+		movable_loc.relay_container_resist_act(user, object)
+		return
+	to_chat(user, span_notice("You lean on the back of [object] and start pushing to rip the wrapping around it."))
+	if(do_after(user, 5 SECONDS, target = object))
+		if(!user || user.stat != CONSCIOUS || user.loc != object || object.loc != src)
+			return
+		to_chat(user, span_notice("You successfully removed [object]'s wrapping!"))
+		object.forceMove(loc)
+		unwrap_contents()
+		post_unwrap_contents(user)
+	else
+		if(user.loc == src) //so we don't get the message if we resisted multiple times and succeeded.
+			to_chat(user, span_warning("You fail to remove [object]'s wrapping!"))
+
+/obj/item/delivery/update_icon_state()
+	. = ..()
+	icon_state = giftwrapped ? "gift[base_icon_state]" : base_icon_state
+
+/obj/item/delivery/update_overlays()
+	. = ..()
+	if(sort_tag)
+		. += "[base_icon_state]_sort"
+	if(note)
+		. += "[base_icon_state]_note"
+	if(sticker)
+		. += "[base_icon_state]_barcode"
+
+/obj/item/delivery/attackby(obj/item/item, mob/user, params)
+	if(istype(item, /obj/item/dest_tagger))
+		var/obj/item/dest_tagger/dest_tagger = item
+
+		if(sort_tag != dest_tagger.currTag)
+			var/tag = uppertext(GLOB.TAGGERLOCATIONS[dest_tagger.currTag])
+			to_chat(user, span_notice("*[tag]*"))
+			sort_tag = dest_tagger.currTag
 			playsound(loc, 'sound/machines/twobeep_high.ogg', 100, TRUE)
 			update_icon()
 	else if(IS_WRITING_UTENSIL(W))

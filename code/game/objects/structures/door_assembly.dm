@@ -148,9 +148,9 @@
 
 	else if(istype(W, /obj/item/electronics/airlock) && state == AIRLOCK_ASSEMBLY_NEEDS_ELECTRONICS )
 		W.play_tool_sound(src, 100)
-		user.visible_message("<span class='notice'>[user] installs the electronics into the airlock assembly.</span>", \
-							"<span class='notice'>You start to install electronics into the airlock assembly...</span>")
-		if(do_after(user, 40, target = src))
+		user.visible_message(span_notice("[user] installs the electronics into the airlock assembly."), \
+							span_notice("You start to install electronics into the airlock assembly..."))
+		if(do_after(user, 4 SECONDS, target = src))
 			if( state != AIRLOCK_ASSEMBLY_NEEDS_ELECTRONICS )
 				return
 			if(!user.transferItemToLoc(W, src))
@@ -188,9 +188,9 @@
 					if(!glass)
 						if(istype(G, /obj/item/stack/sheet/rglass) || istype(G, /obj/item/stack/sheet/glass))
 							playsound(src, 'sound/items/crowbar.ogg', 100, TRUE)
-							user.visible_message("<span class='notice'>[user] adds [G.name] to the airlock assembly.</span>", \
-												"<span class='notice'>You start to install [G.name] into the airlock assembly...</span>")
-							if(do_after(user, 40, target = src))
+							user.visible_message(span_notice("[user] adds [G.name] to the airlock assembly."), \
+												span_notice("You start to install [G.name] into the airlock assembly..."))
+							if(do_after(user, 4 SECONDS, target = src))
 								if(G.get_amount() < 1 || glass)
 									return
 								if(G.type == /obj/item/stack/sheet/rglass)
@@ -207,9 +207,9 @@
 							var/M = G.sheettype
 							if(G.get_amount() >= 2)
 								playsound(src, 'sound/items/crowbar.ogg', 100, TRUE)
-								user.visible_message("<span class='notice'>[user] adds [G.name] to the airlock assembly.</span>", \
-									"<span class='notice'>You start to install [G.name] into the airlock assembly...</span>")
-								if(do_after(user, 40, target = src))
+								user.visible_message(span_notice("[user] adds [G.name] to the airlock assembly."), \
+									span_notice("You start to install [G.name] into the airlock assembly..."))
+								if(do_after(user, 4 SECONDS, target = src))
 									if(G.get_amount() < 2 || mineral)
 										return
 									to_chat(user, "<span class='notice'>You install [M] plating into the airlock assembly.</span>")

@@ -568,7 +568,7 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 		user.visible_message("<span class='danger'>\The [src] goes off!</span>", "<span class='danger'>\The [src] goes off in your face!</span>")
 		return
 
-	if(do_after(user, 30, target = src))
+	if(do_after(user, 3 SECONDS, target = src))
 		if(sawn_off)
 			return
 		user.visible_message("<span class='notice'>[user] shortens \the [src]!</span>", "<span class='notice'>You shorten \the [src].</span>")
@@ -592,12 +592,10 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	user.changeNext_move(CLICK_CD_MELEE)
 	user.visible_message("<span class='notice'>[user] begins to cleaning \the [src].</span>", "<span class='notice'>You begin to clean the internals of \the [src].</span>")
 
-	if(do_after(user, 100, target = src))
-		var/original_misfire_value = initial(misfire_probability)
-		if(misfire_probability > original_misfire_value)
-			misfire_probability = original_misfire_value
-			user.visible_message("<span class='notice'>[user] cleans \the [src] of any fouling.</span>", "<span class='notice'>You clean \the [src], removing any fouling, preventing misfire.</span>")
-			return TRUE
+	if(do_after(user, 10 SECONDS, target = src))
+		misfire_probability = initial(misfire_probability)
+		balloon_alert(user, "fouling cleaned out")
+		return TRUE
 
 /obj/item/gun/ballistic/wrench_act(mob/living/user, obj/item/I)
 	if(!user.is_holding(src))

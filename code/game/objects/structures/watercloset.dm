@@ -301,7 +301,7 @@
 						"<span class='notice'>You start washing your [washing_face ? "face" : "hands"]...</span>")
 	busy = TRUE
 
-	if(!do_after(user, 40, target = src))
+	if(!do_after(user, 4 SECONDS, target = src))
 		busy = FALSE
 		return
 
@@ -403,7 +403,7 @@
 	if(user.a_intent != INTENT_HARM)
 		to_chat(user, "<span class='notice'>You start washing [O]...</span>")
 		busy = TRUE
-		if(!do_after(user, 40, target = src))
+		if(!do_after(user, 4 SECONDS, target = src))
 			busy = FALSE
 			return 1
 		busy = FALSE

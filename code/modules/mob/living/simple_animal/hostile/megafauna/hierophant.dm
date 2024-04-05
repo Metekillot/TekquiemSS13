@@ -731,13 +731,13 @@ Difficulty: Hard
 	layer = LOW_OBJ_LAYER
 	anchored = TRUE
 
-/obj/effect/hierophant/attackby(obj/item/I, mob/user, params)
-	if(istype(I, /obj/item/hierophant_club))
-		var/obj/item/hierophant_club/H = I
-		if(H.beacon == src)
-			to_chat(user, "<span class='notice'>You start removing your hierophant beacon...</span>")
-			if(do_after(user, 50, target = src))
-				playsound(src,'sound/magic/blind.ogg', 200, TRUE, -4)
+/obj/effect/hierophant/attackby(obj/item/attacking_item, mob/user, params)
+	if(istype(attacking_item, /obj/item/hierophant_club))
+		var/obj/item/hierophant_club/club = attacking_item
+		if(club.beacon == src)
+			to_chat(user, span_notice("You start removing your hierophant beacon..."))
+			if(do_after(user, 5 SECONDS, target = src))
+				playsound(src,'sound/magic/blind.ogg', 100, TRUE, -4)
 				new /obj/effect/temp_visual/hierophant/telegraph/teleport(get_turf(src), user)
 				to_chat(user, "<span class='hierophant_warning'>You collect [src], reattaching it to the club!</span>")
 				H.beacon = null

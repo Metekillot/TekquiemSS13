@@ -87,7 +87,13 @@
 
 	to_chat(user, "<span class='notice'>You start planting [src]. The timer is set to [det_time]...</span>")
 
-	if(do_after(user, 30, target = AM))
+	if(bomb_target != user && HAS_TRAIT(user, TRAIT_PACIFISM) && isliving(bomb_target))
+		to_chat(user, span_warning("You don't want to harm other living beings!"))
+		return .
+
+	to_chat(user, span_notice("You start planting [src]. The timer is set to [det_time]..."))
+
+	if(do_after(user, 3 SECONDS, target = bomb_target))
 		if(!user.temporarilyRemoveItemFromInventory(src))
 			return
 		target = AM

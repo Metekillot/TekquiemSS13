@@ -40,7 +40,7 @@
 			"<span class='notice'>You begin to load a surgery protocol from \the [O]...</span>", \
 			"<span class='hear'>You hear the chatter of a floppy drive.</span>")
 		var/obj/item/disk/surgery/D = O
-		if(do_after(user, 10, target = src))
+		if(do_after(user, 1 SECONDS, target = src))
 			advanced_surgeries |= D.surgeries
 		return TRUE
 	return ..()

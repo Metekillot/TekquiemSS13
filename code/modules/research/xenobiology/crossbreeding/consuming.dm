@@ -65,8 +65,8 @@ Consuming extracts:
 		M.visible_message("<span class='notice'>[user] eats [src]!</span>", "<span class='notice'>You eat [src].</span>")
 		fed = TRUE
 	else
-		M.visible_message("<span class='danger'>[user] tries to force [M] to eat [src]!</span>", "<span class='userdanger'>[user] tries to force you to eat [src]!</span>")
-		if(do_after(user, 20, target = M))
+		M.visible_message(span_danger("[user] tries to force [M] to eat [src]!"), span_userdanger("[user] tries to force you to eat [src]!"))
+		if(do_after(user, 2 SECONDS, target = M))
 			fed = TRUE
 			M.visible_message("<span class='danger'>[user] forces [M] to eat [src]!</span>", "<span class='warning'>[user] forces you to eat [src].</span>")
 	if(fed)
