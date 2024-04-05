@@ -350,10 +350,10 @@ GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics
 /obj/machinery/atmospherics/components/unary/cryo_cell/container_resist_act(mob/living/user)
 	user.changeNext_move(CLICK_CD_BREAKOUT)
 	user.last_special = world.time + CLICK_CD_BREAKOUT
-	user.visible_message("<span class='notice'>You see [user] kicking against the glass of [src]!</span>", \
-		"<span class='notice'>You struggle inside [src], kicking the release with your foot... (this will take about [DisplayTimeText(CRYO_BREAKOUT_TIME)].)</span>", \
-		"<span class='hear'>You hear a thump from [src].</span>")
-	if(do_after(user, CRYO_BREAKOUT_TIME, target = src))
+	user.visible_message(span_notice("You see [user] kicking against the glass of [src]!"), \
+		span_notice("You struggle inside [src], kicking the release with your foot... (this will take about [DisplayTimeText(CRYO_BREAKOUT_TIME)].)"), \
+		span_hear("You hear a thump from [src]."))
+	if(do_after(user, CRYO_BREAKOUT_TIME, target = src, hidden = TRUE))
 		if(!user || user.stat != CONSCIOUS || user.loc != src )
 			return
 		user.visible_message("<span class='warning'>[user] successfully broke out of [src]!</span>", \

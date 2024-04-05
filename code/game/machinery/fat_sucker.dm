@@ -73,10 +73,10 @@
 		to_chat(user, "<span class='notice'>The emergency release is not responding! You start pushing against the hull!</span>")
 		user.changeNext_move(CLICK_CD_BREAKOUT)
 		user.last_special = world.time + CLICK_CD_BREAKOUT
-		user.visible_message("<span class='notice'>You see [user] kicking against the door of [src]!</span>", \
-			"<span class='notice'>You lean on the back of [src] and start pushing the door open... (this will take about [DisplayTimeText(breakout_time)].)</span>", \
-			"<span class='hear'>You hear a metallic creaking from [src].</span>")
-		if(do_after(user, breakout_time, target = src))
+		user.visible_message(span_notice("You see [user] kicking against the door of [src]!"), \
+			span_notice("You lean on the back of [src] and start pushing the door open... (this will take about [DisplayTimeText(breakout_time)].)"), \
+			span_hear("You hear a metallic creaking from [src]."))
+		if(do_after(user, breakout_time, target = src, hidden = TRUE))
 			if(!user || user.stat != CONSCIOUS || user.loc != src || state_open)
 				return
 			free_exit = TRUE
