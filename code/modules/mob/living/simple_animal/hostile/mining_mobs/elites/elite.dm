@@ -135,37 +135,52 @@ While using this makes the system rely on OnFire, it still gives options for tim
 
 /obj/structure/elite_tumor/attack_hand(mob/user)
 	. = ..()
-	if(ishuman(user))
-		switch(activity)
-			if(TUMOR_PASSIVE)
-				activity = TUMOR_ACTIVE
-				visible_message("<span class='boldwarning'>[src] convulses as your arm enters its radius.  Your instincts tell you to step back.</span>")
-				activator = user
-				if(boosted)
-					mychild.playsound_local(get_turf(mychild), 'sound/effects/magic.ogg', 40, 0)
-					to_chat(mychild, "<b>Someone has activated your tumor.  You will be returned to fight shortly, get ready!</b>")
-				addtimer(CALLBACK(src, PROC_REF(return_elite)), 30)
-				INVOKE_ASYNC(src, PROC_REF(arena_checks))
-			if(TUMOR_INACTIVE)
-				activity = TUMOR_ACTIVE
-				var/mob/dead/observer/elitemind = null
-				visible_message("<span class='boldwarning'>[src] begins to convulse.  Your instincts tell you to step back.</span>")
-				activator = user
-				if(!boosted)
-					addtimer(CALLBACK(src, PROC_REF(spawn_elite)), 30)
-					return
-				visible_message("<span class='boldwarning'>Something within [src] stirs...</span>")
-				var/list/candidates = pollCandidatesForMob("Do you want to play as a lavaland elite?", ROLE_SENTIENCE, null, ROLE_SENTIENCE, 50, src, POLL_IGNORE_SENTIENCE_POTION)
-				if(candidates.len)
-					audible_message("<span class='boldwarning'>The stirring sounds increase in volume!</span>")
-					elitemind = pick(candidates)
-					elitemind.playsound_local(get_turf(elitemind), 'sound/effects/magic.ogg', 40, 0)
-					to_chat(elitemind, "<b>You have been chosen to play as a Lavaland Elite.\nIn a few seconds, you will be summoned on Lavaland as a monster to fight your activator, in a fight to the death.\nYour attacks can be switched using the buttons on the top left of the HUD, and used by clicking on targets or tiles similar to a gun.\nWhile the opponent might have an upper hand with  powerful mining equipment and tools, you have great power normally limited by AI mobs.\nIf you want to win, you'll have to use your powers in creative ways to ensure the kill.  It's suggested you try using them all as soon as possible.\nShould you win, you'll receive extra information regarding what to do after.  Good luck!</b>")
-					addtimer(CALLBACK(src, PROC_REF(spawn_elite), elitemind), 100)
-				else
-					visible_message("<span class='boldwarning'>The stirring stops, and nothing emerges.  Perhaps try again later.</span>")
-					activity = TUMOR_INACTIVE
-					activator = null
+	if(!ishuman(user))
+		return
+	switch(activity)
+		if(TUMOR_PASSIVE)
+			// Prevents the user from being forcemoved back and forth between two elite arenas.
+			if(HAS_TRAIT(user, TRAIT_ELITE_CHALLENGER))
+				user.visible_message(span_warning("[user] reaches for [src] with [user.p_their()] arm, but nothing happens."),
+					span_warning("You reach for [src] with your arm... but nothing happens."))
+				return
+			activity = TUMOR_ACTIVE
+			user.visible_message(span_boldwarning("[src] convulses as [user]'s arm enters its radius.  Uh-oh..."),
+				span_boldwarning("[src] convulses as your arm enters its radius.  Your instincts tell you to step back."))
+			make_activator(user)
+			if(boosted)
+				mychild.playsound_local(get_turf(mychild), 'sound/effects/magic.ogg', 40, 0)
+				to_chat(mychild, "<b>Someone has activated your tumor.  You will be returned to fight shortly, get ready!</b>")
+			addtimer(CALLBACK(src, PROC_REF(return_elite)), 3 SECONDS)
+			INVOKE_ASYNC(src, PROC_REF(arena_checks))
+		if(TUMOR_INACTIVE)
+			if(HAS_TRAIT(user, TRAIT_ELITE_CHALLENGER))
+				user.visible_message(span_warning("[user] reaches for [src] with [user.p_their()] arm, but nothing happens."),
+					span_warning("You reach for [src] with your arm... but nothing happens."))
+				return
+			activity = TUMOR_ACTIVE
+			var/mob/dead/observer/elitemind = null
+			visible_message(span_boldwarning("[src] begins to convulse.  Your instincts tell you to step back."))
+			make_activator(user)
+			if(!boosted)
+				addtimer(CALLBACK(src, PROC_REF(spawn_elite)), 3 SECONDS)
+				return
+			visible_message(span_boldwarning("Something within [src] stirs..."))
+			var/mob/chosen_one = SSpolling.poll_ghosts_for_target(check_jobban = ROLE_SENTIENCE, role = ROLE_SENTIENCE, poll_time = 5 SECONDS, checked_target = src, ignore_category = POLL_IGNORE_LAVALAND_ELITE, alert_pic = src, role_name_text = "lavaland elite")
+			if(chosen_one)
+				audible_message(span_boldwarning("The stirring sounds increase in volume!"))
+				elitemind = chosen_one
+				elitemind.playsound_local(get_turf(elitemind), 'sound/effects/magic.ogg', 40, 0)
+				to_chat(elitemind, "<b>You have been chosen to play as a Lavaland Elite.\nIn a few seconds, you will be summoned on Lavaland as a monster to fight your activator, in a fight to the death.\n\
+					Your attacks can be switched using the buttons on the top left of the HUD, and used by clicking on targets or tiles similar to a gun.\n\
+					While the opponent might have an upper hand with  powerful mining equipment and tools, you have great power normally limited by AI mobs.\n\
+					If you want to win, you'll have to use your powers in creative ways to ensure the kill. It's suggested you try using them all as soon as possible.\n\
+					Should you win, you'll receive extra information regarding what to do after. Good luck!</b>")
+				addtimer(CALLBACK(src, PROC_REF(spawn_elite), elitemind), 10 SECONDS)
+			else
+				visible_message(span_boldwarning("The stirring stops, and nothing emerges.  Perhaps try again later."))
+				activity = TUMOR_INACTIVE
+				clear_activator(user)
 
 /obj/structure/elite_tumor/proc/spawn_elite(mob/dead/observer/elitemind)
 	var/selectedspawn = pick(potentialspawns)
@@ -239,7 +254,7 @@ While using this makes the system rely on OnFire, it still gives options for tim
 	INVOKE_ASYNC(src, PROC_REF(arena_trap))  //Gets another arena trap queued up for when this one runs out.
 	INVOKE_ASYNC(src, PROC_REF(border_check))  //Checks to see if our fighters got out of the arena somehow.
 	if(!QDELETED(src))
-		addtimer(CALLBACK(src, PROC_REF(arena_checks)), 50)
+		addtimer(CALLBACK(src, PROC_REF(arena_checks)), 5 SECONDS)
 
 /obj/structure/elite_tumor/proc/fighters_check()
 	if(activator != null && activator.stat == DEAD || activity == TUMOR_ACTIVE && QDELETED(activator))

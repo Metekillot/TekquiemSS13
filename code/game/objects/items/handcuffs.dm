@@ -300,7 +300,7 @@
 
 /obj/item/restraints/legcuffs/beartrap/energy/Initialize()
 	. = ..()
-	addtimer(CALLBACK(src, PROC_REF(dissipate)), 100)
+	addtimer(CALLBACK(src, PROC_REF(dissipate)), 10 SECONDS)
 
 /obj/item/restraints/legcuffs/beartrap/energy/proc/dissipate()
 	if(!ismob(loc))

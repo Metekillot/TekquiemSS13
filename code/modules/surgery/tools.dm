@@ -109,9 +109,16 @@
 	wound_bonus = 10
 	bare_wound_bonus = 10
 
-/obj/item/surgicaldrill/suicide_act(mob/user)
-	user.visible_message("<span class='suicide'>[user] rams [src] into [user.p_their()] chest! It looks like [user.p_theyre()] trying to commit suicide!</span>")
-	addtimer(CALLBACK(user, TYPE_PROC_REF(/mob/living/carbon, gib), null, null, TRUE, TRUE), 25)
+/obj/item/surgicaldrill/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/eyestab)
+
+/obj/item/surgicaldrill/get_surgery_tool_overlay(tray_extended)
+	return surgical_tray_overlay
+
+/obj/item/surgicaldrill/suicide_act(mob/living/user)
+	user.visible_message(span_suicide("[user] rams [src] into [user.p_their()] chest! It looks like [user.p_theyre()] trying to commit suicide!"))
+	addtimer(CALLBACK(user, TYPE_PROC_REF(/mob/living/carbon, gib), null, null, TRUE, TRUE), 2.5 SECONDS)
 	user.SpinAnimation(3, 10)
 	playsound(user, 'sound/machines/juicer.ogg', 20, TRUE)
 	return (MANUAL_SUICIDE)

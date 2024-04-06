@@ -281,46 +281,8 @@ Difficulty: Hard
 				var/turf/targetturf = get_step(src, dir)
 				L.forceMove(targetturf)
 				playsound(targetturf, 'sound/magic/exit_blood.ogg', 100, TRUE, -1)
-				addtimer(CALLBACK(src, PROC_REF(devour), L), 2)
-	SLEEP_CHECK_DEATH(1)
-
-/mob/living/simple_animal/hostile/megafauna/bubblegum/proc/blood_warp()
-	if(Adjacent(target))
-		return FALSE
-	var/list/can_jaunt = get_pools(get_turf(src), 1)
-	if(!can_jaunt.len)
-		return FALSE
-
-	var/list/pools = get_pools(get_turf(target), 5)
-	var/list/pools_to_remove = get_pools(get_turf(target), 4)
-	pools -= pools_to_remove
-	if(!pools.len)
-		return FALSE
-
-	var/obj/effect/temp_visual/decoy/DA = new /obj/effect/temp_visual/decoy(loc,src)
-	DA.color = "#FF0000"
-	var/oldtransform = DA.transform
-	DA.transform = matrix()*2
-	animate(DA, alpha = 255, color = initial(DA.color), transform = oldtransform, time = 3)
-	SLEEP_CHECK_DEATH(3)
-	qdel(DA)
-
-	var/obj/effect/decal/cleanable/blood/found_bloodpool
-	pools = get_pools(get_turf(target), 5)
-	pools_to_remove = get_pools(get_turf(target), 4)
-	pools -= pools_to_remove
-	if(pools.len)
-		shuffle_inplace(pools)
-		found_bloodpool = pick(pools)
-	if(found_bloodpool)
-		visible_message("<span class='danger'>[src] sinks into the blood...</span>")
-		playsound(get_turf(src), 'sound/magic/enter_blood.ogg', 100, TRUE, -1)
-		forceMove(get_turf(found_bloodpool))
-		playsound(get_turf(src), 'sound/magic/exit_blood.ogg', 100, TRUE, -1)
-		visible_message("<span class='danger'>And springs back out!</span>")
-		blood_enrage()
-		return TRUE
-	return FALSE
+				addtimer(CALLBACK(src, PROC_REF(devour), L), 0.2 SECONDS)
+	SLEEP_CHECK_DEATH(1, src)
 
 
 /mob/living/simple_animal/hostile/megafauna/bubblegum/proc/be_aggressive()

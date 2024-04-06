@@ -230,7 +230,7 @@
 /obj/item/food/urinalcake/attack_self(mob/living/user)
 	user.visible_message("<span class='notice'>[user] squishes [src]!</span>", "<span class='notice'>You squish [src].</span>", "<i>You hear a squish.</i>")
 	icon_state = "urinalcake_squish"
-	addtimer(VARSET_CALLBACK(src, icon_state, "urinalcake"), 8)
+	addtimer(VARSET_CALLBACK(src, icon_state, "urinalcake"), 0.8 SECONDS)
 
 /obj/item/bikehorn/rubberducky/plasticducky
 	name = "plastic ducky"

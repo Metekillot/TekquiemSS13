@@ -65,8 +65,9 @@
 
 /mob/living/simple_animal/pet/gondola/gondolapod/setOpened()
 	opened = TRUE
-	update_icon()
-	addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, setClosed)), 50)
+	layer = initial(layer)
+	update_appearance()
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/atom/, setClosed)), 5 SECONDS)
 
 /mob/living/simple_animal/pet/gondola/gondolapod/setClosed()
 	opened = FALSE

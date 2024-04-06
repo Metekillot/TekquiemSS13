@@ -645,7 +645,236 @@
 	name = "Cocaine"
 	description = "Reduces stun times by about 300%, speeds the user up, and allows the user to quickly recover stamina while dealing a small amount of Brain damage. If overdosed the subject will move randomly, laugh randomly, drop items and suffer from Toxin and Brain damage. If addicted the subject will constantly jitter and drool, before becoming dizzy and losing motor control and eventually suffer heavy toxin damage."
 	reagent_state = LIQUID
-	color = "#ffffff"
+	color = "#9015a9"
+	taste_description = "holodisk cleaner"
+	ph = 5
+	overdose_threshold = 30
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+	addiction_types = list(/datum/addiction/hallucinogens = 15)
+	metabolized_traits = list(TRAIT_STIMULATED)
+	///How many flips have we done so far?
+	var/flip_count = 0
+	///How many spin have we done so far?
+	var/spin_count = 0
+	///How many flips for a super flip?
+	var/super_flip_requirement = 3
+
+/datum/reagent/drug/blastoff/on_mob_metabolize(mob/living/dancer)
+	. = ..()
+
+	dancer.add_mood_event("vibing", /datum/mood_event/high)
+	RegisterSignal(dancer, COMSIG_MOB_EMOTED("flip"), PROC_REF(on_flip))
+	RegisterSignal(dancer, COMSIG_MOB_EMOTED("spin"), PROC_REF(on_spin))
+
+	if(!dancer.hud_used)
+		return
+
+	var/atom/movable/plane_master_controller/game_plane_master_controller = dancer.hud_used.plane_master_controllers[PLANE_MASTERS_GAME]
+
+	var/list/col_filter_blue = list(0,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, 0.764,0,0,0) //most blue color
+	var/list/col_filter_mid = list(0,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, 0.832,0,0,0) //red/blue mix midpoint
+	var/list/col_filter_red = list(0,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, 0.900,0,0,0) //most red color
+
+	game_plane_master_controller.add_filter("blastoff_filter", 10, color_matrix_filter(col_filter_mid, FILTER_COLOR_HCY))
+	game_plane_master_controller.add_filter("blastoff_wave", 1, list("type" = "wave", "x" = 32, "y" = 32))
+
+
+	for(var/filter in game_plane_master_controller.get_filters("blastoff_filter"))
+		animate(filter, color = col_filter_blue, time = 3 SECONDS, loop = -1, flags = ANIMATION_PARALLEL)
+		animate(color = col_filter_mid, time = 3 SECONDS)
+		animate(color = col_filter_red, time = 3 SECONDS)
+		animate(color = col_filter_mid, time = 3 SECONDS)
+
+	for(var/filter in game_plane_master_controller.get_filters("blastoff_wave"))
+		animate(filter, time = 32 SECONDS, loop = -1, easing = LINEAR_EASING, offset = 32, flags = ANIMATION_PARALLEL)
+
+	dancer.sound_environment_override = SOUND_ENVIRONMENT_PSYCHOTIC
+
+/datum/reagent/drug/blastoff/on_mob_end_metabolize(mob/living/dancer)
+	. = ..()
+
+	dancer.clear_mood_event("vibing")
+	UnregisterSignal(dancer, COMSIG_MOB_EMOTED("flip"))
+	UnregisterSignal(dancer, COMSIG_MOB_EMOTED("spin"))
+
+	if(!dancer.hud_used)
+		return
+
+	var/atom/movable/plane_master_controller/game_plane_master_controller = dancer.hud_used.plane_master_controllers[PLANE_MASTERS_GAME]
+
+	game_plane_master_controller.remove_filter("blastoff_filter")
+	game_plane_master_controller.remove_filter("blastoff_wave")
+	dancer.sound_environment_override = NONE
+
+/datum/reagent/drug/blastoff/on_mob_life(mob/living/carbon/dancer, seconds_per_tick, times_fired)
+	. = ..()
+	if(dancer.adjustOrganLoss(ORGAN_SLOT_LUNGS, 0.3 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
+		. = UPDATE_MOB_HEALTH
+	dancer.AdjustKnockdown(-20)
+
+	if(SPT_PROB(BLASTOFF_DANCE_MOVE_CHANCE_PER_UNIT * volume, seconds_per_tick))
+		dancer.emote("flip")
+
+/datum/reagent/drug/blastoff/overdose_process(mob/living/dancer, seconds_per_tick, times_fired)
+	. = ..()
+	if(dancer.adjustOrganLoss(ORGAN_SLOT_LUNGS, 0.3 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
+		. = UPDATE_MOB_HEALTH
+
+	if(SPT_PROB(BLASTOFF_DANCE_MOVE_CHANCE_PER_UNIT * volume, seconds_per_tick))
+		dancer.emote("spin")
+
+///This proc listens to the flip signal and throws the mob every third flip
+/datum/reagent/drug/blastoff/proc/on_flip()
+	SIGNAL_HANDLER
+
+	if(!iscarbon(holder.my_atom))
+		return
+	var/mob/living/carbon/dancer = holder.my_atom
+
+	flip_count++
+	if(flip_count < BLASTOFF_DANCE_MOVES_PER_SUPER_MOVE)
+		return
+	flip_count = 0
+	var/atom/throw_target = get_edge_target_turf(dancer, dancer.dir)  //Do a super flip
+	dancer.SpinAnimation(speed = 3, loops = 3)
+	dancer.visible_message(span_notice("[dancer] does an extravagant flip!"), span_nicegreen("You do an extravagant flip!"))
+	dancer.throw_at(throw_target, range = 6, speed = overdosed ? 4 : 1)
+
+///This proc listens to the spin signal and throws the mob every third spin
+/datum/reagent/drug/blastoff/proc/on_spin()
+	SIGNAL_HANDLER
+
+	if(!iscarbon(holder.my_atom))
+		return
+	var/mob/living/carbon/dancer = holder.my_atom
+
+	spin_count++
+	if(spin_count < BLASTOFF_DANCE_MOVES_PER_SUPER_MOVE)
+		return
+	spin_count = 0 //Do a super spin.
+	dancer.visible_message(span_danger("[dancer] spins around violently!"), span_danger("You spin around violently!"))
+	dancer.spin(30, 2)
+	if(dancer.disgust < 40)
+		dancer.adjust_disgust(10)
+	if(!dancer.pulledby)
+		return
+	var/dancer_turf = get_turf(dancer)
+	var/atom/movable/dance_partner = dancer.pulledby
+	dance_partner.visible_message(span_danger("[dance_partner] tries to hold onto [dancer], but is thrown back!"), span_danger("You try to hold onto [dancer], but you are thrown back!"), null, COMBAT_MESSAGE_RANGE)
+	var/throwtarget = get_edge_target_turf(dancer_turf, get_dir(dancer_turf, get_step_away(dance_partner, dancer_turf)))
+	if(overdosed)
+		dance_partner.throw_at(target = throwtarget, range = 7, speed = 4)
+	else
+		dance_partner.throw_at(target = throwtarget, range = 4, speed = 1) //superspeed
+
+/datum/reagent/drug/saturnx
+	name = "Saturn-X"
+	description = "This compound was first discovered during the infancy of cloaking technology and at the time thought to be a promising candidate agent. It was withdrawn for consideration after the researchers discovered a slew of associated safety issues including thought disorders and hepatoxicity."
+	reagent_state = SOLID
+	taste_description = "metallic bitterness"
+	color = "#638b9b"
+	overdose_threshold = 25
+	metabolization_rate = 0.5 * REAGENTS_METABOLISM
+	ph = 10
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+	addiction_types = list(/datum/addiction/maintenance_drugs = 20)
+
+/datum/reagent/drug/saturnx/on_mob_life(mob/living/carbon/invisible_man, seconds_per_tick, times_fired)
+	. = ..()
+	if(invisible_man.adjustOrganLoss(ORGAN_SLOT_LIVER, 0.3 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
+		return UPDATE_MOB_HEALTH
+
+/datum/reagent/drug/saturnx/on_mob_metabolize(mob/living/invisible_man)
+	. = ..()
+	playsound(invisible_man, 'sound/chemistry/saturnx_fade.ogg', 40)
+	to_chat(invisible_man, span_nicegreen("You feel pins and needles all over your skin as your body suddenly becomes transparent!"))
+	addtimer(CALLBACK(src, PROC_REF(turn_man_invisible), invisible_man), 1 SECONDS) //just a quick delay to synch up the sound.
+	if(!invisible_man.hud_used)
+		return
+
+	var/atom/movable/plane_master_controller/game_plane_master_controller = invisible_man.hud_used.plane_master_controllers[PLANE_MASTERS_GAME]
+
+	var/list/col_filter_full = list(1,0,0,0, 0,1.00,0,0, 0,0,1,0, 0,0,0,1, 0,0,0,0)
+	var/list/col_filter_twothird = list(1,0,0,0, 0,0.68,0,0, 0,0,1,0, 0,0,0,1, 0,0,0,0)
+	var/list/col_filter_half = list(1,0,0,0, 0,0.42,0,0, 0,0,1,0, 0,0,0,1, 0,0,0,0)
+	var/list/col_filter_empty = list(1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,1, 0,0,0,0)
+
+	game_plane_master_controller.add_filter("saturnx_filter", 10, color_matrix_filter(col_filter_twothird, FILTER_COLOR_HCY))
+
+	for(var/filter in game_plane_master_controller.get_filters("saturnx_filter"))
+		animate(filter, loop = -1, color = col_filter_full, time = 4 SECONDS, easing = CIRCULAR_EASING|EASE_IN, flags = ANIMATION_PARALLEL)
+		//uneven so we spend slightly less time with bright colors
+		animate(color = col_filter_twothird, time = 6 SECONDS, easing = LINEAR_EASING)
+		animate(color = col_filter_half, time = 3 SECONDS, easing = LINEAR_EASING)
+		animate(color = col_filter_empty, time = 2 SECONDS, easing = CIRCULAR_EASING|EASE_OUT)
+		animate(color = col_filter_half, time = 24 SECONDS, easing = CIRCULAR_EASING|EASE_IN)
+		animate(color = col_filter_twothird, time = 12 SECONDS, easing = LINEAR_EASING)
+
+	game_plane_master_controller.add_filter("saturnx_blur", 1, list("type" = "radial_blur", "size" = 0))
+
+	for(var/filter in game_plane_master_controller.get_filters("saturnx_blur"))
+		animate(filter, loop = -1, size = 0.04, time = 2 SECONDS, easing = ELASTIC_EASING|EASE_OUT, flags = ANIMATION_PARALLEL)
+		animate(size = 0, time = 6 SECONDS, easing = CIRCULAR_EASING|EASE_IN)
+
+///This proc turns the living mob passed as the arg "invisible_man"s invisible by giving him the invisible man trait and updating his body, this changes the sprite of all his organic limbs to a 1 alpha version.
+/datum/reagent/drug/saturnx/proc/turn_man_invisible(mob/living/carbon/invisible_man, requires_liver = TRUE)
+	if(requires_liver)
+		if(!invisible_man.get_organ_slot(ORGAN_SLOT_LIVER))
+			return
+		if(invisible_man.undergoing_liver_failure())
+			return
+		if(HAS_TRAIT(invisible_man, TRAIT_LIVERLESS_METABOLISM))
+			return
+	if(invisible_man.has_status_effect(/datum/status_effect/grouped/stasis))
+		return
+
+	invisible_man.add_traits(list(TRAIT_INVISIBLE_MAN, TRAIT_HIDE_EXTERNAL_ORGANS, TRAIT_NO_BLOOD_OVERLAY), type)
+
+	invisible_man.update_body()
+	invisible_man.remove_from_all_data_huds()
+	invisible_man.sound_environment_override = SOUND_ENVIROMENT_PHASED
+
+/datum/reagent/drug/saturnx/on_mob_end_metabolize(mob/living/carbon/invisible_man)
+	. = ..()
+	if(HAS_TRAIT_FROM(invisible_man, TRAIT_INVISIBLE_MAN, type))
+		invisible_man.add_to_all_human_data_huds() //Is this safe, what do you think, Floyd?
+		invisible_man.remove_traits(list(TRAIT_INVISIBLE_MAN, TRAIT_HIDE_EXTERNAL_ORGANS, TRAIT_NO_BLOOD_OVERLAY), type)
+
+		to_chat(invisible_man, span_notice("As you sober up, opacity once again returns to your body meats."))
+
+	invisible_man.update_body()
+	invisible_man.sound_environment_override = NONE
+
+	if(!invisible_man.hud_used)
+		return
+
+	var/atom/movable/plane_master_controller/game_plane_master_controller = invisible_man.hud_used.plane_master_controllers[PLANE_MASTERS_GAME]
+	game_plane_master_controller.remove_filter("saturnx_filter")
+	game_plane_master_controller.remove_filter("saturnx_blur")
+
+/datum/reagent/drug/saturnx/overdose_process(mob/living/invisible_man, seconds_per_tick, times_fired)
+	. = ..()
+	if(SPT_PROB(7.5, seconds_per_tick))
+		invisible_man.emote("giggle")
+	if(SPT_PROB(5, seconds_per_tick))
+		invisible_man.emote("laugh")
+	if(invisible_man.adjustOrganLoss(ORGAN_SLOT_LIVER, 0.4 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
+		return UPDATE_MOB_HEALTH
+
+/datum/reagent/drug/saturnx/stable
+	name = "Stabilized Saturn-X"
+	description = "A chemical extract originating from the Saturn-X compound, stabilized and safer for tactical use. After the recipe was discovered, it was planned to be put into mass production, but the program fell apart after its lead disappeared and was never seen again."
+	metabolization_rate = 0.15 * REAGENTS_METABOLISM
+	overdose_threshold = 50
+	addiction_types = list(/datum/addiction/maintenance_drugs = 35)
+
+/datum/reagent/drug/kronkaine
+	name = "Kronkaine"
+	description = "A highly illegal stimulant from the edge of the galaxy.\nIt is said the average kronkaine addict causes as much criminal damage as five stick up men, two rascals and one proferssional cambringo hustler combined."
+	reagent_state = SOLID
+	color = "#FAFAFA"
+	taste_description = "numbing bitterness"
+	ph = 8
 	overdose_threshold = 20
 	addiction_threshold = 10
 	metabolization_rate = 0.75 * REAGENTS_METABOLISM

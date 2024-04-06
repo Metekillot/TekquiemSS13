@@ -481,7 +481,7 @@ BLIND     // can't see anything
 	if(damage_flag == BOMB)
 		var/turf/T = get_turf(src)
 		//so the shred survives potential turf change from the explosion.
-		addtimer(CALLBACK_NEW(/obj/effect/decal/cleanable/shreds, list(T, name)), 1)
+		addtimer(CALLBACK(src, PROC_REF(_spawn_shreds)), 0.1 SECONDS)
 		deconstruct(FALSE)
 	else if(!(damage_flag in list(ACID, FIRE)))
 		body_parts_covered = NONE

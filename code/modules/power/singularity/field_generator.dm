@@ -267,11 +267,11 @@ no power level overlay is currently in the overlays list.
 	move_resist = INFINITY
 	CanAtmosPass = ATMOS_PASS_NO
 	air_update_turf(TRUE, TRUE)
-	addtimer(CALLBACK(src, PROC_REF(setup_field), 1), 1)
-	addtimer(CALLBACK(src, PROC_REF(setup_field), 2), 2)
-	addtimer(CALLBACK(src, PROC_REF(setup_field), 4), 3)
-	addtimer(CALLBACK(src, PROC_REF(setup_field), 8), 4)
-	addtimer(VARSET_CALLBACK(src, active, FG_ONLINE), 5)
+	addtimer(CALLBACK(src, PROC_REF(setup_field), 1), 0.1 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(setup_field), 2), 0.2 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(setup_field), 4), 0.3 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(setup_field), 8), 0.4 SECONDS)
+	addtimer(VARSET_CALLBACK(src, active, FG_ONLINE), 0.5 SECONDS)
 
 /obj/machinery/field/generator/proc/setup_field(NSEW)
 	var/turf/T = loc

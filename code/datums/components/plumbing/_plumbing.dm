@@ -290,6 +290,33 @@
 		disable()
 		enable()
 
+/datum/component/plumbing/proc/set_recipient_reagents_holder(datum/reagents/receiver)
+	if(recipient_reagents_holder)
+		UnregisterSignal(recipient_reagents_holder, COMSIG_QDELETING) //stop tracking whoever we were tracking
+	if(receiver)
+		RegisterSignal(receiver, COMSIG_QDELETING, PROC_REF(handle_reagent_del)) //on deletion call a wrapper proc that clears us, and maybe reagents too
+
+	recipient_reagents_holder = receiver
+
+/datum/component/plumbing/proc/handle_reagent_del(datum/source)
+	SIGNAL_HANDLER
+	if(source == reagents)
+		reagents = null
+	if(source == recipient_reagents_holder)
+		set_recipient_reagents_holder(null)
+
+/**
+ * Called when the dir changes. Need to adjust positioning of pipes.
+ */
+/datum/component/plumbing/proc/on_parent_dir_change(atom/movable/parent_obj, old_dir, new_dir)
+	SIGNAL_HANDLER
+
+	if(old_dir == new_dir)
+		return
+
+	// Defer to later frame because pixel_* is actually updated after all callbacks
+	addtimer(CALLBACK(parent_obj, TYPE_PROC_REF(/atom/, update_appearance)), 0.1 SECONDS)
+
 ///has one pipe input that only takes, example is manual output pipe
 /datum/component/plumbing/simple_demand
 	demand_connects = SOUTH

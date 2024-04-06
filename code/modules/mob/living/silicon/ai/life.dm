@@ -171,5 +171,5 @@
 	setAiRestorePowerRoutine(POWER_RESTORATION_START)
 	blind_eyes(1)
 	update_sight()
-	to_chat(src, "<span class='alert'>You've lost power!</span>")
-	addtimer(CALLBACK(src, PROC_REF(start_RestorePowerRoutine)), 20)
+	to_chat(src, span_alert("You've lost power!"))
+	addtimer(CALLBACK(src, PROC_REF(start_RestorePowerRoutine)), 2 SECONDS)

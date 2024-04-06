@@ -259,8 +259,8 @@ Burning extracts:
 	effect_desc = "Creates an explosion after a few seconds."
 
 /obj/item/slimecross/burning/oil/do_effect(mob/user)
-	user.visible_message("<span class='warning'>[user] activates [src]. It's going to explode!</span>", "<span class='danger'>You activate [src]. It crackles in anticipation</span>")
-	addtimer(CALLBACK(src, PROC_REF(boom)), 50)
+	user.visible_message(span_warning("[user] activates [src]. It's going to explode!"), span_danger("You activate [src]. It crackles in anticipation"))
+	addtimer(CALLBACK(src, PROC_REF(boom)), 5 SECONDS)
 
 /obj/item/slimecross/burning/oil/proc/boom()
 	var/turf/T = get_turf(src)

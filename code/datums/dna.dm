@@ -658,11 +658,12 @@
 				spawn_gibs()
 				set_species(/datum/species/skeleton)
 				if(prob(90))
-					addtimer(CALLBACK(src, PROC_REF(death)), 30)
+					addtimer(CALLBACK(src, PROC_REF(death)), 3 SECONDS)
 			if(5)
-				to_chat(src, "<span class='phobia'>LOOK UP!</span>")
-				addtimer(CALLBACK(src, PROC_REF(something_horrible_mindmelt)), 30)
-
+				to_chat(src, span_phobia("LOOK UP!"))
+				addtimer(CALLBACK(src, PROC_REF(something_horrible_mindmelt)), 3 SECONDS)
+			if(6)
+				slow_psykerize()
 
 /mob/living/carbon/human/proc/something_horrible_mindmelt()
 	if(!is_blind())
@@ -672,4 +673,4 @@
 		eyes.Remove(src)
 		qdel(eyes)
 		visible_message(span_notice("[src] looks up and their eyes melt away!"), span_userdanger("I understand now."))
-		addtimer(CALLBACK(src, .proc/adjustOrganLoss, ORGAN_SLOT_BRAIN, 200), 20)
+		addtimer(CALLBACK(src, PROC_REF(adjustOrganLoss), ORGAN_SLOT_BRAIN, 200), 2 SECONDS)

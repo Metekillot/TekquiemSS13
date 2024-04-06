@@ -42,8 +42,15 @@
 	attack(user,user)
 	return FIRELOSS
 
-/obj/item/assembly/flash/update_icon(flash = FALSE)
-	cut_overlays()
+/obj/item/assembly/flash/update_icon(updates=ALL, flash = FALSE)
+	inhand_icon_state = "[burnt_out ? "flashtool_burnt" : "[initial(inhand_icon_state)]"]"
+	flashing = flash
+	. = ..()
+	if(flash)
+		addtimer(CALLBACK(src, TYPE_PROC_REF(/atom/, update_icon)), 0.5 SECONDS)
+	holder?.update_icon(updates)
+
+/obj/item/assembly/flash/update_overlays()
 	attached_overlays = list()
 	if(burnt_out)
 		add_overlay("flashburnt")

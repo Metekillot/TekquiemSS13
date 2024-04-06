@@ -146,7 +146,7 @@
 	target.visible_message("<span class='warning'>A grotesque blade forms around [target.name]\'s arm!</span>", "<span class='userdanger'>Your arm twists and mutates, transforming into a horrific monstrosity!</span>", "<span class='hear'>You hear organic matter ripping and tearing!</span>")
 	playsound(target, 'sound/effects/blobattack.ogg', 30, TRUE)
 
-	addtimer(CALLBACK(src, PROC_REF(remove_fake), target, blade), 600)
+	addtimer(CALLBACK(src, PROC_REF(remove_fake), target, blade), 1 MINUTES)
 	return TRUE
 
 /datum/action/changeling/sting/false_armblade/proc/remove_fake(mob/target, obj/item/melee/arm_blade/false/blade)

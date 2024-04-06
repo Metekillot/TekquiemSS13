@@ -340,7 +340,7 @@
 		status = BURST
 		update_icon()
 		flick("egg_opening", src)
-		addtimer(CALLBACK(src, PROC_REF(finish_bursting), kill), 15)
+		addtimer(CALLBACK(src, PROC_REF(finish_bursting), kill), 1.5 SECONDS)
 
 /obj/structure/alien/egg/proc/finish_bursting(kill = TRUE)
 	if(child)

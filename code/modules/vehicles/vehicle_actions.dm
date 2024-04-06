@@ -208,10 +208,65 @@
 	///Cooldown to next jump
 	var/next_ollie
 
-/datum/action/vehicle/ridden/scooter/skateboard/ollie/Trigger()
-	if(world.time > next_ollie)
-		var/obj/vehicle/ridden/scooter/skateboard/vehicle = vehicle_target
-		if (vehicle.grinding)
+/datum/action/vehicle/ridden/scooter/skateboard/ollie/Trigger(trigger_flags)
+	. = ..()
+	if(!.)
+		return
+	var/obj/vehicle/ridden/scooter/skateboard/vehicle = vehicle_target
+	vehicle.obj_flags |= BLOCK_Z_OUT_DOWN
+	if (vehicle.grinding)
+		return
+	var/mob/living/rider = owner
+	var/turf/landing_turf = get_step(vehicle.loc, vehicle.dir)
+	rider.adjustStaminaLoss(vehicle.instability* 0.75)
+	if (rider.getStaminaLoss() >= 100)
+		vehicle.obj_flags &= ~CAN_BE_HIT
+		playsound(src, 'sound/effects/bang.ogg', 20, TRUE)
+		vehicle.unbuckle_mob(rider)
+		rider.throw_at(landing_turf, 2, 2)
+		rider.Paralyze(40)
+		vehicle.visible_message(span_danger("[rider] misses the landing and falls on [rider.p_their()] face!"))
+		return
+	if((locate(/obj/structure/table) in landing_turf) || (locate(/obj/structure/fluff/tram_rail) in landing_turf))
+		if(locate(/obj/structure/fluff/tram_rail) in vehicle.loc.contents)
+			rider.client.give_award(/datum/award/achievement/misc/tram_surfer, rider)
+		vehicle.grinding = TRUE
+		vehicle.icon_state = "[initial(vehicle.icon_state)]-grind"
+		addtimer(CALLBACK(vehicle, TYPE_PROC_REF(/obj/vehicle/ridden/scooter/skateboard/, grind)), 0.2 SECONDS)
+	else
+		vehicle.obj_flags &= ~BLOCK_Z_OUT_DOWN
+	rider.spin(spintime = 4, speed = 1)
+	animate(rider, pixel_y = -6, time = 4)
+	animate(vehicle, pixel_y = -6, time = 3)
+	playsound(vehicle, 'sound/vehicles/skateboard_ollie.ogg', 50, TRUE)
+	passtable_on(rider, VEHICLE_TRAIT)
+	passtable_on(vehicle, VEHICLE_TRAIT)
+	rider.Move(landing_turf, vehicle_target.dir)
+	passtable_off(rider, VEHICLE_TRAIT)
+	passtable_off(vehicle, VEHICLE_TRAIT)
+
+/datum/action/vehicle/ridden/scooter/skateboard/kickflip
+	name = "Kickflip"
+	desc = "Kick your board up and catch it."
+	button_icon_state = "skateboard_ollie"
+	check_flags = AB_CHECK_CONSCIOUS
+
+/datum/action/vehicle/ridden/scooter/skateboard/kickflip/Trigger(trigger_flags)
+	var/obj/vehicle/ridden/scooter/skateboard/board = vehicle_target
+	var/mob/living/rider = owner
+
+	rider.adjustStaminaLoss(board.instability)
+	if (rider.getStaminaLoss() >= 100)
+		playsound(src, 'sound/effects/bang.ogg', 20, vary = TRUE)
+		board.unbuckle_mob(rider)
+		rider.Paralyze(50)
+		if(prob(15))
+			rider.visible_message(
+				span_danger("[rider] misses the landing and falls on [rider.p_their()] face!)"),
+				span_userdanger("You smack against the board, hard."),
+			)
+			rider.emote("scream")
+			rider.adjustBruteLoss(10)  // thats gonna leave a mark
 			return
 		var/mob/living/rider = owner
 		var/turf/landing_turf = get_step(vehicle.loc, vehicle.dir)

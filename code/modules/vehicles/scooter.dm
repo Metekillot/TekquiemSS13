@@ -141,7 +141,14 @@
 			if(location)
 				location.hotspot_expose(1000,1000)
 			sparks.start() //the most radical way to start plasma fires
-		addtimer(CALLBACK(src, PROC_REF(grind)), 1)
+	for(var/mob/living/carbon/victim in location)
+		if(victim.body_position == LYING_DOWN)
+			playsound(location, 'sound/items/trayhit2.ogg', 40)
+			victim.apply_damage(damage = 25, damagetype = BRUTE, def_zone = victim.get_random_valid_zone(even_weights = TRUE), wound_bonus = 20)
+			victim.Paralyze(1.5 SECONDS)
+			skater.adjustStaminaLoss(instability)
+			victim.visible_message(span_danger("[victim] straight up gets grinded into the ground by [skater]'s [src]! Radical!"))
+	addtimer(CALLBACK(src, PROC_REF(grind)), 0.1 SECONDS)
 
 /obj/vehicle/ridden/scooter/skateboard/MouseDrop(atom/over_object)
 	. = ..()

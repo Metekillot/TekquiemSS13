@@ -511,11 +511,11 @@
 			use_power(500000)
 			investigate_log("Experimentor has drained power from its APC", INVESTIGATE_EXPERIMENTOR)
 		if(globalMalf == 99)
-			visible_message("<span class='warning'>[src] begins to glow and vibrate. It's going to blow!</span>")
-			addtimer(CALLBACK(src, PROC_REF(boom)), 50)
+			visible_message(span_warning("[src] begins to glow and vibrate. It's going to blow!"))
+			addtimer(CALLBACK(src, PROC_REF(boom)), 5 SECONDS)
 		if(globalMalf == 100)
-			visible_message("<span class='warning'>[src] begins to glow and vibrate. It's going to blow!</span>")
-			addtimer(CALLBACK(src, PROC_REF(honk)), 50)
+			visible_message(span_warning("[src] begins to glow and vibrate. It's going to blow!"))
+			addtimer(CALLBACK(src, PROC_REF(honk)), 5 SECONDS)
 
 	addtimer(CALLBACK(src, PROC_REF(reset_exp)), resetTime)
 
@@ -656,8 +656,8 @@
 	warn_admins(user, "Rapid duplicator", 0)
 
 /obj/item/relic/proc/explode(mob/user)
-	to_chat(user, "<span class='danger'>[src] begins to heat up!</span>")
-	addtimer(CALLBACK(src, PROC_REF(do_explode), user), rand(35, 100))
+	to_chat(user, span_danger("[src] begins to heat up!"))
+	addtimer(CALLBACK(src, PROC_REF(do_explode), user), rand(3.5 SECONDS, 10 SECONDS))
 
 /obj/item/relic/proc/do_explode(mob/user)
 	if(loc == user)
@@ -667,8 +667,8 @@
 		qdel(src) //Comment this line to produce a light grenade (the bomb that keeps on exploding when used)!!
 
 /obj/item/relic/proc/teleport(mob/user)
-	to_chat(user, "<span class='notice'>[src] begins to vibrate!</span>")
-	addtimer(CALLBACK(src, PROC_REF(do_the_teleport), user), rand(10, 30))
+	to_chat(user, span_notice("[src] begins to vibrate!"))
+	addtimer(CALLBACK(src, PROC_REF(do_the_teleport), user), rand(1 SECONDS, 3 SECONDS))
 
 /obj/item/relic/proc/do_the_teleport(mob/user)
 	var/turf/userturf = get_turf(user)

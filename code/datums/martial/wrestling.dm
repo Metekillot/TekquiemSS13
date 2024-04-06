@@ -334,8 +334,8 @@ If you make a derivative work from this code, you must include this notification
 		for (var/i = 0, i < 4, i++)
 			A.setDir(turn(A.dir, 90))
 
-		A.forceMove(D.loc)
-		addtimer(CALLBACK(src, PROC_REF(CheckStrikeTurf), A, T), 4)
+		attacker.forceMove(defender.loc)
+		addtimer(CALLBACK(src, PROC_REF(CheckStrikeTurf), attacker, T), 0.4 SECONDS)
 
 		D.visible_message("<span class='danger'>[A] headbutts [D]!</span>", \
 						"<span class='userdanger'>You're headbutted by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>", COMBAT_MESSAGE_RANGE, A)

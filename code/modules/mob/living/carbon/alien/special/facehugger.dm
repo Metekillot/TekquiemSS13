@@ -109,8 +109,8 @@
 	if(!.)
 		return
 	if(stat == CONSCIOUS)
-		icon_state = "[initial(icon_state)]_thrown"
-		addtimer(CALLBACK(src, PROC_REF(clear_throw_icon_state)), 15)
+		icon_state = "[base_icon_state]_thrown"
+		addtimer(CALLBACK(src, PROC_REF(clear_throw_icon_state)), 1.5 SECONDS)
 
 /obj/item/clothing/mask/facehugger/proc/clear_throw_icon_state()
 	if(icon_state == "[initial(icon_state)]_thrown")

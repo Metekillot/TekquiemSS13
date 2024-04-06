@@ -194,8 +194,8 @@ Charged extracts:
 	var/spawned = 0
 
 /obj/item/slimecross/charged/gold/do_effect(mob/user)
-	user.visible_message("<span class='warning'>[src] starts shuddering violently!</span>")
-	addtimer(CALLBACK(src, PROC_REF(startTimer)), 50)
+	user.visible_message(span_warning("[src] starts shuddering violently!"))
+	addtimer(CALLBACK(src, PROC_REF(startTimer)), 5 SECONDS)
 
 /obj/item/slimecross/charged/gold/proc/startTimer()
 	START_PROCESSING(SSobj, src)
@@ -219,8 +219,8 @@ Charged extracts:
 	effect_desc = "Creates an explosion after a few seconds."
 
 /obj/item/slimecross/charged/oil/do_effect(mob/user)
-	user.visible_message("<span class='danger'>[src] begins to shake with rapidly increasing force!</span>")
-	addtimer(CALLBACK(src, PROC_REF(boom)), 50)
+	user.visible_message(span_danger("[src] begins to shake with rapidly increasing force!"))
+	addtimer(CALLBACK(src, PROC_REF(boom)), 5 SECONDS)
 
 /obj/item/slimecross/charged/oil/proc/boom()
 	explosion(get_turf(src), 2, 3, 4) //Much smaller effect than normal oils, but devastatingly strong where it does hit.

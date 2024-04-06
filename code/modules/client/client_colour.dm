@@ -209,7 +209,23 @@
 
 /datum/client_colour/bloodlust/New(mob/_owner)
 	..()
-	addtimer(CALLBACK(src, PROC_REF(update_colour), list(1,0,0,0.8,0.2,0, 0.8,0,0.2,0.1,0,0), 10, SINE_EASING|EASE_OUT), 1)
+	if(owner)
+		addtimer(CALLBACK(src, PROC_REF(update_colour), list(1,0,0,0.8,0.2,0, 0.8,0,0.2,0.1,0,0), 10, SINE_EASING|EASE_OUT), 0.1 SECONDS)
+
+/datum/client_colour/rave
+	priority = PRIORITY_LOW
+
+/datum/client_colour/psyker
+	priority = PRIORITY_ABSOLUTE
+	override = TRUE
+	colour = list(0.8,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,1, 0,0,0,0)
+
+/datum/client_colour/manual_heart_blood
+	priority = PRIORITY_ABSOLUTE
+	colour = COLOR_RED
+
+/datum/client_colour/temp
+	priority = PRIORITY_HIGH
 
 #undef PRIORITY_ABSOLUTE
 #undef PRIORITY_HIGH

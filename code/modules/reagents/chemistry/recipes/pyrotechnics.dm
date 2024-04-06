@@ -172,8 +172,8 @@
 	modifier = 5
 	mix_message = "<span class='boldannounce'>Sparks start flying around the gunpowder!</span>"
 
-/datum/chemical_reaction/reagent_explosion/gunpowder_explosion/on_reaction(datum/reagents/holder, created_volume)
-	addtimer(CALLBACK(src, PROC_REF(explode), holder, created_volume), rand(5,10) SECONDS)
+/datum/chemical_reaction/reagent_explosion/gunpowder_explosion/on_reaction(datum/reagents/holder, datum/equilibrium/reaction, created_volume)
+	addtimer(CALLBACK(src, PROC_REF(default_explode), holder, created_volume, modifier, strengthdiv), rand(5 SECONDS, 10 SECONDS))
 
 /datum/chemical_reaction/thermite
 	results = list(/datum/reagent/thermite = 3)
