@@ -417,10 +417,7 @@ class ChatRenderer {
           }
           const Element = TGUI_CHAT_COMPONENTS[targetName];
 
-          if (!reactRoot) {
-            const root = document.getElementById('react-root');
-            reactRoot = createRoot(root);
-          }
+          const reactRoot = createRoot(childNode);
 
           /* eslint-disable react/no-danger */
           reactRoot.render(
