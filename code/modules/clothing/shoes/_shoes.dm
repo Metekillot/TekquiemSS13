@@ -154,9 +154,8 @@
 				adjust_laces(SHOES_UNTIED, user)
 
 	else // if they're someone else's shoes, go knot-wards
-		var/mob/living/L = user
-		if(istype(L) && L.body_position == STANDING_UP)
-			to_chat(user, "<span class='warning'>You must be on the floor to interact with [src]!</span>")
+		if(istype(living_user) && living_user.body_position == STANDING_UP)
+			to_chat(user, span_warning("You must be on the floor to interact with [src]!"))
 			return
 		if(tied == SHOES_KNOTTED)
 			to_chat(user, "<span class='warning'>The laces on [loc]'s [src.name] are already a hopelessly tangled mess!</span>")
@@ -170,8 +169,8 @@
 		if(HAS_TRAIT(user, TRAIT_CLUMSY)) // based clowns trained their whole lives for this
 			mod_time *= 0.75
 
-		if(do_after(user, mod_time, target = our_guy, extra_checks = CALLBACK(src, PROC_REF(still_shoed), our_guy)))
-			to_chat(user, "<span class='notice'>You [tied ? "untie" : "knot"] the laces on [loc]'s [src.name].</span>")
+		if(do_after(user, mod_time, target = our_guy, extra_checks = CALLBACK(src, PROC_REF(still_shoed), our_guy), hidden = TRUE))
+			to_chat(user, span_notice("You [tied ? "untie" : "knot"] the laces on [loc]'s [src.name]."))
 			if(tied == SHOES_UNTIED)
 				adjust_laces(SHOES_KNOTTED, user)
 			else
@@ -180,11 +179,12 @@
 			user.visible_message("<span class='danger'>[our_guy] stamps on [user]'s hand, mid-shoelace [tied ? "knotting" : "untying"]!</span>", "<span class='userdanger'>Ow! [our_guy] stamps on your hand!</span>", list(our_guy))
 			to_chat(our_guy, "<span class='userdanger'>You stamp on [user]'s hand! What the- [user.p_they()] [user.p_were()] [tied ? "knotting" : "untying"] your shoelaces!</span>")
 			user.emote("scream")
-			if(istype(L))
-				var/obj/item/bodypart/ouchie = L.get_bodypart(pick(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM))
+			if(istype(living_user))
+				var/obj/item/bodypart/ouchie = living_user.get_bodypart(pick(GLOB.arm_zones))
 				if(ouchie)
-					ouchie.receive_damage(brute = 10, stamina = 40)
-				L.Paralyze(10)
+					ouchie.receive_damage(brute = 10)
+				living_user.adjustStaminaLoss(40)
+				living_user.Paralyze(10)
 
 ///checking to make sure we're still on the person we're supposed to be, for lacing do_after's
 /obj/item/clothing/shoes/proc/still_shoed(mob/living/carbon/our_guy)
