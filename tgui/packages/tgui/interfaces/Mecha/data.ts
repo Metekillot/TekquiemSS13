@@ -1,20 +1,6 @@
 import { BooleanLike } from 'common/react';
 
-export const KelvinZeroCelcius = 273.15;
-
-export const InternalDamageToDamagedDesc = {
-  'MECHA_INT_FIRE': 'Internal fire detected',
-  'MECHA_INT_TEMP_CONTROL': 'Temperature control inactive',
-  'MECHA_INT_TANK_BREACH': 'Air tank breach detected',
-  'MECHA_INT_CONTROL_LOST': 'Control module damaged',
-};
-
-export const InternalDamageToNormalDesc = {
-  'MECHA_INT_FIRE': 'No internal fires detected',
-  'MECHA_INT_TEMP_CONTROL': 'Temperature control active',
-  'MECHA_INT_TANK_BREACH': 'Air tank intact',
-  'MECHA_INT_CONTROL_LOST': 'Control module active',
-};
+import { Region } from '../common/AccessConfig';
 
 export type AccessData = {
   name: string;
@@ -74,10 +60,31 @@ export type OperatorData = {
   airtank_present: BooleanLike;
   air_source: string;
   mechflag_keys: string[];
-  cabin_dangerous_highpressure: number;
-  airtank_pressure: number | null;
-  airtank_temp: number | null;
-  port_connected: boolean | null;
+
+  can_use_overclock: BooleanLike;
+  overclock_safety_available: BooleanLike;
+  overclock_safety: BooleanLike;
+  overclock_mode: BooleanLike;
+  overclock_temp_percentage: number;
+
+  one_access: BooleanLike;
+  regions: Region[];
+  accesses: string[];
+
+  servo_rating: number;
+  scanmod_rating: number;
+  capacitor_rating: number;
+
+  cabin_pressure_warning_min: number;
+  cabin_pressure_hazard_min: number;
+  cabin_pressure_warning_max: number;
+  cabin_pressure_hazard_max: number;
+  cabin_temp_warning_min: number;
+  cabin_temp_hazard_min: number;
+  cabin_temp_warning_max: number;
+  cabin_temp_hazard_max: number;
+
+  one_atmosphere: number;
   cabin_pressure: number;
   cabin_temp: number;
   dna_lock: string | null;
