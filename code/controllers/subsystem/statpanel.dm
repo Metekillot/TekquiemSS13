@@ -83,8 +83,8 @@ SUBSYSTEM_DEF(statpanels)
 					target.stat_panel.send_message("remove_listedturf")
 					target_mob.listed_turf = null
 
-				else if(target.stat_tab == target_mob?.listed_turf.name || !(target_mob?.listed_turf.name in target.panel_tabs))
-					set_turf_examine_tab(target, target_mob)
+			if(update_actions && num_fires % default_wait == 0)
+				set_action_tabs(target, target_mob)
 
 		if(MC_TICK_CHECK)
 			return
@@ -157,43 +157,6 @@ SUBSYSTEM_DEF(statpanels)
 
 	target.stat_panel.send_message("update_spells", list(spell_tabs = target.spell_tabs, proc_holders_encoded = proc_holders))
 
-/datum/controller/subsystem/statpanels/proc/set_turf_examine_tab(client/target, mob/target_mob)
-	var/list/overrides = list()
-	var/list/turfitems = list()
-	for(var/image/target_image as anything in target.images)
-		if(!target_image.loc || target_image.loc.loc != target_mob.listed_turf || !target_image.override)
-			continue
-		overrides += target_image.loc
-
-	turfitems[++turfitems.len] = list("[target_mob.listed_turf]", REF(target_mob.listed_turf), icon2html(target_mob.listed_turf, target, sourceonly=TRUE))
-
-	for(var/atom/movable/turf_content as anything in target_mob.listed_turf)
-		if(turf_content.mouse_opacity == MOUSE_OPACITY_TRANSPARENT)
-			continue
-		if(turf_content.invisibility > target_mob.see_invisible)
-			continue
-		if(turf_content in overrides)
-			continue
-		if(turf_content.IsObscured())
-			continue
-
-		if(length(turfitems) < 10) // only create images for the first 10 items on the turf, for performance reasons
-			var/turf_content_ref = REF(turf_content)
-			if(!(turf_content_ref in cached_images))
-				cached_images += turf_content_ref
-				turf_content.RegisterSignal(turf_content, COMSIG_PARENT_QDELETING, /atom/.proc/remove_from_cache) // we reset cache if anything in it gets deleted
-
-				if(ismob(turf_content) || length(turf_content.overlays) > 2)
-					turfitems[++turfitems.len] = list("[turf_content.name]", turf_content_ref, costly_icon2html(turf_content, target, sourceonly=TRUE))
-				else
-					turfitems[++turfitems.len] = list("[turf_content.name]", turf_content_ref, icon2html(turf_content, target, sourceonly=TRUE))
-			else
-				turfitems[++turfitems.len] = list("[turf_content.name]", turf_content_ref)
-		else
-			turfitems[++turfitems.len] = list("[turf_content.name]", REF(turf_content))
-
-	turfitems = turfitems
-	target.stat_panel.send_message("update_listedturf", turfitems)
 
 /datum/controller/subsystem/statpanels/proc/generate_mc_data()
 	mc_data = list(
@@ -225,15 +188,6 @@ SUBSYSTEM_DEF(statpanels)
 	if((target.stat_tab in target.spell_tabs) || !length(target.spell_tabs) && (length(target_mob.mob_spell_list) || length(target_mob.mind?.spell_list)))
 		set_spells_tab(target, target_mob)
 		return TRUE
-
-	if(target_mob?.listed_turf)
-		if(!target_mob.TurfAdjacent(target_mob.listed_turf))
-			target.stat_panel.send_message("removed_listedturf")
-			target_mob.listed_turf = null
-
-		else if(target.stat_tab == target_mob?.listed_turf.name || !(target_mob?.listed_turf.name in target.panel_tabs))
-			set_turf_examine_tab(target, target_mob)
-			return TRUE
 
 	if(!target.holder)
 		return FALSE

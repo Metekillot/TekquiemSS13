@@ -40,8 +40,14 @@
 	if(modifiers["shift"])
 		ShiftClickOn(A)
 		return
-	if(modifiers["alt"])
-		AltClickNoInteract(src, A)
+	if(LAZYACCESS(modifiers, MIDDLE_CLICK))
+		if(LAZYACCESS(modifiers, CTRL_CLICK))
+			CtrlMiddleClickOn(A)
+		else
+			MiddleClickOn(A, params)
+		return
+	if(LAZYACCESS(modifiers, ALT_CLICK))
+		A.AltClick(src)
 		return
 	if(modifiers["ctrl"])
 		CtrlClickOn(A)

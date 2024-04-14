@@ -11,8 +11,16 @@
 	///Maximum allowed transfer percentage
 	var/max_heat_transfer_rate = 100
 
-	construction_type = /obj/item/pipe/directional
-	pipe_state = "tpump"
+/obj/machinery/atmospherics/components/binary/temperature_pump/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER, REF(src))
+	register_context()
+
+/obj/machinery/atmospherics/components/binary/temperature_pump/add_context(atom/source, list/context, obj/item/held_item, mob/user)
+	. = ..()
+	context[SCREENTIP_CONTEXT_CTRL_LMB] = "Turn [on ? "off" : "on"]"
+	context[SCREENTIP_CONTEXT_ALT_LMB] = "Maximize transfer rate"
+	return CONTEXTUAL_SCREENTIP_SET
 
 /obj/machinery/atmospherics/components/binary/temperature_pump/CtrlClick(mob/user)
 	if(can_interact(user))

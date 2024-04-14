@@ -17,8 +17,16 @@
 	///Check if the gas is moving from one pipenet to the other
 	var/is_gas_flowing = FALSE
 
-	construction_type = /obj/item/pipe/directional
-	pipe_state = "pvalve"
+/obj/machinery/atmospherics/components/binary/pressure_valve/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER, REF(src))
+	register_context()
+
+/obj/machinery/atmospherics/components/binary/pressure_valve/add_context(atom/source, list/context, obj/item/held_item, mob/user)
+	. = ..()
+	context[SCREENTIP_CONTEXT_CTRL_LMB] = "Turn [on ? "off" : "on"]"
+	context[SCREENTIP_CONTEXT_ALT_LMB] = "Maximize target pressure"
+	return CONTEXTUAL_SCREENTIP_SET
 
 /obj/machinery/atmospherics/components/binary/pressure_valve/CtrlClick(mob/user)
 	if(can_interact(user))

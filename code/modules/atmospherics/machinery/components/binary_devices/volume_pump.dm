@@ -27,6 +27,21 @@
 
 	construction_type = /obj/item/pipe/directional
 	pipe_state = "volumepump"
+	vent_movement = NONE
+	///Transfer rate of the component in L/s
+	var/transfer_rate = MAX_TRANSFER_RATE
+	///Check if the component has been overclocked
+	var/overclocked = FALSE
+	///flashing light overlay which appears on multitooled vol pumps
+	var/mutable_appearance/overclock_overlay
+
+/obj/machinery/atmospherics/components/binary/volume_pump/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/usb_port, list(
+		/obj/item/circuit_component/atmos_volume_pump,
+	))
+	ADD_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER, REF(src))
+	register_context()
 
 /obj/machinery/atmospherics/components/binary/volume_pump/CtrlClick(mob/user)
 	if(can_interact(user))

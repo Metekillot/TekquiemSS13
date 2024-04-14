@@ -20,9 +20,13 @@
 
 	var/target_pressure = ONE_ATMOSPHERE
 
-	var/frequency = 0
-	var/id = null
-	var/datum/radio_frequency/radio_connection
+/obj/machinery/atmospherics/components/binary/pump/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/usb_port, list(
+		/obj/item/circuit_component/atmos_pump,
+	))
+	ADD_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER, REF(src))
+	register_context()
 
 	construction_type = /obj/item/pipe/directional
 	pipe_state = "pump"
