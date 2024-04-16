@@ -144,13 +144,12 @@
 		ui = new(user, src, "Sleeper", name)
 		ui.open()
 
-/obj/machinery/sleeper/AltClick(mob/user)
-	if(!user.canUseTopic(src, !issilicon(user)))
-		return
+/obj/machinery/sleeper/click_alt(mob/user)
 	if(state_open)
 		close_machine()
 	else
 		open_machine()
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/sleeper/examine(mob/user)
 	. = ..()

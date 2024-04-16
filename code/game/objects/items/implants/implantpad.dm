@@ -9,7 +9,10 @@
 	throw_speed = 3
 	throw_range = 5
 	w_class = WEIGHT_CLASS_SMALL
-	var/obj/item/implantcase/case = null
+	interaction_flags_click = FORBID_TELEKINESIS_REACH
+
+	///The implant case currently inserted into the pad.
+	var/obj/item/implantcase/inserted_case
 
 /obj/item/implantpad/update_icon_state()
 	icon_state = "implantpad-[!QDELETED(case)]"
@@ -31,12 +34,31 @@
 	updateSelfDialog()
 	. = ..()
 
-/obj/item/implantpad/AltClick(mob/user)
-	..()
-	if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-		return
-	if(!case)
-		to_chat(user, "<span class='warning'>There's no implant to remove from [src].</span>")
+/obj/item/implantpad/click_alt(mob/user)
+	remove_implant(user)
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/implantpad/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if (!ui)
+		ui = new(user, src, "ImplantPad", name)
+		ui.open()
+
+/obj/item/implantpad/ui_static_data(mob/user)
+	var/list/data = list()
+	data["has_case"] = !!inserted_case
+	if(!inserted_case)
+		return data
+	data["has_implant"] = !!inserted_case.imp
+	if(inserted_case.imp)
+		data["case_information"] = inserted_case.imp.get_data()
+	return data
+
+/obj/item/implantpad/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+	. = ..()
+	var/mob/user = usr
+	if(action == "eject_implant")
+		remove_implant(user)
 		return
 
 	user.put_in_hands(case)

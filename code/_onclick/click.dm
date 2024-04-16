@@ -148,7 +148,13 @@
 	if(modifiers["alt"]) // alt and alt-gr (rightalt)
 		AltClickOn(A)
 		return
-	if(modifiers["ctrl"])
+	if(LAZYACCESS(modifiers, ALT_CLICK)) // alt and alt-gr (rightalt)
+		if(LAZYACCESS(modifiers, RIGHT_CLICK))
+			alt_click_on_secondary(A)
+		else
+			base_click_alt(A)
+		return
+	if(LAZYACCESS(modifiers, CTRL_CLICK))
 		CtrlClickOn(A)
 		return
 
@@ -514,51 +520,9 @@
 		H.dna.species.grab(H, src, H.mind.martial_art)
 		H.changeNext_move(CLICK_CD_MELEE)
 	else
-		..()
-/**
- * Alt click
- * Unused except for AI
- */
-/mob/proc/AltClickOn(atom/A)
-	. = SEND_SIGNAL(src, COMSIG_MOB_ALTCLICKON, A)
-	if(. & COMSIG_MOB_CANCEL_CLICKON)
-		return
-	A.AltClick(src)
+		A.CtrlClick(src)
+	return
 
-/**
- * Alt click on an atom.
- * Performs alt-click actions before attempting to open a loot window.
- * Returns TRUE if successful, FALSE if not.
- */
-/atom/proc/AltClick(mob/user)
-	if(!user.can_interact_with(src))
-		return FALSE
-
-	if(SEND_SIGNAL(src, COMSIG_CLICK_ALT, user) & COMPONENT_CANCEL_CLICK_ALT)
-		return TRUE
-
-	if(HAS_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER) && !isobserver(user))
-		return TRUE
-
-	var/turf/tile = get_turf(src)
-	if(isnull(tile))
-		return FALSE
-
-	if(!isturf(loc) && !isturf(src))
-		return FALSE
-
-	if(!user.TurfAdjacent(tile))
-		return FALSE
-
-	if(HAS_TRAIT(user, TRAIT_MOVE_VENTCRAWLING))
-		return FALSE
-
-	var/datum/lootpanel/panel = user.client?.loot_panel
-	if(isnull(panel))
-		return FALSE
-	
-	panel.open(tile)
-	return TRUE
 
 ///The base proc of when something is right clicked on when alt is held - generally use alt_click_secondary instead
 /atom/proc/alt_click_on_secondary(atom/A)

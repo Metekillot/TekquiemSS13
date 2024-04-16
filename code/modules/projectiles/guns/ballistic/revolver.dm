@@ -29,9 +29,9 @@
 	..()
 	chamber_round()
 
-/obj/item/gun/ballistic/revolver/AltClick(mob/user)
-	..()
+/obj/item/gun/ballistic/revolver/click_alt(mob/user)
 	spin()
+	return CLICK_ACTION_SUCCESS
 
 /obj/item/gun/ballistic/revolver/verb/spin()
 	set name = "Spin Chamber"

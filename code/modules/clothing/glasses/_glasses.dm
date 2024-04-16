@@ -54,20 +54,19 @@
 				H.blur_eyes(5)
 				eyes.applyOrganDamage(5)
 
-/obj/item/clothing/glasses/AltClick(mob/user)
-	if(glass_colour_type && ishuman(user))
-		var/mob/living/carbon/human/H = user
-		if(H.client)
-			if(H.client.prefs)
-				if(src == H.glasses)
-					H.client.prefs.uses_glasses_colour = !H.client.prefs.uses_glasses_colour
-					if(H.client.prefs.uses_glasses_colour)
-						to_chat(H, "<span class='notice'>You will now see glasses colors.</span>")
-					else
-						to_chat(H, "<span class='notice'>You will no longer see glasses colors.</span>")
-					H.update_glasses_color(src, 1)
+/obj/item/clothing/glasses/click_alt(mob/user)
+	if(isnull(glass_colour_type) || forced_glass_color || !ishuman(user))
+		return NONE
+	var/mob/living/carbon/human/human_user = user
+
+	if (HAS_TRAIT_FROM(human_user, TRAIT_SEE_GLASS_COLORS, GLASSES_TRAIT))
+		REMOVE_TRAIT(human_user, TRAIT_SEE_GLASS_COLORS, GLASSES_TRAIT)
+		to_chat(human_user, span_notice("You will no longer see glasses colors."))
 	else
-		return ..()
+		ADD_TRAIT(human_user, TRAIT_SEE_GLASS_COLORS, GLASSES_TRAIT)
+		to_chat(human_user, span_notice("You will now see glasses colors."))
+	human_user.update_glasses_color(src, TRUE)
+	return CLICK_ACTION_SUCCESS
 
 /obj/item/clothing/glasses/proc/change_glass_color(mob/living/carbon/human/H, datum/client_colour/glass_colour/new_color_type)
 	var/old_colour_type = glass_colour_type
@@ -552,13 +551,106 @@
 			var/datum/atom_hud/H = GLOB.huds[hud]
 			H.remove_hud_from(user)
 
-/obj/item/clothing/glasses/debug/AltClick(mob/user)
+/obj/item/clothing/glasses/debug/click_alt(mob/user)
+	if(!ishuman(user))
+		return CLICK_ACTION_BLOCKING
+	if(xray)
+		vision_flags &= ~SEE_MOBS|SEE_OBJS
+		REMOVE_TRAIT(user, TRAIT_XRAY_VISION, GLASSES_TRAIT)
+	else
+		vision_flags |= SEE_MOBS|SEE_OBJS
+		ADD_TRAIT(user, TRAIT_XRAY_VISION, GLASSES_TRAIT)
+	xray = !xray
+	var/mob/living/carbon/human/human_user = user
+	human_user.update_sight()
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/clothing/glasses/regular/kim
+	name = "binoclard lenses"
+	desc = "Shows you know how to sew a lapel and center a back vent."
+	icon_state = "glasses_binoclard"
+	inhand_icon_state = null
+
+/obj/item/clothing/glasses/salesman
+	name = "colored glasses"
+	desc = "A pair of glasses with uniquely colored lenses. The frame is inscribed with 'Best Salesman 1997'."
+	icon_state = "salesman"
+	inhand_icon_state = "salesman"
+	flags_cover = GLASSESCOVERSEYES
+	///Tells us who the current wearer([BIGSHOT]) is.
+	var/mob/living/carbon/human/bigshot
+
+/obj/item/clothing/glasses/salesman/equipped(mob/living/carbon/human/user, slot)
+	..()
+	if(!(slot & ITEM_SLOT_EYES))
+		return
+	bigshot = user
+	RegisterSignal(bigshot, COMSIG_CARBON_SANITY_UPDATE, PROC_REF(moodshift))
+
+/obj/item/clothing/glasses/salesman/dropped(mob/living/carbon/human/user)
+	..()
+	UnregisterSignal(bigshot, COMSIG_CARBON_SANITY_UPDATE)
+	bigshot = initial(bigshot)
+	icon_state = initial(icon_state)
+	desc = initial(desc)
+
+/obj/item/clothing/glasses/salesman/proc/moodshift(atom/movable/source, amount)
+	SIGNAL_HANDLER
+	if(amount < SANITY_UNSTABLE)
+		icon_state = "salesman_fzz"
+		desc = "A pair of glasses, the lenses are full of TV static. They've certainly seen better days..."
+		bigshot.update_worn_glasses()
+	else
+		icon_state = initial(icon_state)
+		desc = initial(desc)
+		bigshot.update_worn_glasses()
+
+/obj/item/clothing/glasses/nightmare_vision
+	name = "nightmare vision goggles"
+	desc = "They give off a putrid stench. Seemingly no effect on anything."
+	icon_state = "nightmare"
+	inhand_icon_state = "glasses"
+	glass_colour_type = /datum/client_colour/glass_colour/nightmare
+	forced_glass_color = TRUE
+	lighting_cutoff = LIGHTING_CUTOFF_FULLBRIGHT
+	flags_cover = GLASSESCOVERSEYES
+	/// Hallucination datum currently being used for seeing mares
+	var/datum/hallucination/stored_hallucination
+
+/obj/item/clothing/glasses/nightmare_vision/Destroy()
+	QDEL_NULL(stored_hallucination)
+	return ..()
+
+/obj/item/clothing/glasses/nightmare_vision/equipped(mob/living/user, slot)
 	. = ..()
-	if(ishuman(user))
-		if(xray)
-			vision_flags -= SEE_MOBS|SEE_OBJS
-		else
-			vision_flags += SEE_MOBS|SEE_OBJS
-		xray = !xray
-		var/mob/living/carbon/human/H = user
-		H.update_sight()
+	if(!(slot & ITEM_SLOT_EYES))
+		return
+	//5% chance to get mare vision
+	if(prob(5))
+		stored_hallucination = 	user.cause_hallucination( \
+			/datum/hallucination/delusion/preset/mare, \
+			src.name, \
+			duration = 0, \
+			affects_us = TRUE, \
+			affects_others = TRUE, \
+			skip_nearby = FALSE, \
+			play_wabbajack = FALSE, \
+		)
+
+/obj/item/clothing/glasses/nightmare_vision/dropped(mob/living/user)
+	. = ..()
+	QDEL_NULL(stored_hallucination)
+
+/obj/item/clothing/glasses/osi
+	name = "O.S.I. Sunglasses"
+	desc = "There's no such thing as good news! Just bad news and... weird news.."
+	icon_state = "osi_glasses"
+	inhand_icon_state = null
+	flags_cover = GLASSESCOVERSEYES
+
+/obj/item/clothing/glasses/phantom
+	name = "Phantom Thief Mask"
+	desc = "Lookin' cool."
+	icon_state = "phantom_glasses"
+	inhand_icon_state = null
+	flags_cover = GLASSESCOVERSEYES

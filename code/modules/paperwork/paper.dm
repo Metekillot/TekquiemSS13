@@ -28,6 +28,8 @@
 	pickup_sound = 'sound/items/handling/paper_pickup.ogg'
 	grind_results = list(/datum/reagent/cellulose = 3)
 	color = COLOR_WHITE
+	item_flags = SKIP_FANTASY_ON_SPAWN
+	interaction_flags_click = NEED_DEXTERITY|NEED_HANDS
 
 	/// Lazylist of raw, unsanitised, unparsed text inputs that have been made to the paper.
 	var/list/datum/paper_input/raw_text_inputs
@@ -366,9 +368,14 @@
 		return TRUE
 	return ..()
 
-/obj/item/paper/AltClick(mob/user)
+/obj/item/paper/click_alt(mob/living/user)
+	if(HAS_TRAIT(user, TRAIT_PAPER_MASTER))
+		make_plane(user, /obj/item/paperplane/syndicate)
+		return CLICK_ACTION_SUCCESS
 	make_plane(user, /obj/item/paperplane)
-	return TRUE
+	return CLICK_ACTION_SUCCESS
+
+
 
 /**
  * Paper plane folding
@@ -379,7 +386,7 @@
  * * plane_type - what it will be folded into (path)
  */
 /obj/item/paper/proc/make_plane(mob/living/user, plane_type = /obj/item/paperplane)
-	loc.balloon_alert(user, "folded into a plane")
+	balloon_alert(user, "folded into a plane")
 	user.temporarilyRemoveItemFromInventory(src)
 	var/obj/item/paperplane/new_plane = new plane_type(loc, src)
 	if(user.Adjacent(new_plane))

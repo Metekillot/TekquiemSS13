@@ -126,16 +126,26 @@
 
 	return ..()
 
-/obj/item/papercutter/AltClick(mob/user)
-	if(!user.Adjacent(src))
-		return ..()
-
+/obj/item/papercutter/click_alt(mob/user)
 	// can only remove one at a time; paper goes first, as its most likely what players will want to be taking out
 	if(!isnull(stored_paper))
 		user.put_in_hands(stored_paper)
 	else if(!isnull(stored_blade) && !blade_secured)
 		user.put_in_hands(stored_blade)
-	update_icon()
+	update_appearance()
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/papercutter/attack_hand_secondary(mob/user, list/modifiers)
+	if(!stored_blade)
+		balloon_alert(user, "no blade!")
+	else if(!blade_secured)
+		balloon_alert(user, "blade unsecured!")
+	else if(!stored_paper)
+		balloon_alert(user, "nothing to cut!")
+	else
+		cut_paper(user)
+
+	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 
 /obj/item/papercutter/proc/cut_paper(mob/user)
 	playsound(src.loc, 'sound/weapons/slash.ogg', 50, TRUE)

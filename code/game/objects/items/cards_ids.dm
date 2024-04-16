@@ -353,37 +353,65 @@
 	to_chat(user, span_notice("The provided account has been linked to this ID card."))
 	return TRUE
 
-/obj/item/card/id/AltClick(mob/living/user)
-	return
-	//[Lucia] - defunct code below commented out for error cleaning
-	/*
+/obj/item/card/id/click_alt(mob/living/user)
 	if(!alt_click_can_use_id(user))
-		return
-	if(!registered_account)
-		set_new_account(user)
-		return
+		return NONE
+	if(registered_account.account_debt)
+		var/choice = tgui_alert(user, "Choose An Action", "Bank Account", list("Withdraw", "Pay Debt"))
+		if(!choice || QDELETED(user) || QDELETED(src) || !alt_click_can_use_id(user) || loc != user)
+			return CLICK_ACTION_BLOCKING
+		if(choice == "Pay Debt")
+			pay_debt(user)
+			return CLICK_ACTION_SUCCESS
 	if (registered_account.being_dumped)
-		registered_account.bank_card_talk("<span class='warning'>内部服务器错误</span>", TRUE)
-		return
+		registered_account.bank_card_talk(span_warning("内部服务器错误"), TRUE)
+		return CLICK_ACTION_SUCCESS
 	if(loc != user)
 		to_chat(user, span_warning("You must be holding the ID to continue!"))
-		return
+		return CLICK_ACTION_BLOCKING
+	if(registered_account.replaceable && !registered_account.account_balance)
+		var/choice = tgui_alert(user, "This card's account is unassigned. Would you like to link a bank account?", "Bank Account", list("Link Account", "Leave Unassigned"))
+		if(!choice || QDELETED(user) || QDELETED(src) || !alt_click_can_use_id(user) || loc != user)
+			return CLICK_ACTION_BLOCKING
+		if(choice == "Link Account")
+			set_new_account(user)
+			return CLICK_ACTION_SUCCESS
 	var/amount_to_remove = tgui_input_number(user, "How much do you want to withdraw? (Max: [registered_account.account_balance] cr)", "Withdraw Funds", max_value = registered_account.account_balance)
 	if(!amount_to_remove || QDELETED(user) || QDELETED(src) || issilicon(user) || loc != user)
-		return
+		return CLICK_ACTION_BLOCKING
 	if(!alt_click_can_use_id(user))
-		return
-	if(registered_account.adjust_money(-amount_to_remove))
+		return CLICK_ACTION_BLOCKING
+	if(registered_account.adjust_money(-amount_to_remove, "System: Withdrawal"))
 		var/obj/item/holochip/holochip = new (user.drop_location(), amount_to_remove)
 		user.put_in_hands(holochip)
 		to_chat(user, "<span class='notice'>You withdraw [amount_to_remove] credits into a holochip.</span>")
 		SSblackbox.record_feedback("amount", "credits_removed", amount_to_remove)
 		log_econ("[amount_to_remove] credits were removed from [src] owned by [src.registered_name]")
-		return
+		return CLICK_ACTION_SUCCESS
 	else
 		var/difference = amount_to_remove - registered_account.account_balance
-		registered_account.bank_card_talk("<span class='warning'>ERROR: The linked account requires [difference] more credit\s to perform that withdrawal.</span>", TRUE)
-	*/
+		registered_account.bank_card_talk(span_warning("ERROR: The linked account requires [difference] more credit\s to perform that withdrawal."), TRUE)
+		return CLICK_ACTION_BLOCKING
+
+/obj/item/card/id/alt_click_secondary(mob/user)
+	. = ..()
+	if(!alt_click_can_use_id(user))
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	if(!registered_account || registered_account.replaceable)
+		set_new_account(user)
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+/obj/item/card/id/proc/pay_debt(user)
+	var/amount_to_pay = tgui_input_number(user, "How much do you want to pay? (Max: [registered_account.account_balance] cr)", "Debt Payment", max_value = min(registered_account.account_balance, registered_account.account_debt))
+	if(!amount_to_pay || QDELETED(src) || loc != user || !alt_click_can_use_id(user))
+		return
+	var/prev_debt = registered_account.account_debt
+	var/amount_paid = registered_account.pay_debt(amount_to_pay)
+	if(amount_paid)
+		var/message = span_notice("You pay [amount_to_pay] credits of a [prev_debt] cr debt. [registered_account.account_debt] cr to go.")
+		if(!registered_account.account_debt)
+			message = span_nicegreen("You pay the last [amount_to_pay] credits of your debt, extinguishing it. Congratulations!")
+		to_chat(user, message)
 
 /obj/item/card/id/examine(mob/user)
 	. = ..()
@@ -888,8 +916,9 @@ update_label()
 	department_name = ACCOUNT_CAR_NAME
 	icon_state = "car_budget" //saving up for a new tesla
 
-/obj/item/card/id/departmental_budget/AltClick(mob/living/user)
+/obj/item/card/id/departmental_budget/click_alt(mob/living/user)
 	registered_account.bank_card_talk(span_warning("Withdrawing is not compatible with this card design."), TRUE) //prevents the vault bank machine being useless and putting money from the budget to your card to go over personal crates
+	return CLICK_ACTION_BLOCKING
 
 /obj/item/card/id/advanced
 	name = "identification card"

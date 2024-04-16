@@ -96,10 +96,14 @@
 		. += "<span class='notice'>The status display reads: Efficiency <b>[(heat_capacity/5000)*100]%</b>.</span>"
 		. += "<span class='notice'>Temperature range <b>[min_temperature]K - [max_temperature]K ([(T0C-min_temperature)*-1]C - [(T0C-max_temperature)*-1]C)</b>.</span>"
 
-/obj/machinery/atmospherics/components/unary/thermomachine/AltClick(mob/living/user)
-	if(!can_interact(user))
-		return
-	if(cooling)
+/obj/machinery/atmospherics/components/unary/thermomachine/click_alt(mob/living/user)
+	if(panel_open)
+		balloon_alert(user, "close panel!")
+		return CLICK_ACTION_BLOCKING
+
+	if(target_temperature == T20C)
+		target_temperature = max_temperature
+	else if(target_temperature == max_temperature)
 		target_temperature = min_temperature
 		investigate_log("was set to [target_temperature] K by [key_name(user)]", INVESTIGATE_ATMOS)
 		to_chat(user, "<span class='notice'>You minimize the target temperature on [src] to [target_temperature] K.</span>")
@@ -108,6 +112,13 @@
 		investigate_log("was set to [target_temperature] K by [key_name(user)]", INVESTIGATE_ATMOS)
 		to_chat(user, "<span class='notice'>You maximize the target temperature on [src] to [target_temperature] K.</span>")
 
+	investigate_log("was set to [target_temperature] K by [key_name(user)]", INVESTIGATE_ATMOS)
+	balloon_alert(user, "temperature reset to [target_temperature] K")
+	update_appearance()
+	return CLICK_ACTION_SUCCESS
+
+/// Performs heat calculation for the freezer.
+/// We just equalize the gasmix with an object at temp = var/target_temperature and heat cap = var/heat_capacity
 /obj/machinery/atmospherics/components/unary/thermomachine/process_atmos()
 	..()
 	if(!is_operational || !on || !nodes[1])  //if it has no power or its switched off, dont process atmos

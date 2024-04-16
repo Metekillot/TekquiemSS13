@@ -366,38 +366,12 @@
 
 	l += list_categories(categories, RESEARCH_FABRICATOR_SCREEN_CATEGORYVIEW)
 
-	return l
-
-/obj/machinery/rnd/production/proc/ui_screen_category_view()
-	if(!selected_category)
-		return ui_screen_main()
-	var/list/l = list()
-	l += "<div class='statusDisplay'><h3>Browsing [selected_category]:</h3>"
-	var/coeff = efficiency_coeff
-	for(var/v in stored_research.researched_designs)
-		var/datum/design/D = SSresearch.techweb_design_by_id(v)
-		if(!(selected_category in D.category)|| !(D.build_type & allowed_buildtypes))
-			continue
-		if(!(isnull(allowed_department_flags) || (D.departmental_flags & allowed_department_flags)))
-			continue
-		l += design_menu_entry(D, coeff)
-	l += "</div>"
-	return l
-
-/obj/machinery/rnd/production/proc/list_categories(list/categories, menu_num)
-	if(!categories)
-		return
-
-	var/line_length = 1
-	var/list/l = "<table style='width:100%' align='center'><tr>"
-
-	for(var/C in categories)
-		if(line_length > 2)
-			l += "</tr><tr>"
-			line_length = 1
-
-		l += "<td><A href='byond://?src=[REF(src)];category=[C];switch_screen=[menu_num]'>[C]</A></td>"
-		line_length++
-
-	l += "</tr></table></div>"
-	return l
+/obj/machinery/rnd/production/click_alt(mob/user)
+	if(drop_direction == 0)
+		return CLICK_ACTION_BLOCKING
+	if(busy)
+		balloon_alert(user, "busy printing!")
+		return CLICK_ACTION_BLOCKING
+	balloon_alert(user, "drop direction reset")
+	drop_direction = 0
+	return CLICK_ACTION_SUCCESS

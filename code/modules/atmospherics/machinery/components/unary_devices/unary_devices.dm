@@ -15,6 +15,12 @@
 	..()
 	update_icon()
 
+
+/obj/machinery/atmospherics/components/unary/click_alt(mob/living/beno)
+	beno.handle_ventcrawl(src)
+	return CLICK_ACTION_SUCCESS
+
+
 /obj/machinery/atmospherics/components/unary/proc/assign_uid_vents()
 	uid = num2text(gl_uid++)
 	return uid

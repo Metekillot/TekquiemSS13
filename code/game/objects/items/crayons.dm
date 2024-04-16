@@ -673,6 +673,7 @@
 
 	pre_noise = TRUE
 	post_noise = FALSE
+	interaction_flags_click = NEED_DEXTERITY|NEED_HANDS
 
 /obj/item/toy/crayon/spraycan/isValidSurface(surface)
 	return (istype(surface, /turf/open/floor) || istype(surface, /turf/closed/wall))
@@ -777,7 +778,52 @@
 		SEND_SIGNAL(src, COMSIG_MOB_USING_SPAYPRAINT, user, target)
 		return
 
-	. = ..()
+	return ..()
+
+/obj/item/toy/crayon/spraycan/afterattack_secondary(atom/target, mob/user, proximity_flag, click_parameters)
+	if(!proximity_flag)
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	if(is_capped)
+		balloon_alert(user, "take the cap off first!")
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	if(check_empty(user))
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+	if(isbodypart(target) && actually_paints)
+		var/obj/item/bodypart/limb = target
+		if(!IS_ORGANIC_LIMB(limb))
+			var/list/skins = list()
+			var/static/list/style_list_icons = list("standard" = 'icons/mob/augmentation/augments.dmi', "engineer" = 'icons/mob/augmentation/augments_engineer.dmi', "security" = 'icons/mob/augmentation/augments_security.dmi', "mining" = 'icons/mob/augmentation/augments_mining.dmi')
+			for(var/skin_option in style_list_icons)
+				var/image/part_image = image(icon = style_list_icons[skin_option], icon_state = "[limb.limb_id]_[limb.body_zone]")
+				if(limb.aux_zone) //Hands
+					part_image.overlays += image(icon = style_list_icons[skin_option], icon_state = "[limb.limb_id]_[limb.aux_zone]")
+				skins += list("[skin_option]" = part_image)
+			var/choice = show_radial_menu(user, src, skins, require_near = TRUE)
+			if(choice && (use_charges(user, 5, requires_full = FALSE)))
+				playsound(user.loc, 'sound/effects/spray.ogg', 5, TRUE, 5)
+				limb.change_appearance(style_list_icons[choice], greyscale = FALSE)
+			return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	if(target.color)
+		paint_color = target.color
+		balloon_alert(user, "matched colour of target")
+		update_appearance()
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	else
+		balloon_alert(user, "can't match those colours!")
+
+	return SECONDARY_ATTACK_CONTINUE_CHAIN
+
+/obj/item/toy/crayon/spraycan/click_alt(mob/user)
+	if(!has_cap)
+		return CLICK_ACTION_BLOCKING
+	is_capped = !is_capped
+	balloon_alert(user, is_capped ? "capped" : "cap removed")
+	update_appearance()
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/toy/crayon/spraycan/attackby_storage_insert(datum/storage, atom/storage_holder, mob/user)
+	return is_capped
 
 /obj/item/toy/crayon/spraycan/update_icon_state()
 	icon_state = is_capped ? icon_capped : icon_uncapped

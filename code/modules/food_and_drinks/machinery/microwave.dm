@@ -26,7 +26,14 @@
 	pass_flags = PASSTABLE
 	light_color = LIGHT_COLOR_YELLOW
 	light_power = 3
-	var/wire_disabled = FALSE // is its internal wire cut?
+	anchored_tabletop_offset = 6
+	interaction_flags_click = ALLOW_SILICON_REACH
+	/// Is its function wire cut?
+	var/wire_disabled = FALSE
+	/// Wire cut to run mode backwards
+	var/wire_mode_swap = FALSE
+	/// Fail due to inserted PDA
+	var/pda_failure = FALSE
 	var/operating = FALSE
 	/// How dirty is it?
 	var/dirty = 0
@@ -330,6 +337,25 @@
 			return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 		cook()
 	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+/obj/machinery/microwave/click_alt(mob/user, list/modifiers)
+	if(!vampire_charging_capable)
+		return NONE
+
+	vampire_charging_enabled = !vampire_charging_enabled
+	balloon_alert(user, "set to [vampire_charging_enabled ? "charge" : "cook"]")
+	playsound(src, 'sound/machines/twobeep_high.ogg', 50, FALSE)
+	if(HAS_SILICON_ACCESS(user))
+		visible_message(span_notice("[user] sets \the [src] to [vampire_charging_enabled ? "charge" : "cook"]."), blind_message = span_notice("You hear \the [src] make an informative beep!"))
+	return CLICK_ACTION_SUCCESS
+
+/obj/machinery/microwave/CtrlClick(mob/user)
+	. = ..()
+	if(user.can_perform_action(src) && cell_powered && !isnull(cell) && anchored)
+		user.put_in_hands(cell)
+		balloon_alert(user, "removed cell")
+		cell = null
+		update_appearance()
 
 /obj/machinery/microwave/ui_interact(mob/user)
 	. = ..()

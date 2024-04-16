@@ -58,8 +58,8 @@
 	if(modifiers["shift"])
 		ShiftClickOn(A)
 		return
-	if(modifiers["alt"]) // alt and alt-gr (rightalt)
-		AltClickOn(A)
+	if(LAZYACCESS(modifiers, ALT_CLICK)) // alt and alt-gr (rightalt)
+		A.ai_click_alt(src)
 		return
 	if(modifiers["ctrl"])
 		CtrlClickOn(A)
@@ -102,14 +102,15 @@
 	for AI shift, ctrl, and alt clicking.
 */
 
-/mob/living/silicon/ai/CtrlShiftClickOn(atom/A)
-	A.AICtrlShiftClick(src)
-/mob/living/silicon/ai/ShiftClickOn(atom/A)
-	A.AIShiftClick(src)
-/mob/living/silicon/ai/CtrlClickOn(atom/A)
-	A.AICtrlClick(src)
-/mob/living/silicon/ai/AltClickOn(atom/A)
-	A.AIAltClick(src)
+/mob/living/silicon/ai/CtrlShiftClickOn(atom/target)
+	target.AICtrlShiftClick(src)
+
+/mob/living/silicon/ai/ShiftClickOn(atom/target)
+	target.AIShiftClick(src)
+
+/mob/living/silicon/ai/CtrlClickOn(atom/target)
+	target.AICtrlClick(src)
+
 
 /*
 	The following criminally helpful code is just the previous code cleaned up;
@@ -120,8 +121,8 @@
 /* Atom Procs */
 /atom/proc/AICtrlClick()
 	return
-/atom/proc/AIAltClick(mob/living/silicon/ai/user)
-	AltClick(user)
+
+/atom/proc/ai_click_alt(mob/living/silicon/ai/user)
 	return
 /atom/proc/AIShiftClick()
 	return
@@ -136,7 +137,7 @@
 	toggle_bolt(usr)
 	add_hiddenprint(usr)
 
-/obj/machinery/door/airlock/AIAltClick() // Eletrifies doors.
+/obj/machinery/door/airlock/ai_click_alt(mob/living/silicon/ai/user)
 	if(obj_flags & EMAGGED)
 		return
 
@@ -159,13 +160,77 @@
 	toggle_emergency(usr)
 	add_hiddenprint(usr)
 
-/* APC */
-/obj/machinery/power/apc/AICtrlClick() // turns off/on APCs.
-	if(can_use(usr, 1))
-		toggle_breaker(usr)
+/////////////
+/*   APC   */
+/////////////
+
+/// Toggle APC power settings
+/obj/machinery/power/apc/AICtrlClick(mob/living/silicon/ai/user)
+	if(!can_use(user, loud = TRUE))
+		return
+
+	toggle_breaker(user)
+
+/// Toggle APC environment settings (atmos)
+/obj/machinery/power/apc/AICtrlShiftClick(mob/living/silicon/ai/user)
+	if(!can_use(user, loud = TRUE))
+		return
+
+	if(!is_operational || failure_timer)
+		return
+
+	environ = environ ? APC_CHANNEL_OFF : APC_CHANNEL_ON
+	if (user)
+		add_hiddenprint(user)
+		var/enabled_or_disabled = environ ? "enabled" : "disabled"
+		balloon_alert(user, "environment power [enabled_or_disabled]")
+		user.log_message("[enabled_or_disabled] the [src] environment settings", LOG_GAME)
+	update_appearance()
+	update()
+
+/// Toggle APC lighting settings
+/obj/machinery/power/apc/AIShiftClick(mob/living/silicon/ai/user)
+	if(!can_use(user, loud = TRUE))
+		return
+
+	if(!is_operational || failure_timer)
+		return
+
+	lighting = lighting ? APC_CHANNEL_OFF : APC_CHANNEL_ON
+	if (user)
+		var/enabled_or_disabled = lighting ? "enabled" : "disabled"
+		add_hiddenprint(user)
+		balloon_alert(user, "lighting power toggled [enabled_or_disabled]")
+		user.log_message("turned [enabled_or_disabled] the [src] lighting settings", LOG_GAME)
+	update_appearance()
+	update()
+
+/// Toggle APC equipment settings
+/obj/machinery/power/apc/ai_click_alt(mob/living/silicon/ai/user)
+	if(!can_use(user, loud = TRUE))
+		return
+
+	if(!is_operational || failure_timer)
+		return
+
+	equipment = equipment ? APC_CHANNEL_OFF : APC_CHANNEL_ON
+	if (user)
+		var/enabled_or_disabled = equipment ? "enabled" : "disabled"
+		balloon_alert(user, "equipment power toggled [enabled_or_disabled]")
+		add_hiddenprint(user)
+		user.log_message("turned [enabled_or_disabled] the [src] equipment settings", LOG_GAME)
+	update_appearance()
+	update()
+
+/obj/machinery/power/apc/attack_ai_secondary(mob/living/silicon/user, list/modifiers)
+	if(!can_use(user, loud = TRUE))
+		return
+
+	togglelock(user)
+	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 
 /* AI Turrets */
-/obj/machinery/turretid/AIAltClick() //toggles lethal on turrets
+/obj/machinery/turretid/ai_click_alt(mob/living/silicon/ai/user) //toggles lethal on turrets
 	if(ailock)
 		return
 	toggle_lethal(usr)
@@ -176,7 +241,10 @@
 	toggle_on(usr)
 
 /* Holopads */
-/obj/machinery/holopad/AIAltClick(mob/living/silicon/ai/user)
+/obj/machinery/holopad/ai_click_alt(mob/living/silicon/ai/user)
+	if (user)
+		balloon_alert(user, "disrupted all active calls")
+		add_hiddenprint(user)
 	hangup_all_calls()
 	add_hiddenprint(usr)
 

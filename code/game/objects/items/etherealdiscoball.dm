@@ -36,10 +36,10 @@
 		TurnOn()
 		to_chat(user, "<span class='notice'>You turn the disco ball on!</span>")
 
-/obj/structure/etherealball/AltClick(mob/living/carbon/human/user)
-	. = ..()
+/obj/structure/etherealball/click_alt(mob/living/carbon/human/user)
 	set_anchored(!anchored)
-	to_chat(user, "<span class='notice'>You [anchored ? null : "un"]lock the disco ball.</span>")
+	to_chat(user, span_notice("You [anchored ? null : "un"]lock the disco ball."))
+	return CLICK_ACTION_SUCCESS
 
 /obj/structure/etherealball/proc/TurnOn()
 	TurnedOn = TRUE //Same

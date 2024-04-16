@@ -421,7 +421,71 @@
 		return
 	replace_beaker(user)
 
-/obj/machinery/chem_dispenser/drinks/Initialize()
+/obj/machinery/chem_dispenser/attack_robot_secondary(mob/user, list/modifiers)
+	return attack_hand_secondary(user, modifiers)
+
+/obj/machinery/chem_dispenser/attack_ai_secondary(mob/user, list/modifiers)
+	return attack_hand_secondary(user, modifiers)
+
+
+/obj/machinery/chem_dispenser/drinks
+	name = "soda dispenser"
+	desc = "Contains a large reservoir of soft drinks."
+	icon = 'icons/obj/medical/chemical.dmi'
+	icon_state = "soda_dispenser"
+	base_icon_state = "soda_dispenser"
+	has_panel_overlay = FALSE
+	dispensed_temperature = WATER_MATTERSTATE_CHANGE_TEMP // magical mystery temperature of 274.5, where ice does not melt, and water does not freeze
+	amount = 10
+	anchored_tabletop_offset = 6
+	circuit = /obj/item/circuitboard/machine/chem_dispenser/drinks
+	working_state = null
+	nopower_state = null
+	pass_flags = PASSTABLE
+	show_ph = FALSE
+	/// The default list of reagents dispensable by the soda dispenser
+	var/static/list/drinks_dispensable_reagents = list(
+		/datum/reagent/consumable/coffee,
+		/datum/reagent/consumable/space_cola,
+		/datum/reagent/consumable/cream,
+		/datum/reagent/consumable/dr_gibb,
+		/datum/reagent/consumable/grenadine,
+		/datum/reagent/consumable/ice,
+		/datum/reagent/consumable/icetea,
+		/datum/reagent/consumable/lemonjuice,
+		/datum/reagent/consumable/lemon_lime,
+		/datum/reagent/consumable/limejuice,
+		/datum/reagent/consumable/melon_soda,
+		/datum/reagent/consumable/menthol,
+		/datum/reagent/consumable/orangejuice,
+		/datum/reagent/consumable/pineapplejuice,
+		/datum/reagent/consumable/pwr_game,
+		/datum/reagent/consumable/shamblers,
+		/datum/reagent/consumable/spacemountainwind,
+		/datum/reagent/consumable/sodawater,
+		/datum/reagent/consumable/sol_dry,
+		/datum/reagent/consumable/space_up,
+		/datum/reagent/consumable/sugar,
+		/datum/reagent/consumable/tea,
+		/datum/reagent/consumable/tomatojuice,
+		/datum/reagent/consumable/tonic,
+		/datum/reagent/water,
+	)
+	upgrade_reagents = null
+	/// The default list of emagged reagents dispensable by the soda dispenser
+	var/static/list/drink_emagged_reagents = list(
+		/datum/reagent/consumable/ethanol/thirteenloko,
+		/datum/reagent/consumable/ethanol/whiskey_cola,
+		/datum/reagent/toxin/mindbreaker,
+		/datum/reagent/toxin/staminatoxin
+	)
+	base_reagent_purity = 0.5
+
+/obj/machinery/chem_dispenser/drinks/Initialize(mapload)
+	if(dispensable_reagents != null && !dispensable_reagents.len)
+		dispensable_reagents = drinks_dispensable_reagents
+	if(emagged_reagents != null && !emagged_reagents.len)
+		emagged_reagents = drink_emagged_reagents
 	. = ..()
 	AddComponent(/datum/component/simple_rotation, ROTATION_ALTCLICK | ROTATION_CLOCKWISE)
 

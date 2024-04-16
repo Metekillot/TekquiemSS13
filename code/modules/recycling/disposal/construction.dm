@@ -98,11 +98,6 @@
 			pipe_type = initial(temp.flip_type)
 	update_icon()
 
-/obj/structure/disposalconstruct/proc/can_be_rotated(mob/user,rotation_type)
-	if(anchored)
-		to_chat(user, "<span class='warning'>You must unfasten the pipe before rotating it!</span>")
-		return FALSE
-	return TRUE
 
 // construction/deconstruction
 // wrench: (un)anchor

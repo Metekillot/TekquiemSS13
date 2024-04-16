@@ -328,14 +328,16 @@
 			return
 	return ..()
 
-/obj/machinery/power/emitter/proc/integrate(obj/item/gun/energy/E,mob/user)
-	if(istype(E, /obj/item/gun/energy))
-		if(!user.transferItemToLoc(E, src))
-			return
-		gun = E
-		gun_properties = gun.get_turret_properties()
-		set_projectile()
-		return TRUE
+
+/obj/machinery/power/emitter/proc/integrate(obj/item/gun/energy/energy_gun, mob/user)
+	if(!istype(energy_gun, /obj/item/gun/energy))
+		return
+	if(!user.transferItemToLoc(energy_gun, src))
+		return
+	gun = energy_gun
+	gun_properties = gun.get_turret_properties()
+	set_projectile()
+	return TRUE
 
 /obj/machinery/power/emitter/proc/remove_gun(mob/user)
 	if(!gun)

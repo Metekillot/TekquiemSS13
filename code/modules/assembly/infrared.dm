@@ -28,10 +28,10 @@
 	refreshBeam()
 
 /obj/item/assembly/infra/Destroy()
-	STOP_PROCESSING(SSobj, src)
-	listeningTo = null
-	QDEL_LIST(beams)
-	. = ..()
+	QDEL_NULL(active_beam)
+	buffer_turf = null
+	return ..()
+
 
 /obj/item/assembly/infra/examine(mob/user)
 	. = ..()

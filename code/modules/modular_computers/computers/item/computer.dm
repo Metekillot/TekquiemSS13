@@ -96,17 +96,50 @@
 	physical = null
 	return ..()
 
-/obj/item/modular_computer/AltClick(mob/user)
-	..()
+/obj/item/modular_computer/pre_attack_secondary(atom/A, mob/living/user, params)
+	if(active_program?.tap(A, user, params))
+		user.do_attack_animation(A) //Emulate this animation since we kill the attack in three lines
+		playsound(loc, 'sound/weapons/tap.ogg', get_clamped_volume(), TRUE, -1) //Likewise for the tap sound
+		addtimer(CALLBACK(src, PROC_REF(play_ping)), 0.5 SECONDS, TIMER_UNIQUE) //Slightly delayed ping to indicate success
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	return ..()
+
+// shameless copy of newscaster photo saving
+
+/obj/item/modular_computer/proc/save_photo(icon/photo)
+	var/photo_file = copytext_char(md5("\icon[photo]"), 1, 6)
+	if(!fexists("[GLOB.log_directory]/photos/[photo_file].png"))
+		//Clean up repeated frames
+		var/icon/clean = new /icon()
+		clean.Insert(photo, "", SOUTH, 1, 0)
+		fcopy(clean, "[GLOB.log_directory]/photos/[photo_file].png")
+	return photo_file
+
+/**
+ * Plays a ping sound.
+ *
+ * Timers runtime if you try to make them call playsound. Yep.
+ */
+/obj/item/modular_computer/proc/play_ping()
+	playsound(loc, 'sound/machines/ping.ogg', get_clamped_volume(), FALSE, -1)
+
+/obj/item/modular_computer/get_cell()
+	return internal_cell
+
+/obj/item/modular_computer/click_alt(mob/user)
 	if(issilicon(user))
-		return
+		return NONE
 
-	if(user.canUseTopic(src, BE_CLOSE))
-		var/obj/item/computer_hardware/card_slot/card_slot2 = all_components[MC_CARD2]
-		var/obj/item/computer_hardware/card_slot/card_slot = all_components[MC_CARD]
-		return (card_slot2?.try_eject(user) || card_slot?.try_eject(user)) //Try the secondary one first.
+	if(RemoveID(user))
+		return CLICK_ACTION_SUCCESS
 
-// Gets IDs/access levels from card slot. Would be useful when/if PDAs would become modular PCs.
+	if(istype(inserted_pai)) // Remove pAI
+		remove_pai(user)
+		return CLICK_ACTION_SUCCESS
+
+	return CLICK_ACTION_BLOCKING
+
+// Gets IDs/access levels from card slot. Would be useful when/if PDAs would become modular PCs. //guess what
 /obj/item/modular_computer/GetAccess()
 	var/obj/item/computer_hardware/card_slot/card_slot = all_components[MC_CARD]
 	if(card_slot)

@@ -381,7 +381,23 @@
 		update_appearance()
 		return TRUE
 
-/obj/structure/sign/painting/proc/frame_canvas(mob/user,obj/item/canvas/new_canvas)
+/obj/structure/sign/painting/Exited(atom/movable/movable, atom/newloc)
+	. = ..()
+	if(movable == current_canvas)
+		current_canvas = null
+		update_appearance()
+
+/obj/structure/sign/painting/click_alt(mob/user)
+	if(!current_canvas?.can_select_frame(user))
+		return CLICK_ACTION_BLOCKING
+
+	INVOKE_ASYNC(current_canvas, TYPE_PROC_REF(/obj/item/canvas, select_new_frame), user)
+	return CLICK_ACTION_SUCCESS
+
+/obj/structure/sign/painting/proc/frame_canvas(mob/user, obj/item/canvas/new_canvas)
+	if(!(new_canvas.type in accepted_canvas_types))
+		to_chat(user, span_warning("[new_canvas] won't fit in this frame."))
+		return FALSE
 	if(user.transferItemToLoc(new_canvas,src))
 		current_canvas = new_canvas
 		if(!current_canvas.finalized)

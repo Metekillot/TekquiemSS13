@@ -719,7 +719,34 @@
 		to_chat(user, "<span class='warning'>[src] won't work on [SM].</span>")
 		return
 
-	to_chat(user, "<span class='notice'>You offer [src] to [SM]...</span>")
+/obj/item/slimepotion/slime/sentience/Initialize(mapload)
+	register_context()
+	return ..()
+
+/obj/item/slimepotion/slime/sentience/add_context(atom/source, list/context, obj/item/held_item, mob/user)
+	context[SCREENTIP_CONTEXT_ALT_LMB] = "Set potion offer reason"
+	return CONTEXTUAL_SCREENTIP_SET
+
+/obj/item/slimepotion/slime/sentience/click_alt(mob/living/user)
+	potion_reason = tgui_input_text(user, "Enter reason for offering potion", "Intelligence Potion", potion_reason, multiline = TRUE)
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/slimepotion/slime/sentience/attack(mob/living/dumb_mob, mob/user)
+	if(being_used || !isliving(dumb_mob))
+		return
+	if(dumb_mob.ckey) //only works on animals that aren't player controlled
+		balloon_alert(user, "already sentient!")
+		return
+	if(dumb_mob.stat)
+		balloon_alert(user, "it's dead!")
+		return
+	if(!dumb_mob.compare_sentience_type(sentience_type)) // Will also return false if not a basic or simple mob, which are the only two we want anyway
+		balloon_alert(user, "invalid creature!")
+		return
+	if(isnull(potion_reason))
+		balloon_alert(user, "no reason for offering set!")
+		return
+	balloon_alert(user, "offering...")
 	being_used = TRUE
 
 	var/datum/callback/to_call = CALLBACK(src, PROC_REF(on_poll_concluded), user, dumb_mob)

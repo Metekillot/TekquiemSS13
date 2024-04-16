@@ -13,7 +13,8 @@
 	max_integrity = 250
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 100, RAD = 100, FIRE = 80, ACID = 10)
 	circuit = /obj/item/circuitboard/machine/space_heater
-	/// We don't use area power, we always use the cell
+	interaction_flags_click = ALLOW_SILICON_REACH
+	//We don't use area power, we always use the cell
 	use_power = NO_POWER_USE
 	var/obj/item/stock_parts/cell/cell
 	var/on = FALSE
@@ -233,6 +234,194 @@
 				cell.forceMove(drop_location())
 				cell = null
 				. = TRUE
+
+/obj/machinery/space_heater/proc/toggle_power(user)
+	on = !on
+	mode = HEATER_MODE_STANDBY
+	if(!isnull(user))
+		balloon_alert(user, "turned [on ? "on" : "off"]")
+	update_appearance()
+	if(on)
+		SSair.start_processing_machine(src)
+
+///For use with heating reagents in a ghetto way
+/obj/machinery/space_heater/improvised_chem_heater
+	icon = 'icons/obj/medical/chemical.dmi'
+	icon_state = "sheater-off"
+	name = "Improvised chem heater"
+	desc = "A space heater hacked to reroute heating to a water bath on the top."
+	panel_open = TRUE //This is always open - since we've injected wires in the panel
+	//We inherit the cell from the heater prior
+	cell = null
+	interaction_flags_click = FORBID_TELEKINESIS_REACH
+	///The beaker within the heater
+	var/obj/item/reagent_containers/beaker = null
+	///How powerful the heating is, upgrades with parts. (ala chem_heater.dm's method, basically the same level of heating, but this is restricted)
+	var/chem_heating_power = 1
+	display_panel = FALSE
+
+/obj/machinery/space_heater/improvised_chem_heater/Destroy()
+	. = ..()
+	QDEL_NULL(beaker)
+
+/obj/machinery/space_heater/improvised_chem_heater/heating_examine()
+	. = ..()
+
+	var/power_mod = 0.1 * chem_heating_power
+	if(set_mode == HEATER_MODE_AUTO)
+		power_mod *= 0.5
+	. += span_notice("Heating power for beaker: <b>[display_power(heating_energy * power_mod, convert = TRUE)]</b>")
+
+/obj/machinery/space_heater/improvised_chem_heater/toggle_power(user)
+	. = ..()
+	if(on)
+		begin_processing()
+
+/obj/machinery/space_heater/improvised_chem_heater/process(seconds_per_tick)
+	if(!on || !is_operational || QDELETED(cell) || cell.charge <= 1 || QDELETED(beaker))
+		if (on) // If it's broken, turn it off too
+			on = FALSE
+			update_appearance()
+		return PROCESS_KILL
+
+	if(beaker.reagents.total_volume)
+		var/power_mod = 0.1 * chem_heating_power
+		switch(set_mode)
+			if(HEATER_MODE_AUTO)
+				power_mod *= 0.5
+			if(HEATER_MODE_HEAT)
+				if(target_temperature < beaker.reagents.chem_temp)
+					return
+			if(HEATER_MODE_COOL)
+				if(target_temperature > beaker.reagents.chem_temp)
+					return
+
+		var/required_energy = abs(target_temperature - beaker.reagents.chem_temp) * power_mod * seconds_per_tick * beaker.reagents.heat_capacity()
+		required_energy = min(required_energy, heating_energy, cell.charge * efficiency)
+		if(required_energy < 1)
+			return
+
+		var/delta_energy = required_energy
+		if(mode == HEATER_MODE_COOL)
+			delta_energy *= -1
+		if(delta_energy == 0)
+			return
+
+		beaker.reagents.adjust_thermal_energy(delta_energy)
+		beaker.reagents.handle_reactions()
+		cell.use(required_energy / efficiency, force = TRUE)
+	update_appearance()
+
+/obj/machinery/space_heater/improvised_chem_heater/ui_data()
+	. = ..()
+	.["chemHacked"] = TRUE
+	.["beaker"] = beaker
+	.["currentTemp"] = beaker ? (round(beaker.reagents.chem_temp - T0C)) : "N/A"
+
+/obj/machinery/space_heater/improvised_chem_heater/ui_act(action, params)
+	. = ..()
+	if(.)
+		return
+	switch(action)
+		if("ejectBeaker")
+			//Eject doesn't turn it off, so you can preheat for beaker swapping
+			replace_beaker(usr)
+			. = TRUE
+
+///Slightly modified to ignore the open_hatch - it's always open, we hacked it.
+/obj/machinery/space_heater/improvised_chem_heater/attackby(obj/item/item, mob/user, params)
+	add_fingerprint(user)
+	if(default_deconstruction_crowbar(item))
+		return
+	if(istype(item, /obj/item/stock_parts/cell))
+		if(cell)
+			to_chat(user, span_warning("There is already a power cell inside!"))
+			return
+		else if(!user.transferItemToLoc(item, src))
+			return
+		cell = item
+		item.add_fingerprint(usr)
+
+		user.visible_message(span_notice("\The [user] inserts a power cell into \the [src]."), span_notice("You insert the power cell into \the [src]."))
+		SStgui.update_uis(src)
+	//reagent containers
+	if(is_reagent_container(item) && !(item.item_flags & ABSTRACT) && item.is_open_container())
+		. = TRUE //no afterattack
+		var/obj/item/reagent_containers/container = item
+		if(!user.transferItemToLoc(container, src))
+			return
+		replace_beaker(user, container)
+		to_chat(user, span_notice("You add [container] to [src]'s water bath."))
+		ui_interact(user)
+		return
+	//Dropper tools
+	if(beaker)
+		if(is_type_in_list(item, list(/obj/item/reagent_containers/dropper, /obj/item/ph_meter, /obj/item/ph_paper, /obj/item/reagent_containers/syringe)))
+			item.afterattack(beaker, user, 1)
+		return
+
+/obj/machinery/space_heater/improvised_chem_heater/on_deconstruction(disassembled = TRUE)
+	. = ..()
+	if(disassembled)
+		beaker?.forceMove(drop_location())
+		beaker = null
+	var/static/bonus_junk = list(
+		/obj/item/stack/cable_coil = 2,
+		/obj/item/stack/sheet/glass = 2,
+		/obj/item/stack/sheet/iron = 2,
+		/obj/item/thermometer = 1
+		)
+	for(var/item in bonus_junk)
+		if(prob(80))
+			new item(get_turf(loc))
+
+/obj/machinery/space_heater/improvised_chem_heater/proc/replace_beaker(mob/living/user, obj/item/reagent_containers/new_beaker)
+	if(!user)
+		return FALSE
+	if(beaker)
+		try_put_in_hand(beaker, user)
+		beaker = null
+	if(new_beaker)
+		beaker = new_beaker
+	update_appearance()
+	return TRUE
+
+/obj/machinery/space_heater/improvised_chem_heater/click_alt(mob/living/user)
+	replace_beaker(user)
+	return CLICK_ACTION_SUCCESS
+
+/obj/machinery/space_heater/improvised_chem_heater/update_icon_state()
+	. = ..()
+	if(!on || !beaker || !cell)
+		icon_state = "sheater-off"
+		return
+	if(target_temperature < beaker.reagents.chem_temp)
+		icon_state = "sheater-cool"
+		return
+	if(target_temperature > beaker.reagents.chem_temp)
+		icon_state = "sheater-heat"
+		return
+	icon_state = "sheater-off"
+
+/obj/machinery/space_heater/improvised_chem_heater/RefreshParts()
+	. = ..()
+	var/lasers_rating = 0
+	var/capacitors_rating = 0
+	for(var/datum/stock_part/micro_laser/laser in component_parts)
+		lasers_rating += laser.tier
+	for(var/datum/stock_part/capacitor/capacitor in component_parts)
+		capacitors_rating += capacitor.tier
+
+	heating_energy = lasers_rating * 20000
+
+	settable_temperature_range = capacitors_rating * 50 //-20 - 80 at base
+	efficiency = (capacitors_rating + 1) * 10
+
+	target_temperature = clamp(target_temperature,
+		max(settable_temperature_median - settable_temperature_range, TCMB),
+		settable_temperature_median + settable_temperature_range)
+
+	chem_heating_power = efficiency / 20
 
 #undef HEATER_MODE_STANDBY
 #undef HEATER_MODE_HEAT

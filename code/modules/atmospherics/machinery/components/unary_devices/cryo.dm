@@ -501,13 +501,13 @@ GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics
 		set_on(!on)
 	return ..()
 
-/obj/machinery/atmospherics/components/unary/cryo_cell/AltClick(mob/user)
-	if(can_interact(user))
-		if(state_open)
-			close_machine()
-		else
-			open_machine()
-	return ..()
+/obj/machinery/cryo_cell/click_alt(mob/user)
+	if(state_open)
+		close_machine()
+	else
+		open_machine()
+	balloon_alert(user, "door [state_open ? "opened" : "closed"]")
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/atmospherics/components/unary/cryo_cell/update_remote_sight(mob/living/user)
 	return // we don't see the pipe network while inside cryo.

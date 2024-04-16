@@ -5,6 +5,8 @@
 	max_integrity = 250
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 100, BOMB = 0, BIO = 100, RAD = 100, FIRE = 60, ACID = 30)
 	anchored = FALSE
+	layer = ABOVE_OBJ_LAYER
+	interaction_flags_click = NEED_DEXTERITY
 
 	var/datum/gas_mixture/air_contents
 	var/obj/machinery/atmospherics/components/unary/portables_connector/connected_port
@@ -89,13 +91,12 @@
 	update_icon()
 	return TRUE
 
-/obj/machinery/portable_atmospherics/AltClick(mob/living/user)
-	. = ..()
-	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY, FALSE, !iscyborg(user)) || !can_interact(user))
-		return
-	if(holding)
-		to_chat(user, "<span class='notice'>You remove [holding] from [src].</span>")
-		replace_tank(user, TRUE)
+/obj/machinery/portable_atmospherics/click_alt(mob/living/user)
+	if(!holding)
+		return CLICK_ACTION_BLOCKING
+	to_chat(user, span_notice("You remove [holding] from [src]."))
+	replace_tank(user, TRUE)
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/portable_atmospherics/examine(mob/user)
 	. = ..()

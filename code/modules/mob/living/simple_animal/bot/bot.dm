@@ -25,7 +25,10 @@
 	faction = list("neutral", "silicon" , "turret")
 	light_system = MOVABLE_LIGHT
 	light_range = 3
-	light_power = 0.9
+	light_power = 0.6
+	del_on_death = TRUE
+	req_one_access = list(ACCESS_ROBOTICS)
+	interaction_flags_click = ALLOW_SILICON_REACH
 
 	var/obj/machinery/bot_core/bot_core = null
 	var/bot_core_type = /obj/machinery/bot_core
@@ -321,10 +324,9 @@
 		ui = new(user, src, "SimpleBot", name)
 		ui.open()
 
-/mob/living/simple_animal/bot/AltClick(mob/user)
-	if(!user.canUseTopic(src, !issilicon(user)))
-		return
+/mob/living/simple_animal/bot/click_alt(mob/user)
 	unlock_with_id(user)
+	return CLICK_ACTION_SUCCESS
 
 /mob/living/simple_animal/bot/proc/unlock_with_id(mob/user)
 	if(emagged)

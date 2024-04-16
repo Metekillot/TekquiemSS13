@@ -76,8 +76,6 @@
 	RegisterSignal(parent, COMSIG_CLICK_ALT_SECONDARY, PROC_REF(rotate_right))
 	RegisterSignal(parent, COMSIG_ATOM_EXAMINE, PROC_REF(ExamineMessage))
 	RegisterSignal(parent, COMSIG_ATOM_REQUESTING_CONTEXT_FROM_ITEM, PROC_REF(on_requesting_context_from_item))
-
-	ADD_TRAIT(parent, TRAIT_ALT_CLICK_BLOCKER, REF(src))
 	return ..()
 
 /datum/component/simple_rotation/PostTransfer()
@@ -93,8 +91,6 @@
 		COMSIG_ATOM_EXAMINE,
 		COMSIG_ATOM_REQUESTING_CONTEXT_FROM_ITEM,
 	))
-
-	REMOVE_TRAIT(parent, TRAIT_ALT_CLICK_BLOCKER, REF(src))
 	return ..()
 
 /datum/component/simple_rotation/Destroy()
@@ -117,7 +113,20 @@
 /datum/component/simple_rotation/proc/HandRot(datum/source, mob/user, rotation = default_rotation_direction)
 	SIGNAL_HANDLER
 
-	if(!can_be_rotated.Invoke(user, rotation) || !can_user_rotate.Invoke(user, rotation))
+/datum/component/simple_rotation/proc/rotate_left(datum/source, mob/user)
+	SIGNAL_HANDLER
+	rotate(user, ROTATION_COUNTERCLOCKWISE)
+	return CLICK_ACTION_SUCCESS
+
+/datum/component/simple_rotation/proc/rotate(mob/user, degrees)
+	if(QDELETED(user))
+		CRASH("[src] is being rotated [user ? "with a qdeleting" : "without a"] user")
+	if(!istype(user))
+		CRASH("[src] is being rotated without a user of the wrong type: [user.type]")
+	if(!isnum(degrees))
+		CRASH("[src] is being rotated without providing the amount of degrees needed")
+
+	if(!can_be_rotated(user, degrees) || !can_user_rotate(user, degrees))
 		return
 	BaseRot(user, rotation)
 

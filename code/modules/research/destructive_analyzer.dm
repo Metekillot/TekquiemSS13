@@ -40,9 +40,29 @@ Note: Must be placed within 3 tiles of the R&D Console
 		addtimer(CALLBACK(src, PROC_REF(finish_loading)), 10)
 		updateUsrDialog()
 
-/obj/machinery/rnd/destructive_analyzer/proc/finish_loading()
-	update_icon()
-	reset_busy()
+	if(loaded_item)
+		. += span_notice("[EXAMINE_HINT("Left-Click")] to remove loaded item inside.")
+	else
+		. += span_notice("An item can be loaded inside via [EXAMINE_HINT("Left-Click")].")
+
+/obj/machinery/rnd/destructive_analyzer/attackby(obj/item/weapon, mob/living/user, params)
+	if(user.combat_mode)
+		return ..()
+	if(!is_insertion_ready(user))
+		return ..()
+	if(!user.transferItemToLoc(weapon, src))
+		to_chat(user, span_warning("\The [weapon] is stuck to your hand, you cannot put it in the [name]!"))
+		return TRUE
+	busy = TRUE
+	loaded_item = weapon
+	to_chat(user, span_notice("You place the [weapon.name] inside the [name]."))
+	flick("[base_icon_state]_la", src)
+	addtimer(CALLBACK(src, PROC_REF(finish_loading)), 1 SECONDS)
+	return TRUE
+
+/obj/machinery/rnd/destructive_analyzer/click_alt(mob/user)
+	unload_item()
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/rnd/destructive_analyzer/update_icon_state()
 	if(loaded_item)

@@ -6,11 +6,14 @@
 	inhand_icon_state = "electronic"
 	w_class = WEIGHT_CLASS_SMALL
 	item_flags = NOBLUDGEON
-	lefthand_file = 'icons/mob/inhands/misc/devices_lefthand.dmi'
-	righthand_file = 'icons/mob/inhands/misc/devices_righthand.dmi'
-
-	var/cooldown = 300
+	lefthand_file = 'icons/mob/inhands/items/devices_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/items/devices_righthand.dmi'
+	interaction_flags_click = NEED_DEXTERITY
+	/// Cooldown for usage
+	var/cooldown = 30 SECONDS
+	/// Next available time
 	var/next_use = 0
+	/// Swapper linked to this obj
 	var/obj/item/swapper/linked_swapper
 
 /obj/item/swapper/Destroy()
@@ -68,15 +71,14 @@
 	else
 		. += "<span class='notice'><b>Not Linked.</b> Use on another quantum spin inverter to establish a quantum link.</span>"
 
-/obj/item/swapper/AltClick(mob/living/user)
-	if(!user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY, FALSE, !iscyborg(user)))
-		return
-	to_chat(user, "<span class='notice'>You break the current quantum link.</span>")
+/obj/item/swapper/click_alt(mob/living/user)
+	to_chat(user, span_notice("You break the current quantum link."))
 	if(!QDELETED(linked_swapper))
 		linked_swapper.linked_swapper = null
 		linked_swapper.update_icon()
 		linked_swapper = null
-	update_icon()
+	update_appearance()
+	return CLICK_ACTION_SUCCESS
 
 //Gets the topmost teleportable container
 /obj/item/swapper/proc/get_teleportable_container()

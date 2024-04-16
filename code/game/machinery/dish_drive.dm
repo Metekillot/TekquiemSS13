@@ -10,11 +10,11 @@
 	density = FALSE
 	circuit = /obj/item/circuitboard/machine/dish_drive
 	pass_flags = PASSTABLE
-	var/static/list/collectable_items = list(/obj/item/trash/waffles,
-		/obj/item/trash/plate,
-		/obj/item/trash/tray,
-		/obj/item/reagent_containers/glass/bowl,
-		/obj/item/reagent_containers/food/drinks/drinkingglass,
+	interaction_flags_click = ALLOW_SILICON_REACH
+	/// List of dishes the drive can hold
+	var/static/list/collectable_items = list(
+		/obj/item/trash/waffles,
+		/obj/item/broken_bottle,
 		/obj/item/kitchen/fork,
 		/obj/item/shard,
 		/obj/item/broken_bottle)
@@ -105,9 +105,9 @@
 	to_chat(user, "<span class='notice'>You send a disposal transmission signal to [src].</span>")
 	do_the_dishes(TRUE)
 
-/obj/machinery/dish_drive/AltClick(mob/living/user)
-	if(user.canUseTopic(src, !issilicon(user)))
-		do_the_dishes(TRUE)
+/obj/machinery/dish_drive/click_alt(mob/living/user)
+	do_the_dishes(TRUE)
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/dish_drive/proc/do_the_dishes(manual)
 	if(!LAZYLEN(dish_drive_contents))

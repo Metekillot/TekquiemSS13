@@ -16,6 +16,8 @@
 	attack_verb_simple = list("slam", "whack", "bash", "thunk", "batter", "bludgeon", "thrash")
 	dog_fashion = /datum/dog_fashion/back
 	resistance_flags = FIRE_PROOF
+	interaction_flags_click = NEED_DEXTERITY|NEED_HANDS
+	/// The max amount of water this extinguisher can hold.
 	var/max_water = 50
 	var/last_use = 1
 	var/chem = /datum/reagent/water
@@ -234,13 +236,12 @@
 	repetition++
 	addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/item/extinguisher, move_chair), B, movementdirection, repetition), timer_seconds)
 
-/obj/item/extinguisher/AltClick(mob/user)
-	if(!user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY, FALSE, TRUE))
-		return
+/obj/item/extinguisher/click_alt(mob/user)
 	if(!user.is_holding(src))
-		to_chat(user, "<span class='notice'>You must be holding the [src] in your hands do this!</span>")
-		return
+		to_chat(user, span_notice("You must be holding the [src] in your hands do this!"))
+		return CLICK_ACTION_BLOCKING
 	EmptyExtinguisher(user)
+	return CLICK_ACTION_SUCCESS
 
 /obj/item/extinguisher/proc/EmptyExtinguisher(mob/user)
 	if(loc == user && reagents.total_volume)

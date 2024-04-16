@@ -112,12 +112,15 @@
 	else
 		return ..()
 
-/obj/machinery/iv_drip/deconstruct(disassembled = TRUE)
-	if(!(flags_1 & NODECONSTRUCT_1))
-		new /obj/item/stack/sheet/metal(loc)
-	qdel(src)
 
-/obj/machinery/iv_drip/process(delta_time)
+/obj/machinery/iv_drip/click_alt(mob/user)
+	set_transfer_rate(transfer_rate > MIN_IV_TRANSFER_RATE ? MIN_IV_TRANSFER_RATE : MAX_IV_TRANSFER_RATE)
+	return CLICK_ACTION_SUCCESS
+
+/obj/machinery/iv_drip/on_deconstruction(disassembled = TRUE)
+	new /obj/item/stack/sheet/iron(loc)
+
+/obj/machinery/iv_drip/process(seconds_per_tick)
 	if(!attached)
 		return PROCESS_KILL
 

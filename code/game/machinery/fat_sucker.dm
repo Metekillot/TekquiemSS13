@@ -94,17 +94,16 @@
 	else
 		to_chat(user, "<span class='warning'>The safety hatch has been disabled!</span>")
 
-/obj/machinery/fat_sucker/AltClick(mob/living/user)
-	if(!user.canUseTopic(src, BE_CLOSE))
-		return
+/obj/machinery/fat_sucker/click_alt(mob/living/user)
 	if(user == occupant)
-		to_chat(user, "<span class='warning'>You can't reach the controls from inside!</span>")
-		return
+		to_chat(user, span_warning("You can't reach the controls from inside!"))
+		return CLICK_ACTION_BLOCKING
 	if(!(obj_flags & EMAGGED) && !allowed(user))
-		to_chat(user, "<span class='warning'>You lack the required access.</span>")
-		return
+		to_chat(user, span_warning("You lack the required access."))
+		return CLICK_ACTION_BLOCKING
 	free_exit = !free_exit
-	to_chat(user, "<span class='notice'>Safety hatch [free_exit ? "unlocked" : "locked"].</span>")
+	to_chat(user, span_notice("Safety hatch [free_exit ? "unlocked" : "locked"]."))
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/fat_sucker/update_overlays()
 	. = ..()

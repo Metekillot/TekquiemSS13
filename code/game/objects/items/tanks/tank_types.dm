@@ -7,6 +7,18 @@
  *		Emergency Oxygen
  *		Generic
  */
+/obj/item/tank/internals
+	interaction_flags_click = FORBID_TELEKINESIS_REACH|NEED_HANDS
+
+
+/// Allows carbon to toggle internals via AltClick of the equipped tank.
+/obj/item/tank/internals/click_alt(mob/user)
+	toggle_internals(user)
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/tank/internals/examine(mob/user)
+	. = ..()
+	. += span_notice("Alt-click the tank to toggle the valve.")
 
 /*
  * Oxygen

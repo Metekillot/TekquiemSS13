@@ -110,14 +110,12 @@
 
 	playsound(src, 'sound/machines/click.ogg', 10, TRUE)
 
-/obj/item/plunger/AltClick(mob/user)
-	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE))
-		return
-
-	var/new_layer = tgui_input_list(user, "Select a layer", "Layer", layers)
-	if(isnull(new_layer))
-		return
-	target_layer = layers[new_layer]
+/obj/item/plunger/click_alt(mob/user)
+	var/new_layer = tgui_input_list(user, "Select a layer", "Layer", GLOB.plumbing_layers)
+	if(isnull(new_layer) || !user.can_perform_action(src))
+		return CLICK_ACTION_BLOCKING
+	target_layer = GLOB.plumbing_layers[new_layer]
+	return CLICK_ACTION_SUCCESS
 
 /obj/item/plunger/reinforced
 	name = "reinforced plunger"

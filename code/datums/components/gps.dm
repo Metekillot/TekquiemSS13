@@ -31,8 +31,8 @@ GLOBAL_LIST_EMPTY(GPS_list)
 	RegisterSignal(parent, COMSIG_ITEM_ATTACK_SELF, PROC_REF(interact))
 	if(!emp_proof)
 		RegisterSignal(parent, COMSIG_ATOM_EMP_ACT, PROC_REF(on_emp_act))
-	RegisterSignal(parent, COMSIG_PARENT_EXAMINE, PROC_REF(on_examine))
-	RegisterSignal(parent, COMSIG_CLICK_ALT, PROC_REF(on_AltClick))
+	RegisterSignal(parent, COMSIG_ATOM_EXAMINE, PROC_REF(on_examine))
+	RegisterSignal(parent, COMSIG_CLICK_ALT, PROC_REF(on_click_alt))
 
 ///Called on COMSIG_ITEM_ATTACK_SELF
 /datum/component/gps/item/proc/interact(datum/source, mob/user)
@@ -66,11 +66,11 @@ GLOBAL_LIST_EMPTY(GPS_list)
 	A.add_overlay("working")
 
 ///Calls toggletracking
-/datum/component/gps/item/proc/on_AltClick(datum/source, mob/user)
+/datum/component/gps/item/proc/on_click_alt(datum/source, mob/user)
 	SIGNAL_HANDLER
 
 	toggletracking(user)
-	return COMPONENT_CANCEL_CLICK_ALT
+	return CLICK_ACTION_SUCCESS
 
 ///Toggles the tracking for the gps
 /datum/component/gps/item/proc/toggletracking(mob/user)

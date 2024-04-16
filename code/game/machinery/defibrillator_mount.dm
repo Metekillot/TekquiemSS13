@@ -149,15 +149,13 @@
 	to_chat(user, "<span class='notice'>You remove [src] from the wall.</span>")
 
 
-/obj/machinery/defibrillator_mount/AltClick(mob/living/carbon/user)
-	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE))
-		return
+/obj/machinery/defibrillator_mount/click_alt(mob/living/carbon/user)
 	if(!defib)
-		to_chat(user, "<span class='warning'>It'd be hard to remove a defib unit from a mount that has none.</span>")
-		return
+		to_chat(user, span_warning("It'd be hard to remove a defib unit from a mount that has none."))
+		return CLICK_ACTION_BLOCKING
 	if(clamps_locked)
-		to_chat(user, "<span class='warning'>You try to tug out [defib], but the mount's clamps are locked tight!</span>")
-		return
+		to_chat(user, span_warning("You try to tug out [defib], but the mount's clamps are locked tight!"))
+		return CLICK_ACTION_BLOCKING
 	if(!user.put_in_hands(defib))
 		to_chat(user, "<span class='warning'>You need a free hand!</span>")
 		user.visible_message("<span class='notice'>[user] unhooks [defib] from [src], dropping it on the floor.</span>", \
@@ -166,10 +164,7 @@
 		user.visible_message("<span class='notice'>[user] unhooks [defib] from [src].</span>", \
 		"<span class='notice'>You slide out [defib] from [src] and unhook the charging cables.</span>")
 	playsound(src, 'sound/items/deconstruct.ogg', 50, TRUE)
-	// Make sure processing ends before the defib is nulled
-	end_processing()
-	defib = null
-	update_icon()
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/defibrillator_mount/charging
 	name = "PENLITE defibrillator mount"

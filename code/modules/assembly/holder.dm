@@ -97,10 +97,16 @@
 	. = ..()
 	if(.)
 		return
-	if(a_left)
-		a_left.attack_hand()
-	if(a_right)
-		a_right.attack_hand()
+	for(var/obj/item/assembly/assembly as anything in assemblies)
+		assembly.attack_hand(user, modifiers) // Note override in assembly.dm to prevent side effects here
+
+/obj/item/assembly_holder/attackby(obj/item/weapon, mob/user, params)
+	if(isassembly(weapon))
+		try_add_assembly(weapon, user)
+		return
+
+	return ..()
+
 
 /obj/item/assembly_holder/screwdriver_act(mob/user, obj/item/tool)
 	if(..())

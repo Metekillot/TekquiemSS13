@@ -75,20 +75,20 @@
 	qdel(src)
 
 /obj/structure/chair/attackby(obj/item/W, mob/user, params)
-	if(W.tool_behaviour == TOOL_WRENCH && !(flags_1&NODECONSTRUCT_1))
-		W.play_tool_sound(src)
-		deconstruct()
-	else if(istype(W, /obj/item/assembly/shock_kit))
-		if(!user.temporarilyRemoveItemFromInventory(W))
-			return
-		var/obj/item/assembly/shock_kit/SK = W
-		var/obj/structure/chair/e_chair/E = new /obj/structure/chair/e_chair(src.loc)
-		playsound(src.loc, 'sound/items/deconstruct.ogg', 50, TRUE)
-		E.setDir(dir)
-		E.part = SK
-		SK.forceMove(E)
-		SK.master = E
-		qdel(src)
+	if(istype(W, /obj/item/assembly/shock_kit) && !HAS_TRAIT(src, TRAIT_ELECTRIFIED_BUCKLE))
+		electrify_self(W, user)
+		return
+	. = ..()
+
+
+///allows each chair to request the electrified_buckle component with overlays that dont look ridiculous
+/obj/structure/chair/proc/electrify_self(obj/item/assembly/shock_kit/input_shock_kit, mob/user, list/overlays_from_child_procs)
+	SHOULD_CALL_PARENT(TRUE)
+	if(!user.temporarilyRemoveItemFromInventory(input_shock_kit))
+		return
+	if(!overlays_from_child_procs || overlays_from_child_procs.len == 0)
+		var/image/echair_over_overlay = image('icons/obj/chairs.dmi', loc, "echair_over")
+		AddComponent(/datum/component/electrified_buckle, (SHOCK_REQUIREMENT_ITEM | SHOCK_REQUIREMENT_LIVE_CABLE | SHOCK_REQUIREMENT_SIGNAL_RECEIVED_TOGGLE), input_shock_kit, list(echair_over_overlay), FALSE)
 	else
 		return ..()
 
@@ -400,6 +400,8 @@
 	buildstacktype = /obj/item/stack/tile/bronze
 	buildstackamount = 1
 	item_chair = null
+	interaction_flags_click = NEED_DEXTERITY
+	/// Total rotations made
 	var/turns = 0
 
 /obj/structure/chair/bronze/Destroy()
@@ -413,15 +415,8 @@
 	if(turns >= 8)
 		STOP_PROCESSING(SSfastprocess, src)
 
-/obj/structure/chair/bronze/Moved()
-	. = ..()
-	if(has_gravity())
-		playsound(src, 'sound/machines/clockcult/integration_cog_install.ogg', 50, TRUE)
-
-/obj/structure/chair/bronze/AltClick(mob/user)
+/obj/structure/chair/bronze/click_alt(mob/user)
 	turns = 0
-	if(!user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY, FALSE, !iscyborg(user)))
-		return
 	if(!(datum_flags & DF_ISPROCESSING))
 		user.visible_message("<span class='notice'>[user] spins [src] around, and the last vestiges of Ratvarian technology keeps it spinning FOREVER.</span>", \
 		"<span class='notice'>Automated spinny chairs. The pinnacle of ancient Ratvarian technology.</span>")
@@ -430,6 +425,7 @@
 		user.visible_message("<span class='notice'>[user] stops [src]'s uncontrollable spinning.</span>", \
 		"<span class='notice'>You grab [src] and stop its wild spinning.</span>")
 		STOP_PROCESSING(SSfastprocess, src)
+	return CLICK_ACTION_SUCCESS
 
 /obj/structure/chair/mime
 	name = "invisible chair"

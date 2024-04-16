@@ -48,15 +48,14 @@
 			return
 	return ..()
 
-/obj/structure/statue/deconstruct(disassembled = TRUE)
-	if(!(flags_1 & NODECONSTRUCT_1))
-		var/amount_mod = disassembled ? 0 : -2
-		for(var/mat in custom_materials)
-			var/datum/material/custom_material = GET_MATERIAL_REF(mat)
-			var/amount = max(0,round(custom_materials[mat]/MINERAL_MATERIAL_AMOUNT) + amount_mod)
-			if(amount > 0)
-				new custom_material.sheet_type(drop_location(),amount)
-	qdel(src)
+
+/obj/structure/statue/atom_deconstruct(disassembled = TRUE)
+	var/amount_mod = disassembled ? 0 : -2
+	for(var/mat in custom_materials)
+		var/datum/material/custom_material = GET_MATERIAL_REF(mat)
+		var/amount = max(0,round(custom_materials[mat]/SHEET_MATERIAL_AMOUNT) + amount_mod)
+		if(amount > 0)
+			new custom_material.sheet_type(drop_location(), amount)
 
 //////////////////////////////////////STATUES/////////////////////////////////////////////////////////////
 ////////////////////////uranium///////////////////////////////////

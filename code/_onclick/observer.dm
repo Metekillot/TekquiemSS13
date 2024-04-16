@@ -47,7 +47,7 @@
 			MiddleClickOn(A, params)
 		return
 	if(LAZYACCESS(modifiers, ALT_CLICK))
-		A.AltClick(src)
+		base_click_alt(A)
 		return
 	if(modifiers["ctrl"])
 		CtrlClickOn(A)

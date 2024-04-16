@@ -126,12 +126,6 @@
 			C.forceMove(loc)
 	qdel(src)
 
-/obj/machinery/computer/AltClick(mob/user)
-	. = ..()
-	if(!user.canUseTopic(src, !issilicon(user)) || !is_operational)
-		return
-	if(!user.canUseTopic(src, be_close = !issilicon(user)) || !is_operational)
-		return
 
 /obj/machinery/computer/ui_interact(mob/user, datum/tgui/ui)
 	SHOULD_CALL_PARENT(TRUE)

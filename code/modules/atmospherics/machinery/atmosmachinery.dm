@@ -455,20 +455,6 @@
 
 	//PLACEHOLDER COMMENT FOR ME TO READD THE 1 (?) DS DELAY THAT WAS IMPLEMENTED WITH A... TIMER?
 
-/obj/machinery/atmospherics/AltClick(mob/living/L)
-	if(istype(L) && is_type_in_list(src, GLOB.ventcrawl_machinery))
-		L.handle_ventcrawl(src)
-		return
-	..()
-
-/**
- * Getter for vent crawling
- *
- * returns TRUE or FALSE, many devices overrides this (like cryo, or vents)
- * called by relaymove()
- */
-/obj/machinery/atmospherics/proc/can_crawl_through()
-	return TRUE
 
 /**
  * Getter of a list of pipenets

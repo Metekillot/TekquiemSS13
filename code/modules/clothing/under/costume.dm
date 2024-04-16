@@ -241,6 +241,7 @@
 	icon_state = "blue_mech_suit"
 	inhand_icon_state = "blue_mech_suit"
 
+
 /obj/item/clothing/under/costume/russian_officer
 	name = "\improper Russian officer's uniform"
 	desc = "The latest in fashionable russian outfits."

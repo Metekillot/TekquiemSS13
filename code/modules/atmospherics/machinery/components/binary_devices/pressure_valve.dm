@@ -19,7 +19,6 @@
 
 /obj/machinery/atmospherics/components/binary/pressure_valve/Initialize(mapload)
 	. = ..()
-	ADD_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER, REF(src))
 	register_context()
 
 /obj/machinery/atmospherics/components/binary/pressure_valve/add_context(atom/source, list/context, obj/item/held_item, mob/user)
@@ -35,19 +34,15 @@
 		update_icon()
 	return ..()
 
-/obj/machinery/atmospherics/components/binary/pressure_valve/AltClick(mob/user)
-	if(can_interact(user))
-		target_pressure = MAX_OUTPUT_PRESSURE
-		investigate_log("was set to [target_pressure] kPa by [key_name(user)]", INVESTIGATE_ATMOS)
-		to_chat(user, "<span class='notice'>You set the target pressure on [src] to [target_pressure] kPa.</span>")
-		update_icon()
-	return ..()
+/obj/machinery/atmospherics/components/binary/pressure_valve/click_alt(mob/user)
+	if(target_pressure == MAX_OUTPUT_PRESSURE)
+		return CLICK_ACTION_BLOCKING
 
-/obj/machinery/atmospherics/components/binary/pressure_valve/Destroy()
-	SSradio.remove_object(src,frequency)
-	if(radio_connection)
-		radio_connection = null
-	return ..()
+	target_pressure = MAX_OUTPUT_PRESSURE
+	investigate_log("was set to [target_pressure] kPa by [key_name(user)]", INVESTIGATE_ATMOS)
+	balloon_alert(user, "target pressure set to [target_pressure] kPa")
+	update_appearance()
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/atmospherics/components/binary/pressure_valve/update_icon_nopipes()
 	if(on && is_operational && is_gas_flowing)

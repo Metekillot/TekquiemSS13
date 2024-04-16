@@ -22,7 +22,88 @@
 	icon_state = "bluetie"
 	inhand_icon_state = ""	//no inhands
 	w_class = WEIGHT_CLASS_SMALL
-	custom_price = PAYCHECK_EASY
+	custom_price = PAYCHECK_CREW
+	greyscale_config = /datum/greyscale_config/ties
+	greyscale_config_worn = /datum/greyscale_config/ties/worn
+	greyscale_colors = "#4d4e4e"
+	flags_1 = IS_PLAYER_COLORABLE_1
+	/// All ties start untied unless otherwise specified
+	var/is_tied = FALSE
+	/// How long it takes to tie the tie
+	var/tie_timer = 4 SECONDS
+	/// Is this tie a clip-on, meaning it does not have an untied state?
+	var/clip_on = FALSE
+
+/obj/item/clothing/neck/tie/Initialize(mapload)
+	. = ..()
+	if(clip_on)
+		return
+	update_appearance(UPDATE_ICON)
+	register_context()
+
+/obj/item/clothing/neck/tie/examine(mob/user)
+	. = ..()
+	if(clip_on)
+		. += span_notice("Looking closely, you can see that it's actually a cleverly disguised clip-on.")
+	else if(!is_tied)
+		. += span_notice("The tie can be tied with Alt-Click.")
+	else
+		. += span_notice("The tie can be untied with Alt-Click.")
+
+/obj/item/clothing/neck/tie/click_alt(mob/user)
+	if(clip_on)
+		return NONE
+	to_chat(user, span_notice("You concentrate as you begin [is_tied ? "untying" : "tying"] [src]..."))
+	var/tie_timer_actual = tie_timer
+	// Mirrors give you a boost to your tying speed. I realize this stacks and I think that's hilarious.
+	for(var/obj/structure/mirror/reflection in view(2, user))
+		tie_timer_actual *= 0.8
+	// Heads of staff are experts at tying their ties.
+	if(HAS_TRAIT(user, TRAIT_FAST_TYING))
+		tie_timer_actual *= 0.5
+	// Tie/Untie our tie
+	if(!do_after(user, tie_timer_actual))
+		to_chat(user, span_notice("Your fingers fumble away from [src] as your concentration breaks."))
+		return CLICK_ACTION_BLOCKING
+	// Clumsy & Dumb people have trouble tying their ties.
+	if((HAS_TRAIT(user, TRAIT_CLUMSY) || HAS_TRAIT(user, TRAIT_DUMB)) && prob(50))
+		to_chat(user, span_notice("You just can't seem to get a proper grip on [src]!"))
+		return CLICK_ACTION_BLOCKING
+	// Success!
+	is_tied = !is_tied
+	user.visible_message(
+		span_notice("[user] adjusts [user.p_their()] tie[HAS_TRAIT(user, TRAIT_BALD) ? "" : " and runs a hand across [user.p_their()] head"]."),
+		span_notice("You successfully [is_tied ? "tied" : "untied"] [src]!"),
+	)
+	update_appearance(UPDATE_ICON)
+	user.update_clothing(ITEM_SLOT_NECK)
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/clothing/neck/tie/update_icon()
+	. = ..()
+	if(clip_on)
+		return
+	// Normal strip & equip delay, along with 2 second self equip since you need to squeeze your head through the hole.
+	if(is_tied)
+		icon_state = "tie_greyscale_tied"
+		strip_delay = 4 SECONDS
+		equip_delay_other = 4 SECONDS
+		equip_delay_self = 2 SECONDS
+	else // Extremely quick strip delay, it's practically a ribbon draped around your neck
+		icon_state = "tie_greyscale_untied"
+		strip_delay = 1 SECONDS
+		equip_delay_other = 1 SECONDS
+		equip_delay_self = 0
+
+/obj/item/clothing/neck/tie/add_context(atom/source, list/context, obj/item/held_item, mob/user)
+	. = ..()
+	if(clip_on)
+		return
+	if(is_tied)
+		context[SCREENTIP_CONTEXT_ALT_LMB] = "Untie"
+	else
+		context[SCREENTIP_CONTEXT_ALT_LMB] = "Tie"
+	return CONTEXTUAL_SCREENTIP_SET
 
 /obj/item/clothing/neck/tie/blue
 	name = "blue tie"

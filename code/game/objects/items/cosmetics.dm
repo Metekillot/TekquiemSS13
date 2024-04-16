@@ -5,8 +5,71 @@
 	icon = 'icons/obj/items_and_weapons.dmi'
 	icon_state = "lipstick"
 	w_class = WEIGHT_CLASS_TINY
-	var/colour = "red"
+	interaction_flags_click = NEED_DEXTERITY|NEED_HANDS|ALLOW_RESTING
 	var/open = FALSE
+	/// Actual color of the lipstick, also gets applied to the human
+	var/lipstick_color = COLOR_RED
+	/// The style of lipstick. Upper, middle, or lower lip. Default is middle.
+	var/style = "lipstick"
+	/// A trait that's applied while someone has this lipstick applied, and is removed when the lipstick is removed
+	var/lipstick_trait
+
+/obj/item/lipstick/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/update_icon_updates_onmob)
+	update_appearance(UPDATE_ICON)
+
+/obj/item/lipstick/vv_edit_var(vname, vval)
+	. = ..()
+	if(vname == NAMEOF(src, open))
+		update_appearance(UPDATE_ICON)
+
+/obj/item/lipstick/examine(mob/user)
+	. = ..()
+	. += "Alt-click to change the style."
+
+/obj/item/lipstick/update_icon_state()
+	icon_state = "lipstick[open ? "_uncap" : null]"
+	inhand_icon_state = "lipstick[open ? "open" : null]"
+	return ..()
+
+/obj/item/lipstick/update_overlays()
+	. = ..()
+	if(!open)
+		return
+	var/mutable_appearance/colored_overlay = mutable_appearance(icon, "lipstick_uncap_color")
+	colored_overlay.color = lipstick_color
+	. += colored_overlay
+
+/obj/item/lipstick/click_alt(mob/user)
+	display_radial_menu(user)
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/lipstick/proc/display_radial_menu(mob/living/carbon/human/user)
+	var/style_options = list(
+		UPPER_LIP = icon('icons/hud/radial.dmi', UPPER_LIP),
+		MIDDLE_LIP = icon('icons/hud/radial.dmi', MIDDLE_LIP),
+		LOWER_LIP = icon('icons/hud/radial.dmi', LOWER_LIP),
+	)
+	var/pick = show_radial_menu(user, src, style_options, custom_check = CALLBACK(src, PROC_REF(check_menu), user), radius = 36, require_near = TRUE)
+	if(!pick)
+		return TRUE
+
+	switch(pick)
+		if(MIDDLE_LIP)
+			style = "lipstick"
+		if(LOWER_LIP)
+			style = "lipstick_lower"
+		if(UPPER_LIP)
+			style = "lipstick_upper"
+	return TRUE
+
+/obj/item/lipstick/proc/check_menu(mob/living/user)
+	if(!istype(user))
+		return FALSE
+	if(user.incapacitated() || !user.is_holding(src))
+		return FALSE
+	return TRUE
 
 /obj/item/lipstick/purple
 	name = "purple lipstick"

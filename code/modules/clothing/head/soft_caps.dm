@@ -2,11 +2,15 @@
 	name = "cargo cap"
 	desc = "It's a baseball hat in a tasteless yellow colour."
 	icon_state = "cargosoft"
-	inhand_icon_state = "helmet"
+	inhand_icon_state = "greyscale_softcap" //todo wip
+	interaction_flags_click = NEED_DEXTERITY
+	/// For setting icon archetype
 	var/soft_type = "cargo"
+	/// If there is a suffix to append
+	var/soft_suffix = "soft"
 
 	dog_fashion = /datum/dog_fashion/head/cargo_tech
-
+	/// Whether this is on backwards... Woah, cool
 	var/flipped = FALSE
 
 /obj/item/clothing/head/soft/dropped()
@@ -21,10 +25,9 @@
 	flip(usr)
 
 
-/obj/item/clothing/head/soft/AltClick(mob/user)
-	..()
-	if(user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY, FALSE, !iscyborg(user)))
-		flip(user)
+/obj/item/clothing/head/soft/click_alt(mob/user)
+	flip(user)
+	return CLICK_ACTION_SUCCESS
 
 
 /obj/item/clothing/head/soft/proc/flip(mob/user)

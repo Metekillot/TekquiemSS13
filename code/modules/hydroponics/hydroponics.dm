@@ -809,7 +809,8 @@
 	to_chat(user, span_notice("You [self_sustaining ? "activate" : "deactivated"] [src]'s autogrow function[self_sustaining ? ", maintaining the tray's health while using high amounts of power" : ""]."))
 	update_icon()
 
-/obj/machinery/hydroponics/AltClick(mob/user)
+
+/obj/machinery/hydroponics/attack_hand_secondary(mob/user, list/modifiers)
 	. = ..()
 	if(!anchored)
 		update_icon()

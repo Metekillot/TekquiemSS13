@@ -166,55 +166,11 @@
 	else
 		return ..()
 
-/obj/item/geiger_counter/AltClick(mob/living/user)
-	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE))
-		return ..()
+/obj/item/geiger_counter/click_alt(mob/living/user)
 	if(!scanning)
-		to_chat(usr, "<span class='warning'>[src] must be on to reset its radiation level!</span>")
-		return
-	radiation_count = 0
-	to_chat(usr, "<span class='notice'>You flush [src]'s radiation counts, resetting it to normal.</span>")
-	update_icon()
-
-/obj/item/geiger_counter/emag_act(mob/user)
-	if(obj_flags & EMAGGED)
-		return
-	if(scanning)
-		to_chat(user, "<span class='warning'>Turn off [src] before you perform this action!</span>")
-		return
-	to_chat(user, "<span class='warning'>You override [src]'s radiation storing protocols. It will now generate small doses of radiation, and stored rads are now projected into creatures you scan.</span>")
-	obj_flags |= EMAGGED
-
-
-
-/obj/item/geiger_counter/cyborg
-	var/mob/listeningTo
-
-/obj/item/geiger_counter/cyborg/cyborg_unequip(mob/user)
-	if(!scanning)
-		return
-	scanning = FALSE
-	update_icon()
-
-/obj/item/geiger_counter/cyborg/equipped(mob/user)
-	. = ..()
-	if(listeningTo == user)
-		return
-	if(listeningTo)
-		UnregisterSignal(listeningTo, COMSIG_ATOM_RAD_ACT)
-	RegisterSignal(user, COMSIG_ATOM_RAD_ACT, PROC_REF(redirect_rad_act))
-	listeningTo = user
-
-/obj/item/geiger_counter/cyborg/proc/redirect_rad_act(datum/source, amount)
-	rad_act(amount)
-
-/obj/item/geiger_counter/cyborg/dropped()
-	. = ..()
-	if(listeningTo)
-		UnregisterSignal(listeningTo, COMSIG_ATOM_RAD_ACT)
-
-#undef RAD_LEVEL_NORMAL
-#undef RAD_LEVEL_MODERATE
-#undef RAD_LEVEL_HIGH
-#undef RAD_LEVEL_VERY_HIGH
-#undef RAD_LEVEL_CRITICAL
+		to_chat(usr, span_warning("[src] must be on to reset its radiation level!"))
+		return CLICK_ACTION_BLOCKING
+	to_chat(usr, span_notice("You flush [src]'s radiation counts, resetting it to normal."))
+	last_perceived_radiation_danger = null
+	update_appearance(UPDATE_ICON)
+	return CLICK_ACTION_SUCCESS

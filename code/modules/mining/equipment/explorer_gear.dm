@@ -69,15 +69,43 @@
 	armor = list(MELEE = 70, BULLET = 40, LASER = 10, ENERGY = 20, BOMB = 50, BIO = 100, RAD = 100, FIRE = 100, ACID = 100)
 	allowed = list(/obj/item/flashlight, /obj/item/tank/internals, /obj/item/resonator, /obj/item/mining_scanner, /obj/item/t_scanner/adv_mining_scanner, /obj/item/gun/energy/kinetic_accelerator, /obj/item/pickaxe)
 
-/obj/item/clothing/suit/space/hostile_environment/process(delta_time)
-	. = ..()
-	var/mob/living/carbon/C = loc
-	if(istype(C) && DT_PROB(1, delta_time)) //cursed by bubblegum
-		if(DT_PROB(7.5, delta_time))
-			new /datum/hallucination/oh_yeah(C)
-			to_chat(C, "<span class='colossus'><b>[pick("I AM IMMORTAL.","I SHALL TAKE BACK WHAT'S MINE.","I SEE YOU.","YOU CANNOT ESCAPE ME FOREVER.","DEATH CANNOT HOLD ME.")]</b></span>")
-		else
-			to_chat(C, "<span class='warning'>[pick("You hear faint whispers.","You smell ash.","You feel hot.","You hear a roar in the distance.")]</span>")
+/obj/item/clothing/suit/hooded/cloak/goliath
+	name = "goliath cloak"
+	icon_state = "goliath_cloak"
+	desc = "A staunch, practical cape made out of numerous monster materials, it is coveted amongst exiles & hermits."
+	allowed = list(
+		/obj/item/flashlight,
+		/obj/item/knife/combat/bone,
+		/obj/item/knife/combat/survival,
+		/obj/item/organ/internal/monster_core,
+		/obj/item/pickaxe,
+		/obj/item/spear,
+		/obj/item/tank/internals,
+		)
+	resistance_flags = FIRE_PROOF
+	armor_type = /datum/armor/cloak_goliath
+	hoodtype = /obj/item/clothing/head/hooded/cloakhood/goliath
+	body_parts_covered = CHEST|GROIN|ARMS
+
+/obj/item/clothing/suit/hooded/cloak/goliath/click_alt(mob/user)
+	if(!iscarbon(user))
+		return NONE
+	var/mob/living/carbon/char = user
+	if((char.get_item_by_slot(ITEM_SLOT_NECK) == src) || (char.get_item_by_slot(ITEM_SLOT_OCLOTHING) == src))
+		to_chat(user, span_warning("You can't adjust [src] while wearing it!"))
+		return CLICK_ACTION_BLOCKING
+	if(!user.is_holding(src))
+		to_chat(user, span_warning("You must be holding [src] in order to adjust it!"))
+		return CLICK_ACTION_BLOCKING
+	if(slot_flags & ITEM_SLOT_OCLOTHING)
+		slot_flags = ITEM_SLOT_NECK
+		set_armor(/datum/armor/none)
+		user.visible_message(span_notice("[user] adjusts their [src] for ceremonial use."), span_notice("You adjust your [src] for ceremonial use."))
+	else
+		slot_flags = initial(slot_flags)
+		set_armor(initial(armor_type))
+		user.visible_message(span_notice("[user] adjusts their [src] for defensive use."), span_notice("You adjust your [src] for defensive use."))
+	return CLICK_ACTION_SUCCESS
 
 /obj/item/clothing/head/helmet/space/hostile_environment
 	name = "H.E.C.K. helmet"

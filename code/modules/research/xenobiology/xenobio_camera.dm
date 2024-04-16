@@ -358,10 +358,9 @@
 // Alternate clicks for slime, monkey and open turf if using a xenobio console
 
 
-//Feeds a potion to slime
-/mob/living/simple_animal/slime/AltClick(mob/user)
+/mob/living/basic/slime/click_alt(mob/user)
 	SEND_SIGNAL(user, COMSIG_XENO_SLIME_CLICK_ALT, src)
-	..()
+	return CLICK_ACTION_SUCCESS
 
 //Picks up slime
 /mob/living/simple_animal/slime/ShiftClick(mob/user)

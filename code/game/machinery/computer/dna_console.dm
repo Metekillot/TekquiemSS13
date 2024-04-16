@@ -41,10 +41,7 @@
 	icon_keyboard = "med_key"
 	density = TRUE
 	circuit = /obj/item/circuitboard/computer/scan_consolenew
-
-	use_power = IDLE_POWER_USE
-	idle_power_usage = 10
-	active_power_usage = 400
+	interaction_flags_click = ALLOW_SILICON_REACH
 	light_color = LIGHT_COLOR_BLUE
 
 	/// Link to the techweb's stored research. Used to retrieve stored mutations
@@ -187,12 +184,9 @@
 	return ..()
 
 
-/obj/machinery/computer/scan_consolenew/AltClick(mob/user)
-	// Make sure the user can interact with the machine.
-	if(!user.canUseTopic(src, !issilicon(user)))
-		return
-
+/obj/machinery/computer/scan_consolenew/click_alt(mob/user)
 	eject_disk(user)
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/computer/scan_consolenew/Initialize()
 	. = ..()

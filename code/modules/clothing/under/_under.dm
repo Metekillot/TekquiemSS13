@@ -32,10 +32,81 @@
 		if(accessory_overlay)
 			. += accessory_overlay
 
-/obj/item/clothing/under/attackby(obj/item/I, mob/user, params)
-	if((has_sensor == BROKEN_SENSORS) && istype(I, /obj/item/stack/cable_coil))
-		var/obj/item/stack/cable_coil/C = I
-		C.use(1)
+	// Sensor handling
+	/// Does this undersuit have suit sensors in general
+	var/has_sensor = HAS_SENSORS
+	/// Does this undersuit spawn with a random sensor value
+	var/random_sensor = TRUE
+	/// What is the active sensor mode of this udnersuit
+	var/sensor_mode = NO_SENSORS
+
+	// Accessory handling (Can be componentized eventually)
+	/// The max number of accessories we can have on this suit.
+	var/max_number_of_accessories = 5
+	/// A list of all accessories attached to us.
+	var/list/obj/item/clothing/accessory/attached_accessories
+	/// The overlay of the accessory we're demonstrating. Only index 1 will show up.
+	/// This is the overlay on the MOB, not the item itself.
+	var/mutable_appearance/accessory_overlay
+
+/datum/armor/clothing_under
+	bio = 10
+	wound = 5
+
+/obj/item/clothing/under/Initialize(mapload)
+	. = ..()
+	if(random_sensor)
+		//make the sensor mode favor higher levels, except coords.
+		sensor_mode = pick(SENSOR_VITALS, SENSOR_VITALS, SENSOR_VITALS, SENSOR_LIVING, SENSOR_LIVING, SENSOR_COORDS, SENSOR_COORDS, SENSOR_OFF)
+	if(!unique_reskin) // Already registered via unique reskin
+		register_context()
+	AddElement(/datum/element/update_icon_updates_onmob, flags = ITEM_SLOT_ICLOTHING|ITEM_SLOT_OCLOTHING, body = TRUE)
+
+
+/obj/item/clothing/under/add_context(atom/source, list/context, obj/item/held_item, mob/living/user)
+	. = ..()
+
+	var/changed = FALSE
+	if(isnull(held_item) && has_sensor == HAS_SENSORS)
+		context[SCREENTIP_CONTEXT_RMB] = "Toggle suit sensors"
+		changed = TRUE
+
+	if(istype(held_item, /obj/item/clothing/accessory) && length(attached_accessories) < max_number_of_accessories)
+		context[SCREENTIP_CONTEXT_LMB] = "Attach accessory"
+		changed = TRUE
+
+	if(LAZYLEN(attached_accessories))
+		context[SCREENTIP_CONTEXT_ALT_RMB] = "Remove accessory"
+		changed = TRUE
+
+	if(istype(held_item, /obj/item/stack/cable_coil) && has_sensor == BROKEN_SENSORS)
+		context[SCREENTIP_CONTEXT_LMB] = "Repair suit sensors"
+		changed = TRUE
+
+	if(can_adjust && adjusted != DIGITIGRADE_STYLE)
+		context[SCREENTIP_CONTEXT_ALT_LMB] =  "Wear [adjusted == ALT_STYLE ? "normally" : "casually"]"
+		changed = TRUE
+
+	return changed ? CONTEXTUAL_SCREENTIP_SET : NONE
+
+
+/obj/item/clothing/under/worn_overlays(mutable_appearance/standing, isinhands = FALSE)
+	. = ..()
+	if(isinhands)
+		return
+
+	if(damaged_clothes)
+		. += mutable_appearance('icons/effects/item_damage.dmi', "damageduniform")
+	if(GET_ATOM_BLOOD_DNA_LENGTH(src))
+		. += mutable_appearance('icons/effects/blood.dmi', "uniformblood")
+	if(accessory_overlay)
+		. += accessory_overlay
+
+/obj/item/clothing/under/attackby(obj/item/attacking_item, mob/user, params)
+	if(has_sensor == BROKEN_SENSORS && istype(attacking_item, /obj/item/stack/cable_coil))
+		var/obj/item/stack/cable_coil/cabling = attacking_item
+		to_chat(user, span_notice("You repair the suit sensors on [src] with [cabling]."))
+		cabling.use(1)
 		has_sensor = HAS_SENSORS
 		to_chat(user,"<span class='notice'>You repair the suit sensors on [src] with [C].</span>")
 		return 1
@@ -246,17 +317,48 @@
 		if(H.w_uniform == src)
 			H.update_suit_sensors()
 
-/obj/item/clothing/under/AltClick(mob/user)
+/// Checks if the toggler is allowed to toggle suit sensors currently
+/obj/item/clothing/under/proc/can_toggle_sensors(mob/toggler)
+	if(!can_use(toggler) || toggler.stat == DEAD) //make sure they didn't hold the window open.
+		return FALSE
+	if(get_dist(toggler, src) > 1)
+		balloon_alert(toggler, "too far!")
+		return FALSE
+
+	switch(has_sensor)
+		if(LOCKED_SENSORS)
+			balloon_alert(toggler, "sensor controls locked!")
+			return FALSE
+		if(BROKEN_SENSORS)
+			balloon_alert(toggler, "sensors shorted!")
+			return FALSE
+		if(NO_SENSORS)
+			balloon_alert(toggler, "no sensors to ajdust!")
+			return FALSE
+
+	return TRUE
+
+/obj/item/clothing/under/click_alt(mob/user)
+	if(!can_adjust)
+		balloon_alert(user, "can't be adjusted!")
+		return CLICK_ACTION_BLOCKING
+	if(!can_use(user))
+		return NONE
+	rolldown()
+	return CLICK_ACTION_SUCCESS
+
+/obj/item/clothing/under/alt_click_secondary(mob/user)
 	. = ..()
 	if(.)
 		return
 
-	if(!user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY, FALSE, !iscyborg(user)))
+	if(!LAZYLEN(attached_accessories))
+		balloon_alert(user, "no accessories to remove!")
 		return
-	if(attached_accessory)
-		remove_accessory(user)
-	else
-		rolldown()
+	if(!user.can_perform_action(src, NEED_DEXTERITY))
+		return
+
+	pop_accessory(user)
 
 /obj/item/clothing/under/verb/jumpsuit_adjust()
 	set name = "Adjust Jumpsuit Style"

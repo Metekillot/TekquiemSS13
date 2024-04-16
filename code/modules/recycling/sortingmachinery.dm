@@ -499,20 +499,10 @@
 	payments_acc = null
 	to_chat(user, "<span class='notice'>You clear the registered account.</span>")
 
-/obj/item/sales_tagger/AltClick(mob/user)
-	. = ..()
-	var/potential_cut = input("How much would you like to payout to the registered card?","Percentage Profit") as num|null
+/obj/item/sales_tagger/click_alt(mob/user)
+	var/potential_cut = input("How much would you like to pay out to the registered card?","Percentage Profit ([round(cut_min*100)]% - [round(cut_max*100)]%)") as num|null
 	if(!potential_cut)
-		percent_cut = 50
-	percent_cut = clamp(round(potential_cut, 1), 1, 50)
-	to_chat(user, "<span class='notice'>[percent_cut]% profit will be received if a package with a barcode is sold.</span>")
-
-/obj/item/barcode
-	name = "Barcode tag"
-	desc = "A tiny tag, associated with a crewmember's account. Attach to a wrapped item to give that account a portion of the wrapped item's profit."
-	icon = 'icons/obj/bureaucracy.dmi'
-	icon_state = "barcode"
-	w_class = WEIGHT_CLASS_TINY
-	///All values inheirited from the sales tagger it came from.
-	var/datum/bank_account/payments_acc = null
-	var/percent_cut = 5
+		cut_multiplier = initial(cut_multiplier)
+	cut_multiplier = clamp(round(potential_cut/100, cut_min), cut_min, cut_max)
+	to_chat(user, span_notice("[round(cut_multiplier*100)]% profit will be received if a package with a barcode is sold."))
+	return CLICK_ACTION_SUCCESS

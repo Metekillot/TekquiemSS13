@@ -181,18 +181,20 @@
 /proc/get_timestamp()
 	return time2text(world.time + 432000, ":ss")
 
-/obj/item/detective_scanner/AltClick(mob/living/user)
-	// Best way for checking if a player can use while not incapacitated, etc
-	if(!user.canUseTopic(src, be_close=TRUE))
-		return
+/obj/item/detective_scanner/click_alt(mob/living/user)
 	if(!LAZYLEN(log))
-		to_chat(user, "<span class='notice'>Cannot clear logs, the scanner has no logs.</span>")
-		return
-	if(scanning)
-		to_chat(user, "<span class='notice'>Cannot clear logs, the scanner is in use.</span>")
-		return
-	to_chat(user, "<span class='notice'>The scanner logs are cleared.</span>")
+		balloon_alert(user, "no logs!")
+		return CLICK_ACTION_BLOCKING
+	if(scanner_busy)
+		balloon_alert(user, "scanner busy!")
+		return CLICK_ACTION_BLOCKING
+	balloon_alert(user, "deleting logs...")
+	if(!do_after(user, 3 SECONDS, target = src))
+		return CLICK_ACTION_BLOCKING
+	balloon_alert(user, "logs cleared")
 	log = list()
+	return CLICK_ACTION_SUCCESS
+
 
 /obj/item/detective_scanner/examine(mob/user)
 	. = ..()

@@ -54,11 +54,89 @@
 	resistance_flags = NONE
 	var/foldabletype = /obj/item/roller
 
-/obj/structure/bed/roller/attackby(obj/item/W, mob/user, params)
-	if(istype(W, /obj/item/roller/robo))
-		var/obj/item/roller/robo/R = W
-		if(R.loaded)
-			to_chat(user, "<span class='warning'>You already have a roller bed docked!</span>")
+/obj/structure/bed/medical/anchored
+	anchored = TRUE
+
+/obj/structure/bed/medical/emergency
+	name = "emergency medical bed"
+	desc = "A compact medical bed. This emergency version can be folded and carried for quick transport."
+	icon_state = "emerg_down"
+	base_icon_state = "emerg"
+	foldable_type = /obj/item/emergency_bed
+
+/obj/structure/bed/medical/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/noisy_movement)
+	if(anchored)
+		update_appearance()
+
+/obj/structure/bed/medical/add_context(atom/source, list/context, obj/item/held_item, mob/living/user)
+	. = ..()
+	context[SCREENTIP_CONTEXT_ALT_LMB] = "[anchored ? "Release brakes" : "Apply brakes"]"
+	if(!isnull(foldable_type) && !has_buckled_mobs())
+		context[SCREENTIP_CONTEXT_RMB] = "Fold up"
+
+	return CONTEXTUAL_SCREENTIP_SET
+
+/obj/structure/bed/medical/examine(mob/user)
+	. = ..()
+	if(anchored)
+		. += span_notice("The brakes are applied. They can be released with an Alt-click.")
+	else
+		. += span_notice("The brakes can be applied with an Alt-click.")
+
+	if(!isnull(foldable_type))
+		. += span_notice("You can fold it up with a Right-click.")
+
+/obj/structure/bed/medical/click_alt(mob/user)
+	if(has_buckled_mobs() && (user in buckled_mobs))
+		return CLICK_ACTION_BLOCKING
+
+	anchored = !anchored
+	balloon_alert(user, "brakes [anchored ? "applied" : "released"]")
+	update_appearance()
+	return CLICK_ACTION_SUCCESS
+
+/obj/structure/bed/medical/post_buckle_mob(mob/living/buckled)
+	. = ..()
+	set_density(TRUE)
+	update_appearance()
+
+/obj/structure/bed/medical/post_unbuckle_mob(mob/living/buckled)
+	. = ..()
+	set_density(FALSE)
+	update_appearance()
+
+/obj/structure/bed/medical/update_icon_state()
+	. = ..()
+	if(has_buckled_mobs())
+		icon_state = "[base_icon_state]_up"
+		// Push them up from the normal lying position
+		if(buckled_mobs.len > 1)
+			for(var/mob/living/patient as anything in buckled_mobs)
+				patient.pixel_y = patient.base_pixel_y
+		else
+			buckled_mobs[1].pixel_y = buckled_mobs[1].base_pixel_y
+	else
+		icon_state = "[base_icon_state]_down"
+
+/obj/structure/bed/medical/update_overlays()
+	. = ..()
+	if(!anchored)
+		return
+
+	if(has_buckled_mobs())
+		. += mutable_appearance(icon, "brakes_up")
+		. += emissive_appearance(icon, "brakes_up", src, alpha = src.alpha)
+	else
+		. += mutable_appearance(icon, "brakes_down")
+		. += emissive_appearance(icon, "brakes_down", src, alpha = src.alpha)
+
+/obj/structure/bed/medical/emergency/attackby(obj/item/item, mob/user, params)
+	if(istype(item, /obj/item/emergency_bed/silicon))
+		var/obj/item/emergency_bed/silicon/silicon_bed = item
+		if(silicon_bed.loaded)
+			to_chat(user, span_warning("You already have a medical bed docked!"))
 			return
 
 		if(has_buckled_mobs())
