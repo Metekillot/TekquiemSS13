@@ -129,6 +129,93 @@
 	throw_range = 7
 	force = 0
 	var/random_color = TRUE
+	/// the string of the dmi state the balloon has while on the floor.
+	var/world_state
+	/// the string of the dmi state the balloon has while in your inventory.
+	var/storage_state
+	/// the string describing the name of balloon's current colour.
+	var/current_color
+
+/obj/item/toy/balloon/long
+	name = "long balloon"
+	desc = "A perfect balloon to contort into goofy forms. Sealed with a mechanical bluespace wrap so it remains floating no matter what."
+	icon_state = "balloon_long"
+	inhand_icon_state = "balloon"
+	w_class = WEIGHT_CLASS_NORMAL
+	/// Combinations of balloon colours to make specific animals.
+	var/list/balloon_combos = list(
+		list("red", "blue") = /obj/item/toy/balloon_animal/guy,
+		list("red", "green") = /obj/item/toy/balloon_animal/nukie,
+		list("red", "yellow") = /obj/item/toy/balloon_animal/clown,
+		list("red", "orange") = /obj/item/toy/balloon_animal/cat,
+		list("red", "purple") = /obj/item/toy/balloon_animal/fly,
+		list("blue", "green") = /obj/item/toy/balloon_animal/podguy,
+		list("blue", "yellow") = /obj/item/toy/balloon_animal/ai,
+		list("blue", "orange") = /obj/item/toy/balloon_animal/dog,
+		list("blue", "purple") = /obj/item/toy/balloon_animal/xeno,
+		list("green", "yellow") = /obj/item/toy/balloon_animal/banana,
+		list("green", "orange") = /obj/item/toy/balloon_animal/lizard,
+		list("green", "purple") = /obj/item/toy/balloon_animal/slime,
+		list("yellow", "orange") = /obj/item/toy/balloon_animal/moth,
+		list("yellow", "purple") = /obj/item/toy/balloon_animal/ethereal,
+		list("orange", "purple") = /obj/item/toy/balloon_animal/plasmaman,
+	)
+
+/obj/item/toy/balloon/Moved(atom/old_loc, movement_dir, forced, list/old_locs, momentum_change)
+	. = ..()
+	if(isturf(loc))
+		icon_state = "[world_state]"
+	else
+		icon_state = "[storage_state]"
+	update_appearance()
+
+/obj/item/toy/balloon/long/attackby(obj/item/attacking_item, mob/living/user, params)
+	if(!istype(attacking_item, /obj/item/toy/balloon/long) || !HAS_TRAIT(user, TRAIT_BALLOON_SUTRA))
+		return ..()
+
+	var/obj/item/toy/balloon/long/hit_by = attacking_item
+	if(hit_by.current_color == current_color)
+		to_chat(user, span_warning("You must use balloons of different colours to do that!"))
+		return ..()
+	visible_message(
+		span_notice("[user.name] starts contorting up a balloon animal!"),
+		blind_message = span_hear("You hear balloons being contorted."),
+		vision_distance = 3,
+		ignored_mobs = user,
+	)
+	for(var/list/pair_of_colors in balloon_combos)
+		if((hit_by.current_color == pair_of_colors[1] && current_color == pair_of_colors[2]) || (current_color == pair_of_colors[1] && hit_by.current_color == pair_of_colors[2]))
+			var/path_to_spawn = balloon_combos[pair_of_colors]
+			user.put_in_hands(new path_to_spawn)
+			break
+	qdel(hit_by)
+	qdel(src)
+	return TRUE
+
+/obj/item/toy/balloon/attackby(obj/item/I, mob/user, params)
+	if(istype(I, /obj/item/ammo_casing/foam_dart) && ismonkey(user))
+		pop_balloon(monkey_pop = TRUE)
+	else
+		return ..()
+
+/obj/item/toy/balloon/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
+	var/mob/thrower = throwingdatum?.get_thrower()
+	if(ismonkey(thrower) && istype(AM, /obj/item/ammo_casing/foam_dart))
+		pop_balloon(monkey_pop = TRUE)
+	else
+		return ..()
+
+/obj/item/toy/balloon/bullet_act(obj/projectile/P)
+	if((istype(P,/obj/projectile/bullet/p50) || istype(P,/obj/projectile/bullet/foam_dart)) && ismonkey(P.firer))
+		pop_balloon(monkey_pop = TRUE)
+	else
+		return ..()
+
+/obj/item/toy/balloon/proc/pop_balloon(monkey_pop = FALSE)
+	playsound(src, 'sound/effects/cartoon_pop.ogg', 50, vary = TRUE)
+	if(monkey_pop) // Monkeys make money from popping bloons
+		new /obj/item/coin/iron(get_turf(src))
+	qdel(src)
 
 /obj/item/toy/balloon/Initialize(mapload)
 	. = ..()
@@ -1415,10 +1502,6 @@
 	toysay = "I am the law!"
 	toysound = 'sound/runtime/complionator/dredd.ogg'
 
-/obj/item/toy/figure/virologist
-	name = "Virologist action figure"
-	icon_state = "virologist"
-	toysay = "The cure is potassium!"
 
 /obj/item/toy/figure/warden
 	name = "Warden action figure"

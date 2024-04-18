@@ -40,11 +40,11 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 		"Security Officer" = 12,
 		"Detective" = 13,
 		// 20-29: Medbay
-		"Chief Medical Officer" = 20,
-		"Chemist" = 21,
-		"Virologist" = 22,
-		"Medical Doctor" = 23,
-		"Paramedic" = 24,
+		JOB_CHIEF_MEDICAL_OFFICER = 20,
+		JOB_CHEMIST = 21,
+		JOB_MEDICAL_DOCTOR = 22,
+		JOB_PARAMEDIC = 23,
+		JOB_CORONER = 24,
 		// 30-39: Science
 		"Research Director" = 30,
 		"Scientist" = 31,

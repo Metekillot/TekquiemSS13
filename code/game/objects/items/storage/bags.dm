@@ -414,9 +414,6 @@
 		/obj/item/reagent_containers/chem_pack
 		))
 
-/*
- *  Biowaste bag (mostly for xenobiologists)
- */
 
 /obj/item/storage/bag/bio
 	name = "bio bag"

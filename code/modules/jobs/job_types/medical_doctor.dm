@@ -1,11 +1,14 @@
 /datum/job/doctor
-	title = "Medical Doctor"
-	department_head = list("Chief Medical Officer")
-	faction = "Station"
-	total_positions = 5
-	spawn_positions = 3
-	supervisors = "the chief medical officer"
-	selection_color = "#ffeef0"
+	title = JOB_MEDICAL_DOCTOR
+	description = "Save lives, run around the station looking for victims, \
+		scan everyone in sight"
+	department_head = list(JOB_CHIEF_MEDICAL_OFFICER)
+	faction = FACTION_STATION
+	total_positions = 6
+	spawn_positions = 4
+	supervisors = SUPERVISOR_CMO
+	exp_granted_type = EXP_TYPE_CREW
+	config_tag = "MEDICAL_DOCTOR"
 
 	outfit = /datum/outfit/job/doctor
 

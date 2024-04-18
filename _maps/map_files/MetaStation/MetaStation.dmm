@@ -32319,6 +32319,15 @@
 "iOr" = (
 /turf/closed/wall/r_wall,
 /area/station/security/prison/garden)
+"iOt" = (
+/obj/structure/table/glass,
+/obj/machinery/reagentgrinder{
+	pixel_y = 8
+	},
+/obj/effect/turf_decal/tile/green/half/contrasted,
+/obj/machinery/light/small/directional/south,
+/turf/open/floor/iron/white,
+/area/station/medical/virology)
 "iOD" = (
 /obj/machinery/atmospherics/components/binary/tank_compressor{
 	dir = 8
@@ -45852,7 +45861,6 @@
 /obj/structure/chair/office/light{
 	dir = 8
 	},
-/obj/effect/landmark/start/virologist,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /turf/open/floor/iron/white,
 /area/station/medical/virology)
@@ -81609,8 +81617,118 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /turf/open/floor/iron/white,
-/area/medical/medbay/central)
-"svh" = (
+/area/station/medical/treatment_center)
+"sxg" = (
+/obj/machinery/door/firedoor,
+/turf/open/floor/iron/white/side,
+/area/station/science/lobby)
+"sxn" = (
+/obj/machinery/power/port_gen/pacman/pre_loaded,
+/turf/open/floor/plating,
+/area/station/maintenance/port/fore)
+"sxo" = (
+/obj/effect/spawner/structure/window/reinforced,
+/turf/open/floor/plating,
+/area/station/maintenance/solars/starboard/fore)
+"sxA" = (
+/obj/effect/decal/cleanable/cobweb/cobweb2,
+/obj/structure/cable,
+/obj/effect/spawner/random/decoration/showcase,
+/obj/structure/window/reinforced/spawner/directional/south,
+/turf/open/floor/carpet,
+/area/station/command/corporate_showroom)
+"sxB" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/obj/machinery/light/directional/west,
+/turf/open/floor/iron/white,
+/area/station/science/lab)
+"sxR" = (
+/obj/structure/table/wood,
+/obj/machinery/computer/security/wooden_tv,
+/turf/open/floor/wood,
+/area/station/command/heads_quarters/captain/private)
+"sxX" = (
+/obj/effect/turf_decal/siding/wood{
+	dir = 1
+	},
+/obj/machinery/firealarm/directional/south,
+/obj/structure/table/wood,
+/obj/item/stack/sheet/cloth/ten,
+/obj/item/toy/crayon/spraycan,
+/obj/item/stack/rods/ten,
+/obj/machinery/light/small/directional/south,
+/turf/open/floor/wood/large,
+/area/station/service/theater)
+"syc" = (
+/obj/structure/cable,
+/obj/effect/spawner/structure/window/reinforced,
+/turf/open/floor/plating,
+/area/station/security/brig)
+"syh" = (
+/obj/machinery/door/poddoor/shutters{
+	id = "maintwarehouse"
+	},
+/turf/open/floor/iron/dark,
+/area/station/maintenance/port/aft)
+"syo" = (
+/turf/closed/wall/r_wall,
+/area/station/command/heads_quarters/captain/private)
+"syC" = (
+/obj/structure/table/glass,
+/obj/effect/turf_decal/trimline/purple/corner,
+/obj/structure/disposalpipe/segment{
+	dir = 5
+	},
+/obj/machinery/camera/directional/west{
+	c_tag = "Science Hallway - West";
+	network = list("ss13","rd")
+	},
+/turf/open/floor/iron/white,
+/area/station/science/research)
+"syG" = (
+/obj/machinery/door/firedoor,
+/obj/effect/turf_decal/stripes/corner{
+	dir = 4
+	},
+/obj/machinery/button/door/directional/north{
+	id = "gateshutter";
+	name = "Gateway Shutter Control";
+	req_access = list("command")
+	},
+/turf/open/floor/iron,
+/area/station/hallway/primary/central)
+"syK" = (
+/obj/structure/cable,
+/obj/effect/turf_decal/trimline/red/filled/line,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/obj/structure/disposalpipe/segment,
+/turf/open/floor/iron,
+/area/station/security/brig)
+"syL" = (
+/obj/machinery/door/airlock/command{
+	name = "Captain's Quarters"
+	},
+/obj/structure/disposalpipe/segment,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/obj/effect/mapping_helpers/airlock/access/any/command/captain,
+/turf/open/floor/carpet,
+/area/station/command/heads_quarters/captain/private)
+"syO" = (
+/obj/structure/disposalpipe/segment,
+/obj/effect/turf_decal/stripes/line{
+	dir = 4
+	},
+/obj/structure/cable,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/machinery/duct,
+/turf/open/floor/plating,
+/area/station/maintenance/fore)
+"syT" = (
+/obj/structure/cable,
+/obj/structure/chair/office/light,
 /obj/machinery/atmospherics/components/unary/vent_pump/on/layer4{
 	dir = 1
 	},
