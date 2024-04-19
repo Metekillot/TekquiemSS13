@@ -225,7 +225,7 @@ const ConfigureListEntry = (props) => {
   const { act } = useBackend();
   return (
     <Dropdown
-      displayText={value}
+      selected={value}
       options={values}
       onSelected={(value) =>
         act('configure', {

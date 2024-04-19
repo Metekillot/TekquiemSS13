@@ -1,7 +1,7 @@
 import { FeatureChoiced } from '../base';
 import { FeatureDropdownInput } from '../dropdowns';
 
-export const uplink_loc: FeatureChoiced = {
-  name: 'Uplink Spawn Location',
+export const hemiplegic: FeatureChoiced = {
+  name: 'Hemiplegic',
   component: FeatureDropdownInput,
 };

@@ -279,6 +279,15 @@ const CheckoutModal = (props) => {
       <Box fontSize="20px" pb={1}>
         Are you sure you want to loan out this book?
       </Box>
+      <Dropdown
+        over
+        mb={1.7}
+        width="100%"
+        selected={bookName}
+        options={inventory.map((book) => book.title)}
+        value={bookName}
+        onSelected={(e) => setBookName(e)}
+      />
       <LabeledList>
         <LabeledList.Item label="Book Name">
           <Input

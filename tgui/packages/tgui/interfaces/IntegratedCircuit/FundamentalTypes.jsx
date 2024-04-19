@@ -87,9 +87,8 @@ export const FUNDAMENTAL_DATA_TYPES = {
         color={'transparent'}
         options={data}
         onSelected={setValue}
-        displayText={value}
-        openWidth={large ? '200px' : undefined}
-        noscroll
+        selected={value}
+        menuWidth={large ? '200px' : undefined}
       />
     );
   },

@@ -139,7 +139,7 @@ export class Changelog extends Component {
         </Stack.Item>
         <Stack.Item>
           <Dropdown
-            displayText={selectedDate}
+            autoScroll={false}
             options={dateChoices}
             onSelected={(value) => {
               const index = dateChoices.indexOf(value);
@@ -155,7 +155,7 @@ export class Changelog extends Component {
               return this.getData(dates[index]);
             }}
             selected={selectedDate}
-            width={'150px'}
+            width="150px"
           />
         </Stack.Item>
         <Stack.Item>
