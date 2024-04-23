@@ -83,9 +83,118 @@ GLOBAL_LIST_EMPTY(factions_list)
 /proc/init_crafting_recipes(list/crafting_recipes)
 	for(var/path in subtypesof(/datum/crafting_recipe))
 		var/datum/crafting_recipe/recipe = new path()
-		recipe.reqs = sortList(recipe.reqs, GLOBAL_PROC_REF(cmp_crafting_req_priority))
-		crafting_recipes += recipe
-	return crafting_recipes
+		var/is_cooking = (recipe.category in GLOB.crafting_category_food)
+		recipe.reqs = sort_list(recipe.reqs, GLOBAL_PROC_REF(cmp_crafting_req_priority))
+		if(recipe.name != "" && recipe.result)
+			if(is_cooking)
+				GLOB.cooking_recipes += recipe
+			else
+				GLOB.crafting_recipes += recipe
+
+	var/list/global_stack_recipes = list(
+		/obj/item/stack/sheet/glass = GLOB.glass_recipes,
+		/obj/item/stack/sheet/plasmaglass = GLOB.pglass_recipes,
+		/obj/item/stack/sheet/rglass = GLOB.reinforced_glass_recipes,
+		/obj/item/stack/sheet/plasmarglass = GLOB.prglass_recipes,
+		/obj/item/stack/sheet/animalhide/gondola = GLOB.gondola_recipes,
+		/obj/item/stack/sheet/animalhide/corgi = GLOB.corgi_recipes,
+		/obj/item/stack/sheet/animalhide/monkey = GLOB.monkey_recipes,
+		/obj/item/stack/sheet/animalhide/xeno = GLOB.xeno_recipes,
+		/obj/item/stack/sheet/leather = GLOB.leather_recipes,
+		/obj/item/stack/sheet/sinew = GLOB.sinew_recipes,
+		/obj/item/stack/sheet/animalhide/carp = GLOB.carp_recipes,
+		/obj/item/stack/sheet/mineral/sandstone = GLOB.sandstone_recipes,
+		/obj/item/stack/sheet/mineral/sandbags = GLOB.sandbag_recipes,
+		/obj/item/stack/sheet/mineral/diamond = GLOB.diamond_recipes,
+		/obj/item/stack/sheet/mineral/uranium = GLOB.uranium_recipes,
+		/obj/item/stack/sheet/mineral/plasma = GLOB.plasma_recipes,
+		/obj/item/stack/sheet/mineral/gold = GLOB.gold_recipes,
+		/obj/item/stack/sheet/mineral/silver = GLOB.silver_recipes,
+		/obj/item/stack/sheet/mineral/bananium = GLOB.bananium_recipes,
+		/obj/item/stack/sheet/mineral/titanium = GLOB.titanium_recipes,
+		/obj/item/stack/sheet/mineral/plastitanium = GLOB.plastitanium_recipes,
+		/obj/item/stack/sheet/mineral/snow = GLOB.snow_recipes,
+		/obj/item/stack/sheet/mineral/adamantine = GLOB.adamantine_recipes,
+		/obj/item/stack/sheet/mineral/abductor = GLOB.abductor_recipes,
+		/obj/item/stack/sheet/iron = GLOB.metal_recipes,
+		/obj/item/stack/sheet/plasteel = GLOB.plasteel_recipes,
+		/obj/item/stack/sheet/mineral/wood = GLOB.wood_recipes,
+		/obj/item/stack/sheet/mineral/bamboo = GLOB.bamboo_recipes,
+		/obj/item/stack/sheet/cloth = GLOB.cloth_recipes,
+		/obj/item/stack/sheet/durathread = GLOB.durathread_recipes,
+		/obj/item/stack/sheet/cardboard = GLOB.cardboard_recipes,
+		/obj/item/stack/sheet/bronze = GLOB.bronze_recipes,
+		/obj/item/stack/sheet/plastic = GLOB.plastic_recipes,
+		/obj/item/stack/ore/glass = GLOB.sand_recipes,
+		/obj/item/stack/rods = GLOB.rod_recipes,
+		/obj/item/stack/sheet/runed_metal = GLOB.runed_metal_recipes,
+	)
+
+	for(var/stack in global_stack_recipes)
+		for(var/stack_recipe in global_stack_recipes[stack])
+			if(istype(stack_recipe, /datum/stack_recipe_list))
+				var/datum/stack_recipe_list/stack_recipe_list = stack_recipe
+				for(var/nested_recipe in stack_recipe_list.recipes)
+					if(!nested_recipe)
+						continue
+					var/datum/crafting_recipe/stack/recipe = new/datum/crafting_recipe/stack(stack, nested_recipe)
+					if(recipe.name != "" && recipe.result)
+						GLOB.crafting_recipes += recipe
+			else
+				if(!stack_recipe)
+					continue
+				var/datum/crafting_recipe/stack/recipe = new/datum/crafting_recipe/stack(stack, stack_recipe)
+				if(recipe.name != "" && recipe.result)
+					GLOB.crafting_recipes += recipe
+
+	var/list/material_stack_recipes = list(
+		DSmaterials.base_stack_recipes,
+		DSmaterials.rigid_stack_recipes,
+	)
+
+	for(var/list/recipe_list in material_stack_recipes)
+		for(var/stack_recipe in recipe_list)
+			var/datum/crafting_recipe/stack/recipe = new/datum/crafting_recipe/stack(/obj/item/stack/sheet/iron, stack_recipe)
+			recipe.steps = list("Use different materials in hand to make an item of that material")
+			GLOB.crafting_recipes += recipe
+
+/// Inits atoms used in crafting recipes
+/proc/init_crafting_recipes_atoms()
+	var/list/recipe_lists = list(
+		GLOB.crafting_recipes,
+		GLOB.cooking_recipes,
+	)
+	var/list/atom_lists = list(
+		GLOB.crafting_recipes_atoms,
+		GLOB.cooking_recipes_atoms,
+	)
+
+	for(var/list_index in 1 to length(recipe_lists))
+		var/list/recipe_list = recipe_lists[list_index]
+		var/list/atom_list = atom_lists[list_index]
+		for(var/datum/crafting_recipe/recipe as anything in recipe_list)
+			// Result
+			atom_list |= recipe.result
+			// Ingredients
+			for(var/atom/req_atom as anything in recipe.reqs)
+				atom_list |= req_atom
+			// Catalysts
+			for(var/atom/req_atom as anything in recipe.chem_catalysts)
+				atom_list |= req_atom
+			// Reaction data - required container
+			if(recipe.reaction)
+				var/required_container = initial(recipe.reaction.required_container)
+				if(required_container)
+					atom_list |= required_container
+			// Tools
+			for(var/atom/req_atom as anything in recipe.tool_paths)
+				atom_list |= req_atom
+			// Machinery
+			for(var/atom/req_atom as anything in recipe.machinery)
+				atom_list |= req_atom
+			// Structures
+			for(var/atom/req_atom as anything in recipe.structures)
+				atom_list |= req_atom
 
 //creates every subtype of prototype (excluding prototype) and adds it to list L.
 //if no list/L is provided, one is created.

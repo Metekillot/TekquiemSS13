@@ -504,16 +504,38 @@
 	activation_sound = 'sound/items/bikehorn.ogg'
 
 /obj/machinery/anomalous_crystal/honk/ActivationReaction(mob/user)
-	if(..() && ishuman(user) && !(user in affected_targets))
-		var/mob/living/carbon/human/H = user
-		for(var/obj/item/W in H)
-			H.dropItemToGround(W)
-		var/datum/job/clown/C = new /datum/job/clown()
-		C.equip(H)
-		qdel(C)
-		affected_targets.Add(H)
+	. = ..()
+	if(!.)
+		return FALSE
 
-/obj/machinery/anomalous_crystal/theme_warp //Warps the area you're in to look like a new one
+	for(var/atom/thing as anything in range(1, src))
+		if(isturf(thing))
+			new /obj/effect/decal/cleanable/confetti(thing)
+			continue
+
+		if(!ishuman(thing))
+			continue
+
+		var/mob/living/carbon/human/new_clown = thing
+
+		if(new_clown.stat != DEAD)
+			continue
+
+		new_clown.revive(ADMIN_HEAL_ALL, force_grab_ghost = TRUE)
+
+		var/clown_ref = REF(new_clown)
+		if(clown_ref in clowned_mob_refs) //one clowning per person
+			continue
+
+		for(var/obj/item/to_strip in new_clown.get_equipped_items())
+			new_clown.dropItemToGround(to_strip)
+		new_clown.dress_up_as_job(SSjob.GetJobType(/datum/job/clown))
+		clowned_mob_refs += clown_ref
+
+	return TRUE
+
+/// Transforms the area to look like a new one
+/obj/machinery/anomalous_crystal/theme_warp
 	observer_desc = "This crystal warps the area around it to a theme."
 	activation_method = ACTIVATE_TOUCH
 	cooldown_add = 200
@@ -527,34 +549,8 @@
 
 /obj/machinery/anomalous_crystal/theme_warp/Initialize()
 	. = ..()
-	terrain_theme = pick("lavaland","winter","jungle","ayy lmao")
-	observer_desc = "This crystal changes the area around it to match the theme of \"[terrain_theme]\"."
-
-	switch(terrain_theme)
-		if("lavaland")//Depressurizes the place... and free cult metal, I guess.
-			NewTerrainFloors = /turf/open/floor/grass/snow/basalt
-			NewTerrainWalls = /turf/closed/wall/mineral/cult
-			NewFlora = list(/mob/living/simple_animal/hostile/asteroid/goldgrub)
-			florachance = 1
-		if("winter") //Snow terrain is slow to move in and cold! Get the assistants to shovel your driveway.
-			NewTerrainFloors = /turf/open/floor/grass/snow
-			NewTerrainWalls = /turf/closed/wall/mineral/wood
-			NewTerrainChairs = /obj/structure/chair/wood
-			NewTerrainTables = /obj/structure/table/glass
-			NewFlora = list(/obj/structure/flora/grass/green, /obj/structure/flora/grass/brown, /obj/structure/flora/grass/both)
-		if("jungle") //Beneficial due to actually having breathable air. Plus, monkeys and bows and arrows.
-			NewTerrainFloors = /turf/open/floor/grass
-			NewTerrainWalls = /turf/closed/wall/mineral/wood
-			NewTerrainChairs = /obj/structure/chair/wood
-			NewTerrainTables = /obj/structure/table/wood
-			NewFlora = list(/obj/structure/flora/ausbushes/sparsegrass, /obj/structure/flora/ausbushes/fernybush, /obj/structure/flora/ausbushes/leafybush,
-							/obj/structure/flora/ausbushes/grassybush, /obj/structure/flora/ausbushes/sunnybush, /obj/structure/flora/tree/palm, /mob/living/carbon/human/species/monkey)
-			florachance = 20
-		if("ayy lmao") //Beneficial, turns stuff into alien alloy which is useful to cargo and research. Also repairs atmos.
-			NewTerrainFloors = /turf/open/floor/plating/abductor
-			NewTerrainWalls = /turf/closed/wall/mineral/abductor
-			NewTerrainChairs = /obj/structure/bed/abductor //ayys apparently don't have chairs. An entire species of people who only recline.
-			NewTerrainTables = /obj/structure/table/abductor
+	terrain_theme = DSmaterials.dimensional_themes[pick(subtypesof(/datum/dimension_theme))]
+	observer_desc = "This crystal changes the area around it to match the theme of \"[terrain_theme.name]\"."
 
 /obj/machinery/anomalous_crystal/theme_warp/ActivationReaction(mob/user, method)
 	if(..())
@@ -621,20 +617,30 @@
 	activation_sound = 'sound/hallucinations/growl1.ogg'
 
 /obj/machinery/anomalous_crystal/dark_reprise/ActivationReaction(mob/user, method)
-	if(..())
-		for(var/i in range(1, src))
-			if(isturf(i))
-				new /obj/effect/temp_visual/cult/sparks(i)
-				continue
-			if(ishuman(i))
-				var/mob/living/carbon/human/H = i
-				if(H.stat == DEAD)
-					H.set_species(/datum/species/shadow, 1)
-					H.regenerate_limbs()
-					H.regenerate_organs()
-					H.revive(full_heal = TRUE, admin_revive = FALSE)
-					ADD_TRAIT(H, TRAIT_BADDNA, MAGIC_TRAIT) //Free revives, but significantly limits your options for reviving except via the crystal
-					H.grab_ghost(force = TRUE)
+	. = ..()
+	if(!.)
+		return FALSE
+
+	for(var/atom/thing as anything in range(1, src))
+		if(isturf(thing))
+			new /obj/effect/temp_visual/cult/sparks(thing)
+			continue
+
+		if(!ishuman(thing))
+			continue
+
+		var/mob/living/carbon/human/to_revive = thing
+
+		if(to_revive.stat != DEAD)
+			continue
+
+		to_revive.set_species(/datum/species/shadow, TRUE)
+		to_revive.revive(ADMIN_HEAL_ALL, force_grab_ghost = TRUE)
+		//Free revives, but significantly limits your options for reviving except via the crystal
+		//except JK who cares about BADDNA anymore. this even heals suicides.
+		ADD_TRAIT(to_revive, TRAIT_BADDNA, MAGIC_TRAIT)
+
+	return TRUE
 
 /obj/machinery/anomalous_crystal/helpers //Lets ghost spawn as helpful creatures that can only heal people slightly. Incredibly fragile and they can't converse with humans
 	observer_desc = "This crystal allows ghosts to turn into a fragile creature that can heal people."

@@ -179,17 +179,20 @@
 /datum/proximity_monitor/advanced/timestop/proc/unfreeze_projectile(obj/projectile/P)
 	P.paused = FALSE
 
-/datum/proximity_monitor/advanced/timestop/proc/freeze_mob(mob/living/L)
-	frozen_mobs += L
-	L.Stun(20, ignore_canstun = TRUE)
-	ADD_TRAIT(L, TRAIT_MUTE, TIMESTOP_TRAIT)
-	walk(L, 0) //stops them mid pathing even if they're stunimmune
-	if(isanimal(L))
-		var/mob/living/simple_animal/S = L
-		S.toggle_ai(AI_OFF)
-	if(ishostile(L))
-		var/mob/living/simple_animal/hostile/H = L
-		H.LoseTarget()
+/datum/proximity_monitor/advanced/timestop/proc/freeze_mob(mob/living/victim)
+	frozen_mobs += victim
+	victim.Stun(20, ignore_canstun = TRUE)
+	victim.add_traits(list(TRAIT_MUTE, TRAIT_EMOTEMUTE), TIMESTOP_TRAIT)
+	DSmove_manager.stop_looping(victim) //stops them mid pathing even if they're stunimmune //This is really dumb
+	if(isanimal(victim))
+		var/mob/living/simple_animal/animal_victim = victim
+		animal_victim.toggle_ai(AI_OFF)
+		if(ishostile(victim))
+			var/mob/living/simple_animal/hostile/hostile_victim = victim
+			hostile_victim.LoseTarget()
+	else if(isbasicmob(victim))
+		var/mob/living/basic/basic_victim = victim
+		basic_victim.ai_controller?.set_ai_status(AI_STATUS_OFF)
 
 /datum/proximity_monitor/advanced/timestop/proc/unfreeze_mob(mob/living/L)
 	L.AdjustStun(-20, ignore_canstun = TRUE)

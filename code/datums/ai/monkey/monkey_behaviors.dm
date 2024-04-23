@@ -122,9 +122,9 @@
 			break
 
 	if(target)
-		walk_away(living_pawn, target, MONKEY_ENEMY_VISION, 5)
-	else
-		finish_action(controller, TRUE)
+		DSmove_manager.move_away(living_pawn, target, max_dist=MONKEY_ENEMY_VISION, delay=5)
+		return AI_BEHAVIOR_DELAY
+	return AI_BEHAVIOR_DELAY | AI_BEHAVIOR_SUCCEEDED
 
 /datum/ai_behavior/monkey_attack_mob
 	behavior_flags = AI_BEHAVIOR_REQUIRE_MOVEMENT | AI_BEHAVIOR_MOVE_AND_PERFORM //performs to increase frustration
@@ -158,8 +158,10 @@
 /datum/ai_behavior/monkey_attack_mob/finish_action(datum/ai_controller/controller, succeeded)
 	. = ..()
 	var/mob/living/living_pawn = controller.pawn
-	walk(living_pawn, 0)
-	controller.blackboard[BB_MONKEY_CURRENT_ATTACK_TARGET] = null
+	controller.clear_blackboard_key(target_key)
+	if(QDELETED(living_pawn)) // pawn can be null at this point
+		return
+	DSmove_manager.stop_looping(living_pawn)
 
 /// attack using a held weapon otherwise bite the enemy, then if we are angry there is a chance we might calm down a little
 /datum/ai_behavior/monkey_attack_mob/proc/monkey_attack(datum/ai_controller/controller, mob/living/target, delta_time)

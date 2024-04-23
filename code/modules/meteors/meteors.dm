@@ -171,7 +171,7 @@ GLOBAL_LIST_INIT(meteors_sandstorm, list(/obj/effect/meteor/sand=45, /obj/effect
 /obj/effect/meteor/proc/chase_target(atom/chasing, delay, home)
 	if(!isatom(chasing))
 		return
-	var/datum/move_loop/new_loop = SSmove_manager.move_towards(src, chasing, delay, home, lifetime)
+	var/datum/move_loop/new_loop = DSmove_manager.move_towards(src, chasing, delay, home, lifetime)
 	if(!new_loop)
 		return
 

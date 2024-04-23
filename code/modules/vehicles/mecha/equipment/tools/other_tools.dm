@@ -128,11 +128,10 @@
 			log_game("[key_name(source)] used a Gravitational Catapult repulse wave on [AREACOORD(targetturf)]")
 			return ..()
 
-/obj/item/mecha_parts/mecha_equipment/gravcatapult/proc/do_scatter(atom/movable/A, atom/movable/target)
-	var/iter = 5-get_dist(A,target)
-	for(var/i in 0 to iter)
-		step_away(A,target)
-		sleep(2)
+/obj/item/mecha_parts/mecha_equipment/gravcatapult/proc/do_scatter(atom/movable/scatter, atom/movable/target)
+	var/dist = 5 - get_dist(scatter, target)
+	var/delay = 2
+	DSmove_manager.move_away(scatter, target, delay = delay, timeout = delay * dist, flags = MOVEMENT_LOOP_START_FAST, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
 
 /obj/item/mecha_parts/mecha_equipment/gravcatapult/get_equip_info()
 	return "[..()] [mode==1?"([movable_target||"Nothing"])":null] \[<a href='byond://?src=[REF(src)];mode=1'>S</a>|<a href='byond://?src=[REF(src)];mode=2'>P</a>\]"

@@ -104,11 +104,11 @@
 
 	moving = TRUE
 
-	var/obj/structure/transit_tube/current_tube = null
-	var/next_dir
-	var/next_loc
-	var/last_delay = 0
-	var/exit_delay
+	var/datum/move_loop/engine = DSmove_manager.force_move_dir(src, dir, 0, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
+	RegisterSignal(engine, COMSIG_MOVELOOP_PREPROCESS_CHECK, PROC_REF(before_pipe_transfer))
+	RegisterSignal(engine, COMSIG_MOVELOOP_POSTPROCESS, PROC_REF(after_pipe_transfer))
+	RegisterSignal(engine, COMSIG_QDELETING, PROC_REF(engine_finish))
+	calibrate_engine(engine)
 
 	for(var/obj/structure/transit_tube/tube in loc)
 		if(tube.has_exit(dir))

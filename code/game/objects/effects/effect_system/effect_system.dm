@@ -75,7 +75,11 @@ would spawn and follow the beaker, even if it is carried or thrown.
 	if(!QDELETED(src))
 		addtimer(CALLBACK(src, PROC_REF(decrement_total_effect)), 20)
 
-/datum/effect_system/proc/decrement_total_effect()
+	var/datum/move_loop/loop = DSmove_manager.move(effect, direction, step_delay, timeout = step_delay * step_amt, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
+	RegisterSignal(loop, COMSIG_QDELETING, PROC_REF(decrement_total_effect))
+
+/datum/effect_system/proc/decrement_total_effect(datum/source)
+	SIGNAL_HANDLER
 	total_effects--
 	if(autocleanup && total_effects <= 0)
 		qdel(src)

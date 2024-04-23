@@ -69,11 +69,10 @@
 		for(var/i in M.categories)
 			switch(i)
 				if(MAT_CATEGORY_BASE_RECIPES)
-					var/list/temp = SSmaterials.base_stack_recipes.Copy()
-					recipes += temp
+					recipes |= DSmaterials.base_stack_recipes.Copy()
 				if(MAT_CATEGORY_RIGID)
-					var/list/temp = SSmaterials.rigid_stack_recipes.Copy()
-					recipes += temp
+					recipes |= DSmaterials.rigid_stack_recipes.Copy()
+
 	update_weight()
 	update_icon()
 
@@ -84,7 +83,7 @@
  * - multiplier: The amount to multiply the mats per unit by. Defaults to 1.
  */
 /obj/item/stack/proc/set_mats_per_unit(list/mats, multiplier=1)
-	mats_per_unit = SSmaterials.FindOrCreateMaterialCombo(mats, multiplier)
+	mats_per_unit = DSmaterials.FindOrCreateMaterialCombo(mats, multiplier)
 	update_custom_materials()
 
 /** Updates the custom materials list of this stack.

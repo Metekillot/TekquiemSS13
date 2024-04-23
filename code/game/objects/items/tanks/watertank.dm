@@ -289,11 +289,10 @@
 		var/obj/effect/resin_container/A = new (get_turf(src))
 		log_game("[key_name(user)] used Resin Launcher at [AREACOORD(user)].")
 		playsound(src,'sound/items/syringeproj.ogg',40,TRUE)
-		for(var/a=0, a<5, a++)
-			step_towards(A, target)
-			sleep(2)
-		A.Smoke()
-		addtimer(VARSET_CALLBACK(src, resin_cooldown, FALSE), 10 SECONDS)
+		var/delay = 2
+		var/datum/move_loop/loop = DSmove_manager.move_towards(resin, target, delay, timeout = delay * 5, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
+		RegisterSignal(loop, COMSIG_MOVELOOP_POSTPROCESS, PROC_REF(resin_stop_check))
+		RegisterSignal(loop, COMSIG_QDELETING, PROC_REF(resin_landed))
 		return
 	if(nozzle_mode == RESIN_FOAM)
 		if(!Adj || !isturf(target))

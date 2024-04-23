@@ -64,13 +64,11 @@
 	if(immobilize)
 		ADD_TRAIT(AM, TRAIT_IMMOBILIZED, src)
 
-	affecting.Add(AM)
-	while(AM && !stopthrow)
-		if(tiles)
-			if(curtiles >= tiles)
-				break
-		if(AM.z != src.z)
-			break
+	affecting[AM] = AM.dir
+	var/datum/move_loop/loop = DSmove_manager.move(AM, direction, speed, tiles ? tiles * speed : INFINITY)
+	RegisterSignal(loop, COMSIG_MOVELOOP_PREPROCESS_CHECK, PROC_REF(pre_move))
+	RegisterSignal(loop, COMSIG_MOVELOOP_POSTPROCESS, PROC_REF(post_move))
+	RegisterSignal(loop, COMSIG_QDELETING, PROC_REF(set_to_normal))
 
 		curtiles++
 

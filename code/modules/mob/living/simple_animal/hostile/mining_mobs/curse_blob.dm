@@ -44,8 +44,8 @@
 	set waitfor = FALSE
 	if(doing_move_loop)
 		return
-	doing_move_loop = TRUE
-	if(check_for_target())
+	our_loop = DSmove_manager.force_move(src, move_target, delay, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
+	if(!our_loop)
 		return
 	while(!QDELETED(src) && doing_move_loop && isturf(loc) && !check_for_target())
 		var/step_turf = get_step(src, get_dir(src, set_target))

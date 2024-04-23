@@ -47,7 +47,7 @@
 	M.title = title
 	M.content =  text
 
-	SScommunications.send_message(M)
+	DScommunications.send_message(message)
 
 /**
  * Sends a minor annoucement to players.

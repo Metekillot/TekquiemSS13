@@ -219,8 +219,11 @@
 		addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/item/extinguisher, move_particles), particles, repetition), 2)
 
 //Chair movement loop
-/obj/item/extinguisher/proc/move_chair(obj/B, movementdirection, repetition=0)
-	step(B, movementdirection)
+/obj/item/extinguisher/proc/move_chair(obj/buckled_object, movementdirection)
+	var/datum/move_loop/loop = DSmove_manager.move(buckled_object, movementdirection, 1, timeout = 9, flags = MOVEMENT_LOOP_START_FAST, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
+	//This means the chair slowing down is dependant on the extinguisher existing, which is weird
+	//Couldn't figure out a better way though
+	RegisterSignal(loop, COMSIG_MOVELOOP_POSTPROCESS, PROC_REF(manage_chair_speed))
 
 	var/timer_seconds
 	switch(repetition)

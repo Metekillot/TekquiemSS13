@@ -23,32 +23,14 @@
 	var/disable_wire
 	var/shock_wire
 
-	var/busy = FALSE
-	var/prod_coeff = 1
-
-	var/datum/design/being_built
-	var/datum/techweb/stored_research
-	var/list/datum/design/matching_designs
-	var/selected_category
-	var/screen = 1
-	var/base_price = 25
-	var/hacked_price = 50
-
-	var/list/categories = list(
-							"Tools",
-							"Electronics",
-							"Construction",
-							"T-Comm",
-							"Security",
-							"Machinery",
-							"Medical",
-							"Misc",
-							"Dinnerware",
-							"Imported"
-							)
-
-/obj/machinery/autolathe/Initialize()
-	AddComponent(/datum/component/material_container, SSmaterials.materials_by_category[MAT_CATEGORY_ITEM_MATERIAL], 0, MATCONTAINER_EXAMINE, _after_insert = CALLBACK(src, PROC_REF(AfterMaterialInsert)))
+/obj/machinery/autolathe/Initialize(mapload)
+	materials = AddComponent( \
+		/datum/component/material_container, \
+		DSmaterials.materials_by_category[MAT_CATEGORY_ITEM_MATERIAL], \
+		0, \
+		MATCONTAINER_EXAMINE, \
+		container_signals = list(COMSIG_MATCONTAINER_ITEM_CONSUMED = TYPE_PROC_REF(/obj/machinery/autolathe, AfterMaterialInsert)) \
+	)
 	. = ..()
 
 	wires = new /datum/wires/autolathe(src)
@@ -203,7 +185,7 @@
 		var/amount_needed = design.materials[material]
 		if(istext(material)) // category
 			var/list/choices = list()
-			for(var/datum/material/valid_candidate as anything in SSmaterials.materials_by_category[material])
+			for(var/datum/material/valid_candidate as anything in DSmaterials.materials_by_category[material])
 				if(materials.get_material_amount(valid_candidate) < amount_needed)
 					continue
 				choices[valid_candidate.name] = valid_candidate
