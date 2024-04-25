@@ -41,7 +41,12 @@ Possible to do for anyone motivated enough:
 	max_integrity = 300
 	armor = list(MELEE = 50, BULLET = 20, LASER = 20, ENERGY = 20, BOMB = 0, BIO = 0, RAD = 0, FIRE = 50, ACID = 0)
 	circuit = /obj/item/circuitboard/machine/holopad
-	/// List of living mobs that use the holopad
+	interaction_flags_atom = parent_type::interaction_flags_atom | INTERACT_ATOM_IGNORE_MOBILITY
+	interaction_flags_click = ALLOW_SILICON_REACH
+	// Blue, dim light
+	light_power = 0.8
+	light_color = LIGHT_COLOR_BLUE
+	/// associative lazylist of the form: list(owner of a hologram = hologram representing that owner).
 	var/list/masters
 	/// Holoray-mob link
 	var/list/holorays
