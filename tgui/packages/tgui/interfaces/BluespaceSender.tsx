@@ -2,7 +2,6 @@ import { filter, sortBy } from 'common/collections';
 import { flow } from 'common/fp';
 import { toFixed } from 'common/math';
 import { BooleanLike } from 'common/react';
-import { multiline } from 'common/string';
 
 import { useBackend } from '../backend';
 import {
@@ -64,7 +63,7 @@ export const BluespaceSender = (props) => {
                 color="transparent"
                 icon="info"
                 tooltipPosition="bottom-start"
-                tooltip={multiline`
+                tooltip={`
                 Any gas you pipe into here will be added to the Bluespace
                 Network! That means any connected Bluespace Vendor (multitool)
                 will hook up to all the gas stored in this, and charge

@@ -1,5 +1,5 @@
 import { Color } from 'common/color';
-import { decodeHtmlEntities, multiline } from 'common/string';
+import { decodeHtmlEntities } from 'common/string';
 import { Component, createRef, RefObject } from 'react';
 
 import { useBackend } from '../backend';
@@ -234,14 +234,13 @@ export const Canvas = (props) => {
             <Flex.Item>
               <Tooltip
                 content={
-                  multiline`
-                  You can Right-Click the canvas to change the color of
-                  the painting tool to that of the clicked pixel.
+                  `
+                  Right-Click a pixel on the canvas to copy its color.
                 ` +
                   (data.editable
-                    ? multiline`
-                  \n You can also select a color from the
-                  palette at the bottom of the UI,
+                    ? `
+                  \n Left-Click the palette at the
+                  bottom of the UI to select a color,
                   or input a new one with Right-Click.
                 `
                     : '')
