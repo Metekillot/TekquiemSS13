@@ -222,7 +222,7 @@ jobs:
 
   run_all_tests:
     name: Integration Tests
-    needs: collect_data
+    needs: [collect_data]
 
     strategy:
       fail-fast: false
@@ -248,7 +248,16 @@ jobs:
       map: ${{ matrix.setup.map }}
       major: ${{ matrix.setup.major }}
       minor: ${{ matrix.setup.minor }}
-      max_required_byond_client: ${{ matrix.setup.max_client_version || needs.collect_data.outputs.max_required_byond_client }}
+      max_required_byond_client: ${{needs.collect_data.outputs.max_required_byond_client}}
+
+  check_alternate_tests:
+    if: ( !contains(github.event.head_commit.message, '[ci skip]') && needs.collect_data.outputs.alternate_tests != '[]' )
+    name: Check Alternate Tests
+    needs: [run_alternate_tests]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - run: echo Alternate tests passed.
 
   compare_screenshots:
     if: needs.collect_data.outputs.alternate_tests == '[]' || needs.run_alternate_tests.result == 'success'
