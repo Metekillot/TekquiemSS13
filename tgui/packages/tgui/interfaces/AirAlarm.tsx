@@ -1,7 +1,5 @@
 import { BooleanLike } from 'common/react';
 import { Fragment } from 'react';
-
-import { useBackend, useLocalState } from '../backend';
 import {
   Box,
   Button,
@@ -10,7 +8,10 @@ import {
   NumberInput,
   Section,
   Table,
-} from '../components';
+  VirtualList,
+} from 'tgui-core/components';
+
+import { useBackend, useLocalState } from '../backend';
 import { Window } from '../layouts';
 import {
   Scrubber,

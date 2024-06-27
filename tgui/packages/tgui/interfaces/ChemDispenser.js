@@ -1,8 +1,6 @@
 import { toFixed } from 'common/math';
 import { toTitleCase } from 'common/string';
 import { useState } from 'react';
-
-import { useBackend } from '../backend';
 import {
   Box,
   Button,
@@ -10,7 +8,9 @@ import {
   LabeledList,
   ProgressBar,
   Section,
-} from '../components';
+} from 'tgui-core/components';
+
+import { useBackend } from '../backend';
 import { Window } from '../layouts';
 
 export const ChemDispenser = (props) => {
