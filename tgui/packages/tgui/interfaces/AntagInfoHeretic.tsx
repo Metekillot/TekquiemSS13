@@ -1,9 +1,16 @@
-import { BooleanLike } from 'common/react';
 import { useState } from 'react';
+import {
+  Box,
+  Button,
+  DmIcon,
+  Flex,
+  Section,
+  Stack,
+  Tabs,
+} from 'tgui-core/components';
+import { BooleanLike } from 'tgui-core/react';
 
 import { useBackend } from '../backend';
-import { BlockQuote, Box, Button, Section, Stack, Tabs } from '../components';
-import { CssColor } from '../constants';
 import { Window } from '../layouts';
 import {
   Objective,
