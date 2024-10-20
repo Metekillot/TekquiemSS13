@@ -772,7 +772,7 @@
 	display_order = JOB_DISPLAY_ORDER_CITIZEN
 
 	humans_accessible = TRUE
-	garou_allowed = TRUE
+	garou_allowed = FALSE
 
 	duty = "Follow the Traditions, or other laws provided by the current authority among your kind."
 	minimal_masquerade = 0
@@ -1471,7 +1471,7 @@
 
 //	minimal_generation = 11	//Uncomment when players get exp enough
 	humans_accessible = TRUE
-	garou_allowed = TRUE
+	garou_allowed = FALSE
 
 	duty = "Transfer people in the city."
 	minimal_masquerade = 0
