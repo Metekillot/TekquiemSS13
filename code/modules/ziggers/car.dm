@@ -107,8 +107,8 @@
 	var/last_beep = 0
 
 	var/component_type = /datum/component/storage/concrete
-	var/baggage_limit = 20
-	var/baggage_max = WEIGHT_CLASS_NORMAL
+	var/baggage_limit = 30
+	var/baggage_max = WEIGHT_CLASS_BULKY
 
 	var/exploded = FALSE
 	var/beep_sound = 'code/modules/ziggers/sounds/beep.ogg'
@@ -716,6 +716,8 @@
 	last_dir = WEST
 	beep_sound = 'code/modules/ziggers/sounds/migalka.ogg'
 	access = "police"
+	baggage_limit = 50
+	baggage_max = WEIGHT_CLASS_BULKY
 	var/color_blue = FALSE
 	var/last_color_change = 0
 
@@ -745,6 +747,8 @@
 	moving_dir = WEST
 	last_dir = WEST
 	access = "taxi"
+	baggage_limit = 40
+	baggage_max = WEIGHT_CLASS_BULKY
 
 /obj/vampire_car/track
 	icon_state = "track"
@@ -754,7 +758,7 @@
 	moving_dir = WEST
 	last_dir = WEST
 	access = "none"
-	baggage_limit = 40
+	baggage_limit = 100
 	baggage_max = WEIGHT_CLASS_BULKY
 
 /obj/vampire_car/track/Initialize()
@@ -764,6 +768,7 @@
 
 /obj/vampire_car/track/volkswagen
 	icon_state = "volkswagen"
+	baggage_limit = 60
 
 /obj/vampire_car/track/ambulance
 	icon_state = "ambulance"
