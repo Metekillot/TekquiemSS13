@@ -18,12 +18,9 @@
 	dust_anim = "dust-h"
 	var/datum/vampireclane/clane
 
-/mob/living
-	var/list/knowscontacts = list()
-
 /datum/action/vampireinfo
 	name = "About Me"
-	desc = "Check assigned role, clane, generation, humanity, masquerade, known disciplines, known contacts etc."
+	desc = "Check assigned role, clan, generation, humanity, masquerade, known disciplines, known contacts etc."
 	button_icon_state = "masquerade"
 	check_flags = NONE
 	var/mob/living/carbon/human/host
@@ -62,8 +59,8 @@
 			dat += "<BR>"
 			if(host.mind.enslaved_to)
 				dat += "My Regnant is [host.mind.enslaved_to], I should obey their wants.<BR>"
-		if(host.frakcja == "Camarilla" || host.frakcja == "Anarch" || host.frakcja == "Sabbat")
-			dat += "I belong to [host.frakcja] faction, I shouldn't disobey their rules.<BR>"
+		if(host.vampire_faction == "Camarilla" || host.vampire_faction == "Anarch" || host.vampire_faction == "Sabbat")
+			dat += "I belong to [host.vampire_faction] faction, I shouldn't disobey their rules.<BR>"
 		if(host.generation)
 			dat += "I'm from [host.generation] generation.<BR>"
 		if(host.mind.special_role)
@@ -92,32 +89,32 @@
 		if(!enlight)
 			switch(host.humanity)
 				if(8 to 10)
-					humanity = "I'm the best example of mercy and kindness."
+					humanity = "I'm saintly."
 				if(7)
-					humanity = "I have nothing to complain about my humanity."
+					humanity = "I feel as human as when I lived."
 				if(5 to 6)
-					humanity = "I'm slightly above the humane."
+					humanity = "I'm feeling distant from my humanity."
 				if(4)
-					humanity = "I don't care about kine."
+					humanity = "I don't feel any compassion for the Kine anymore."
 				if(2 to 3)
-					humanity = "There's nothing bad in murdering for <b>BLOOD</b>."
+					humanity = "I feel hunger for <b>BLOOD</b>. My humanity is slipping away."
 				if(1)
-					humanity = "I'm slowly falling into madness..."
+					humanity = "Blood. Feed. Hunger. It gnaws. Must <b>FEED!</b>"
 
 		else
 			switch(host.humanity)
 				if(8 to 10)
-					humanity = "I'm <b>ENLIGHTED</b> and in the true harmony with my <b>BEAST</b>."
+					humanity = "I'm <b>ENLIGHTENED</b>, my <b>BEAST</b> and I are in complete harmony."
 				if(7)
-					humanity = "I'm slightly <b>ENLIGHTED</b>."
+					humanity = "I've made great strides in co-existing with my beast."
 				if(5 to 6)
-					humanity = "I'm about to be <b>ENLIGHTED</b>."
+					humanity = "I'm starting to learn how to share this unlife with my beast."
 				if(4)
-					humanity = "I'm purely trying to be <b>ENLIGHTED</b>."
+					humanity = "I'm still new to my path, but I'm learning."
 				if(2 to 3)
-					humanity = "My <b>BEAST</b> is calling me to be <b>ENLIGHTED</b>."
+					humanity = "I'm a complete novice to my path."
 				if(1)
-					humanity = "Am I <b>ENLIGHTED</b> or <b>HUMANE</b>?"
+					humanity = "I'm losing control over my beast!"
 
 		dat += "[humanity]<BR>"
 		dat += "<b>Physique</b>: [host.physique]<BR>"
@@ -139,6 +136,9 @@
 			dat += "<b>Enemy: [host.enemy_name]</b><BR>"
 		if(host.lover_name)
 			dat += "<b>Lover: [host.lover_name]</b><BR>"
+		var/obj/keypad/armory/K = find_keypad(/obj/keypad/armory)
+		if(K && (host.mind.assigned_role == "Prince" || host.mind.assigned_role == "Sheriff"))
+			dat += "<b>The pincode for the armory keypad is: [K.pincode]</b><BR>"
 		if(length(host.knowscontacts) > 0)
 			dat += "<b>I know some other of my kind in this city. Need to check my phone, there definetely should be:</b><BR>"
 			for(var/i in host.knowscontacts)
@@ -202,15 +202,15 @@
 				giving = FALSE
 				BLOODBONDED.faction |= H.faction
 				if(!istype(BLOODBONDED, /mob/living/carbon/human/npc))
-					if(H.frakcja == "Camarilla" || H.frakcja == "Anarch" || H.frakcja == "Sabbat")
-						if(BLOODBONDED.frakcja != H.frakcja)
-							BLOODBONDED.frakcja = H.frakcja
-							if(H.frakcja == "Sabbat")
+					if(H.vampire_faction == "Camarilla" || H.vampire_faction == "Anarch" || H.vampire_faction == "Sabbat")
+						if(BLOODBONDED.vampire_faction != H.vampire_faction)
+							BLOODBONDED.vampire_faction = H.vampire_faction
+							if(H.vampire_faction == "Sabbat")
 								if(BLOODBONDED.mind)
 									BLOODBONDED.mind.add_antag_datum(/datum/antagonist/sabbatist)
 									GLOB.sabbatites += BLOODBONDED
 							SSfactionwar.adjust_members()
-							to_chat(BLOODBONDED, "<span class='notice'>You are now member of <b>[H.frakcja]</b></span>")
+							to_chat(BLOODBONDED, "<span class='notice'>You are now member of <b>[H.vampire_faction]</b></span>")
 				BLOODBONDED.drunked_of |= "[H.dna.real_name]"
 				if(BLOODBONDED.stat == DEAD && !iskindred(BLOODBONDED))
 					if(BLOODBONDED.respawntimeofdeath+6000 > world.time)
@@ -240,7 +240,7 @@
 						BLOODBONDED.hud_used.drinkblood_icon.icon_state = "drink"
 						BLOODBONDED.hud_used.bloodheal_icon.icon_state = "bloodheal"
 						BLOODBONDED.hud_used.bloodpower_icon.icon_state = "bloodpower"
-						BLOODBONDED.hud_used.healths.icon = 'code/modules/ziggers/32x48.dmi'
+						BLOODBONDED.hud_used.healths.icon = 'code/modules/wod13/32x48.dmi'
 //						qdel(BLOODBONDED.hud_used)
 //						BLOODBONDED.hud_used = new BLOODBONDED.hud_type(BLOODBONDED)
 //						BLOODBONDED.update_sight()

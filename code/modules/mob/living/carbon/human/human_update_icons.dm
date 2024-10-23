@@ -56,9 +56,6 @@ There are several things that need to be remembered:
 /mob/living/carbon/human/proc/update_mutant_bodyparts()
 	dna.species.handle_mutant_bodyparts(src)
 
-/mob/living/carbon/human
-	var/given_penis = FALSE
-
 /mob/living/carbon/human/update_body()
 	if(dna.species.id == "mannequin")
 		base_body_mod = ""
@@ -75,11 +72,11 @@ There are several things that need to be remembered:
 
 	if(base_body_mod == "s")
 		if(gender == FEMALE)
-			body_sprite = 'code/modules/ziggers/worn_slim_f.dmi'
+			body_sprite = 'code/modules/wod13/worn_slim_f.dmi'
 		else
-			body_sprite = 'code/modules/ziggers/worn_slim_m.dmi'
+			body_sprite = 'code/modules/wod13/worn_slim_m.dmi'
 	if(base_body_mod == "f")
-		body_sprite = 'code/modules/ziggers/worn_fat.dmi'
+		body_sprite = 'code/modules/wod13/worn_fat.dmi'
 	if(base_body_mod == "")
 		body_sprite = null
 	for(var/obj/item/I in GetAllContents())

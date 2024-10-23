@@ -1,7 +1,3 @@
-/mob/living
-	var/elysium_checks = 0
-	var/bloodhunted = FALSE
-
 /atom/movable/screen/alert/bloodhunt
 	name = "Blood Hunt Is Going On"
 	icon_state = "bloodhunt"
@@ -17,7 +13,7 @@
 		var/mob/living/carbon/human/human = src
 		if(human.obfuscate_level < 5)
 			if(alpha != 255)
-				playsound(loc, 'code/modules/ziggers/sounds/obfuscate_deactivate.ogg', 50, FALSE)
+				playsound(loc, 'code/modules/wod13/sounds/obfuscate_deactivate.ogg', 50, FALSE)
 				alpha = 255
 	if(!HAS_TRAIT(src, TRAIT_ELYSIUM))
 		return
@@ -29,7 +25,7 @@
 	if(istype(get_area(src), /area/vtm))
 		V = get_area(src)
 		var/mob/living/carbon/human/H = src
-		if(V.zone_owner == H.frakcja)
+		if(V.zone_owner == H.vampire_faction)
 			return
 		for(var/mob/living/carbon/human/HU in SSbloodhunt.hunted)
 			if(HU)
@@ -78,6 +74,6 @@ SUBSYSTEM_DEF(bloodhunt)
 	if(!H.bloodhunted)
 		H.bloodhunted = TRUE
 		to_chat(world, "<b>The Blood Hunt after <span class='warning'>[H.true_real_name]</span> has been announced!</b>")
-		SEND_SOUND(world, sound('code/modules/ziggers/sounds/announce.ogg'))
+		SEND_SOUND(world, sound('code/modules/wod13/sounds/announce.ogg'))
 		hunted += H
 		update_shit()

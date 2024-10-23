@@ -20,8 +20,8 @@
 	slot_flags = ITEM_SLOT_BACK	//ERROOOOO
 	resistance_flags = NONE
 	max_integrity = 300
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	body_worn = TRUE
 
 /obj/item/storage/backpack/ComponentInitialize()
@@ -346,12 +346,12 @@
 	desc = "A large duffel bag for holding extra things."
 	icon_state = "duffel"
 	inhand_icon_state = "duffel"
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 	slowdown = 1
 
 /obj/item/storage/backpack/duffelbag/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_w_class = WEIGHT_CLASS_BULKY
 	STR.max_combined_w_class = 30
 
 /obj/item/storage/backpack/duffelbag/cursed
@@ -435,28 +435,34 @@
 	desc = "A large duffel bag for holding extra medical supplies."
 	icon_state = "duffel-med"
 	inhand_icon_state = "duffel-med"
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+
 
 /obj/item/storage/backpack/duffelbag/med/surgery
 	name = "surgical duffel bag"
 	desc = "A large duffel bag for holding extra medical supplies - this one seems to be designed for holding surgical tools."
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/explorer
 	name = "explorator's duffel bag"
 	desc = "A large duffel bag for holding extra exotic treasures."
 	icon_state = "duffel-explorer"
 	inhand_icon_state = "duffel-explorer"
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/hydroponics
 	name = "hydroponic's duffel bag"
 	desc = "A large duffel bag for holding extra gardening tools."
 	icon_state = "duffel-hydroponics"
 	inhand_icon_state = "duffel-hydroponics"
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/chemistry
 	name = "chemistry duffel bag"
 	desc = "A large duffel bag for holding extra chemical substances."
 	icon_state = "duffel-chemistry"
 	inhand_icon_state = "duffel-chemistry"
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/genetics
 	name = "geneticist's duffel bag"

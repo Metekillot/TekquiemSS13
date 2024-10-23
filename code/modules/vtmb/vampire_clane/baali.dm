@@ -2,11 +2,9 @@
 	name = "Baali"
 	desc = "The Baali are a bloodline of vampires associated with demon worship. Because of their affinity with the unholy, the Baali are particularly vulnerable to holy iconography, holy ground and holy water. They are highly vulnerable to True Faith."
 	curse = "Fear of the Religion."
-	clane_disciplines = list(
-		/datum/discipline/obfuscate = 1,
-		/datum/discipline/presence = 2,
-		/datum/discipline/daimonion = 3
-	)
+	clane_disciplines = list(/datum/discipline/obfuscate = 1,
+														/datum/discipline/obtenebration = 2,
+														/datum/discipline/daimonion = 3)
 	male_clothes = "/obj/item/clothing/under/vampire/baali"
 	female_clothes = "/obj/item/clothing/under/vampire/baali/female"
 	enlightement = TRUE
@@ -52,7 +50,7 @@
 /mob/living/simple_animal/hostile/baali_guard
 	name = "Infernal Creature"
 	desc = "The peak of abominations armor. Unbelievably undamagable..."
-	icon = 'code/modules/ziggers/32x48.dmi'
+	icon = 'code/modules/wod13/32x48.dmi'
 	icon_state = "baali"
 	icon_living = "baali"
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID

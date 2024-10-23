@@ -23,8 +23,6 @@ GLOBAL_LIST_INIT(medical_positions, list(
 GLOBAL_LIST_INIT(anarch_positions, list(
 	"Baron",
 	"Bouncer",
-	"Dealer",
-	"Supply Technician"
 	))
 
 
@@ -34,7 +32,7 @@ GLOBAL_LIST_INIT(citizen_positions, list(
 	"Citizen",
 	"Taxi Driver",
 	"Police Officer",
-	"Federal Investigator"
+	"Federal Investigator",
 ))
 
 GLOBAL_LIST_INIT(neutral_positions, list(
@@ -44,14 +42,26 @@ GLOBAL_LIST_INIT(neutral_positions, list(
 	"Doctor"))
 
 GLOBAL_LIST_INIT(independent_positions, list(
-	"Chantry Regent",
-	"Chantry Archivist",
 	"Giovanni Member",
 	"Primogen Malkavian",
 	"Primogen Nosferatu",
 	"Primogen Toreador",
 	"Primogen Ventrue",
-	"Primogen Brujah"))
+	"Primogen Brujah",
+	"Voivode",
+	"Bogatyr",
+	"Zadruga",
+	"Dealer",
+	"Supply Technician"))
+
+GLOBAL_LIST_INIT(tremere_positions, list(
+	"Chantry Regent",
+	"Chantry Archivist"
+))
+
+GLOBAL_LIST_INIT(gang_positions, list(
+	"Triad Soldier"
+))
 
 GLOBAL_LIST_INIT(security_positions, list(
 	))
@@ -65,16 +75,21 @@ GLOBAL_LIST_INIT(position_categories, list(
 	EXP_TYPE_NEUTRALS = list("jobs" = neutral_positions, "color" = "#e3e3e3"),
 	EXP_TYPE_ANARCH = list("jobs" = anarch_positions, "color" = "#313131"),
 	EXP_TYPE_INDEPENDENT = list("jobs" = independent_positions, "color" = "#cb4aad"),
-	EXP_TYPE_OTHER_CITIZEN = list("jobs" = citizen_positions, "color" = "#7e7e7e")))
+	EXP_TYPE_TREMERE = list("jobs" = tremere_positions, "color" = "#b2442c"),
+	EXP_TYPE_OTHER_CITIZEN = list("jobs" = citizen_positions, "color" = "#7e7e7e"),
+	EXP_TYPE_GANG = list("jobs" = gang_positions, "color" = "#837524")
+))
 
 
 GLOBAL_LIST_INIT(exp_jobsmap, list(
 	EXP_TYPE_CREW = list("titles" = command_positions | engineering_positions | medical_positions | anarch_positions | supply_positions | security_positions | neutral_positions | independent_positions | list("AI","Cyborg")), // crew positions
 	EXP_TYPE_CAMARILLIA = list("titles" = command_positions),
+	EXP_TYPE_TREMERE = list("titles" = tremere_positions),
 	EXP_TYPE_ENGINEERING = list("titles" = engineering_positions),
 	EXP_TYPE_MEDICAL = list("titles" = medical_positions),
 	EXP_TYPE_ANARCH = list("titles" = anarch_positions),
 	EXP_TYPE_SUPPLY = list("titles" = supply_positions),
+	EXP_TYPE_GANG = list("titles" = gang_positions),
 	EXP_TYPE_SECURITY = list("titles" = security_positions),
 	EXP_TYPE_SILICON = list("titles" = list("AI","Cyborg")),
 	EXP_TYPE_NEUTRALS = list("titles" = neutral_positions),

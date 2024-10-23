@@ -26,8 +26,8 @@
 	name = "unidentified occult fetish"
 	desc = "Who knows what secrets it could contain..."
 	icon_state = "arcane"
-	icon = 'code/modules/ziggers/items.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
+	icon = 'code/modules/wod13/items.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	var/mob/living/owner
 	var/true_name = "artifact"
@@ -97,12 +97,6 @@
 	true_name = "Saulocept"
 	true_desc = "More experience points."
 	icon_state = "saulocept"
-
-/mob/living
-	var/experience_plus = 0
-	var/discipline_time_plus = 0
-	var/bloodpower_time_plus = 0
-	var/thaum_damage_plus = 0
 
 /obj/item/vtm_artifact/saulocept/get_powers()
 	..()

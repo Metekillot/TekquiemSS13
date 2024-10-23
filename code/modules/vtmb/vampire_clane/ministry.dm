@@ -2,11 +2,9 @@
 	name = "Ministry"
 	desc = "The Ministry, also called the Ministry of Set, Followers of Set, or Setites, are a clan of vampires who believe their founder was the Egyptian god Set."
 	curse = "Decreased moving speed in lighted areas."
-	clane_disciplines = list(
-		/datum/discipline/obfuscate = 1,
-		/datum/discipline/presence = 2,
-		/datum/discipline/serpentis = 3
-	)
+	clane_disciplines = list(/datum/discipline/obfuscate = 1,
+														/datum/discipline/presence = 2,
+														/datum/discipline/serpentis = 3)
 	male_clothes = "/obj/item/clothing/under/vampire/pimp"
 	female_clothes = "/obj/item/clothing/under/vampire/whore"
 
@@ -33,7 +31,7 @@
 /obj/urn
 	name = "organ urn"
 	desc = "Stores some precious organs..."
-	icon = 'code/modules/ziggers/icons.dmi'
+	icon = 'code/modules/wod13/icons.dmi'
 	icon_state = "urn"
 	plane = GAME_PLANE
 	layer = CAR_LAYER
@@ -60,9 +58,6 @@
 	vampiric = TRUE
 	var/obj/urn/urn
 	var/cool_down = 0
-
-/mob/living
-	var/stakeimmune = FALSE
 
 /datum/action/urn/Trigger()
 	. = ..()
@@ -159,7 +154,7 @@
 /mob/living/simple_animal/hostile/cobra
 	name = "Cobra Form"
 	desc = "Hssssss..."
-	icon = 'code/modules/ziggers/48x48.dmi'
+	icon = 'code/modules/wod13/48x48.dmi'
 	icon_state = "cobra"
 	icon_living = "cobra"
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID

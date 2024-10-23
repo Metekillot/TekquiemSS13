@@ -2,8 +2,8 @@
 	name = "arcane tome"
 	desc = "The secrets of Blood Magic..."
 	icon_state = "arcane"
-	icon = 'code/modules/ziggers/items.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
+	icon = 'code/modules/wod13/items.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	var/list/rituals = list()
 
@@ -28,7 +28,7 @@
 /obj/ritualrune
 	name = "Tremere Rune"
 	desc = "Learn the secrets of blood, neonate..."
-	icon = 'code/modules/ziggers/icons.dmi'
+	icon = 'code/modules/wod13/icons.dmi'
 	icon_state = "rune1"
 	color = rgb(128,0,0)
 	anchored = TRUE
@@ -38,9 +38,6 @@
 	var/mob/living/last_activator
 	var/thaumlevel = 1
 	var/sacrifice
-
-/mob/living
-	var/thaumaturgy_knowledge = FALSE
 
 /obj/ritualrune/proc/complete()
 	return
@@ -95,7 +92,7 @@
 	BG.my_creator = last_activator
 	BG.melee_damage_lower = BG.melee_damage_lower+activator_bonus
 	BG.melee_damage_upper = BG.melee_damage_upper+activator_bonus
-	playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+	playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 	if(length(H.beastmaster) > 3+H.mentality)
 		var/mob/living/simple_animal/hostile/beastmaster/B = pick(H.beastmaster)
 		B.death()
@@ -104,7 +101,7 @@
 /mob/living/simple_animal/hostile/beastmaster/blood_guard
 	name = "blood guardian"
 	desc = "A clot of blood in humanoid form."
-	icon = 'code/modules/ziggers/mobs.dmi'
+	icon = 'code/modules/wod13/mobs.dmi'
 	icon_state = "blood_guardian"
 	icon_living = "blood_guardian"
 	del_on_death = 1
@@ -146,15 +143,16 @@
 
 /obj/ritualrune/blood_trap/complete()
 	if(!activated)
-		playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+		playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 		activated = TRUE
 		alpha = 28
 
 /obj/ritualrune/blood_trap/Crossed(atom/movable/AM)
+	..()
 	if(isliving(AM) && activated)
 		var/mob/living/L = AM
 		L.adjustFireLoss(50+activator_bonus)
-		playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+		playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 		qdel(src)
 
 /obj/ritualrune/blood_wall
@@ -166,13 +164,13 @@
 
 /obj/ritualrune/blood_wall/complete()
 	new /obj/structure/bloodwall(loc)
-	playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+	playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 	qdel(src)
 
 /obj/structure/bloodwall
 	name = "blood wall"
 	desc = "Wall from BLOOD."
-	icon = 'code/modules/ziggers/icons.dmi'
+	icon = 'code/modules/wod13/icons.dmi'
 	icon_state = "bloodwall"
 	plane = GAME_PLANE
 	layer = ABOVE_MOB_LAYER
@@ -184,7 +182,7 @@
 /obj/structure/fleshwall
 	name = "flesh wall"
 	desc = "Wall from FLESH."
-	icon = 'code/modules/ziggers/icons.dmi'
+	icon = 'code/modules/wod13/icons.dmi'
 	icon_state = "fleshwall"
 	plane = GAME_PLANE
 	layer = ABOVE_MOB_LAYER
@@ -203,7 +201,7 @@
 	for(var/obj/item/vtm_artifact/VA in loc)
 		if(VA)
 			VA.identificate()
-			playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+			playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 			qdel(src)
 			return
 
@@ -231,7 +229,7 @@
 		var/mob/dead/observer/C = pick(candidates)
 		var/mob/living/simple_animal/hostile/ghost/tremere/TR = new(loc)
 		TR.key = C.key
-		playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+		playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 		qdel(src)
 
 /obj/ritualrune/teleport
@@ -265,7 +263,7 @@
 				if(istype(get_area(AM), /area/vtm))
 					var/area/vtm/V = get_area(AM)
 					if(V.name != "San Francisco")
-						playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+						playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 						user.forceMove(get_turf(AM))
 						qdel(AM)
 						qdel(src)
@@ -284,7 +282,7 @@
 
 /obj/ritualrune/curse/complete()
 	if(!activated)
-		playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+		playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 		color = rgb(255,0,0)
 		activated = TRUE
 
@@ -298,7 +296,7 @@
 			for(var/mob/living/carbon/human/H in GLOB.player_list)
 				if(H.real_name == cursed)
 					H.adjustFireLoss(20)
-					playsound(H.loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+					playsound(H.loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 					to_chat(H, "<span class='warning'>You feel someone repeating your name from the shadows...</span>")
 					H.Stun(10)
 					qdel(src)
@@ -333,7 +331,7 @@
 					Y.key = H.key
 					Y.my_creator = last_activator
 					qdel(H)
-					playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+					playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 					qdel(src)
 					return
 				else
@@ -347,12 +345,12 @@
 						Y.key = C.key
 						Y.my_creator = last_activator
 						qdel(H)
-						playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+						playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 						qdel(src)
 						return
 				return
 			else
-				playsound(loc, 'code/modules/ziggers/sounds/thaum.ogg', 50, FALSE)
+				playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
 				H.adjustBruteLoss(25)
 				H.emote("scream")
 				return

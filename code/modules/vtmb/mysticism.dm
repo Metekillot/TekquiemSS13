@@ -2,8 +2,8 @@
 	name = "mystic tome"
 	desc = "The secrets of Abyss Mysticism..."
 	icon_state = "mystic"
-	icon = 'code/modules/ziggers/items.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
+	icon = 'code/modules/wod13/items.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	var/list/rituals = list()
 
@@ -28,7 +28,7 @@
 /obj/abyssrune
 	name = "Lasombra Rune"
 	desc = "Learn the secrets of the Abyss, neonate..."
-	icon = 'code/modules/ziggers/icons.dmi'
+	icon = 'code/modules/wod13/icons.dmi'
 	icon_state = "rune1"
 	color = rgb(0,0,0)
 	anchored = TRUE
@@ -38,9 +38,6 @@
 	var/mob/living/last_activator
 	var/mystlevel = 1
 	var/sacrifice
-
-/mob/living
-	var/mysticism_knowledge = FALSE
 
 /obj/abyssrune/proc/complete()
 	return
@@ -104,7 +101,7 @@
 /mob/living/simple_animal/hostile/beastmaster/shadow_guard
 	name = "shadow abomination"
 	desc = "A shadow given life, creature of fathomless..."
-	icon = 'code/modules/ziggers/mobs.dmi'
+	icon = 'code/modules/wod13/mobs.dmi'
 	icon_state = "shadow2"
 	icon_living = "shadow2"
 	del_on_death = 1

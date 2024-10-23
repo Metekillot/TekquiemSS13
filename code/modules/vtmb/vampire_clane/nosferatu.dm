@@ -5,24 +5,20 @@
 	alt_sprite = "nosferatu"
 //	no_hair = TRUE		//Pyotr from Hunter the Parenting had hair and it didn't go out of place in the setting. I'll do limited hairstyles
 	no_facial = TRUE
-	clane_disciplines = list(
-		/datum/discipline/animalism = 1,
-		/datum/discipline/potence = 2,
-		/datum/discipline/obfuscate = 3
-	)
-	haircuts = list(
-		"Bald",
-		"Pyotr",
-		"Balding Hair",
-		"Boddicker",
-		"Feather",
-		"Gelled Back",
-		"Cornrows",
-		"Cornrows 2",
-		"Cornrow Bun",
-		"Cornrow Braid",
-		"Cornrow Tail"
-	)
+	clane_disciplines = list(/datum/discipline/animalism = 1,
+														/datum/discipline/potence = 2,
+														/datum/discipline/obfuscate = 3)
+	haircuts = list("Bald",
+									"Pyotr",
+									"Balding Hair",
+									"Boddicker",
+									"Feather",
+									"Gelled Back",
+									"Cornrows",
+									"Cornrows 2",
+									"Cornrow Bun",
+									"Cornrow Braid",
+									"Cornrow Tail")
 	violating_appearance = TRUE
 	male_clothes = "/obj/item/clothing/under/vampire/nosferatu"
 	female_clothes = "/obj/item/clothing/under/vampire/nosferatu/female"
@@ -30,7 +26,7 @@
 /datum/vampireclane/nosferatu/on_gain(mob/living/carbon/human/H)
 	..()
 	H.remove_overlay(UPPER_EARS_LAYER)
-	var/mutable_appearance/ears_overlay = mutable_appearance('code/modules/ziggers/icons.dmi', "nosferatu_ears", -UPPER_EARS_LAYER)
+	var/mutable_appearance/ears_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "nosferatu_ears", -UPPER_EARS_LAYER)
 	H.overlays_standing[UPPER_EARS_LAYER] = ears_overlay
 	H.apply_overlay(UPPER_EARS_LAYER)
 	var/obj/item/organ/eyes/night_vision/NV = new()
@@ -39,5 +35,5 @@
 
 /datum/vampireclane/nosferatu/post_gain(mob/living/carbon/human/H)
 	..()
-	if(H.frakcja != "Camarilla" && H.frakcja != "Anarch" && H.frakcja != "Sabbat")
-		H.frakcja = "Nosferatu"
+	if(H.vampire_faction != "Camarilla" && H.vampire_faction != "Anarch" && H.vampire_faction != "Sabbat")
+		H.vampire_faction = "Nosferatu"

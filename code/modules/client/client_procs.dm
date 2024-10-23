@@ -855,11 +855,12 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	if (prefs.hotkeys)
 		// If hotkey mode is enabled, then clicking the map will automatically
-		// unfocus the text bar.
-		winset(src, null, "input.focus=false")
+		// unfocus the text bar. This removes the red color from the text bar
+		// so that the visual focus indicator matches reality.
+		winset(src, null, "input.background-color=[COLOR_INPUT_DISABLED]")
 
 	else
-		winset(src, null, "input.focus=true")
+		winset(src, null, "input.focus=true input.background-color=[COLOR_INPUT_ENABLED]")
 
 	..()
 
@@ -897,7 +898,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		//load info on what assets the client has
 		src << browse('code/modules/asset_cache/validate_assets.html', "window=asset_cache_browser")
 
-		//Cool fonts for cool vampire niggas
+		//Cool fonts for cool vampires
 		src << browse_rsc('percolator.ttf', "percolator.ttf")
 
 		//Precache the client with all other assets slowly, so as to not block other browse() calls

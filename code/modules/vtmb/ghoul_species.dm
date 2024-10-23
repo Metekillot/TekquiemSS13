@@ -59,8 +59,8 @@
 			if(G.master.clane)
 				if(G.master.clane.name != "Caitiff")
 					dat += "Regnant's clan is [G.master.clane], maybe I can try some of it's disciplines..."
-		if(host.frakcja == "Camarilla" || host.frakcja == "Anarch" || host.frakcja == "Sabbat")
-			dat += "I belong to [host.frakcja] faction, I shouldn't disobey their rules.<BR>"
+		if(host.vampire_faction == "Camarilla" || host.vampire_faction == "Anarch" || host.vampire_faction == "Sabbat")
+			dat += "I belong to the [host.vampire_faction], I shouldn't disobey their rules.<BR>"
 		if(host.mind.special_role)
 			for(var/datum/antagonist/A in host.mind.antag_datums)
 				if(A.objectives)
@@ -193,13 +193,13 @@
 				return
 		if(H.bloodpool < 1)
 			to_chat(owner, "<span class='warning'>You don't have enough <b>BLOOD</b> to do that!</span>")
-			SEND_SOUND(H, sound('code/modules/ziggers/sounds/need_blood.ogg', 0, 0, 75))
+			SEND_SOUND(H, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
 			return
 		if(last_heal+30 >= world.time)
 			return
 		last_heal = world.time
 		H.bloodpool = max(0, H.bloodpool-1)
-		H.playsound_local(H, 'code/modules/ziggers/sounds/bloodhealing.ogg', 50, FALSE)
+		H.playsound_local(H, 'code/modules/wod13/sounds/bloodhealing.ogg', 50, FALSE)
 		H.adjustBruteLoss(-10*level, TRUE)
 		H.adjustFireLoss(-10*level, TRUE)
 		if(length(H.all_wounds))
@@ -226,7 +226,7 @@
 					var/mob/living/carbon/human/pull = H.pulling
 					if(pull.stat == 4)
 						var/obj/item/card/id/id_card = H.get_idcard(FALSE)
-						if(!istype(id_card, /obj/item/card/id/clinic) && !istype(id_card, /obj/item/card/id/police) && !istype(id_card, /obj/item/card/id/sheriff) && !istype(id_card, /obj/item/card/id/prince) && !istype(id_card, /obj/item/card/id/camarilla))
+						if(!istype(id_card, /obj/item/card/id/clinic) && !istype(id_card, /obj/item/card/id/police))
 							if(H.CheckEyewitness(H, H, 7, FALSE))
 								if(H.last_loot_check+50 <= world.time)
 									H.last_loot_check = world.time
@@ -235,17 +235,17 @@
 									if(!H.warrant)
 										if(H.killed_count >= 5)
 											H.warrant = TRUE
-											SEND_SOUND(H, sound('code/modules/ziggers/sounds/suspect.ogg', 0, 0, 75))
+											SEND_SOUND(H, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
 											to_chat(H, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 										else
-											SEND_SOUND(H, sound('code/modules/ziggers/sounds/sus.ogg', 0, 0, 75))
+											SEND_SOUND(H, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
 											to_chat(H, "<span class='userdanger'><b>SUSPICIOUS ACTION (corpse)</b></span>")
 			for(var/obj/item/I in H.contents)
 				if(I)
 					if(I.masquerade_violating)
 						if(I.loc == H)
 							var/obj/item/card/id/id_card = H.get_idcard(FALSE)
-							if(!istype(id_card, /obj/item/card/id/police) && !istype(id_card, /obj/item/card/id/sheriff) && !istype(id_card, /obj/item/card/id/prince) && !istype(id_card, /obj/item/card/id/camarilla))
+							if(!istype(id_card, /obj/item/card/id/police))
 								if(H.CheckEyewitness(H, H, 7, FALSE))
 									if(H.last_loot_check+50 <= world.time)
 										H.last_loot_check = world.time
@@ -254,10 +254,10 @@
 										if(!H.warrant)
 											if(H.killed_count >= 5)
 												H.warrant = TRUE
-												SEND_SOUND(H, sound('code/modules/ziggers/sounds/suspect.ogg', 0, 0, 75))
+												SEND_SOUND(H, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
 												to_chat(H, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 											else
-												SEND_SOUND(H, sound('code/modules/ziggers/sounds/sus.ogg', 0, 0, 75))
+												SEND_SOUND(H, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
 												to_chat(H, "<span class='userdanger'><b>SUSPICIOUS ACTION (equipment)</b></span>")
 	if(H.key && H.stat != DEAD)
 		var/datum/preferences/P = GLOB.preferences_datums[ckey(H.key)]
@@ -297,11 +297,8 @@
 				H.bloodpool = max(1, H.bloodpool-1)
 			else
 				if(prob(20))
-					to_chat(H, "<span class='userdanger'><b>I NEED VITAE...</b></span>")
+					to_chat(H, "<span class='userdanger'><b>I THIRST FOR BLOOD!</b></span>")
 					H.Stun(10)
-
-/mob/living
-	var/last_bloodpool_restore = 0
 
 /datum/species/human/spec_life(mob/living/carbon/human/H)
 	. = ..()
@@ -316,7 +313,7 @@
 					var/mob/living/carbon/human/pull = H.pulling
 					if(pull.stat == 4)
 						var/obj/item/card/id/id_card = H.get_idcard(FALSE)
-						if(!istype(id_card, /obj/item/card/id/clinic) && !istype(id_card, /obj/item/card/id/police) && !istype(id_card, /obj/item/card/id/sheriff) && !istype(id_card, /obj/item/card/id/prince) && !istype(id_card, /obj/item/card/id/camarilla))
+						if(!istype(id_card, /obj/item/card/id/clinic) && !istype(id_card, /obj/item/card/id/police))
 							if(H.CheckEyewitness(H, H, 7, FALSE))
 								if(H.last_loot_check+50 <= world.time)
 									H.last_loot_check = world.time
@@ -325,17 +322,17 @@
 									if(!H.warrant)
 										if(H.killed_count >= 5)
 											H.warrant = TRUE
-											SEND_SOUND(H, sound('code/modules/ziggers/sounds/suspect.ogg', 0, 0, 75))
+											SEND_SOUND(H, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
 											to_chat(H, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 										else
-											SEND_SOUND(H, sound('code/modules/ziggers/sounds/sus.ogg', 0, 0, 75))
+											SEND_SOUND(H, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
 											to_chat(H, "<span class='userdanger'><b>SUSPICIOUS ACTION (corpse)</b></span>")
 			for(var/obj/item/I in H.contents)
 				if(I)
 					if(I.masquerade_violating)
 						if(I.loc == H)
 							var/obj/item/card/id/id_card = H.get_idcard(FALSE)
-							if(!istype(id_card, /obj/item/card/id/police) && !istype(id_card, /obj/item/card/id/sheriff) && !istype(id_card, /obj/item/card/id/prince) && !istype(id_card, /obj/item/card/id/camarilla))
+							if(!istype(id_card, /obj/item/card/id/police))
 								if(H.CheckEyewitness(H, H, 7, FALSE))
 									if(H.last_loot_check+50 <= world.time)
 										H.last_loot_check = world.time
@@ -344,10 +341,10 @@
 										if(!H.warrant)
 											if(H.killed_count >= 5)
 												H.warrant = TRUE
-												SEND_SOUND(H, sound('code/modules/ziggers/sounds/suspect.ogg', 0, 0, 75))
+												SEND_SOUND(H, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
 												to_chat(H, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 											else
-												SEND_SOUND(H, sound('code/modules/ziggers/sounds/sus.ogg', 0, 0, 75))
+												SEND_SOUND(H, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
 												to_chat(H, "<span class='userdanger'><b>SUSPICIOUS ACTION (equipment)</b></span>")
 	if(H.last_bloodpool_restore+600 <= world.time)
 		H.last_bloodpool_restore = world.time
@@ -390,7 +387,7 @@
 					var/mob/living/carbon/human/pull = H.pulling
 					if(pull.stat == 4)
 						var/obj/item/card/id/id_card = H.get_idcard(FALSE)
-						if(!istype(id_card, /obj/item/card/id/clinic) && !istype(id_card, /obj/item/card/id/police) && !istype(id_card, /obj/item/card/id/sheriff) && !istype(id_card, /obj/item/card/id/prince) && !istype(id_card, /obj/item/card/id/camarilla))
+						if(!istype(id_card, /obj/item/card/id/clinic) && !istype(id_card, /obj/item/card/id/police))
 							if(H.CheckEyewitness(H, H, 7, FALSE))
 								if(H.last_loot_check+50 <= world.time)
 									H.last_loot_check = world.time
@@ -399,17 +396,17 @@
 									if(!H.warrant)
 										if(H.killed_count >= 5)
 											H.warrant = TRUE
-											SEND_SOUND(H, sound('code/modules/ziggers/sounds/suspect.ogg', 0, 0, 75))
+											SEND_SOUND(H, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
 											to_chat(H, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 										else
-											SEND_SOUND(H, sound('code/modules/ziggers/sounds/sus.ogg', 0, 0, 75))
+											SEND_SOUND(H, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
 											to_chat(H, "<span class='userdanger'><b>SUSPICIOUS ACTION (corpse)</b></span>")
 			for(var/obj/item/I in H.contents)
 				if(I)
 					if(I.masquerade_violating)
 						if(I.loc == H)
 							var/obj/item/card/id/id_card = H.get_idcard(FALSE)
-							if(!istype(id_card, /obj/item/card/id/police) && !istype(id_card, /obj/item/card/id/sheriff) && !istype(id_card, /obj/item/card/id/prince) && !istype(id_card, /obj/item/card/id/camarilla))
+							if(!istype(id_card, /obj/item/card/id/police))
 								if(H.CheckEyewitness(H, H, 7, FALSE))
 									if(H.last_loot_check+50 <= world.time)
 										H.last_loot_check = world.time
@@ -418,10 +415,10 @@
 										if(!H.warrant)
 											if(H.killed_count >= 5)
 												H.warrant = TRUE
-												SEND_SOUND(H, sound('code/modules/ziggers/sounds/suspect.ogg', 0, 0, 75))
+												SEND_SOUND(H, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
 												to_chat(H, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 											else
-												SEND_SOUND(H, sound('code/modules/ziggers/sounds/sus.ogg', 0, 0, 75))
+												SEND_SOUND(H, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
 												to_chat(H, "<span class='userdanger'><b>SUSPICIOUS ACTION (equipment)</b></span>")
 	if(H.last_bloodpool_restore+600 <= world.time)
 		H.last_bloodpool_restore = world.time

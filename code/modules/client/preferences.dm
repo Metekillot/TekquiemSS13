@@ -141,22 +141,20 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/persistent_scars = TRUE
 	///If we want to broadcast deadchat connect/disconnect messages
 	var/broadcast_login_logout = TRUE
-//Поколение
+
+	//Generation
 	var/generation = 13
 	var/generation_bonus = 0
-//maskarad
+
+	//Masquerade
 	var/masquerade = 5
 
 	var/enlightement = FALSE
 	var/humanity = 7
 
-//TOO OLD
-	var/exper = 1440	//Urovni
+	//Legacy
+	var/exper = 1440
 	var/exper_plus = 0
-//TOO OLD
-
-	var/true_experience = 10
-	var/torpor_count = 0
 
 	var/discipline1level = 1
 	var/discipline2level = 1
@@ -167,6 +165,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/discipline2type
 	var/discipline3type
 	var/discipline4type
+
+	//Character sheet stats
+	var/true_experience = 10
+	var/torpor_count = 0
+
+	var/list/datum/discipline/disciplines = list()
 
 	var/physique = 1
 	var/social = 1
@@ -200,15 +204,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/werewolf_name
 	var/auspice_level = 1
-
-//	var/datum/vampireclane/Clane
-
-/mob/living
-	var/physique = 1
-	var/social = 1
-	var/mentality = 1
-	var/lockpicking = 0
-	var/blood = 1
 
 /datum/preferences/proc/add_experience(var/amount)
 	if(amount)
@@ -264,12 +259,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 //			P.random_character()
 			P.real_name = random_unique_name(P.gender)
 			P.true_experience = 10
-			var/sponsor = FALSE
-			for(var/i in GLOB.donaters)
-				if(i == "[P.parent.ckey]")
-					sponsor = TRUE
-			if(sponsor)
-				P.true_experience = 20+round(4*GLOB.donaters_amount["[P.parent.ckey]"])
 			P.save_character()
 			P.save_preferences()
 
@@ -326,12 +315,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	enlightement = clane.enlightement
 	humanity = clane.start_humanity
 	true_experience = 10
-	var/sponsor = FALSE
-	for(var/i in GLOB.donaters)
-		if(i == "[parent.ckey]")
-			sponsor = TRUE
-	if(sponsor)
-		true_experience = 20+round(4*GLOB.donaters_amount["[parent.ckey]"])
 	key_bindings = deepCopyList(GLOB.hotkey_keybinding_list_by_key) // give them default keybinds and update their movement keys
 	C?.set_macros()
 //	pref_species = new /datum/species/kindred()
@@ -351,19 +334,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		return coolfont
 
 /datum/preferences/proc/ShowChoices(mob/user)
-	/*if(!user || !user.client)
-		return
-	link_bug_fix = FALSE
-	var/donor = FALSE
-	for(var/i in GLOB.donaters)
-		if(i == "[parent.ckey]")
-			donor = TRUE
-			max_save_slots = 6
-	if(discipline1level == 5 || discipline2level == 5 || discipline3level == 5 || generation < 9)
-		donor = TRUE
-	if(!donor)
-		discipline4type = null
-		discipline4level = 1*/
 	if(slot_randomized)
 		load_character(default_slot) // Reloads the character slot. Prevents random features from overwriting the slot if saved.
 		slot_randomized = FALSE
@@ -516,9 +486,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			dat += "<b>Species:</b><BR><a href='?_src_=prefs;preference=species;task=input'>[pref_species.name]</a><BR>"
 			if(pref_species.name == "Vampire")
 				dat += "<b>Path of [enlightement == FALSE ? "Humanity" : "Enlightement"]:</b> [humanity]/10<BR>"
-				for(var/i in GLOB.donaters)
-					if(i == "[parent.ckey]" && !slotlocked)
-						dat += "<a href='?_src_=prefs;preference=pathof;task=input'>Switch Path</a><BR>"
+				if(!slotlocked)
+					dat += "<a href='?_src_=prefs;preference=pathof;task=input'>Switch Path</a><BR>"
 			if(pref_species.name == "Werewolf")
 				dat += "<b>Veil:</b> [masquerade]/5<BR>"
 			if(pref_species.name == "Vampire" || pref_species.name == "Ghoul")
@@ -565,9 +534,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			dat += "<BR>"
 
 			dat += "<b>Lockpicking:</b> [lockpicking > 0 ? "•" : "o"][lockpicking > 1 ? "•" : "o"][lockpicking > 2 ? "•" : "o"][lockpicking > 3 ? "•" : "o"][lockpicking > 4 ? "•" : "o"]([lockpicking])"
-			if(true_experience >= 2 && lockpicking == 0)
-				dat += "<a href='?_src_=prefs;preference=lockpicking;task=input'>Increase([2])</a>"
-			else if(true_experience >= 2*lockpicking && lockpicking != 5 || lockpicking == 0 && true_experience >=2)
+			if(true_experience >=2 && lockpicking == 0)
+				dat+= "<a href='?_src_=prefs;preference=lockpicking;task=input'>Increase([2])</a>"
+			else if(true_experience>=2*lockpicking && lockpicking != 5 || lockpicking == 0 && true_experience >=2)
 				dat += "<a href='?_src_=prefs;preference=lockpicking;task=input'>Increase([2*lockpicking])</a>"
 			dat += "<BR>"
 
@@ -611,27 +580,27 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				DAWOF2.sprite_color = werewolf_color
 
 				var/obj/overlay/eyes_crinos = new(DAWOF)
-				eyes_crinos.icon = 'code/modules/ziggers/werewolf.dmi'
+				eyes_crinos.icon = 'code/modules/wod13/werewolf.dmi'
 				eyes_crinos.icon_state = "eyes"
 				eyes_crinos.layer = ABOVE_HUD_LAYER
 				eyes_crinos.color = werewolf_eye_color
 				DAWOF.overlays |= eyes_crinos
 
 				var/obj/overlay/scar_crinos = new(DAWOF)
-				scar_crinos.icon = 'code/modules/ziggers/werewolf.dmi'
+				scar_crinos.icon = 'code/modules/wod13/werewolf.dmi'
 				scar_crinos.icon_state = "scar[werewolf_scar]"
 				scar_crinos.layer = ABOVE_HUD_LAYER
 				DAWOF.overlays |= scar_crinos
 
 				var/obj/overlay/hair_crinos = new(DAWOF)
-				hair_crinos.icon = 'code/modules/ziggers/werewolf.dmi'
+				hair_crinos.icon = 'code/modules/wod13/werewolf.dmi'
 				hair_crinos.icon_state = "hair[werewolf_hair]"
 				hair_crinos.layer = ABOVE_HUD_LAYER
 				hair_crinos.color = werewolf_hair_color
 				DAWOF.overlays |= hair_crinos
 
 				var/obj/overlay/eyes_lupus = new(DAWOF2)
-				eyes_lupus.icon = 'code/modules/ziggers/werewolf_lupus.dmi'
+				eyes_lupus.icon = 'code/modules/wod13/werewolf_lupus.dmi'
 				eyes_lupus.icon_state = "eyes"
 				eyes_lupus.layer = ABOVE_HUD_LAYER
 				eyes_lupus.color = werewolf_eye_color
@@ -691,15 +660,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					else
 						dat += "<BR>"
 					dat += "-[AD.desc]<BR>"
+
 				if(!discipline4type && !slotlocked)
-					var/niggas = FALSE
-					for(var/i in GLOB.donaters)
-						if(i == "[parent.ckey]")
-							niggas = TRUE
-					if(discipline1level == 5 || discipline2level == 5 || discipline3level == 5 || generation < 9)
-						niggas = TRUE
-					if(niggas)
-						dat += "<a href='?_src_=prefs;preference=disciplineplus;task=input'>Learn custom type of disciplines</a><BR>"
+					dat += "<a href='?_src_=prefs;preference=disciplineplus;task=input'>Learn custom type of disciplines</a><BR>"
 
 			if(pref_species.name == "Ghoul")
 				if(!discipline1type && true_experience >= 5)
@@ -720,17 +683,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					var/datum/discipline/AD = new discipline3type()
 					dat += "<b>[AD.name]</b>: •(1)<BR>"
 					dat += "-[AD.desc]<BR>"
-				var/sponsor = FALSE
-				for(var/i in GLOB.donaters)
-					if(i == "[parent.ckey]")
-						sponsor = TRUE
-				if(sponsor)
-					if(discipline1type && discipline2type && discipline3type && !discipline4type && true_experience >= 5)
-						dat += "<a href='?_src_=prefs;preference=discipline4ghoul;task=input'>Learn new type of discipline (5)</a><BR>"
-					if(discipline4type)
-						var/datum/discipline/AD = new discipline4type()
-						dat += "<b>[AD.name]</b>: •(1)<BR>"
-						dat += "-[AD.desc]<BR>"
+				if(discipline1type && discipline2type && discipline3type && !discipline4type && true_experience >= 5)
+					dat += "<a href='?_src_=prefs;preference=discipline4ghoul;task=input'>Learn new type of discipline (5)</a><BR>"
+				if(discipline4type)
+					var/datum/discipline/AD = new discipline4type()
+					dat += "<b>[AD.name]</b>: •(1)<BR>"
+					dat += "-[AD.desc]<BR>"
 
 //			dat += "<a href='?_src_=prefs;preference=species;task=random'>Random Species</A> "
 //			dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_SPECIES]'>Always Random Species: [(randomise[RANDOM_SPECIES]) ? "Yes" : "No"]</A><br>"
@@ -1415,6 +1373,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					continue
 			if(job.human_only)
 				if(pref_species.name != "Human")
+					HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
+			if(job.ghoul_only)
+				if(pref_species.name != "Ghoul")
 					HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
 			if(pref_species.name == "Vampire")
 				if(clane)
@@ -2178,13 +2139,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 								Clan.clane_disciplines[1] = discipline1
 								var/list/disc2 = list()
 								for(var/i in subtypesof(/datum/discipline))
-									if(i != discipline1 && i in disc1)
+									if( (i != discipline1) && (i in disc1) )
 										disc2 += i
 								var/discipline2 = input(user, "Select second start discipline", "Discipline Selection") as null|anything in disc2
 								if(discipline2)
 									var/list/disc3 = list()
 									for(var/i in subtypesof(/datum/discipline))
-										if(i != discipline1 && i != discipline2 && i in disc1)
+										if( (i != discipline1) && (i != discipline2) && (i in disc1) )
 											disc3 += i
 									Clan.clane_disciplines |= 2
 									Clan.clane_disciplines[2] = discipline2
@@ -2398,12 +2359,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(slotlocked)
 						link_bug_fix = FALSE
 						return
-//				var/newtype = GLOB.species_list["kindred"]
-//				pref_species = new newtype()
-					var/donator = FALSE
-					for(var/i in GLOB.donaters)
-						if(i == "[parent.ckey]")
-							donator = TRUE
+					//[Lucia] keeping this here for when we decide to restrict it again
+					var/donator = TRUE
 					if(donator)
 						var/result = input(user, "Select a species", "Species Selection") as null|anything in GLOB.donation_races
 
@@ -2996,54 +2953,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					random_character()
 					body_model = rand(1, 3)
 					true_experience = 10
-					var/sponsor = FALSE
-					for(var/i in GLOB.donaters)
-						if(i == "[parent.ckey]")
-							sponsor = TRUE
-					if(sponsor)
-						true_experience = 20+round(4*GLOB.donaters_amount["[parent.ckey]"])
 					real_name = random_unique_name(gender)
 					save_character()
 
 				if("changeslot")
 					if(!load_character(text2num(href_list["num"])))
-						//"Reset all" code is copied here to ensure new characters do not copy stats from slot 1
-						slotlocked = 0
-						diablerist = 0
-						torpor_count = 0
-						generation_bonus = 0
-						discipline1level = 1
-						discipline2level = 1
-						discipline3level = 1
-						discipline4level = 1
-						physique = 1
-						mentality = 1
-						social = 1
-						lockpicking = 0
-						blood = 1
-						masquerade = initial(masquerade)
-						generation = initial(generation)
-						archetype = pick(subtypesof(/datum/archetype))
-						var/datum/archetype/A = new archetype()
-						physique = A.start_physique
-						mentality = A.start_mentality
-						social = A.start_social
-						blood = A.start_blood
-						qdel(clane)
-						clane = new /datum/vampireclane/brujah()
-						if(length(clane.clane_disciplines) >= 1)
-							discipline1type = clane.clane_disciplines[1]
-						if(length(clane.clane_disciplines) >= 2)
-							discipline2type = clane.clane_disciplines[2]
-						if(length(clane.clane_disciplines) >= 3)
-							discipline3type = clane.clane_disciplines[3]
-						discipline4type = null
-						humanity = clane.start_humanity
-						enlightement = clane.enlightement
-						random_species()
 						random_character()
-						body_model = rand(1, 3)
-						true_experience = 10
 						real_name = random_unique_name(gender)
 						save_character()
 
@@ -3061,14 +2976,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	save_character()
 	ShowChoices(user)
 	return 1
-
-/mob/living
-	var/additional_physique = 0
-	var/additional_mentality = 0
-	var/additional_social = 0
-	var/additional_blood = 0
-	var/more_companions = 0
-	var/melee_professional = FALSE
 
 /datum/preferences/proc/copy_to(mob/living/carbon/human/character, icon_updates = 1, roundstart_checks = TRUE, character_setup = FALSE, antagonist = FALSE, is_latejoiner = TRUE)
 
@@ -3311,7 +3218,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			D3 = client.prefs.discipline3type
 
 		if(D1)
-			hud_used.discipline1_icon.icon = 'code/modules/ziggers/disciplines.dmi'
+			hud_used.discipline1_icon.icon = 'code/modules/wod13/disciplines.dmi'
 			hud_used.discipline1_icon.dscpln = new D1()
 			if(discipline_pref && dna.species.id != "ghoul")
 				hud_used.discipline1_icon.dscpln.level = client.prefs.discipline1level
@@ -3322,7 +3229,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			hud_used.discipline1_icon.icon_state = hud_used.discipline1_icon.dscpln.icon_state
 			hud_used.discipline1_icon.main_state = hud_used.discipline1_icon.dscpln.icon_state
 		if(D2)
-			hud_used.discipline2_icon.icon = 'code/modules/ziggers/disciplines.dmi'
+			hud_used.discipline2_icon.icon = 'code/modules/wod13/disciplines.dmi'
 			hud_used.discipline2_icon.dscpln = new D2()
 			if(discipline_pref && dna.species.id != "ghoul")
 				hud_used.discipline2_icon.dscpln.level = client.prefs.discipline2level
@@ -3333,7 +3240,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			hud_used.discipline2_icon.icon_state = hud_used.discipline2_icon.dscpln.icon_state
 			hud_used.discipline2_icon.main_state = hud_used.discipline2_icon.dscpln.icon_state
 		if(D3)
-			hud_used.discipline3_icon.icon = 'code/modules/ziggers/disciplines.dmi'
+			hud_used.discipline3_icon.icon = 'code/modules/wod13/disciplines.dmi'
 			hud_used.discipline3_icon.dscpln = new D3()
 			if(discipline_pref && dna.species.id != "ghoul")
 				hud_used.discipline3_icon.dscpln.level = client.prefs.discipline3level
@@ -3343,17 +3250,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			hud_used.discipline3_icon.desc = hud_used.discipline3_icon.dscpln.desc
 			hud_used.discipline3_icon.icon_state = hud_used.discipline3_icon.dscpln.icon_state
 			hud_used.discipline3_icon.main_state = hud_used.discipline3_icon.dscpln.icon_state
-		var/donor = FALSE
-		for(var/i in GLOB.donaters)
-			if(i == "[client.ckey]")
-				donor = TRUE
-		if(client.prefs.discipline1level == 5 || client.prefs.discipline2level == 5 || client.prefs.discipline3level == 5 || client.prefs.generation < 9)
-			donor = TRUE
-		if(!donor)
-			client.prefs.discipline4type = null
 		if(client.prefs.discipline4type && discipline_pref)
 			var/datum/discipline/D = client.prefs.discipline4type
-			hud_used.discipline4_icon.icon = 'code/modules/ziggers/disciplines.dmi'
+			hud_used.discipline4_icon.icon = 'code/modules/wod13/disciplines.dmi'
 			hud_used.discipline4_icon.dscpln = new D()
 			if(dna.species.id != "ghoul")
 				hud_used.discipline4_icon.dscpln.level = client.prefs.discipline4level

@@ -48,7 +48,7 @@
 												"Seneschal",
 												"Baron")
 
-	duty = "Represent interests of Camarilla and maintain Masquerade."
+	v_duty = "You are the top dog of this city. You hold Praxis over San Francisco, and your word is law. Make sure the Masquerade is upheld, and your status is respected."
 	experience_addition = 25
 
 /datum/job/vamp/prince/announce(mob/living/carbon/human/H)
@@ -79,7 +79,7 @@
 
 /datum/outfit/job/prince/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Camarilla"
+	H.vampire_faction = "Camarilla"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/prince/female
 		shoes = /obj/item/clothing/shoes/vampire/heels
@@ -130,7 +130,7 @@
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince")
 
-	duty = "Protect the Prince and his interests at any cost."
+	v_duty = "Protect the Prince and the Masquerade. You are their sword."
 	experience_addition = 20
 
 /datum/outfit/job/sheriff
@@ -157,7 +157,7 @@
 
 /datum/outfit/job/sheriff/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Camarilla"
+	H.vampire_faction = "Camarilla"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/sheriff/female
 
@@ -211,7 +211,8 @@
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince")
 
-	duty = "Represent interest of the Prince to other kindred."
+	v_duty = "You are the right hand man or woman of the most powerful vampire in the city. The Camarilla trusts you to run the city, even in their stead."
+	duty = "You are the right hand man or woman of the most powerful vampire in the city. The Camarilla trusts you to run the city, even in their stead."
 	experience_addition = 15
 	minimal_age = 12
 	allowed_bloodlines = list("Daughters of Cacaphony", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Lasombra")
@@ -230,7 +231,7 @@
 
 /datum/outfit/job/clerk/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Camarilla"
+	H.vampire_faction = "Camarilla"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/clerk/female
 		shoes = /obj/item/clothing/shoes/vampire/heels
@@ -266,7 +267,7 @@
 	bounty_types = CIV_JOB_SEC
 	known_contacts = list("Prince")
 
-	duty = "Work for the Prince, protect the Masquerade."
+	v_duty = "You are the Prince's enforcer. You report to the sheriff and uphold the Traditions."
 	minimal_masquerade = 4
 	experience_addition = 10
 	allowed_bloodlines = list("Daughters of Cacaphony", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Lasombra")
@@ -292,7 +293,7 @@
 
 /datum/outfit/job/agent/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Camarilla"
+	H.vampire_faction = "Camarilla"
 
 /obj/effect/landmark/start/camarillaagent
 	name = "Scourge"
@@ -319,7 +320,7 @@
 	display_order = JOB_DISPLAY_ORDER_GRAVEYARD
 	bounty_types = CIV_JOB_MINE
 
-	duty = "Protect the Graveyard Gates from the undead."
+	v_duty = "A vile curse has gripped the dead of this city. You must keep the graveyard clean and the Masquerade intact."
 	minimal_masquerade = 0
 	experience_addition = 25
 	minimal_age = 12
@@ -371,6 +372,7 @@
 	display_order = JOB_DISPLAY_ORDER_DOCTOR
 	bounty_types = CIV_JOB_MED
 
+	v_duty = "Help your fellow kindred in all matters medicine related. Sell blood. Keep your human colleagues ignorant."
 	duty = "Collect blood by helping mortals at the Clinic."
 	experience_addition = 15
 	allowed_bloodlines = list("Daughters of Cacaphony", "Salubri", "Baali", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Tzimisce", "Lasombra", "Caitiff")
@@ -420,7 +422,8 @@
 	display_order = JOB_DISPLAY_ORDER_STREETJAN
 	allowed_bloodlines = list("Daughters of Cacaphony", "Salubri", "Baali", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Tzimisce", "Lasombra", "Caitiff")
 
-	duty = "Clean up all traces of Masquerade violations."
+	v_duty = "Clean up all traces of Masquerade violations as the Camarilla has instructed you to."
+	duty = "Keep the streets clean. The government does pay you much to keep your mouth shut about the things you see."
 	minimal_masquerade = 0
 	experience_addition = 25
 	minimal_age = 12
@@ -448,7 +451,7 @@
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the Traditions"
-	selection_color = "#cb4aad"
+	selection_color = "#ab2508"
 
 	outfit = /datum/outfit/job/regent
 
@@ -460,7 +463,7 @@
 
 	display_order = JOB_DISPLAY_ORDER_REGENT
 
-	duty = "Keep a census of events and provide information to archivists. Lead the Chantry."
+	v_duty = "Keep a census of events and provide information to archivists. Lead the Chantry. You report to the Tremere Lord of this region first, Prince second."
 	minimal_masquerade = 4
 	kindred_only = TRUE
 	allowed_bloodlines = list("Tremere")
@@ -483,7 +486,7 @@
 
 /datum/outfit/job/regent/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Chantry"
+	H.vampire_faction = "Chantry"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/archivist/female
 		shoes = /obj/item/clothing/shoes/vampire/heels
@@ -499,7 +502,7 @@
 	total_positions = 4
 	spawn_positions = 4
 	supervisors = "the Traditions and the Regent"
-	selection_color = "#cb4aad"
+	selection_color = "#ab2508"
 
 	outfit = /datum/outfit/job/archivist
 
@@ -511,7 +514,7 @@
 
 	display_order = JOB_DISPLAY_ORDER_ARCHIVIST
 
-	duty = "Keep a census of events and provide information to neonates. Listen to the Regent Carefully."
+	v_duty = "Keep a census of events and provide information to neonates. Listen to the Regent Carefully. Study blood magic and protect the chantry."
 	minimal_masquerade = 3
 	kindred_only = TRUE
 	allowed_bloodlines = list("Tremere")
@@ -534,7 +537,7 @@
 
 /datum/outfit/job/archivist/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Chantry"
+	H.vampire_faction = "Chantry"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/archivist/female
 		shoes = /obj/item/clothing/shoes/vampire/heels
@@ -569,7 +572,7 @@
 	known_contacts = list("Prince",
 												"Dealer")
 
-	duty = "Lead the Anarchs in the City."
+	v_duty = "You lead the Anarchs in the City. A Camarilla faction that values freedom and individuality. While not a fan of the traditions, you still respect the Masquerade."
 	minimal_masquerade = 3
 	kindred_only = TRUE
 	allowed_bloodlines = list("Brujah", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Ventrue", "Lasombra")
@@ -591,7 +594,7 @@
 
 /datum/outfit/job/barkeeper/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Anarch"
+	H.vampire_faction = "Anarch"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/bar/female
 		shoes = /obj/item/clothing/shoes/vampire/heels
@@ -623,7 +626,7 @@
 	known_contacts = list("Baron")
 	allowed_bloodlines = list("Daughters of Cacaphony", "Brujah", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Tzimisce", "Caitiff", "Lasombra")
 
-	duty = "Work for the Baron."
+	v_duty = "You work with the baron - whether because of your own ideals or friendship, or other reasons. That doesn't mean you will let someone disregard the one tradition you do agree with - the Masquerade."
 	minimal_masquerade = 2
 	experience_addition = 15
 
@@ -642,7 +645,7 @@
 
 /datum/outfit/job/bouncer/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Anarch"
+	H.vampire_faction = "Anarch"
 
 /obj/effect/landmark/start/bouncer
 	name = "Bouncer"
@@ -650,11 +653,11 @@
 
 /datum/job/vamp/dealer
 	title = "Dealer"
-	department_head = list("Justicar")
+	department_head = list("Yourself")
 	faction = "Vampire"
 	total_positions = 1
 	spawn_positions = 1
-	supervisors = "the Anarchs and the Traditions"
+	supervisors = "None. You are beholden only to yourself."
 	selection_color = "#434343"
 	exp_type_department = EXP_TYPE_SUPPLY // This is so the jobs menu can work properly
 
@@ -673,10 +676,10 @@
 //	minimal_generation = 12	//Uncomment when players get exp enough
 
 	my_contact_is_important = TRUE
-	known_contacts = list("Baron")
-	allowed_bloodlines = list("Brujah", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Tzimisce", "Caitiff")
+	known_contacts = list("Baron", "Prince", "Sheriff")
+	allowed_bloodlines = list("Brujah", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Tzimisce", "Caitiff", "Ventrue", "Ministry")
 
-	duty = "Provide weapons to other kindred in the city."
+	v_duty = "You provide supplies to other kindred. The warehouse is yours, and it's your business who you'll deal with."
 	minimal_masquerade = 3
 	kindred_only = TRUE
 	experience_addition = 20
@@ -695,7 +698,7 @@
 
 /datum/outfit/job/dealer/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Anarch"
+	//H.vampire_faction = "Anarch"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/suit/female
 		shoes = /obj/item/clothing/shoes/vampire/heels/red
@@ -710,7 +713,7 @@
 	faction = "Vampire"
 	total_positions = 4
 	spawn_positions = 4
-	supervisors = "the dealer"
+	supervisors = "the Dealer"
 	selection_color = "#434343"
 
 	outfit = /datum/outfit/job/supply
@@ -722,10 +725,11 @@
 	display_order = JOB_DISPLAY_ORDER_SUPPLY
 	bounty_types = CIV_JOB_RANDOM
 	humans_accessible = TRUE
-	known_contacts = list("Baron")
+	known_contacts = list("Baron", "Prince", "Sheriff")
 	allowed_bloodlines = list("Daughters of Cacaphony", "Brujah", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Tzimisce", "Caitiff", "Lasombra")
 
-	duty = "Manage deliveries and supplies for kindred in the City."
+	v_duty = "You work for the Dealer, or are a part of their coterie. They pay well and the job is easy. Don't disappoint them."
+	duty = "Though your boss is odd and only works late night hours, they pay you well enough that you avoid questioning it."
 	minimal_masquerade = 2
 	experience_addition = 15
 	minimal_age = 12
@@ -744,7 +748,7 @@
 
 /datum/outfit/job/supply/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Anarch"
+	//H.vampire_faction = "Anarch"
 
 /obj/effect/landmark/start/supplytechnician
 	name = "Supply Technician"
@@ -758,7 +762,7 @@
 	total_positions = -1
 	spawn_positions = -1
 	supervisors = "the Traditions"
-	selection_color = "#7e7e7e"
+	selection_color = "#df7058"
 	access = list()			//See /datum/job/assistant/get_access()
 	minimal_access = list()	//See /datum/job/assistant/get_access()
 	outfit = /datum/outfit/job/citizen
@@ -774,17 +778,17 @@
 	humans_accessible = TRUE
 	garou_allowed = FALSE
 
-	duty = "Follow the Traditions, or other laws provided by the current authority among your kind."
+	v_duty = "Follow the traditions of the Camarilla. Obey the Prince and their authority. The city belongs to him. Aligning yourself with your clan members would be of benefit."
+	duty = "Obey the authorities... Or don't. You are up late tonight for one reason or another."
 	minimal_masquerade = 0
 	minimal_age = 12
-	allowed_bloodlines = list("Daughters of Cacaphony", "Salubri", "Baali", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Tzimisce", "Lasombra", "Caitiff")
+	allowed_bloodlines = list("Daughters of Cacaphony", "Salubri", "Baali", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Tzimisce", "Lasombra", "Caitiff", "Old Clan Tzimisce")
 
 /datum/outfit/job/citizen
 	name = "Citizen"
 	jobtype = /datum/job/vamp/citizen
 	l_pocket = /obj/item/vamp/phone
 	id = /obj/item/cockclock
-	backpack_contents = list(/obj/item/passport=1, /obj/item/flashlight=1, /obj/item/stack/dollar/rand=1)
 
 /datum/outfit/job/citizen/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -803,6 +807,13 @@
 			shoes = /obj/item/clothing/shoes/vampire
 		else
 			shoes = /obj/item/clothing/shoes/vampire/heels
+	if(H.clane)
+		if(H.clane.name == "Lasombra")
+			backpack_contents = list(/obj/item/passport =1, /obj/item/stack/dollar/rand=1)
+	if(!H.clane)
+		backpack_contents = list(/obj/item/passport=1, /obj/item/flashlight=1, /obj/item/stack/dollar/rand=1)
+	if(H.clane && H.clane.name != "Lasombra")
+		backpack_contents = list(/obj/item/passport=1, /obj/item/flashlight=1, /obj/item/stack/dollar/rand=1)
 
 /obj/effect/landmark/start/citizen
 	name = "Citizen"
@@ -814,7 +825,7 @@
 	total_positions = 4
 	spawn_positions = 4
 	supervisors = "the Camarilla or the Anarchs"
-	selection_color = "#e3e3e3"
+	selection_color = "#df7058"
 	access = list()
 	minimal_access = list()
 	outfit = /datum/outfit/job/strip
@@ -826,7 +837,8 @@
 	display_order = JOB_DISPLAY_ORDER_STRIP
 	humans_accessible = TRUE
 
-	duty = "Offer strip club services to humans or undead."
+	v_duty = "Offer strip club services to humans or undead."
+	duty = "Offer strip club services."
 	minimal_masquerade = 3
 	allowed_bloodlines = list("Daughters of Cacaphony", "Salubri", "Baali", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Tzimisce", "Lasombra", "Caitiff")
 	experience_addition = 10
@@ -906,7 +918,7 @@
 		return
 	last_detonated = world.time
 	do_sparks(rand(5, 9), FALSE, user)
-	playsound(user.loc, 'code/modules/ziggers/sounds/cross.ogg', 100, FALSE, 8, 0.9)
+	playsound(user.loc, 'code/modules/wod13/sounds/cross.ogg', 100, FALSE, 8, 0.9)
 	for(var/mob/living/M in get_hearers_in_view(4, user.loc))
 		bang(get_turf(M), M, user)
 
@@ -954,208 +966,208 @@
 	name = "leader badge"
 	id_type_name = "leader badge"
 	desc = "King in the castle!"
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id6"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id6"
 
 /obj/item/card/id/sheriff
 	name = "head security badge"
 	id_type_name = "head security badge"
 	desc = "A badge which shows honour and dedication."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id4"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id4"
 
 /obj/item/card/id/camarilla
 	name = "security badge"
 	id_type_name = "security badge"
 	desc = "A badge which shows honour and dedication."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id3"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id3"
 
 /obj/item/card/id/clerk
 	name = "clerk badge"
 	id_type_name = "clerk badge"
 	desc = "A badge which shows buerocracy qualification."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id1"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id1"
 
 /obj/item/card/id/anarch
 	name = "biker badge"
 	id_type_name = "biker badge"
 	desc = "A badge which shows protest and anarchy."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id5"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id5"
 
 /obj/item/card/id/clinic
 	name = "medical badge"
 	id_type_name = "medical badge"
 	desc = "A badge which shows medical qualification."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id2"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id2"
 
 /obj/item/card/id/archive
 	name = "librarian badge"
 	id_type_name = "librarian badge"
 	desc = "A badge which shows the love to books."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id7"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id7"
 
 /obj/item/card/id/cleaning
 	name = "janitor badge"
 	id_type_name = "janitor badge"
 	desc = "A badge which shows cleaning employment."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id8"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id8"
 
 /obj/item/card/id/graveyard
 	name = "keeper badge"
 	id_type_name = "keeper badge"
 	desc = "A badge which shows graveyard employment."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id8"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id8"
 
 /obj/item/card/id/dealer
 	name = "business badge"
 	id_type_name = "business badge"
 	desc = "A badge which shows business."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id9"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id9"
 
 /obj/item/card/id/supplytech
 	name = "technician badge"
 	id_type_name = "technician badge"
 	desc = "A badge which shows supply employment."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id10"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id10"
 
 /obj/item/card/id/hunter
 	name = "cross"
 	id_type_name = "cross"
 	desc = "When you come into the land that the Lord your God is giving you, you must not learn to imitate the abhorrent practices of those nations. No one shall be found among you who makes a son or daughter pass through fire, or who practices divination, or is a soothsayer, or an augur, or a sorcerer, or one who casts spells, or who consults ghosts or spirits, or who seeks oracles from the dead. For whoever does these things is abhorrent to the Lord; it is because of such abhorrent practices that the Lord your God is driving them out before you (Deuteronomy 18:9-12)."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id11"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id11"
 
 /obj/item/card/id/primogen
 	name = "mysterious primogen badge"
 	id_type_name = "mysterious primogen badge"
 	desc = "Sponsored by the Shadow Government."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id12"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id12"
 
 /obj/item/card/id/police
 	name = "law department badge"
 	id_type_name = "law department badge"
 	desc = "Sponsored by the Government."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id13"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id13"
 
 /obj/item/card/id/voivode
 	name = "ancient badge"
 	id_type_name ="ancient badge"
 	desc = "You have to wear this filthy thing to be recognized."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id12"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id12"
 
 /obj/item/card/id/bogatyr
 	name = "dusty badge"
 	id_type_name ="dusty badge"
 	desc = "You have to wear this because the Voivode wants you to."
-	icon = 'code/modules/ziggers/items.dmi'
+	icon = 'code/modules/wod13/items.dmi'
 	icon_state = "id12"
 	inhand_icon_state = "card-id"
 	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
-	onflooricon = 'code/modules/ziggers/onfloor.dmi'
-	worn_icon = 'code/modules/ziggers/worn.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id12"
 
 /datum/outfit/job/caitiff
@@ -1209,7 +1221,7 @@
 	kill_objective.owner = owner
 	kill_objective.find_target()
 	objectives += kill_objective
-	owner.current.playsound_local(get_turf(owner.current), 'code/modules/ziggers/sounds/sad_start.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
+	owner.current.playsound_local(get_turf(owner.current), 'code/modules/wod13/sounds/sad_start.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
 	return ..()
 
 /datum/antagonist/caitiff/on_removal()
@@ -1247,7 +1259,7 @@
 	for(var/atom/movable/screen/blood/B in H.hud_used.infodisplay)
 		B.icon_state = null
 	for(var/atom/movable/screen/healths/HE in H.hud_used.infodisplay)
-		HE.icon = 'code/modules/ziggers/ghoul_health.dmi'
+		HE.icon = 'code/modules/wod13/ghoul_health.dmi'
 	for(var/atom/movable/screen/drinkblood/DB in H.hud_used.static_inventory)
 		DB.icon_state = null
 	for(var/atom/movable/screen/bloodheal/BH in H.hud_used.static_inventory)
@@ -1274,25 +1286,24 @@
 	H.forceMove(D.loc)
 
 	var/list/loadouts = list("Fire Fighter", "EOD Suit", "Holy Presence")
-	var/loadout_type = input(H, "Choose the Lord's gift for you:", "Loadout") as anything in loadouts
-	switch(loadout_type)
-		if("Fire Master")
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/vampire/helmet(H), ITEM_SLOT_HEAD)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/vest(H), ITEM_SLOT_OCLOTHING)
-			H.put_in_r_hand(new /obj/item/vampire_flamethrower(H))
-			H.put_in_l_hand(new /obj/item/melee/vampirearms/fireaxe(H))
-			H.equip_to_slot_or_del(new /obj/item/black_king_bar(H), ITEM_SLOT_RPOCKET)
-		if("EOD Suit")
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/eod(H), ITEM_SLOT_OCLOTHING)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/vampire/eod(H), ITEM_SLOT_HEAD)
-			H.equip_to_slot_or_del(new /obj/item/black_king_bar(H), ITEM_SLOT_RPOCKET)
-			H.put_in_r_hand(new /obj/item/gun/ballistic/shotgun/vampire(H))
-			H.put_in_l_hand(new /obj/item/ammo_box/vampire/c12g(H))
-		if("Holy Presence")
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/vest/army(H), ITEM_SLOT_OCLOTHING)
-			H.put_in_r_hand(new /obj/item/melee/vampirearms/chainsaw(H))
-			H.resistant_to_disciplines = TRUE
-			to_chat(H, "<b>You are no longer vulnerable to vampire blood powers...</b>")
+	spawn()
+		var/loadout_type = input(H, "Choose the Lord's gift for you:", "Loadout") as anything in loadouts
+		switch(loadout_type)
+			if("Fire Master")
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/vampire/helmet(H), ITEM_SLOT_HEAD)
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/vest(H), ITEM_SLOT_OCLOTHING)
+				H.put_in_r_hand(new /obj/item/vampire_flamethrower(H))
+				H.put_in_l_hand(new /obj/item/melee/vampirearms/fireaxe(H))
+			if("EOD Suit")
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/eod(H), ITEM_SLOT_OCLOTHING)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/vampire/eod(H), ITEM_SLOT_HEAD)
+				H.put_in_r_hand(new /obj/item/gun/ballistic/shotgun/vampire(H))
+				H.put_in_l_hand(new /obj/item/ammo_box/vampire/c12g(H))
+			if("Holy Presence")
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/vest/army(H), ITEM_SLOT_OCLOTHING)
+				H.put_in_r_hand(new /obj/item/melee/vampirearms/chainsaw(H))
+				H.resistant_to_disciplines = TRUE
+				to_chat(H, "<b>You are no longer vulnerable to vampire blood powers...</b>")
 
 /obj/effect/landmark/start/hunter
 	name = "Hunter"
@@ -1319,7 +1330,7 @@
 	var/datum/objective/martyr/die_objective = new
 	die_objective.owner = owner
 	objectives += die_objective
-	owner.current.playsound_local(get_turf(owner.current), 'code/modules/ziggers/sounds/orthodox_start.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
+	owner.current.playsound_local(get_turf(owner.current), 'code/modules/wod13/sounds/orthodox_start.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
 	return ..()
 
 /datum/antagonist/hunter/on_removal()
@@ -1341,7 +1352,7 @@
 
 /datum/outfit/job/sabbatist/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Sabbat"
+	H.vampire_faction = "Sabbat"
 	if(H.gender == MALE)
 		shoes = /obj/item/clothing/shoes/vampire
 		if(H.clane)
@@ -1389,7 +1400,7 @@
 	var/datum/objective/survive/survive_objective = new
 	survive_objective.owner = owner
 	objectives += survive_objective
-	owner.current.playsound_local(get_turf(owner.current), 'code/modules/ziggers/sounds/evil_start.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
+	owner.current.playsound_local(get_turf(owner.current), 'code/modules/wod13/sounds/evil_start.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
 	return ..()
 
 /datum/antagonist/sabbatist/on_removal()
@@ -1421,7 +1432,7 @@
 
 //	minimal_generation = 11	//Uncomment when players get exp enough
 
-	duty = "Protect the Family."
+	v_duty = "Protect the Family."
 	minimal_masquerade = 0
 	experience_addition = 10
 	kindred_only = TRUE
@@ -1443,7 +1454,7 @@
 
 /datum/outfit/job/giovanni/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.frakcja = "Giovanni"
+	H.vampire_faction = "Giovanni"
 	if(H.gender == FEMALE)
 		uniform = /obj/item/clothing/under/vampire/suit/female
 		shoes = /obj/item/clothing/shoes/vampire/heels
@@ -1473,7 +1484,8 @@
 	humans_accessible = TRUE
 	garou_allowed = FALSE
 
-	duty = "Transfer people in the city."
+	v_duty = "Drive people in the city."
+	duty = "Drive people in the city."
 	minimal_masquerade = 0
 	experience_addition = 10
 	allowed_bloodlines = list("Daughters of Cacaphony", "Salubri", "Baali", "Brujah", "Tremere", "Ventrue", "Nosferatu", "Gangrel", "Toreador", "Malkavian", "Banu Haqim", "Giovanni", "Ministry", "Tzimisce", "Lasombra", "Caitiff")
@@ -1529,14 +1541,14 @@
 	var/objectve = rand(1, 4)
 	switch(objectve)
 		if(1)
-			var/list/niggas = list()
+			var/list/ambitious = list()
 			for(var/mob/living/carbon/human/H in GLOB.player_list)
-				if(H.stat != DEAD && H.true_real_name != owner.current.true_real_name && H.frakcja != "Sabbat")
-					niggas += H
-			if(length(niggas))
+				if(H.stat != DEAD && H.true_real_name != owner.current.true_real_name && H.vampire_faction != "Sabbat")
+					ambitious += H
+			if(length(ambitious))
 				var/datum/objective/blood/blood_objective = new
 				blood_objective.owner = owner
-				var/mob/living/carbon/human/HU = pick(niggas)
+				var/mob/living/carbon/human/HU = pick(ambitious)
 				blood_objective.owner = owner
 				blood_objective.target_name = HU.true_real_name
 				objectives += blood_objective
@@ -1554,14 +1566,14 @@
 			objectives += money_objective
 			money_objective.update_explanation_text()
 		if(3)
-			var/list/niggas = list()
+			var/list/ambitious = list()
 			for(var/mob/living/carbon/human/H in GLOB.player_list)
-				if(H.stat != DEAD && H.true_real_name != owner.current.true_real_name && H.frakcja != "Sabbat")
-					niggas += H
-			if(length(niggas))
+				if(H.stat != DEAD && H.true_real_name != owner.current.true_real_name && H.vampire_faction != "Sabbat")
+					ambitious += H
+			if(length(ambitious))
 				var/datum/objective/protect_niga/protect_objective = new
 				protect_objective.owner = owner
-				var/mob/living/carbon/human/HU = pick(niggas)
+				var/mob/living/carbon/human/HU = pick(ambitious)
 				protect_objective.mine_target = HU
 				objectives += protect_objective
 				protect_objective.update_explanation_text()
@@ -1575,8 +1587,8 @@
 			var/list/available_factions = list("Camarilla", "Anarch", "Sabbat")
 			if(ishuman(owner))
 				var/mob/living/carbon/human/H = owner
-				if(H.frakcja == "Camarilla" || H.frakcja == "Anarch" || H.frakcja == "Sabbat")
-					available_factions -= H.frakcja
+				if(H.vampire_faction == "Camarilla" || H.vampire_faction == "Anarch" || H.vampire_faction == "Sabbat")
+					available_factions -= H.vampire_faction
 			var/datum/objective/become_member/member_objective = new
 			member_objective.owner = owner
 			member_objective.faction = pick(available_factions)
@@ -1615,7 +1627,7 @@
 	allowed_bloodlines = list("Malkavian")
 	minimal_generation = 7	//Uncomment when players get exp enough
 
-	duty = "Offer your infinite knowledge to Prince of the City."
+	v_duty = "Offer your infinite knowledge to Prince of the City."
 	minimal_masquerade = 5
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince")
@@ -1665,7 +1677,7 @@
 	allowed_bloodlines = list("Nosferatu")
 	minimal_generation = 7	//Uncomment when players get exp enough
 
-	duty = "Offer your infinite knowledge to Prince of the City."
+	v_duty = "Offer your infinite knowledge to Prince of the City."
 	minimal_masquerade = 5
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince")
@@ -1711,7 +1723,7 @@
 	allowed_bloodlines = list("Ventrue")
 	minimal_generation = 7	//Uncomment when players get exp enough
 
-	duty = "Offer your infinite knowledge to Prince of the City."
+	v_duty = "Offer your infinite knowledge to Prince of the City."
 	minimal_masquerade = 5
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince")
@@ -1757,7 +1769,7 @@
 	allowed_bloodlines = list("Toreador")
 	minimal_generation = 7	//Uncomment when players get exp enough
 
-	duty = "Offer your infinite knowledge to Prince of the City."
+	v_duty = "Offer your infinite knowledge to Prince of the City."
 	minimal_masquerade = 5
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince")
@@ -1805,7 +1817,7 @@
 	allowed_bloodlines = list("Brujah")
 	minimal_generation = 7	//Uncomment when players get exp enough
 
-	duty = "Offer your infinite knowledge to Prince of the City."
+	v_duty = "Offer your infinite knowledge to Prince of the City."
 	minimal_masquerade = 5
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince")
@@ -1919,6 +1931,59 @@
 	r_hand = /obj/item/police_radio
 	backpack_contents = list(/obj/item/passport=1, /obj/item/implant/radio=1, /obj/item/gun/ballistic/automatic/vampire/m1911=1, /obj/item/camera/detective=1, /obj/item/camera_film=1, /obj/item/taperecorder=1, /obj/item/tape=1, /obj/item/stack/dollar=1)
 
+/datum/job/vamp/triad_soldier
+	title = "Triad Soldier"
+	department_head = list("Triad Leadership")
+	faction = "Vampire"
+	total_positions = 8
+	spawn_positions = 8
+	supervisors = " the Triads"
+	selection_color = "#bb9d3d"
+
+	outfit = /datum/outfit/job/triad_soldier
+
+	access = list(ACCESS_HYDROPONICS, ACCESS_BAR, ACCESS_KITCHEN, ACCESS_MORGUE, ACCESS_WEAPONS, ACCESS_MINERAL_STOREROOM, ACCESS_THEATRE)
+	minimal_access = list(ACCESS_BAR, ACCESS_MINERAL_STOREROOM, ACCESS_THEATRE)
+	paycheck = PAYCHECK_EASY
+	paycheck_department = ACCOUNT_SRV
+	display_order = JOB_DISPLAY_ORDER_POLICE
+	exp_type_department = EXP_TYPE_INDEPENDENT
+
+	kindred_only = FALSE
+	human_only = TRUE
+	humans_accessible = TRUE
+//	allowed_bloodlines = list()
+	minimal_generation = 13
+
+	duty = "Make money, do drugs, fight law. Your hideout is the laundromat in Chinatown."
+	minimal_masquerade = 0
+	my_contact_is_important = FALSE
+//	known_contacts = list("Investigator")
+	minimal_age = 12
+
+/datum/outfit/job/triad_soldier/pre_equip(mob/living/carbon/human/H)
+	..()
+	if(H.gender == FEMALE)
+		uniform = /obj/item/clothing/under/vampire/suit/female
+		shoes = /obj/item/clothing/shoes/vampire/heels
+
+/datum/outfit/job/triad_soldier
+	name = "Triad Soldier"
+	jobtype = /datum/job/vamp/triad_soldier
+	uniform = /obj/item/clothing/under/vampire/suit
+	shoes = /obj/item/clothing/shoes/vampire/jackboots
+//	suit = /obj/item/clothing/suit/vampire/vest
+//	belt = /obj/item/melee/classic_baton
+	id = /obj/item/cockclock
+//	gloves = /obj/item/cockclock
+//	id = /obj/item/card/id/police
+	l_pocket = /obj/item/vamp/phone
+	r_pocket = /obj/item/flashlight
+	l_hand = /obj/item/vamp/keys/triads
+//	r_hand = /obj/item/police_radio
+	backpack_contents = list(/obj/item/passport=1, /obj/item/stack/dollar=1, /obj/item/clothing/mask/vampire/balaclava =1, /obj/item/gun/ballistic/automatic/vampire/glock19, /obj/item/melee/vampirearms/knife)
+
+//TZIMISCE ROLES
 /datum/job/vamp/voivode
 	title = "Voivode"
 	department_head = list("Eldest")
@@ -1934,14 +1999,14 @@
 	minimal_access = list(ACCESS_BAR, ACCESS_MINERAL_STOREROOM, ACCESS_THEATRE)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	display_order = JOB_DISPLAY_ORDER_BRUJAH
+	display_order = JOB_DISPLAY_ORDER_VOIVODE
 	exp_type_department = EXP_TYPE_INDEPENDENT
 
 	kindred_only = TRUE
-	allowed_bloodlines = list("Old Clan Tzimisce")
-	minimal_generation = 9	//Uncomment when players get exp enough
+	allowed_bloodlines = list("Old Clan Tzimisce", "Tzimisce")
+	minimal_generation = 7
 
-	duty = "You rule the house on the hills. Yours is the land, a domain you were allowed to have by the Camarilla. They are amicable allies, but you don't trust them. And neither should they trust you."
+	v_duty = "You are a Childe of the Voivode-in-Waiting, the ancient Tzimisce Elder who has rested beneath the Earth for an age longer than the city that now rests on their bones. Honor them in all your actions, and remember that you walk with their favor."
 	minimal_masquerade = 2
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince", "Baron", "Sheriff")
@@ -1954,8 +2019,8 @@
 	jobtype = /datum/job/vamp/voivode
 	id = /obj/item/card/id/voivode
 	//glasses = /obj/item/clothing/glasses/vampire/yellow
-	uniform = /obj/item/clothing/under/vampire/punk
-	suit = /obj/item/clothing/suit/vampire/trench/tzi
+	uniform = /obj/item/clothing/under/vampire/voivode
+	suit = /obj/item/clothing/suit/vampire/trench/voivode
 	shoes = /obj/item/clothing/shoes/vampire/jackboots
 	l_pocket = /obj/item/vamp/phone
 	//r_pocket =
@@ -1965,8 +2030,8 @@
 	title = "Bogatyr"
 	department_head = list("Voivode")
 	faction = "Vampire"
-	total_positions = 3
-	spawn_positions = 3
+	total_positions = 4
+	spawn_positions = 4
 	supervisors = " the Laws of Hospitality"
 	selection_color = "#953d2d"
 
@@ -1976,27 +2041,32 @@
 	minimal_access = list(ACCESS_BAR, ACCESS_MINERAL_STOREROOM, ACCESS_THEATRE)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	display_order = JOB_DISPLAY_ORDER_BRUJAH
+	display_order = JOB_DISPLAY_ORDER_BOGATYR
 	exp_type_department = EXP_TYPE_INDEPENDENT
 
 	kindred_only = TRUE
 	allowed_bloodlines = list("Old Clan Tzimisce", "Tzimisce")
 	minimal_generation = 13	//Uncomment when players get exp enough
 
-	duty = "For one reason or another, you serve the voivode. You have tasted his blood and felt strong feelings toward him. You are his servant, protector, and your task is to serve him and maintain the estates, as meager as they are compared to the old world's."
+	v_duty = "Whether you are of Voivode-in-Waiting's blood or if you've been honored, you are one of the Kin of the Voivode. Protect your Family, as your Family would protect you."
 	minimal_masquerade = 2
 	my_contact_is_important = TRUE
 	known_contacts = list("Prince", "Baron", "Sheriff")
 	minimal_age = 10
 
+/datum/outfit/job/bogatyr/pre_equip(mob/living/carbon/human/H)
+	..()
+	if(H.gender == FEMALE)
+		uniform = /obj/item/clothing/under/vampire/bogatyr/female
+		shoes = /obj/item/clothing/shoes/vampire/heels
 
 
 /datum/outfit/job/bogatyr
-	name = "bogatyr"
+	name = "Bogatyr"
 	jobtype = /datum/job/vamp/bogatyr
 	id = /obj/item/card/id/bogatyr
 	//glasses = /obj/item/clothing/glasses/vampire/yellow
-	uniform = /obj/item/clothing/under/vampire/punk
+	uniform = /obj/item/clothing/under/vampire/bogatyr
 	//suit = /obj/item/clothing/suit/vampire/jacket/punk
 	shoes = /obj/item/clothing/shoes/vampire/jackboots
 	l_pocket = /obj/item/vamp/phone
@@ -2006,7 +2076,7 @@
 /datum/job/vamp/zadruga
 	title = "Zadruga"
 	department_head = list("Voivode")
-	faction = "Ghoul"
+	faction = "Ghoul" //[Lucifernix] - Change this to vampire when I actually fix this.
 	total_positions = 2
 	spawn_positions = 2
 	supervisors = " the Laws of Hospitality"
@@ -2018,14 +2088,14 @@
 	minimal_access = list(ACCESS_BAR, ACCESS_MINERAL_STOREROOM, ACCESS_THEATRE)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	display_order = JOB_DISPLAY_ORDER_BRUJAH
+	display_order = JOB_DISPLAY_ORDER_ZADRUGA
 	exp_type_department = EXP_TYPE_INDEPENDENT
 
-	ghoul_only = TRUE
+	//ghoul_only = TRUE
 	//allowed_bloodlines = list("Old Clan Tzimisce", "Tzimisce")
 	//minimal_generation = 7	//Uncomment when players get exp enough
 
-	duty = "You are a revenant. What family you belong to is up to you. But you serve the voivode most loyally - you are without a doubt a polished tool, and memories of your humanity are growing more and more distant."
+	duty = "You were born in servitude to the Master of the Manor: your father served the Voivode, as did his father. Now, you carry their blood, and with it their responsibilities."
 	minimal_masquerade = 2
 	my_contact_is_important = FALSE
 	known_contacts = list("Prince", "Baron", "Sheriff")
@@ -2038,7 +2108,7 @@
 	jobtype = /datum/job/vamp/zadruga
 	id = /obj/item/card/id/bogatyr
 	//glasses = /obj/item/clothing/glasses/vampire/yellow
-	uniform = /obj/item/clothing/under/vampire/punk
+	uniform = /obj/item/clothing/under/vampire/bogatyr
 	//suit = /obj/item/clothing/suit/vampire/jacket/punk
 	shoes = /obj/item/clothing/shoes/vampire/jackboots
 	l_pocket = /obj/item/vamp/phone

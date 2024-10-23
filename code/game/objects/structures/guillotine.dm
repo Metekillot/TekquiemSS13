@@ -130,7 +130,7 @@
 					var/loved = TRUE
 					var/datum/preferences/P1 = GLOB.preferences_datums[ckey(M.key)]
 					if(H in GLOB.masquerade_breakers_list)
-						if(M.frakcja == "Sabbat")
+						if(M.vampire_faction == "Sabbat")
 							to_chat(M, "<span class='userdanger'><b>You feel your interests being ignored</b></span>")
 							loved = FALSE
 						else
@@ -138,23 +138,23 @@
 							if(P1)
 								P1.add_experience(1)
 					if(H.diablerist)
-						if(M.frakcja == "Camarilla")
+						if(M.vampire_faction == "Camarilla")
 							to_chat(M, "<span class='userhelp'><b>Diablerist was punished</b></span>")
 							if(P1)
 								P1.add_experience(1)
-						else if(M.frakcja)
+						else if(M.vampire_faction)
 							loved = FALSE
 							to_chat(M, "<span class='userdanger'><b>You feel your interests being ignored</b></span>")
 					if(H.bloodhunted)
-						if(M.frakcja == "Camarilla")
+						if(M.vampire_faction == "Camarilla")
 							to_chat(M, "<span class='userhelp'><b>Blood Hunt after [H] is over</b></span>")
 							if(P1)
 								P1.add_experience(1)
-						else if(M.frakcja)
+						else if(M.vampire_faction)
 							loved = FALSE
 							to_chat(M, "<span class='userdanger'><b>You feel your interests being ignored</b></span>")
 					if("[H.mind.assigned_role]" == "Prince" || "[H.mind.assigned_role]" == "Sheriff" || "[H.mind.assigned_role]" == "Seneschal" || "[H.mind.assigned_role]" == "Chantry Regent" || "[H.mind.assigned_role]" == "Baron" || "[H.mind.assigned_role]" == "Dealer")
-						if(M.frakcja == "Sabbat")
+						if(M.vampire_faction == "Sabbat")
 							to_chat(M, "<span class='userhelp'><b>Authority increased</b></span>")
 							loved = TRUE
 							if(P1)
@@ -162,7 +162,7 @@
 					if(loved)
 						M.emote("clap")
 			var/datum/preferences/P = GLOB.preferences_datums[ckey(H.key)]
-		/*	var/how_much = max(1, 5-H.masquerade)
+			var/how_much = max(1, 5-H.masquerade)
 			if(H in GLOB.masquerade_breakers_list)
 				if(P)
 					P.last_torpor = world.time
@@ -185,7 +185,7 @@
 					P.generation = H.generation
 					P.torpor_count = 0
 					P.diablerist = 0
-					H.diablerist = 0*/
+					H.diablerist = 0
 			head.dismember()
 			log_combat(user, H, "beheaded", src)
 			H.regenerate_icons()
@@ -193,7 +193,7 @@
 			kill_count += 1
 			var/blood_overlay = "bloody"
 			if(P)
-				//P.torpor_count = 0
+				P.torpor_count = 0
 				P.reason_of_death = "Executed to sustain the Traditions ([time2text(world.timeofday, "YYYY-MM-DD hh:mm:ss")])."
 			if (kill_count == 2)
 				blood_overlay = "bloodier"
