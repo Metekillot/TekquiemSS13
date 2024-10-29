@@ -38,6 +38,10 @@
 	. = ..()
 	GLOB.police_radios -= src
 
+/mob/living/carbon
+	var/diablerist = FALSE
+	var/antifrenzy = FALSE
+
 /mob/living/carbon/Initialize()
 	. = ..()
 	var/datum/atom_hud/abductor/hud = GLOB.huds[DATA_HUD_ABDUCTOR]

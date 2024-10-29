@@ -380,6 +380,11 @@
 	sound = 'code/modules/wod13/sounds/lift.ogg'
 	forced = TRUE
 
+/mob/living
+	var/last_vampire_ambience = 0
+	var/wait_for_music = 30
+	var/wasforced
+
 /mob/living/proc/handle_vampire_music()
 	if(!client)
 		return

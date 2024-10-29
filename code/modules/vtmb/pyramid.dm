@@ -39,6 +39,9 @@
 	var/thaumlevel = 1
 	var/sacrifice
 
+/mob/living
+	var/thaumaturgy_knowledge = FALSE
+
 /obj/ritualrune/proc/complete()
 	return
 

@@ -222,7 +222,8 @@
 	config_entry_value = ""
 
 /datum/config_entry/string/githuburl
-	config_entry_value = "https://github.com/WorldOfDarknessXIII/World-of-Darkness-13"
+	config_entry_value = "https://github.com/TheCarnalest/World-of-Darkness-13"
+
 /datum/config_entry/string/discordbotcommandprefix
 	config_entry_value = "?"
 

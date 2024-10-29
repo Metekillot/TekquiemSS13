@@ -170,6 +170,9 @@
 	status_flags = CANPUSH
 	search_objects = 1
 
+/mob/living/carbon/human
+	var/dementia = FALSE
+
 /mob/living/simple_animal/hostile/retaliate/dementia/Retaliate()
 	for(var/mob/living/carbon/human/H in oviewers(9, src))
 		if(H)

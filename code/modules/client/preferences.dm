@@ -141,20 +141,22 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/persistent_scars = TRUE
 	///If we want to broadcast deadchat connect/disconnect messages
 	var/broadcast_login_logout = TRUE
-
-	//Generation
+//Поколение
 	var/generation = 13
 	var/generation_bonus = 0
-
-	//Masquerade
+//maskarad
 	var/masquerade = 5
 
 	var/enlightement = FALSE
 	var/humanity = 7
 
-	//Legacy
-	var/exper = 1440
+//TOO OLD
+	var/exper = 1440	//Urovni
 	var/exper_plus = 0
+//TOO OLD
+
+	var/true_experience = 10
+	var/torpor_count = 0
 
 	var/discipline1level = 1
 	var/discipline2level = 1
@@ -165,12 +167,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/discipline2type
 	var/discipline3type
 	var/discipline4type
-
-	//Character sheet stats
-	var/true_experience = 10
-	var/torpor_count = 0
-
-	var/list/datum/discipline/disciplines = list()
 
 	var/physique = 1
 	var/dexterity = 1
@@ -207,6 +203,17 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/werewolf_name
 	var/auspice_level = 1
+
+//	var/datum/vampireclane/Clane
+
+/mob/living
+	var/physique = 1
+	var/dexterity = 1
+	var/social = 1
+	var/mentality = 1
+	var/lockpicking = 0
+	var/athletics = 0
+	var/blood = 1
 
 /datum/preferences/proc/add_experience(var/amount)
 	if(amount)
@@ -323,7 +330,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	discipline4type = null
 	enlightement = clane.enlightement
 	humanity = clane.start_humanity
-	true_experience = 50
+	true_experience = 10
 	key_bindings = deepCopyList(GLOB.hotkey_keybinding_list_by_key) // give them default keybinds and update their movement keys
 	C?.set_macros()
 //	pref_species = new /datum/species/kindred()
@@ -2013,6 +2020,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 							var/datum/discipline/D = new i
 							if(!D.clane_restricted)
 								disc4 += i
+							if(clane.name == "Old Clan Tzimisce" && D.name == "Vicissitude")
+								disc4 += i
 							qdel(D)
 					var/discipline4 = input(user, "Select fourth discipline", "Discipline Selection") as null|anything in disc4
 					if(discipline4)
@@ -2982,7 +2991,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					random_species()
 					random_character()
 					body_model = rand(1, 3)
-					true_experience = 50
+					true_experience = 10
 					real_name = random_unique_name(gender)
 					save_character()
 
@@ -3025,7 +3034,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						random_species()
 						random_character()
 						body_model = rand(1, 3)
-						true_experience = 50
+						true_experience = 10
 						real_name = random_unique_name(gender)
 						save_character()
 
@@ -3043,6 +3052,15 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	save_character()
 	ShowChoices(user)
 	return 1
+
+/mob/living
+	var/additional_physique = 0
+	var/additional_dexterity = 0
+	var/additional_mentality = 0
+	var/additional_social = 0
+	var/additional_blood = 0
+	var/more_companions = 0
+	var/melee_professional = FALSE
 
 /datum/preferences/proc/copy_to(mob/living/carbon/human/character, icon_updates = 1, roundstart_checks = TRUE, character_setup = FALSE, antagonist = FALSE, is_latejoiner = TRUE)
 

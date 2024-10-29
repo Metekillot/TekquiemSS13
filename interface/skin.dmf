@@ -335,3 +335,4 @@ window "statwindow"
 		anchor2 = 100,100
 		is-visible = false
 		saved-params = ""
+

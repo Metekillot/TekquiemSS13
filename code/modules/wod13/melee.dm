@@ -310,6 +310,7 @@
 		return
 	if(target.IsParalyzed() || target.IsKnockdown() || target.IsStun())
 		return
+	user.check_elysium(TRUE)
 	if(!target.IsParalyzed() && iskindred(target) && !target.stakeimmune)
 		visible_message("<span class='warning'>[user] aims [src] straight to the [target]'s heart!</span>", "<span class='warning'>You aim [src] straight to the [target]'s heart!</span>")
 		if(do_after(user, 20, target))
@@ -360,6 +361,15 @@
 	bare_wound_bonus = 10
 	resistance_flags = FIRE_PROOF
 	masquerade_violating = TRUE
+
+/obj/item/melee/vampirearms/katana/kosa/egorium
+	name = "demonic scythe"
+	icon_state = "egorium"
+	force = 60
+
+/obj/item/melee/vampirearms/katana/kosa/egorium/Initialize()
+	. = ..()
+	set_light(3, 2, "#ff0000")
 
 /obj/item/melee/vampirearms/eguitar
 	icon = 'code/modules/wod13/48x32weapons.dmi'

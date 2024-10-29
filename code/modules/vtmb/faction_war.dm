@@ -126,6 +126,9 @@ SUBSYSTEM_DEF(factionwar)
 			marks_anarch -= G
 			marks_sabbat |= G
 
+/mob/living
+	var/vampire_faction
+
 /obj/graffiti
 	name = "faction mark"
 	desc = "Reminds anyone who sees it which faction it belongs to..."

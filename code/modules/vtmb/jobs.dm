@@ -1296,9 +1296,11 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/vest(H), ITEM_SLOT_OCLOTHING)
 				H.put_in_r_hand(new /obj/item/vampire_flamethrower(H))
 				H.put_in_l_hand(new /obj/item/melee/vampirearms/fireaxe(H))
+				H.equip_to_slot_or_del(new /obj/item/black_king_bar(H), ITEM_SLOT_RPOCKET)
 			if("EOD Suit")
 				H.equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/eod(H), ITEM_SLOT_OCLOTHING)
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/vampire/eod(H), ITEM_SLOT_HEAD)
+				H.equip_to_slot_or_del(new /obj/item/black_king_bar(H), ITEM_SLOT_RPOCKET)
 				H.put_in_r_hand(new /obj/item/gun/ballistic/shotgun/vampire(H))
 				H.put_in_l_hand(new /obj/item/ammo_box/vampire/c12g(H))
 			if("Holy Presence")
@@ -2002,7 +2004,7 @@
 	exp_type_department = EXP_TYPE_INDEPENDENT
 
 	kindred_only = TRUE
-	allowed_bloodlines = list("Old Clan Tzimisce")
+	allowed_bloodlines = list("Old Clan Tzimisce", "Tzimisce")
 	minimal_generation = 7
 
 	v_duty = "You are a Childe of the Voivode-in-Waiting, the ancient Tzimisce Elder who has rested beneath the Earth for an age longer than the city that now rests on their bones. Honor them in all your actions, and remember that you walk with their favor."
@@ -2044,7 +2046,7 @@
 	exp_type_department = EXP_TYPE_INDEPENDENT
 
 	kindred_only = TRUE
-	allowed_bloodlines = list("Old Clan Tzimisce")
+	allowed_bloodlines = list("Old Clan Tzimisce", "Tzimisce")
 	minimal_generation = 13	//Uncomment when players get exp enough
 
 	v_duty = "Whether you are of Voivode-in-Waiting's blood or if you've been honored, you are one of the Kin of the Voivode. Protect your Family, as your Family would protect you."

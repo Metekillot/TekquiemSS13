@@ -34,6 +34,10 @@
 /datum/discipline/proc/post_gain(var/mob/living/carbon/human/H)
 	return
 
+/mob/living
+	var/resistant_to_disciplines = FALSE
+	var/auspex_examine = FALSE
+
 /atom/examine(mob/user)
 	. = ..()
 	if(ishuman(user))
@@ -139,6 +143,8 @@
 			return FALSE
 	if(HAS_TRAIT(caster, TRAIT_PACIFISM))
 		return FALSE
+	if(HAS_TRAIT(caster, TRAIT_ELYSIUM) && violates_masquerade)
+		caster.check_elysium(FALSE)
 	if(target.resistant_to_disciplines || target.spell_immunity)
 		to_chat(caster, "<span class='danger'>[target] resists your powers!</span>")
 		return FALSE
@@ -301,9 +307,9 @@
 	if(level_casting >= 4)
 		caster.auspex_examine = TRUE
 	if(level_casting >= 5)
-		caster.see_invisible = SEE_INVISIBLE_OBSERVER
-		GLOB.auspex_list += caster
-		shitcasted = TRUE
+		caster.ghostize(TRUE, 0, 1)
+
+
 	spawn((delay*level_casting)+caster.discipline_time_plus)
 		if(caster)
 			if(shitcasted)
@@ -342,6 +348,10 @@
 	. = ..()
 	spawn(5)
 		qdel(src)
+
+/mob/living/carbon
+	var/celerity_visual = FALSE
+	var/potential = 0
 
 /mob/living/carbon/human/Move(atom/newloc, direct, glide_size_override)
 	..()
@@ -433,11 +443,9 @@
 	. = ..()
 	if(target.spell_immunity)
 		return
-	if (caster.generation > target.generation) //fail if used on a lower generation
-		return
-	var/mypower = caster.social + caster.additional_social
-	var/theirpower = target.mentality + target.additional_mentality
-	if(theirpower >= mypower)
+	var/mypower = 13-caster.generation+caster.social+caster.additional_mentality
+	var/theirpower = 13-target.generation+target.mentality+target.additional_mentality
+	if(theirpower > mypower)
 		to_chat(caster, "<span class='warning'>[target] is too powerful for you!</span>")
 		return
 	if(HAS_TRAIT(caster, TRAIT_MUTE))
@@ -502,6 +510,9 @@
 	delay = 100
 	activate_sound = 'code/modules/wod13/sounds/insanity.ogg'
 	clane_restricted = TRUE
+
+/mob/living
+	var/dancing = FALSE
 
 /proc/dancefirst(mob/living/M)
 	if(M.dancing)
@@ -719,6 +730,9 @@
 	activate_sound = 'code/modules/wod13/sounds/obfuscate_activate.ogg'
 	leveldelay = TRUE
 
+/mob/living/carbon
+	var/obfuscate_level = 0
+
 /datum/discipline/obfuscate/activate(mob/living/target, mob/living/carbon/human/caster)
 	. = ..()
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
@@ -743,6 +757,9 @@
 	activate_sound = 'code/modules/wod13/sounds/presence_activate.ogg'
 	leveldelay = FALSE
 	fearless = TRUE
+
+/mob/living/carbon/human
+	var/mob/living/caster
 
 /mob/living/carbon/human/proc/walk_to_caster()
 	walk(src, 0)
@@ -1191,6 +1208,7 @@
 	violates_masquerade = TRUE
 	clane_restricted = TRUE
 	dead_restricted = FALSE
+	var/exclusive_clan = "Old Clan Tzimisce"
 
 /datum/discipline/vicissitude/activate(mob/living/target, mob/living/carbon/human/caster)
 	. = ..()

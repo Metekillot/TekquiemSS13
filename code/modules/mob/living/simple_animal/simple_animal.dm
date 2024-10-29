@@ -733,6 +733,7 @@
 		return
 	if(IsImmobilized())
 		return
+	user.check_elysium(TRUE)
 	return relaydrive(user, direction)
 
 /mob/living/simple_animal/deadchat_plays(mode = ANARCHY_MODE, cooldown = 12 SECONDS)

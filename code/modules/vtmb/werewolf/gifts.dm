@@ -55,6 +55,9 @@
 	button_icon_state = "inspiration"
 //	rage_req = 1
 
+/mob/living/carbon
+	var/inspired = FALSE
+
 /mob/living/carbon/Life()
 	. = ..()
 	if(inspired)

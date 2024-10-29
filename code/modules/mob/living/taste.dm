@@ -1,5 +1,9 @@
 #define DEFAULT_TASTE_SENSITIVITY 15
 
+/mob/living
+	var/last_taste_time
+	var/last_taste_text
+
 /**
  * Gets taste sensitivity of given mob
  *

@@ -17,6 +17,9 @@
 		var/datum/action/ghost_hear/GH = new()
 		GH.Grant(H)
 
+/mob/living
+	var/hearing_ghosts = FALSE
+
 /datum/action/ghost_hear
 	name = "See Ghosts"
 	desc = "Allows you to see ghosts."
