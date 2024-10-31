@@ -8,9 +8,6 @@ var/list/CMNoir = list(0.3,0.3,0.3,0,\
 					   0.3,0.3,0.3,0,\
 					   0.0,0.0,0.0,1,)// [ChillRaccoon] - more about "color matrix" you can read in BYOND documentation
 
-/mob
-	var/respawntimeofdeath = 0
-
 /mob/dead/observer
 	name = "ghost"
 	//desc = "It's a g-g-g-g-ghooooost" //jinkies! //[ChillRaccon] - maggot
@@ -336,6 +333,7 @@ Works together with spawning an observer, noted above.
 			ghost.movement_type = FLYING | GROUND | PHASING
 			ghost.sight = 0
 			ghost.client.prefs.chat_toggles &= ~CHAT_GHOSTEARS
+			ghost.client.prefs.chat_toggles ^= CHAT_DEAD
 			ghost.client.show_popup_menus = 0
 		if(aghosted)
 			// to_chat(ghost.client, "Check rights - [check_rights_for(ghost.client, R_ADMIN)]")
@@ -442,6 +440,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	SStgui.on_transfer(src, mind.current) // Transfer NanoUIs.
 	mind.current.key = key
 	mind.current.client.init_verbs()
+	original_body.soul_state = SOUL_PRESENT
 	return TRUE
 
 /mob/dead/observer/verb/stay_dead()
