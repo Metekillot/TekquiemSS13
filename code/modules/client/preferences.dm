@@ -2964,6 +2964,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					discipline3level = 1
 					discipline4level = 1
 					physique = 1
+					dexterity = 1
 					mentality = 1
 					social = 1
 					lockpicking = 0
@@ -3007,6 +3008,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						discipline3level = 1
 						discipline4level = 1
 						physique = 1
+						dexterity = 1
 						mentality = 1
 						social = 1
 						lockpicking = 0
