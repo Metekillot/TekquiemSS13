@@ -1,4 +1,3 @@
-import { useBackend } from '../backend';
 import {
   AnimatedNumber,
   Button,
@@ -6,7 +5,10 @@ import {
   NoticeBox,
   ProgressBar,
   Section,
-} from '../components';
+} from 'tgui-core/components';
+
+import { useBackend } from '../backend';
+import { formatEnergy } from '../format';
 import { Window } from '../layouts';
 
 export const MechBayPowerConsole = (props) => {
