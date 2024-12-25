@@ -36,6 +36,13 @@
 		H.base_body_mod = ""
 	H.update_body()
 
+/datum/vampireclane/kiasyd/post_gain(mob/living/carbon/human/H)
+	. = ..()
+
+	//give them sunglasses to hide their freakish eyes
+	var/obj/item/clothing/glasses/vampire/sun/new_glasses = new(H.loc)
+	H.equip_to_appropriate_slot(new_glasses, TRUE)
+
 /datum/discipline/mytherceria
 	name = "Mytherceria"
 	desc = "Mytherceria is a Discipline that manifests in faerie-blooded vampires such as the Kiasyd and Maeghar. It grants the vampire mystical senses, the ability to steal knowledge, and other powers attributed to fae."

@@ -396,7 +396,8 @@
 				if ("gargoyle")
 					msg += "<span class='danger'>[p_they(TRUE)] seem[p_s()] to be made out of stone!</span>"
 				if ("kiasyd")
-					msg += "<span class='danger'>[p_they(TRUE)] [p_have()] no whites in their eyes!</span>"
+					if (!is_eyes_covered())
+						msg += "<span class='danger'>[p_they(TRUE)] [p_have()] no whites in [p_their()] eyes!</span>"
 				if ("rotten1")
 					msg += "[p_they(TRUE)] seem[p_s()] oddly gaunt."
 				if ("rotten2")
