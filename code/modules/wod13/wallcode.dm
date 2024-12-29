@@ -1076,7 +1076,7 @@
 
 /turf/open/floor/plating/shit
 	gender = PLURAL
-	name = "shit"
+	name = "sewage"
 	icon = 'code/modules/wod13/tiles.dmi'
 	icon_state = "shit"
 	flags_1 = NONE
