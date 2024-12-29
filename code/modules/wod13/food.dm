@@ -274,6 +274,7 @@
 	icon_state = "menu"
 	icon_deny = "menu"
 	prize_list = list()
+	var/dispenses_dollars = TRUE
 
 /obj/machinery/mineral/equipment_vendor/fastfood/sodavendor
 	name = "Drink Vendor"
@@ -308,7 +309,7 @@
 
 /obj/machinery/mineral/equipment_vendor/fastfood/AltClick(mob/user)
 	. = ..()
-	if(points)
+	if(points && dispenses_dollars)
 		for(var/i in 1 to points)
 			new /obj/item/stack/dollar(loc)
 		points = 0
@@ -568,6 +569,25 @@
 		new /datum/data/mining_equipment("surgical apron", /obj/item/clothing/suit/apron/surgical, 100),
 		new /datum/data/mining_equipment("latex gloves", /obj/item/clothing/gloves/vampire/latex, 100),
 		new /datum/data/mining_equipment("burn ointment", /obj/item/stack/medical/ointment, 100)
+	)
+
+/obj/machinery/mineral/equipment_vendor/fastfood/police
+	var/last_card_use_time = 0
+	dispenses_dollars = FALSE
+	prize_list = list(
+		new /datum/data/mining_equipment("handcuffs", /obj/item/restraints/handcuffs, 1),
+		new /datum/data/mining_equipment("camera", /obj/item/camera, 2),
+		new /datum/data/mining_equipment("tape recorder", /obj/item/taperecorder, 2),
+		new /datum/data/mining_equipment("white crayon", /obj/item/toy/crayon/white, 1),
+		new /datum/data/mining_equipment("evidence box", /obj/item/storage/box/evidence, 1),
+		new /datum/data/mining_equipment("body bags", /obj/item/storage/box/bodybags, 1),
+		new /datum/data/mining_equipment("police vest", /obj/item/clothing/suit/vampire/vest/police, 1),
+		new /datum/data/mining_equipment("police radio", /obj/item/radio/cop, 2),
+		new /datum/data/mining_equipment("police uniform", /obj/item/clothing/under/vampire/police, 1),
+		new /datum/data/mining_equipment("police hat", /obj/item/clothing/head/vampire/police, 1),
+		new /datum/data/mining_equipment("flashlight", /obj/item/flashlight, 1),
+		new /datum/data/mining_equipment("magnifier", /obj/item/detective_scanner, 4)
+
 	)
 
 /obj/machinery/mineral/equipment_vendor/fastfood/smoking
