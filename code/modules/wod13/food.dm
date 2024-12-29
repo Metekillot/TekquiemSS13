@@ -433,6 +433,7 @@
 		new /datum/data/mining_equipment("blue scarf",	/obj/item/clothing/neck/vampire/scarf/blue,	10),
 		new /datum/data/mining_equipment("green scarf",	/obj/item/clothing/neck/vampire/scarf/green,	10),
 		new /datum/data/mining_equipment("white scarf",	/obj/item/clothing/neck/vampire/scarf/white,	10),
+		new /datum/data/mining_equipment("cross",	/obj/item/card/id/hunter,  25),
 		new /datum/data/mining_equipment("white robes",	/obj/item/clothing/suit/hooded/robes,	40),
 		new /datum/data/mining_equipment("black robes",	/obj/item/clothing/suit/hooded/robes/black,	40),
 		new /datum/data/mining_equipment("grey robes",	/obj/item/clothing/suit/hooded/robes/grey,	40),
@@ -600,4 +601,15 @@
 /obj/machinery/mineral/equipment_vendor/fastfood/gas
 	prize_list = list(new /datum/data/mining_equipment("full gas can",	/obj/item/gas_can/full,	250),
 		new /datum/data/mining_equipment("tire iron",		/obj/item/melee/vampirearms/tire,	50)
+	)
+
+/obj/machinery/mineral/equipment_vendor/fastfood/library
+
+	prize_list = list(
+		new /datum/data/mining_equipment("Bible",	/obj/item/storage/book/bible,  20),
+		new /datum/data/mining_equipment("Quran",	/obj/item/vampirebook/quran,  20),
+		new /datum/data/mining_equipment("black pen",	/obj/item/pen,  5),
+		new /datum/data/mining_equipment("four-color pen",	/obj/item/pen/fourcolor,  10),
+		new /datum/data/mining_equipment("fountain pen",	/obj/item/pen/fountain,  15),
+		new /datum/data/mining_equipment("folder",	/obj/item/folder,  5)
 	)
