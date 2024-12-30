@@ -2832,7 +2832,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.additional_physique = A.archetype_additional_physique
 	character.additional_dexterity = A.archetype_additional_dexterity
 	character.additional_social = A.archetype_additional_social
-	character.additional_mentality = A.archetype_additional_social
+	character.additional_mentality = A.archetype_additional_mentality
 	character.additional_blood = A.archetype_additional_blood
 	character.additional_lockpicking = A.archetype_additional_lockpicking
 	character.additional_athletics = A.archetype_additional_athletics
