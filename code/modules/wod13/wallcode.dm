@@ -571,6 +571,10 @@
 				barefootstep = FOOTSTEP_SNOW
 				heavyfootstep = FOOTSTEP_SNOW
 
+//Airless version of this because they are used as a z-level 4 roof on a z-level 3 building, and since they aren't meant to be reached...
+/turf/open/floor/plating/roofwalk/no_air
+	blocks_air = 1
+
 /obj/effect/decal/bordur
 	name = "sidewalk"
 	icon = 'code/modules/wod13/tiles.dmi'
