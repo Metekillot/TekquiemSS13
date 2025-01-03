@@ -1,7 +1,4 @@
-import { BooleanLike } from 'common/react';
 import { useState } from 'react';
-
-import { useBackend } from '../backend';
 import {
   Box,
   Button,
@@ -12,8 +9,11 @@ import {
   Stack,
   Tabs,
   Tooltip,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import { BooleanLike } from 'tgui-core/react';
+
+import { useBackend } from '../backend';
+import { NtosWindow } from '../layouts';
 
 // 15x crate value
 const COST_UPPER_BOUND = 3000;

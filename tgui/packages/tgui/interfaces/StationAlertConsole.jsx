@@ -1,8 +1,7 @@
 import { sortBy } from 'common/collections';
-import { flow } from 'common/fp';
+import { Button, Section, Stack } from 'tgui-core/components';
 
 import { useBackend } from '../backend';
-import { Section } from '../components';
 import { Window } from '../layouts';
 
 export const StationAlertConsole = (props) => {

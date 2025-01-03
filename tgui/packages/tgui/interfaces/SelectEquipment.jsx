@@ -1,9 +1,5 @@
 import { filter, map, sortBy, uniq } from 'common/collections';
-import { flow } from 'common/fp';
-import { createSearch } from 'common/string';
 import { useState } from 'react';
-
-import { useBackend, useLocalState } from '../backend';
 import {
   Box,
   Button,
@@ -12,8 +8,10 @@ import {
   Section,
   Stack,
   Tabs,
-  Image,
-} from '../components';
+} from 'tgui-core/components';
+import { createSearch } from 'tgui-core/string';
+
+import { useBackend, useLocalState } from '../backend';
 import { Window } from '../layouts';
 
 // here's an important mental define:

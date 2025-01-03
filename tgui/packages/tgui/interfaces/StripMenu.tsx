@@ -1,9 +1,10 @@
 import { range } from 'common/collections';
-import { BooleanLike } from 'common/react';
+import { CSSProperties } from 'react';
+import { Box, Button, Icon, Image, Stack } from 'tgui-core/components';
+import { BooleanLike } from 'tgui-core/react';
 
 import { resolveAsset } from '../assets';
 import { useBackend } from '../backend';
-import { Box, Button, Icon, Image, Stack } from '../components';
 import { Window } from '../layouts';
 
 const ROWS = 5;
@@ -307,6 +308,41 @@ export const StripMenu = (props) => {
                     );
 
                     tooltip = item.name;
+                    if (item.alternate) {
+                      alternateActions = item.alternate.map(
+                        (alternateKey, idx) => {
+                          const alternateAction =
+                            ALTERNATE_ACTIONS[alternateKey];
+
+                          const alternateActionStyle: CSSProperties = {
+                            background: 'rgba(0, 0, 0, 0.6)',
+                            position: 'absolute',
+                            overflow: 'hidden',
+                            margin: '0px',
+                            maxWidth: '22px', // yes I know its not 20 or 25; they look bad. 22px is perfect
+                            zIndex: '2',
+                            left: `${idx === 0 ? '0' : undefined}`,
+                            right: `${idx === 1 ? '0' : undefined}`,
+                            bottom: '0',
+                          };
+                          return (
+                            <Button
+                              key={alternateAction.text}
+                              onClick={() => {
+                                act('alt', {
+                                  key: keyAtSpot,
+                                  alternate_action: alternateKey,
+                                });
+                              }}
+                              tooltip={alternateAction.text}
+                              style={alternateActionStyle}
+                            >
+                              <Icon name={alternateAction.icon} />
+                            </Button>
+                          );
+                        },
+                      );
+                    }
                   } else if ('obscured' in item) {
                     content = (
                       <Icon

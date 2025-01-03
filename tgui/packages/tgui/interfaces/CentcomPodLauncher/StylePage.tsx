@@ -1,8 +1,7 @@
-import { classes } from 'common/react';
+import { Box, Button, Section } from 'tgui-core/components';
+import { classes } from 'tgui-core/react';
 
 import { useBackend } from '../../backend';
-import { Box, Button, Section } from '../../components';
-import { STYLES } from './constants';
 import { PodLauncherData } from './types';
 
 export function StylePage(props) {

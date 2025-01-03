@@ -1,4 +1,13 @@
-import { BooleanLike } from 'common/react';
+import {
+  AnimatedNumber,
+  Box,
+  Button,
+  LabeledList,
+  Section,
+} from 'tgui-core/components';
+import { BooleanLike } from 'tgui-core/react';
+
+import { useBackend } from '../../backend';
 
 import { useBackend } from '../../backend';
 import { AnimatedNumber, Box, Button, LabeledList } from '../../components';

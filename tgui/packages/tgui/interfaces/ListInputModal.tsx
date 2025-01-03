@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { Autofocus, Button, Input, Section, Stack } from 'tgui-core/components';
 import {
   KEY_A,
   KEY_DOWN,
@@ -7,12 +7,10 @@ import {
   KEY_ESCAPE,
   KEY_UP,
   KEY_Z,
-} from '../../common/keycodes';
-import { useBackend } from '../backend';
-import { Autofocus, Button, Input, Section, Stack } from '../components';
-import { Window } from '../layouts';
-import { InputButtons } from './common/InputButtons';
-import { Loader } from './common/Loader';
+} from 'tgui-core/keycodes';
+
+import { useBackend } from '../../backend';
+import { InputButtons } from '../common/InputButtons';
 
 type ListInputData = {
   init_value: string;

@@ -1,6 +1,4 @@
-import { useState } from 'react';
-
-import { useBackend } from '../backend';
+import { useMemo, useState } from 'react';
 import {
   Button,
   Input,
@@ -8,8 +6,11 @@ import {
   NoticeBox,
   Section,
   Stack,
-  Table,
-} from '../components';
+} from 'tgui-core/components';
+import { classes } from 'tgui-core/react';
+import { toTitleCase } from 'tgui-core/string';
+
+import { useBackend } from '../backend';
 import { Window } from '../layouts';
 
 enum Screen {

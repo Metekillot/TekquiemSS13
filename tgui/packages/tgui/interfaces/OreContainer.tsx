@@ -1,8 +1,16 @@
-import { createSearch, toTitleCase } from 'common/string';
 import { useState } from 'react';
+import {
+  Button,
+  DmIcon,
+  Flex,
+  Icon,
+  Input,
+  Section,
+  Stack,
+} from 'tgui-core/components';
+import { createSearch, toTitleCase } from 'tgui-core/string';
 
 import { useBackend } from '../backend';
-import { Button, Flex, Image, Input, Section, Stack } from '../components';
 import { Window } from '../layouts';
 
 type Ores = {

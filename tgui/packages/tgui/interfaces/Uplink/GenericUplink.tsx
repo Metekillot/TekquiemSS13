@@ -1,6 +1,5 @@
-import { BooleanLike } from 'common/react';
 import { useState } from 'react';
-
+import { Tooltip } from 'tgui-core/components';
 import {
   Box,
   Button,
@@ -9,7 +8,10 @@ import {
   Section,
   Stack,
   Tabs,
-} from '../../components';
+} from 'tgui-core/components';
+import { BooleanLike } from 'tgui-core/react';
+
+import { useBackend } from '../../backend';
 
 type GenericUplinkProps = {
   currency?: string | JSX.Element;

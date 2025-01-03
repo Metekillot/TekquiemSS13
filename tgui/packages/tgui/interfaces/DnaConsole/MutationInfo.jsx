@@ -1,7 +1,4 @@
 import { filter, uniqBy } from 'common/collections';
-import { flow } from 'common/fp';
-
-import { useBackend } from '../../backend';
 import {
   Box,
   Button,
@@ -9,7 +6,9 @@ import {
   Dropdown,
   LabeledList,
   Stack,
-} from '../../components';
+} from 'tgui-core/components';
+
+import { useBackend } from '../../backend';
 import {
   CHROMOSOME_NEVER,
   CHROMOSOME_NONE,

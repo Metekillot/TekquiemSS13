@@ -13,6 +13,7 @@
 
 import { perf } from 'common/perf';
 import { createAction } from 'common/redux';
+import { globalEvents } from 'tgui-core/events';
 
 import { setupDrag } from './drag';
 import { focusMap } from './focus';
