@@ -517,7 +517,8 @@
 				adding_disciplines += discipline
 		else if (disciplines.len) //initialise given disciplines
 			for (var/i in 1 to disciplines.len)
-				var/datum/discipline/discipline = new disciplines[i]
+				var/type_to_create = disciplines[i]
+				var/datum/discipline/discipline = new type_to_create
 				adding_disciplines += discipline
 
 		for (var/datum/discipline/discipline in adding_disciplines)
