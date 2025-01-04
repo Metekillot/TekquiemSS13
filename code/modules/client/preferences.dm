@@ -2215,16 +2215,21 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if (alert("Are you sure you want to change species? This will reset species-specific stats.", "Confirmation", "Yes", "No") != "Yes")
 						return
 
-					var/list/selectable_species = GLOB.selectable_races
-					for (var/key in selectable_species)
+					var/list/choose_species = list()
+					for (var/key in GLOB.selectable_races)
 						var/newtype = GLOB.species_list[key]
-						var/datum/species/new_species = new newtype
-						if (new_species.whitelisted)
+						var/datum/species/selecting_species = new newtype
+						if (!selecting_species.selectable)
+							qdel(selecting_species)
+							continue
+						if (selecting_species.whitelisted)
 							if (!SSwhitelists.is_whitelisted(parent.ckey, key))
-								selectable_species.Remove(key)
-						qdel(new_species)
+								qdel(selecting_species)
+								continue
+						choose_species += key
+						qdel(selecting_species)
 
-					var/result = input(user, "Select a species", "Species Selection") as null|anything in selectable_species
+					var/result = input(user, "Select a species", "Species Selection") as null|anything in choose_species
 					if(result)
 						all_quirks = list()
 						SetQuirks(user)
