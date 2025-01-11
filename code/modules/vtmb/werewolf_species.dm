@@ -42,9 +42,9 @@
 		if(!host.real_name)
 			dat += "Unknown,"
 		dat += " [host.auspice.tribe] [host.auspice.base_breed]"
-//		if(host.clan)
-//			dat += " the [host.clan.name]"
-//		if(!host.clan)
+//		if(host.clane)
+//			dat += " the [host.clane.name]"
+//		if(!host.clane)
 //			dat += " the caitiff"
 
 		if(host.mind)

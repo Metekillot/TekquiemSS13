@@ -150,8 +150,8 @@
 				continue
 			if(ishuman(L))
 				var/mob/living/carbon/human/H = L
-				if(H.clan)
-					if(H.clan.name == "Gargoyle")
+				if(H.clane)
+					if(H.clane.name == "Gargoyle")
 						dominate_me = TRUE
 				if(istype(H.ears, /obj/item/clothing/ears/earmuffs))
 					continue

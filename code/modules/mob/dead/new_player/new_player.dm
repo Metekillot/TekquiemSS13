@@ -334,9 +334,9 @@
 	if ((job.species_slots[client.prefs.pref_species.name] == 0) && !bypass)
 		return JOB_UNAVAILABLE_SPECIES_LIMITED
 	if((client.prefs.pref_species.name == "Vampire") && !bypass)
-		if(client.prefs.clan)
+		if(client.prefs.clane)
 			for(var/i in job.allowed_bloodlines)
-				if(i == client.prefs.clan.name)
+				if(i == client.prefs.clane.name)
 					return JOB_AVAILABLE
 			return JOB_UNAVAILABLE_CLAN
 	return JOB_AVAILABLE

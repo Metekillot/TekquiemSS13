@@ -33,27 +33,27 @@
 
 /datum/outfit/job/citizen/pre_equip(mob/living/carbon/human/H)
 	..()
-	if(H.clan)
+	if(H.clane)
 		if(H.gender == MALE)
 			shoes = /obj/item/clothing/shoes/vampire
-			if(H.clan.male_clothes)
-				uniform = H.clan.male_clothes
+			if(H.clane.male_clothes)
+				uniform = H.clane.male_clothes
 		else
 			shoes = /obj/item/clothing/shoes/vampire/heels
-			if(H.clan.female_clothes)
-				uniform = H.clan.female_clothes
+			if(H.clane.female_clothes)
+				uniform = H.clane.female_clothes
 	else
 		uniform = /obj/item/clothing/under/vampire/emo
 		if(H.gender == MALE)
 			shoes = /obj/item/clothing/shoes/vampire
 		else
 			shoes = /obj/item/clothing/shoes/vampire/heels
-	if(H.clan)
-		if(H.clan.name == "Lasombra")
+	if(H.clane)
+		if(H.clane.name == "Lasombra")
 			backpack_contents = list(/obj/item/passport =1, /obj/item/vamp/creditcard=1)
-	if(!H.clan)
+	if(!H.clane)
 		backpack_contents = list(/obj/item/passport=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1)
-	if(H.clan && H.clan.name != "Lasombra")
+	if(H.clane && H.clane.name != "Lasombra")
 		backpack_contents = list(/obj/item/passport=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1)
 
 /obj/effect/landmark/start/citizen

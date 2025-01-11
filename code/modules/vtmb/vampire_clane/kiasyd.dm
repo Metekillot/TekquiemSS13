@@ -1,8 +1,8 @@
-/datum/vampireclan/kiasyd
+/datum/vampireclane/kiasyd
 	name = "Kiasyd"
 	desc = "The Kiasyd are a bloodline of the Lasombra founded after a mysterious \"accident\" involving the Lasombra Marconius of Strasbourg. The \"accident\", involving faeries and the blood of \"Zeernebooch, a god of the Underworld\", resulted in Marconius gaining several feet in height, turning chalky white and developing large, elongated black eyes."
 	curse = "At a glance they look unsettling or perturbing to most, their appearance closely resembles fae from old folklore. Kiasyd are also in some way connected with changelings and they are vulnerable to cold iron."
-	clan_disciplines = list(
+	clane_disciplines = list(
 		/datum/discipline/dominate,
 		/datum/discipline/obtenebration,
 		/datum/discipline/mytherceria
@@ -19,10 +19,10 @@
 
 	COOLDOWN_DECLARE(cold_iron_frenzy)
 
-/datum/vampireclan/kiasyd/on_gain(mob/living/carbon/human/H)
+/datum/vampireclane/kiasyd/on_gain(mob/living/carbon/human/H)
 	..()
 	//This was messing with the visualiser in the character setup menu somehow
-	if (H.clan?.type != /datum/vampireclan/kiasyd)
+	if (H.clane?.type != /datum/vampireclane/kiasyd)
 		return
 	if(H.isdwarfy)
 		H.RemoveElement(/datum/element/dwarfism, COMSIG_PARENT_PREQDELETED, src)
@@ -36,7 +36,7 @@
 		H.base_body_mod = ""
 	H.update_body()
 
-/datum/vampireclan/kiasyd/post_gain(mob/living/carbon/human/H)
+/datum/vampireclane/kiasyd/post_gain(mob/living/carbon/human/H)
 	. = ..()
 
 	//give them sunglasses to hide their freakish eyes
@@ -53,7 +53,7 @@
 	activate_sound = 'code/modules/wod13/sounds/kiasyd.ogg'
 	leveldelay = FALSE
 	fearless = TRUE
-	clan_restricted = TRUE
+	clane_restricted = TRUE
 
 	var/stored_riddles = list()
 
@@ -268,8 +268,8 @@
 		return
 	if(iskindred(target) && is_iron)
 		var/mob/living/carbon/human/L = target
-		if(L.clan?.name == "Kiasyd")
-			var/datum/vampireclan/kiasyd/kiasyd = L.clan
+		if(L.clane?.name == "Kiasyd")
+			var/datum/vampireclane/kiasyd/kiasyd = L.clane
 			if (COOLDOWN_FINISHED(kiasyd, cold_iron_frenzy))
 				COOLDOWN_START(kiasyd, cold_iron_frenzy, 10 SECONDS)
 				to_chat(L, "<span class='danger'><b>COLD IRON!</b></span>")

@@ -81,7 +81,7 @@
 	var/heat_exposure_stacks = 0
 
 	//Shitty VtM vars I'm moving here so they're not strewn around the codebase
-	var/datum/vampireclan/clan
+	var/datum/vampireclane/clane
 
 	var/last_repainted_mark
 
