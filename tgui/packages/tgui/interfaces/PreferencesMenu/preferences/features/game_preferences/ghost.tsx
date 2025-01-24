@@ -4,7 +4,7 @@ import { useBackend } from 'tgui/backend';
 import { Box, Dropdown, Flex } from 'tgui-core/components';
 import { classes } from 'tgui-core/react';
 
-import { PreferencesMenuData } from '../../../data';
+import { PreferencesMenuData } from '../../../types';
 import {
   CheckboxInput,
   FeatureChoiced,
@@ -24,11 +24,15 @@ export const ghost_accs: FeatureChoiced = {
 const insertGhostForm = binaryInsertWith<{
   displayText: ReactNode;
   value: string;
-}>(({ value }) => value);
+};
 
-const GhostFormInput = (
+function insertGhostForm(collection: GhostForm[], value: GhostForm) {
+  return binaryInsertWith(collection, value, ({ value }) => value);
+}
+
+function GhostFormInput(
   props: FeatureValueProps<string, string, FeatureChoicedServerData>,
-) => {
+) {
   const { data } = useBackend<PreferencesMenuData>();
 
   const serverData = props.serverData;
@@ -86,7 +90,7 @@ const GhostFormInput = (
       options={options}
     />
   );
-};
+}
 
 export const ghost_form: FeatureChoiced = {
   name: 'Ghosts form',

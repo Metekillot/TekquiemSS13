@@ -6,7 +6,7 @@ type FpsServerData = FeatureNumericData & {
   recommended_fps: number;
 };
 
-const FpsInput = (props: FeatureValueProps<number, number, FpsServerData>) => {
+function FpsInput(props: FeatureValueProps<number, number, FpsServerData>) {
   const { handleSetValue, serverData } = props;
 
   let recommened = `Recommended`;
@@ -45,7 +45,7 @@ const FpsInput = (props: FeatureValueProps<number, number, FpsServerData>) => {
       </Stack.Item>
     </Stack>
   );
-};
+}
 
 export const clientfps: Feature<number, number, FpsServerData> = {
   name: 'FPS',
