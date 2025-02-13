@@ -33,7 +33,8 @@
 	export_types = list(/obj/item/guardiancreator,
 						/obj/item/rod_of_asclepius,
 						/obj/item/clothing/suit/space/hardsuit/ert/paranormal,
-						/obj/item/prisoncube)
+						/obj/item/prisoncube,
+						/obj/item/staff/storm)
 
 //Megafauna loot, except for ash drakes and legion
 

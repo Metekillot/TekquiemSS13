@@ -633,7 +633,7 @@
 	var/icon_type = "bathroom"//used in making the icon state
 	color = "#ACD1E9" //Default color, didn't bother hardcoding other colors, mappers can and should easily change it.
 	alpha = 200 //Mappers can also just set this to 255 if they want curtains that can't be seen through
-	layer = ABOVE_ALL_MOB_LAYERS_LAYER
+	layer = SIGN_LAYER
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
@@ -648,14 +648,14 @@
 /obj/structure/curtain/update_icon()
 	if(!open)
 		icon_state = "[icon_type]-closed"
-		layer = ABOVE_ALL_MOB_LAYERS_LAYER
+		layer = WALL_OBJ_LAYER
 		density = TRUE
 		open = FALSE
 		if(opaque_closed)
 			set_opacity(TRUE)
 	else
 		icon_state = "[icon_type]-open"
-		layer = ABOVE_ALL_MOB_LAYERS_LAYER
+		layer = SIGN_LAYER
 		density = FALSE
 		open = TRUE
 		set_opacity(FALSE)
@@ -715,7 +715,6 @@
 	alpha = 255
 	opaque_closed = TRUE
 
-
 /obj/structure/curtain/cloth
 	color = null
 	alpha = 255
@@ -725,10 +724,6 @@
 	new /obj/item/stack/sheet/cloth (loc, 4)
 	new /obj/item/stack/rods (loc, 1)
 	qdel(src)
-
-/obj/structure/curtain/cloth/fancy/mechanical/luxurious
-	icon_type = "bounty"
-	icon_state = "bounty-open"
 
 /obj/structure/curtain/cloth/fancy
 	icon_type = "cur_fancy"
@@ -750,14 +745,14 @@
 
 /obj/structure/curtain/cloth/fancy/mechanical/proc/open()
 	icon_state = "[icon_type]-open"
-	layer = ABOVE_ALL_MOB_LAYERS_LAYER
+	layer = SIGN_LAYER
 	density = FALSE
 	open = TRUE
 	set_opacity(FALSE)
 
 /obj/structure/curtain/cloth/fancy/mechanical/proc/close()
 	icon_state = "[icon_type]-closed"
-	layer = ABOVE_ALL_MOB_LAYERS_LAYER
+	layer = WALL_OBJ_LAYER
 	density = TRUE
 	open = FALSE
 	if(opaque_closed)

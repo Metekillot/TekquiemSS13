@@ -1,4 +1,0 @@
-// Bouncer related signals
-#define COMSIG_BARRIER_NOTIFY_GUARD_ENTRY "vip_barrier_notify_guard_entry"
-#define COMSIG_BARRIER_NOTIFY_GUARD_BLOCKED "vip_barrier_notify_guard_blocked"
-#define COMSIG_BARRIER_NOTIFY_GUARD_MASKED "vip_barrier_notify_guard_unmask"
