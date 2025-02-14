@@ -14,7 +14,7 @@
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_NEUTRALS
 
-	outfit = /datum/outfit/job/clerk
+	outfit = /datum/outfit/job/page
 
 	access = list()
 	minimal_access = list()
