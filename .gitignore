@@ -7,6 +7,12 @@
 #Ignore byond config folder.
 /cfg/**/*
 
+# Ignore custom music (amend as appropriate)
+/config/jukebox_music/sounds/*
+!/config/jukebox_music/sounds/exclude
+/config/title_music/sounds/*
+!/config/title_music/sounds/exclude
+
 # Ignore compiled linux libs in the root folder, e.g. librust_g.so
 
 #Ignore compiled files and other files generated during compilation.
