@@ -1,22 +1,21 @@
 
-/datum/job/vamp/citizen_vtr
+/datum/job/vamp/vtr/citizen_vtr
 	title = "Pedestrian"
 	faction = "Vampire"
 	total_positions = -1
 	spawn_positions = -1
-	supervisors = "the Traditions"
-	selection_color = "#df7058"
+	supervisors = "the Economy"
+	selection_color = "#e3e3e3"
 	access = list()			//See /datum/job/assistant/get_access()
 	minimal_access = list()	//See /datum/job/assistant/get_access()
 	outfit = /datum/outfit/job/citizen_vtr
 	antag_rep = 7
 	paycheck = PAYCHECK_ASSISTANT // Get a job. Job reassignment changes your paycheck now. Get over it.
-
-	access = list(ACCESS_MAINT_TUNNELS)
-	liver_traits = list(TRAIT_GREYTIDE_METABOLISM)
-
 	paycheck_department = ACCOUNT_CIV
-	display_order = JOB_DISPLAY_ORDER_CITIZEN
+
+	display_order = JOB_DISPLAY_ORDER_CITIZEN_VTR
+
+	exp_type_department = EXP_TYPE_SERVICES
 
 	allowed_species = list("Vampire", "Ghoul", "Human")
 
@@ -46,7 +45,7 @@
 
 /datum/outfit/job/citizen_vtr
 	name = "Pedestrian"
-	jobtype = /datum/job/vamp/citizen_vtr
+	jobtype = /datum/job/vamp/vtr/citizen_vtr
 	l_pocket = /obj/item/vamp/phone
 	id = /obj/item/cockclock
 	uniform = /obj/item/clothing/under/vampire/emo

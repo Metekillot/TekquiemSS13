@@ -1,4 +1,4 @@
-/datum/job/vamp/page
+/datum/job/vamp/vtr/page
 	title = "Page"
 	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
 	department_head = list("Seneschal")
@@ -7,7 +7,7 @@
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "The Seneschal"
-	selection_color = "#bd3327"
+	selection_color = "#00ffff"
 	req_admin_notify = 1
 	minimal_player_age = 10
 	exp_requirements = 180
@@ -16,14 +16,13 @@
 
 	outfit = /datum/outfit/job/page
 
-	access = list()
-	minimal_access = list()
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_SRV
-	bounty_types = CIV_JOB_RANDOM
 
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_INVICTUS
 
-	display_order = JOB_DISPLAY_ORDER_CLERK
+	display_order = JOB_DISPLAY_ORDER_PAGE
 
 //	minimal_generation = 12	//Uncomment when players get exp enough
 	minimal_masquerade = 5
@@ -39,7 +38,7 @@
 
 /datum/outfit/job/page
 	name = "Page"
-	jobtype = /datum/job/vamp/page
+	jobtype = /datum/job/vamp/vtr/page
 
 	ears = /obj/item/p25radio
 	id = /obj/item/card/id/page

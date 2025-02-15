@@ -1,4 +1,4 @@
-/datum/job/vamp/representative
+/datum/job/vamp/vtr/representative
 	title = "Carthian Representative"
 	department_head = list("The People")
 	faction = "Vampire"
@@ -6,18 +6,15 @@
 	spawn_positions = 1
 	supervisors = "Democracy - and the Seneschal (for now)."
 	selection_color = "#85251d"
-	exp_type_department = EXP_TYPE_WAREHOUSE // This is so the jobs menu can work properly
+	outfit = /datum/outfit/job/representative
 
-	outfit = /datum/outfit/job/dealer
-
-	access = list(ACCESS_MAINT_TUNNELS, ACCESS_MAILSORTING, ACCESS_CARGO, ACCESS_QM, ACCESS_MINING, ACCESS_MECH_MINING, ACCESS_MINING_STATION, ACCESS_MINERAL_STOREROOM, ACCESS_VAULT, ACCESS_AUX_BASE)
-	minimal_access = list(ACCESS_MAINT_TUNNELS, ACCESS_MAILSORTING, ACCESS_CARGO, ACCESS_QM, ACCESS_MINING, ACCESS_MECH_MINING, ACCESS_MINING_STATION, ACCESS_MINERAL_STOREROOM, ACCESS_VAULT, ACCESS_AUX_BASE)
 	paycheck = PAYCHECK_MEDIUM
 	paycheck_department = ACCOUNT_CAR
 
-	liver_traits = list(TRAIT_PRETENDER_ROYAL_METABOLISM)
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_CARTHIAN
 
-	display_order = JOB_DISPLAY_ORDER_DEALER
+	display_order = JOB_DISPLAY_ORDER_REPRESENTATIVE
 	bounty_types = CIV_JOB_RANDOM
 
 //	minimal_generation = 12	//Uncomment when players get exp enough
@@ -35,7 +32,7 @@
 
 /datum/outfit/job/representative
 	name = "Carthian Representative"
-	jobtype = /datum/job/vamp/representative
+	jobtype = /datum/job/vamp/vtr/representative
 
 	id = /obj/item/card/id/representative
 	uniform = /obj/item/clothing/under/vampire/suit

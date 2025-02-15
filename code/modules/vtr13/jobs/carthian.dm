@@ -1,5 +1,5 @@
 
-/datum/job/vamp/carthian
+/datum/job/vamp/vtr/carthian
 	title = "Carthian"
 	department_head = list("Carthian Representative")
 	faction = "Vampire"
@@ -7,15 +7,16 @@
 	spawn_positions = 20
 	supervisors = "the Carthian Representative"
 	selection_color = "#ff1904"
-	exp_type_department = EXP_TYPE_WAREHOUSE
 
 	outfit = /datum/outfit/job/carthian
 
-	access = list(ACCESS_MAINT_TUNNELS, ACCESS_MAILSORTING, ACCESS_CARGO, ACCESS_QM, ACCESS_MINING, ACCESS_MECH_MINING, ACCESS_MINING_STATION, ACCESS_MINERAL_STOREROOM)
-	minimal_access = list(ACCESS_MAINT_TUNNELS, ACCESS_CARGO, ACCESS_MAILSORTING, ACCESS_MINERAL_STOREROOM, ACCESS_MECH_MINING)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_CAR
-	display_order = JOB_DISPLAY_ORDER_SUPPLY
+
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_CARTHIAN
+
+	display_order = JOB_DISPLAY_ORDER_CARTHIAN
 	bounty_types = CIV_JOB_RANDOM
 	known_contacts = list("Carthian Representative")
 	allowed_species = list("Vampire", "Ghoul")
@@ -26,7 +27,7 @@
 
 /datum/outfit/job/carthian
 	name = "Carthian"
-	jobtype = /datum/job/vamp/carthian
+	jobtype = /datum/job/vamp/vtr/carthian
 
 	id = /obj/item/card/id/carthian
 	uniform = /obj/item/clothing/under/vampire/supply

@@ -52,6 +52,19 @@
 	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id2"
 
+/obj/item/card/id/bartender_vtr
+	name = "bartender badge"
+	id_type_name = "bartender badge"
+	desc = "A bar for someone that Elge needs to describe, makes me want a drink."
+	icon = 'code/modules/wod13/items.dmi'
+	icon_state = "id2"
+	inhand_icon_state = "card-id"
+	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
+	worn_icon_state = "id2"
+
 /obj/item/card/id/page
 	name = "exclusive runner badge"
 	id_type_name = "exclusive runner badge"
@@ -142,3 +155,16 @@
 	onflooricon = 'code/modules/wod13/onfloor.dmi'
 	worn_icon = 'code/modules/wod13/worn.dmi'
 	worn_icon_state = "id7"
+
+/obj/item/card/id/janitor_vtr
+	name = "janitor badge"
+	id_type_name = "janitor badge"
+	desc = "A badge which shows cleaning employment."
+	icon = 'code/modules/wod13/items.dmi'
+	icon_state = "id8"
+	inhand_icon_state = "card-id"
+	lefthand_file = 'icons/mob/inhands/equipment/idcards_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/equipment/idcards_righthand.dmi'
+	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	worn_icon = 'code/modules/wod13/worn.dmi'
+	worn_icon_state = "id8"

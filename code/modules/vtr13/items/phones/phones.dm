@@ -79,6 +79,14 @@
 	var/datum/phonecontact/page/page = new()
 	contacts += page
 
+/obj/item/vamp/phone/bartender_vtr
+	exchange_num = 664
+
+/obj/item/vamp/phone/bartender_vtr/Initialize()
+	..()
+	var/datum/phonecontact/keeper/club_owner/club_owner = new()
+	contacts += club_owner
+
 
 /obj/item/vamp/phone/representative
 	exchange_num = 666
@@ -179,3 +187,11 @@
 	..()
 	var/datum/phonecontact/voivode/voivode = new()
 	contacts += voivode
+
+/obj/item/vamp/phone/librarian_vtr
+	exchange_num = 883
+
+/obj/item/vamp/phone/librarian_vtr/Initialize()
+	..()
+	var/datum/phonecontact/voivode/dean/dean = new()
+	contacts += dean

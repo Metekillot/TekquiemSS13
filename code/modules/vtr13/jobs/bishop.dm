@@ -1,5 +1,5 @@
 
-/datum/job/vamp/bishop
+/datum/job/vamp/vtr/bishop
 	title = "Bishop"
 	department_head = list("God")
 	faction = "Vampire"
@@ -10,12 +10,13 @@
 
 	outfit = /datum/outfit/job/bishop
 
-	access = list(ACCESS_HYDROPONICS, ACCESS_BAR, ACCESS_KITCHEN, ACCESS_MORGUE, ACCESS_WEAPONS, ACCESS_MINERAL_STOREROOM, ACCESS_THEATRE)
-	minimal_access = list(ACCESS_BAR, ACCESS_MINERAL_STOREROOM, ACCESS_THEATRE)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	display_order = JOB_DISPLAY_ORDER_PRIEST
-	exp_type_department = EXP_TYPE_CHURCH
+
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_LANCEA
+
+	display_order = JOB_DISPLAY_ORDER_BISHOP
 
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
@@ -30,7 +31,7 @@
 
 /datum/outfit/job/bishop
 	name = "Bishop"
-	jobtype = /datum/job/vamp/bishop
+	jobtype = /datum/job/vamp/vtr/bishop
 
 	uniform = /obj/item/clothing/under/vampire/graveyard
 	shoes = /obj/item/clothing/shoes/vampire/jackboots

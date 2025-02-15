@@ -1,5 +1,5 @@
-/datum/job/vamp/seneschal_vtr
-	title = "Seneshal"
+/datum/job/vamp/vtr/seneschal_vtr
+	title = "Seneschal"
 	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD|DEADMIN_POSITION_SECURITY
 	department_head = list("Justicar")
 	faction = "Vampire"
@@ -20,9 +20,10 @@
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_SEC
 
-	liver_traits = list(TRAIT_ROYAL_METABOLISM)
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_INVICTUS
 
-	display_order = JOB_DISPLAY_ORDER_PRINCE
+	display_order = JOB_DISPLAY_ORDER_SENESCHAL_VTR
 
 	minimal_generation = 10	//Uncomment when players get exp enough
 	minimal_masquerade = 5
@@ -42,13 +43,13 @@
 	v_duty = "Uhh. Elge say somethin here"
 	experience_addition = 25
 
-/datum/job/vamp/seneschal_vtr/announce(mob/living/carbon/human/H)
+/datum/job/vamp/vtr/seneschal_vtr/announce(mob/living/carbon/human/H)
 	..()
-	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, PROC_REF(minor_announce), "Seneshal [H.real_name] is in the city!"))
+	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, PROC_REF(minor_announce), "Seneschal [H.real_name] is in the city!"))
 
 /datum/outfit/job/seneschal_vtr
 	name = "Seneschal"
-	jobtype = /datum/job/vamp/seneschal_vtr
+	jobtype = /datum/job/vamp/vtr/seneschal_vtr
 
 	ears = /obj/item/p25radio
 	id = /obj/item/card/id/seneschal_vtr

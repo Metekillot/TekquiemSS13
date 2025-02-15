@@ -1,21 +1,21 @@
-/datum/job/vamp/acolyte
+/datum/job/vamp/vtr/acolyte
 	title = "Acolyte"
 	department_head = list("Hierophant")
 	faction = "Vampire"
 	total_positions = 20
 	spawn_positions = 20
 	supervisors = "your own beliefs"
-	selection_color = "#ab2508"
+	selection_color = "#00ff15"
 
 	outfit = /datum/outfit/job/acolyte
 
-	access = list(ACCESS_LIBRARY, ACCESS_AUX_BASE, ACCESS_MINING_STATION)
-	minimal_access = list(ACCESS_LIBRARY, ACCESS_AUX_BASE, ACCESS_MINING_STATION)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	exp_type_department = EXP_TYPE_TREMERE
 
-	display_order = JOB_DISPLAY_ORDER_ARCHIVIST
+	exp_type = EXP_TYPE_CRONE
+	exp_type_department = EXP_TYPE_CRONE
+
+	display_order = JOB_DISPLAY_ORDER_ACOLYTE
 
 	v_duty = "feed bodies to the cursed queen lillith, elge think up more things for them to do"
 	minimal_masquerade = 3
@@ -26,7 +26,7 @@
 
 /datum/outfit/job/acolyte
 	name = "Acolyte"
-	jobtype = /datum/job/vamp/acolyte
+	jobtype = /datum/job/vamp/vtr/acolyte
 
 	id = /obj/item/card/id/acolyte
 	glasses = /obj/item/clothing/glasses/vampire/perception

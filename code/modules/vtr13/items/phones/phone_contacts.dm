@@ -1,5 +1,5 @@
 /datum/phonecontact/seneschal
-	name = "Seneshal"
+	name = "Seneschal"
 
 /datum/phonecontact/seneschal/check_global_contacts()
 	if(number != GLOB.seneschalvtrnumber && name_check != GLOB.seneschalvtrname)
@@ -17,6 +17,9 @@
 		name = GLOB.keepername + " - " + name
 		return TRUE
 	..()
+
+/datum/phonecontact/keeper/club_owner
+	name = "Club Owner"
 
 /datum/phonecontact/sheriff_vtr
 	name = "Sheriff"
@@ -67,6 +70,9 @@
 		name = GLOB.voivodename + " - " + name
 		return TRUE
 	..()
+
+/datum/phonecontact/voivode/dean
+	name = "Dean"
 
 /datum/phonecontact/page
 	name = "Page"

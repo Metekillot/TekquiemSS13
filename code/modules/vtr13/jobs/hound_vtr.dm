@@ -1,4 +1,4 @@
-/datum/job/vamp/hound_vtr
+/datum/job/vamp/vtr/hound_vtr
 	title = "Hound"
 	auto_deadmin_role_flags = DEADMIN_POSITION_SECURITY
 	department_head = list("Seneschal")
@@ -6,22 +6,22 @@
 	total_positions = 7
 	spawn_positions = 7
 	supervisors = "the Sheriff"
-	selection_color = "#bd3327"
+	selection_color = "#00ffff"
 	minimal_player_age = 7
 	exp_requirements = 300
 	exp_type = EXP_TYPE_CREW
 
 	outfit = /datum/outfit/job/hound_vtr
-
-	access = list(ACCESS_MAINT_TUNNELS, ACCESS_SECURITY, ACCESS_SEC_DOORS, ACCESS_BRIG, ACCESS_COURT, ACCESS_MAINT_TUNNELS, ACCESS_MECH_SECURITY, ACCESS_MORGUE, ACCESS_WEAPONS, ACCESS_FORENSICS_LOCKERS, ACCESS_MINERAL_STOREROOM)
-	minimal_access = list(ACCESS_SECURITY, ACCESS_SEC_DOORS, ACCESS_BRIG, ACCESS_COURT, ACCESS_WEAPONS, ACCESS_MECH_SECURITY, ACCESS_MINERAL_STOREROOM) // See /datum/job/officer/get_access()
 	paycheck = PAYCHECK_HARD
 	paycheck_department = ACCOUNT_SEC
 
-	mind_traits = list(TRAIT_DONUT_LOVER)
-	liver_traits = list(TRAIT_LAW_ENFORCEMENT_METABOLISM)
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_INVICTUS
 
-	display_order = JOB_DISPLAY_ORDER_HOUND
+	mind_traits = list(TRAIT_DONUT_LOVER)
+
+	display_order = JOB_DISPLAY_ORDER_HOUND_VTR
+	
 	bounty_types = CIV_JOB_SEC
 	known_contacts = list("Prince", "Keeper of Elysium", "Sheriff")
 
@@ -33,7 +33,7 @@
 
 /datum/outfit/job/hound_vtr
 	name = "Hound"
-	jobtype = /datum/job/vamp/hound_vtr
+	jobtype = /datum/job/vamp/vtr/hound_vtr
 
 	ears = /obj/item/p25radio
 	id = /obj/item/card/id/invictus
