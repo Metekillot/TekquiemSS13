@@ -58,5 +58,5 @@
 			shoes = /obj/item/clothing/shoes/vampire/heels
 			uniform = /obj/item/clothing/under/vampire/red
 
-/obj/effect/landmark/start/taxi_vtr
+/obj/effect/landmark/start/vtr/taxi_vtr
 	name = "Taxi Driver"

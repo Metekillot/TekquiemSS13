@@ -41,3 +41,5 @@
 	..()
 	H.ignores_warrant = TRUE
 
+/obj/effect/landmark/start/vtr/police_sergeant_vtr
+	name = "Police Sergeant"

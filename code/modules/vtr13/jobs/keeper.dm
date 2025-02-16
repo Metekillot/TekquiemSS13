@@ -43,5 +43,5 @@
 	..()
 
 
-/obj/effect/landmark/start/keeper
+/obj/effect/landmark/start/vtr/keeper
 	name = "Keeper of Elysium"

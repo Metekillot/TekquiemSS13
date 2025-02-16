@@ -40,3 +40,6 @@
 /datum/outfit/job/police_officer_vtr/post_equip(mob/living/carbon/human/H)
 	..()
 	H.ignores_warrant = TRUE
+
+/obj/effect/landmark/start/vtr/police_officer_vtr
+	name = "Police Officer"

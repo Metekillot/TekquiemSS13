@@ -41,5 +41,5 @@
 /datum/outfit/job/bartender_vtr/pre_equip(mob/living/carbon/human/H)
 	..()
 
-/obj/effect/landmark/start/bartender
+/obj/effect/landmark/start/vtr/bartender_vtr
 	name = "Bartender"

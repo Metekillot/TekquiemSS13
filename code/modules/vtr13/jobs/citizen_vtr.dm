@@ -53,6 +53,6 @@
 	backpack_contents = list(/obj/item/passport=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1)
 
 
-/obj/effect/landmark/start/citizen_vtr
+/obj/effect/landmark/start/vtr/citizen_vtr
 	name = "Pedestrian"
 	icon_state = "Assistant"

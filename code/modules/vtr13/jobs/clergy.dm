@@ -48,6 +48,6 @@
 			if(H.clane.female_clothes)
 				uniform = H.clane.female_clothes
 
-/obj/effect/landmark/start/clergy
+/obj/effect/landmark/start/vtr/clergy
 	name = "Clergy"
 	icon_state = "Clerk"

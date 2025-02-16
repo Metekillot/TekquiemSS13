@@ -47,6 +47,6 @@
 			if(H.clane.female_clothes)
 				uniform = H.clane.female_clothes
 
-/obj/effect/landmark/start/carthian
+/obj/effect/landmark/start/vtr/carthian
 	name = "Carthian"
 	icon_state = "Supply Technician"

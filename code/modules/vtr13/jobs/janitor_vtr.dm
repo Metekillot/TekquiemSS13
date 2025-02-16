@@ -37,6 +37,6 @@
 	gloves = /obj/item/clothing/gloves/vampire/cleaning
 	backpack_contents = list(/obj/item/passport=1, /obj/item/cockclock=1, /obj/item/flashlight=1, /obj/item/vamp/keys/hack=1, /obj/item/vamp/creditcard=1)
 
-/obj/effect/landmark/start/janitor_vtr
+/obj/effect/landmark/start/vtr/janitor_vtr
 	name = "Street Janitor"
 	icon_state = "Street Janitor"

@@ -44,5 +44,5 @@
 			if(H.clane.female_clothes)
 				uniform = H.clane.female_clothes
 
-/obj/effect/landmark/start/librarian_vtr
+/obj/effect/landmark/start/vtr/librarian_vtr
 	name = "Librarian"

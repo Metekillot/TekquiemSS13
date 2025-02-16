@@ -41,5 +41,5 @@
 	//r_pocket =
 	backpack_contents = list(/obj/item/melee/vampirearms/eguitar=1, /obj/item/passport=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard/elder=1)
 
-/obj/effect/landmark/start/voivode_vtr
+/obj/effect/landmark/start/vtr/voivode_vtr
 	name = "Voivode"

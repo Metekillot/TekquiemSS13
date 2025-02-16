@@ -47,6 +47,6 @@
 			if(H.clane.female_clothes)
 				uniform = H.clane.female_clothes
 
-/obj/effect/landmark/start/acolyte
+/obj/effect/landmark/start/vtr/acolyte
 	name = "Acolyte"
 	icon_state = "Archivist"

@@ -53,6 +53,6 @@
 /datum/outfit/job/hound/pre_equip(mob/living/carbon/human/H)
 	..()
 
-/obj/effect/landmark/start/hound_vtr
+/obj/effect/landmark/start/vtr/hound_vtr
 	name = "Hound"
 	icon_state = "Hound"

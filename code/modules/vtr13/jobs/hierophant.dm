@@ -43,6 +43,6 @@
 /datum/outfit/job/hierophant/pre_equip(mob/living/carbon/human/H)
 	..()
 
-/obj/effect/landmark/start/hierophant
+/obj/effect/landmark/start/vtr/hierophant
 	name = "Hierophant"
 	icon_state = "Dealer"

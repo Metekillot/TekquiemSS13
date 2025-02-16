@@ -64,6 +64,6 @@
 	..()
 	H.ignores_warrant = TRUE
 
-/obj/effect/landmark/start/sheriff_vtr
+/obj/effect/landmark/start/vtr/sheriff_vtr
 	name = "Sheriff"
 	icon_state = "Sheriff"

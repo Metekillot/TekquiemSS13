@@ -46,5 +46,5 @@
 			if(H.clane.female_clothes)
 				uniform = H.clane.female_clothes
 
-/obj/effect/landmark/start/sworn
+/obj/effect/landmark/start/vtr/sworn
 	name = "Sworn"

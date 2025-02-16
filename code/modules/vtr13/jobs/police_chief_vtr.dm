@@ -42,3 +42,5 @@
 	H.ignores_warrant = TRUE
 	martial_art.teach(H)
 
+/obj/effect/landmark/start/vtr/police_chief_vtr
+	name = "Police Chief"

@@ -73,6 +73,6 @@
 	..()
 	H.ignores_warrant = TRUE
 
-/obj/effect/landmark/start/seneschal_vtr
+/obj/effect/landmark/start/vtr/seneschal_vtr
 	name = "Seneschal"
 	icon_state = "Prince"

@@ -48,6 +48,6 @@
 	H.resistant_to_disciplines = TRUE
 	to_chat(H, "<span class='alertsyndie'>Your faith in God is made of iron. None could shake it, and even in the darkest moments it holds you up.</span>")
 
-/obj/effect/landmark/start/bishop
+/obj/effect/landmark/start/vtr/bishop
 	name = "Bishop"
 	icon_state = "Clerk"

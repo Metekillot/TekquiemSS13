@@ -45,6 +45,6 @@
 
 	skillchips = list(/obj/item/skillchip/quickcarry)
 
-/obj/effect/landmark/start/doctor_vtr
+/obj/effect/landmark/start/vtr/doctor_vtr
 	name = "Doctor"
 	icon_state = "Doctor"

@@ -55,6 +55,6 @@
 		uniform = /obj/item/clothing/under/vampire/clerk/female
 		shoes = /obj/item/clothing/shoes/vampire/heels
 
-/obj/effect/landmark/start/page
+/obj/effect/landmark/start/vtr/page
 	name = "Page"
 	icon_state = "Clerk"

@@ -45,6 +45,6 @@
 /datum/outfit/job/representative/pre_equip(mob/living/carbon/human/H)
 	..()
 
-/obj/effect/landmark/start/representative
+/obj/effect/landmark/start/vtr/representative
 	name = "Carthian Representative"
 	icon_state = "Supply Technician"
