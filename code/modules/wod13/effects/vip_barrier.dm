@@ -123,6 +123,7 @@
 		to_chat(user, "<span class='notice'>[bouncer] subtly nods, giving you permission to enter.</span>")
 		linked_perm.allow_list += user
 		return
+	to_chat(user, "<span class='notice'>[bouncer] shakes their head.</span>")
 	linked_perm.notify_guard_blocked_denial(user)
 
 /obj/effect/vip_barrier/proc/handle_social_bypass(mob/living/carbon/human/user, mob/bouncer, used_badge = FALSE)
