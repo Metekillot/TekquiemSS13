@@ -119,21 +119,13 @@
 /obj/effect/vip_barrier/proc/handle_unmask_bypass(mob/living/carbon/human/user, mob/bouncer)
 	if(!do_mob(user, bouncer, max(2 SECONDS, unmask_bypass_time - (user.get_total_social() * 2 SECONDS))))
 		return
-	
 	if(check_entry_permission_base(user))
 		to_chat(user, "<span class='notice'>[bouncer] subtly nods, giving you permission to enter.</span>")
 		linked_perm.allow_list += user
 		return
-	
 	linked_perm.notify_guard_blocked_denial(user)
 
-
 /obj/effect/vip_barrier/proc/handle_social_bypass(mob/living/carbon/human/user, mob/bouncer, used_badge = FALSE)
-
-	if(user.get_face_name() == "Unknown")
-		to_chat(user, "<span class='notice'>They won't talk to someone they can't look in the eye.</span>")
-		return
-
 	if(check_entry_permission_base(user))
 		to_chat(user, "<span class='notice'>...But you are already allowed entry.</span>")
 		return
@@ -146,11 +138,8 @@
 			linked_perm.notify_guard_blocked_denial(user)
 		return
 
-
 	if(!do_mob(user, bouncer, max(5 SECONDS, social_bypass_time - (user.get_total_social() * 2 SECONDS))))
 		return
-
-
 
 	var/involved_social_roll = social_roll_difficulty
 	if(used_badge)
@@ -168,13 +157,10 @@
 	else
 		linked_perm.notify_guard_blocked_denial(user)
 
-
 /obj/effect/vip_barrier/proc/identify_cop(mob/living/carbon/human/user, used_badge = FALSE)
 	if(mean_to_cops && (used_badge || (user.wear_id && istype(user.wear_id,/obj/item/card/id/police))))
 		return TRUE
 	return FALSE
-
-
 
 /obj/effect/vip_barrier/proc/signal_update_icon()
 	SIGNAL_HANDLER
