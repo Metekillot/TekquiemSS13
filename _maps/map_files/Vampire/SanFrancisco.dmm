@@ -26939,6 +26939,12 @@
 /obj/item/restraints/handcuffs,
 /turf/open/floor/plating/vampplating/mono,
 /area/vtm/interior/endron_facility)
+"cjp" = (
+/obj/effect/vip_barrier/elysium/theatre{
+	dir = 9
+	},
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/theatre)
 "cjt" = (
 /obj/effect/decal/cleanable/blood/footprints,
 /turf/closed/wall/vampwall/old,
@@ -26968,7 +26974,9 @@
 /obj/structure/chair/office{
 	dir = 8
 	},
-/mob/living/carbon/human/npc/bouncer/elysium/theatre,
+/mob/living/carbon/human/npc/bouncer/elysium/theatre{
+	dir = 8
+	},
 /turf/open/floor/carpet,
 /area/vtm/theatre)
 "cjJ" = (
@@ -27313,11 +27321,6 @@
 /obj/structure/window/reinforced/indestructable,
 /turf/closed/wall/vampwall/painted/low,
 /area/vtm/interior/police)
-"cte" = (
-/obj/effect/decal/wallpaper/light/low,
-/turf/closed/wall/vampwall/painted/low/window/reinforced,
-/turf/closed/wall/vampwall/painted/low/window/reinforced,
-/area/vtm/clinic)
 "ctj" = (
 /obj/effect/turf_decal/siding/wideplating/dark,
 /turf/open/floor/plating/parquetry/old,
@@ -29807,7 +29810,9 @@
 /obj/effect/turf_decal/siding/white{
 	dir = 10
 	},
-/mob/living/carbon/human/npc/bouncer/elysium/stripclub,
+/mob/living/carbon/human/npc/bouncer/elysium/stripclub{
+	dir = 8
+	},
 /turf/open/floor/plating/vampplating/mono,
 /area/vtm/interior/strip)
 "dMK" = (
@@ -30426,10 +30431,6 @@
 /obj/structure/curtain/bounty,
 /turf/closed/wall/vampwall/market/low/window,
 /area/vtm/interior/techshop)
-"ebS" = (
-/obj/effect/vip_barrier/elysium_2,
-/turf/closed/wall/vampwall/rich/low/window,
-/area/vtm/interior/millennium_tower)
 "ebT" = (
 /obj/item/clothing/under/vampire/archivist{
 	pixel_x = 6;
@@ -30462,6 +30463,12 @@
 	},
 /turf/open/floor/plating/asphalt,
 /area/vtm/fishermanswharf)
+"ecw" = (
+/obj/effect/vip_barrier/elysium/theatre_backdoor{
+	dir = 9
+	},
+/turf/open/floor/carpet,
+/area/vtm/theatre)
 "ecX" = (
 /obj/transfer_point_vamp{
 	alpha = 0;
@@ -33816,7 +33823,7 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/chinatown)
 "fQp" = (
-/mob/living/carbon/human/npc/bouncer/elysium/elysium_2,
+/obj/effect/vip_barrier/elysium_2,
 /turf/open/floor/plating/vampplating/mono,
 /area/vtm/interior/millennium_tower)
 "fRe" = (
@@ -37166,15 +37173,6 @@
 	},
 /turf/open/floor/plating/rough,
 /area/vtm/interior/millennium_tower/f5)
-"hwL" = (
-/obj/structure/vampdoor/archive{
-	dir = 8
-	},
-/obj/effect/vip_barrier/elysium/theatre_backdoor{
-	dir = 8
-	},
-/turf/open/floor/plating/parquetry/old,
-/area/vtm/theatre)
 "hwS" = (
 /obj/effect/turf_decal/siding/white{
 	dir = 1
@@ -48378,6 +48376,13 @@
 "nDE" = (
 /turf/closed/wall/vampwall/rustbad,
 /area/vtm/sewer)
+"nDU" = (
+/obj/item/kirbyplants/random,
+/obj/effect/vip_barrier/elysium/theatre{
+	dir = 8
+	},
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/theatre)
 "nDX" = (
 /obj/structure/closet/crate/bin,
 /turf/open/floor/plating/parquetry/old,
@@ -51640,6 +51645,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
+/mob/living/carbon/human/npc/bouncer/elysium/elysium_2,
 /turf/open/floor/plating/vampplating/mono,
 /area/vtm/interior/millennium_tower)
 "pqM" = (
@@ -51715,6 +51721,10 @@
 	},
 /turf/open/floor/plating/rough,
 /area/vtm/interior/giovanni)
+"psT" = (
+/obj/effect/vip_barrier/elysium,
+/turf/open/floor/mineral/plastitanium,
+/area/vtm/interior/millennium_tower)
 "psU" = (
 /obj/structure/vampdoor/simple{
 	dir = 8
@@ -52756,6 +52766,13 @@
 /obj/item/kirbyplants/random,
 /turf/open/floor/plating/granite/black,
 /area/vtm/interior)
+"pWi" = (
+/obj/machinery/light{
+	dir = 4
+	},
+/mob/living/carbon/human/npc/bouncer/elysium/elysium_2,
+/turf/open/floor/plating/vampplating/mono,
+/area/vtm/interior/millennium_tower)
 "pWj" = (
 /obj/effect/turf_decal/siding/white/corner{
 	dir = 8
@@ -55014,6 +55031,11 @@
 "rcD" = (
 /obj/effect/turf_decal/siding/white{
 	dir = 4
+	},
+/obj/machinery/light/small/pink{
+	dir = 8;
+	pixel_x = 16;
+	pixel_y = 32
 	},
 /turf/open/floor/plating/vampplating/mono,
 /area/vtm/interior/strip)
@@ -59835,7 +59857,9 @@
 /obj/structure/chair/office{
 	dir = 1
 	},
-/mob/living/carbon/human/npc/bouncer/elysium/theatre_backdoor,
+/mob/living/carbon/human/npc/bouncer/elysium/theatre_backdoor{
+	dir = 1
+	},
 /turf/open/floor/carpet,
 /area/vtm/theatre)
 "tGo" = (
@@ -60947,6 +60971,12 @@
 	},
 /turf/open/floor/plating/vampdirt,
 /area/vtm/graveyard)
+"unB" = (
+/obj/effect/vip_barrier/elysium/theatre_backdoor{
+	dir = 8
+	},
+/turf/open/floor/carpet,
+/area/vtm/theatre)
 "unE" = (
 /obj/structure/chair/comfy/beige{
 	dir = 8
@@ -64035,18 +64065,6 @@
 	},
 /turf/open/floor/plating/parquetry,
 /area/vtm/interior/giovanni)
-"vUH" = (
-/obj/effect/turf_decal/siding/white{
-	dir = 8
-	},
-/obj/structure/vampdoor/archive{
-	dir = 8
-	},
-/obj/effect/vip_barrier/elysium/theatre{
-	dir = 8
-	},
-/turf/open/floor/plating/concrete,
-/area/vtm/theatre)
 "vUI" = (
 /obj/structure/mirror{
 	pixel_y = 32
@@ -64593,7 +64611,6 @@
 	lockpick_difficulty = 11
 	},
 /obj/effect/turf_decal/siding/white,
-/obj/effect/vip_barrier/elysium,
 /turf/open/floor/plating/vampplating/mono,
 /area/vtm/interior/millennium_tower)
 "wjg" = (
@@ -65109,7 +65126,6 @@
 /obj/structure/vampdoor/camarilla{
 	lockpick_difficulty = 9
 	},
-/obj/effect/vip_barrier/elysium_2,
 /turf/open/floor/plating/vampplating/mono,
 /area/vtm/interior/millennium_tower)
 "wwl" = (
@@ -68137,6 +68153,12 @@
 /obj/item/bong,
 /turf/open/floor/plating/rough,
 /area/vtm/sewer/nosferatu_town)
+"xSN" = (
+/obj/effect/vip_barrier/elysium/theatre_backdoor{
+	dir = 8
+	},
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/theatre)
 "xSO" = (
 /turf/closed/wall/vampwall/metal/reinforced,
 /area/vtm/interior/wyrm_corrupted)
@@ -68187,6 +68209,12 @@
 /obj/structure/barricade/wooden,
 /turf/open/floor/plating/rough/cave,
 /area/vtm/interior)
+"xVf" = (
+/obj/effect/vip_barrier/elysium/theatre{
+	dir = 8
+	},
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/theatre)
 "xVs" = (
 /turf/closed/wall/vampwall/wood,
 /area/vtm/interior)
@@ -161077,7 +161105,7 @@ aTJ
 aNj
 aNj
 aNj
-ebS
+aWX
 fQp
 pqI
 rUk
@@ -161335,7 +161363,7 @@ aUq
 aUq
 aUq
 wwj
-aUq
+fQp
 aUq
 aUq
 noI
@@ -161591,9 +161619,9 @@ aUq
 aNj
 aNj
 aNj
-ebS
+aWX
 fQp
-bxI
+pWi
 ybP
 aQd
 aYQ
@@ -165704,7 +165732,7 @@ aVr
 bxH
 aUq
 wjf
-nEx
+psT
 nEx
 nEx
 nEx
@@ -167671,7 +167699,7 @@ ato
 auA
 ato
 ato
-cte
+auP
 iJB
 ato
 ruv
@@ -177238,9 +177266,9 @@ aHd
 aJw
 aIO
 afJ
-afJ
-afJ
-afV
+cjp
+xVf
+nDU
 afA
 aCH
 aCH
@@ -177496,7 +177524,7 @@ afA
 afA
 afA
 aGQ
-vUH
+aIk
 afA
 afA
 aHR
@@ -242774,9 +242802,9 @@ afJ
 aHS
 bGV
 tGi
-aHS
-aHS
-afJ
+ecw
+unB
+xSN
 afA
 aiA
 aiA
@@ -243032,7 +243060,7 @@ afA
 afA
 afA
 aGQ
-hwL
+bEZ
 afA
 afA
 aiA
