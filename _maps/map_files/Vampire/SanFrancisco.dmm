@@ -10817,11 +10817,7 @@
 /area/vtm/ghetto)
 "aLq" = (
 /obj/item/computer_hardware/network_card,
-/obj/item/vamp/keys{
-	accesslocks = list("wolftech");
-	color = "#466a72";
-	name = "Tech Store keys"
-	},
+/obj/item/vamp/keys/techstore,
 /turf/open/floor/plating/concrete,
 /area/vtm/interior/techshop)
 "aLr" = (
@@ -33657,11 +33653,7 @@
 /obj/item/clothing/neck/tie/black,
 /obj/item/clothing/neck/tie/black,
 /obj/item/clothing/neck/tie/black,
-/obj/item/vamp/keys{
-	accesslocks = list("wolftech");
-	color = "#466a72";
-	name = "Tech Store keys"
-	},
+/obj/item/vamp/keys/techstore,
 /turf/open/floor/plating/concrete,
 /area/vtm/interior/techshop)
 "gaB" = (
@@ -34455,11 +34447,7 @@
 	},
 /obj/structure/closet/crate/maint,
 /obj/item/lighter/greyscale,
-/obj/item/vamp/keys{
-	accesslocks = list("wolftech");
-	color = "#466a72";
-	name = "Tech Store keys"
-	},
+/obj/item/vamp/keys/techstore,
 /turf/open/floor/plating/vampcanalplating,
 /area/vtm/interior/glasswalker)
 "gwj" = (
@@ -40884,11 +40872,7 @@
 /obj/item/storage/backpack/duffelbag,
 /obj/item/storage/backpack/duffelbag,
 /obj/item/clothing/shoes/swagshoes,
-/obj/item/vamp/keys{
-	accesslocks = list("wolftech");
-	color = "#466a72";
-	name = "Tech Store keys"
-	},
+/obj/item/vamp/keys/techstore,
 /turf/open/floor/carpet,
 /area/vtm/interior/techshop)
 "jyS" = (
@@ -63225,11 +63209,7 @@
 /obj/item/storage/box/ingredients/american,
 /obj/item/storage/box/ingredients/carnivore,
 /obj/item/storage/box/ingredients/random,
-/obj/item/vamp/keys{
-	accesslocks = list("wolftech");
-	color = "#466a72";
-	name = "Tech Store keys"
-	},
+/obj/item/vamp/keys/techstore,
 /turf/open/floor/plating/vampplating,
 /area/vtm/interior/techshop)
 "vyf" = (
@@ -64001,11 +63981,7 @@
 /obj/structure/table/wood,
 /obj/item/vamp/keys/hack,
 /obj/item/vamp/keys/hack,
-/obj/item/vamp/keys{
-	accesslocks = list("wolftech");
-	color = "#466a72";
-	name = "Tech Store keys"
-	},
+/obj/item/vamp/keys/techstore,
 /turf/open/floor/plating/vampcarpet,
 /area/vtm/interior/techshop)
 "vTe" = (
