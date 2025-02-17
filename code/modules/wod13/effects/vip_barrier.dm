@@ -11,6 +11,7 @@
 	//Social bypass numbers
 	var/social_bypass_allowed = TRUE
 	var/social_bypass_time = 20 SECONDS
+	var/unmask_bypass_time = 10 SECONDS
 	var/can_use_badge = TRUE
 	var/mean_to_cops = TRUE
 	var/social_roll_difficulty = 7
@@ -60,6 +61,10 @@
 	if(!mover_mob.mind)
 		entry_allowed = FALSE
 	else if(linked_perm.actively_guarded)
+
+		if(handle_masked_entry(mover))
+			return FALSE
+		
 		entry_allowed = check_entry_permission_base(mover_mob)
 
 	if(!entry_allowed && mover.pulledby && isliving(mover.pulledby))
@@ -71,6 +76,19 @@
 		SEND_SIGNAL(src, COMSIG_BARRIER_NOTIFY_GUARD_BLOCKED, mover_mob)
 
 	return entry_allowed
+
+//returns TRUE if a person is blocked for being masked. Else, False.
+/obj/effect/vip_barrier/proc/handle_masked_entry(mob/living/mover)
+	if(!mover || !istype(mover, /mob/living/carbon/human))
+		return FALSE
+
+	var/mob/living/carbon/human/mover_human = mover
+	if((mover_human?.wear_mask?.flags_inv&HIDEFACE || mover_human?.head?.flags_inv&HIDEFACE) && !LAZYFIND(linked_perm.allow_list, mover))
+		
+		SEND_SIGNAL(src, COMSIG_BARRIER_NOTIFY_GUARD_MASKED, mover)
+		return TRUE
+	
+	return FALSE
 
 /obj/effect/vip_barrier/proc/check_direction_always_allowed(atom/movable/mover)
 	if(src.loc == mover.loc)
@@ -85,10 +103,10 @@
 
 //Call this parent after any children run
 /obj/effect/vip_barrier/proc/check_entry_permission_base(mob/living/carbon/human/entering_mob)
-	if(LAZYFIND(linked_perm.allow_list, entering_mob.name))
+	if(LAZYFIND(linked_perm.allow_list, entering_mob))
 		return TRUE
 
-	if(LAZYFIND(linked_perm.block_list, entering_mob.name))
+	if(LAZYFIND(linked_perm.block_list, entering_mob))
 		return FALSE
 
 	return check_entry_permission_custom(entering_mob)
@@ -96,6 +114,19 @@
 //Function for providing custom blocks and allowances for entering people
 /obj/effect/vip_barrier/proc/check_entry_permission_custom(mob/living/carbon/human/entering_mob)
 	return TRUE
+
+
+/obj/effect/vip_barrier/proc/handle_unmask_bypass(mob/living/carbon/human/user, mob/bouncer)
+	if(!do_mob(user, bouncer, max(2 SECONDS, unmask_bypass_time - (user.get_total_social() * 2 SECONDS))))
+		return
+	
+	if(check_entry_permission_base(user))
+		to_chat(user, "<span class='notice'>[bouncer] subtly nods, giving you permission to enter.</span>")
+		linked_perm.allow_list += user
+		return
+	
+	linked_perm.notify_guard_blocked_denial(user)
+
 
 /obj/effect/vip_barrier/proc/handle_social_bypass(mob/living/carbon/human/user, mob/bouncer, used_badge = FALSE)
 
@@ -108,7 +139,7 @@
 		return
 
 	//handle block list babies
-	if(LAZYFIND(linked_perm.block_list, user.name))
+	if(LAZYFIND(linked_perm.block_list, user))
 		if(identify_cop(user, used_badge))
 			linked_perm.notify_guard_police_denial(user)
 		else
@@ -127,11 +158,11 @@
 
 	if(user.storyteller_roll(user.get_total_social(), involved_social_roll) == ROLL_SUCCESS)
 		to_chat(user, "<span class='notice'>You manage to persuade your way past the guards.</span>")
-		linked_perm.allow_list += user.get_face_name()
+		linked_perm.allow_list += user
 		return
 
 	to_chat(user, "<span class='notice'>The guards turn you away, taking note of you as they do.</span>")
-	linked_perm.block_list += user.name
+	linked_perm.block_list += user
 	if(identify_cop(user, used_badge))
 		linked_perm.notify_guard_police_denial(user)
 	else
