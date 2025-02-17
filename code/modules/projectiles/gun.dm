@@ -151,10 +151,9 @@
 /obj/item/gun/proc/can_shoot()
 	return TRUE
 
-/obj/item/gun/proc/shoot_with_empty_chamber(mob/living/user)
+/obj/item/gun/proc/shoot_with_empty_chamber(mob/living/user as mob|obj)
 	to_chat(user, "<span class='danger'>*click*</span>")
 	playsound(src, dry_fire_sound, 30, TRUE)
-	SEND_SIGNAL(src, COMSIG_GUN_EMPTY)
 
 
 /obj/item/gun/proc/shoot_live_shot(mob/living/user, pointblank = 0, atom/pbtarget = null, message = 1)
