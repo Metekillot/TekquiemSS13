@@ -26285,7 +26285,9 @@
 /obj/effect/decal/bordur{
 	dir = 8
 	},
-/mob/living/carbon/human/npc/bouncer/giovanni,
+/mob/living/carbon/human/npc/bouncer/giovanni{
+	dir = 1
+	},
 /turf/open/floor/plating/vampgrass,
 /area/vtm/pacificheights)
 "bSU" = (
@@ -31300,7 +31302,9 @@
 /obj/effect/decal/bordur{
 	dir = 4
 	},
-/mob/living/carbon/human/npc/bouncer/giovanni,
+/mob/living/carbon/human/npc/bouncer/giovanni{
+	dir = 1
+	},
 /turf/open/floor/plating/vampgrass,
 /area/vtm/pacificheights)
 "eCq" = (
