@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/northeast/gym
+/area/vtm/vtr/masquerade/interior/northwest/gym
 	name = "Gym"
 	icon_state = "anarch"
 	mood_bonus = 1

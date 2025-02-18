@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/northwest/gun_store
+/area/vtm/vtr/masquerade/interior/southwest/gun_store
 	name = "Gun Store"
 	icon_state = "anarch"
 	mood_bonus = 1

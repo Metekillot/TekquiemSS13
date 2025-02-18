@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southwest/baco_tell
+/area/vtm/vtr/masquerade/interior/southeast/baco_tell
 	name = "Baco Tell"
 	icon_state = "anarch"
 	mood_bonus = 1

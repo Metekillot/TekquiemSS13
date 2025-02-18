@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/northeast/apartment
+/area/vtm/vtr/masquerade/interior/northwest/apartment
 	name = "Apartment Complex"
 	icon_state = "anarch"
 	mood_bonus = 1

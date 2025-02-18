@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southeast/record_store
+/area/vtm/vtr/masquerade/interior/northeast/record_store
 	name = "Record Store"
 	icon_state = "anarch"
 	mood_bonus = 1

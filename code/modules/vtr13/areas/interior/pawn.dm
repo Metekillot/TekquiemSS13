@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southeast/pawn_shop
+/area/vtm/vtr/masquerade/interior/northeast/pawn_shop
 	name = "Pawn Shop"
 	icon_state = "anarch"
 	mood_bonus = 1

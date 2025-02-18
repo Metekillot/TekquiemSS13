@@ -17,7 +17,3 @@
 /area/vtm/vtr/masquerade/exterior/northeast/northeast_long_beach
 	name = "Northeast Long Beach"
 	icon_state = "ghetto"
-
-/area/vtm/vtr/masquerade/exterior/south/south_long_beach
-	name = "South Long Beach"
-	icon_state = "shop"

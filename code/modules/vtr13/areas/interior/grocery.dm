@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southeast/grocery
+/area/vtm/vtr/masquerade/interior/northeast/grocery
 	name = "Albertson's grocery store"
 	icon_state = "anarch"
 	mood_bonus = 1

@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/northeast/police_lockup
+/area/vtm/vtr/masquerade/interior/northwest/police_lockup
 	name = "Police Station"
 	icon_state = "police"
 	mood_bonus = 1

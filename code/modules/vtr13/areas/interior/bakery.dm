@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southeast/bakery
+/area/vtm/vtr/masquerade/interior/northeast/bakery
 	name = "Bakery"
 	icon_state = "anarch"
 	mood_bonus = 1

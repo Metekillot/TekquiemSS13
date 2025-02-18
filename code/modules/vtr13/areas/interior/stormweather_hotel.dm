@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southeast/hotel
+/area/vtm/vtr/masquerade/interior/northeast/hotel
 	name = "The Stormweather Hotel"
 	icon_state = "anarch"
 	mood_bonus = 1

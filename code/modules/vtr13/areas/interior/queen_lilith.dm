@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southwest/queen_lilith
+/area/vtm/vtr/masquerade/interior/southeast/queen_lilith
 	name = "The Queen Lilith"
 	icon_state = "old_clan_tzimisce"
 	mood_bonus = 1

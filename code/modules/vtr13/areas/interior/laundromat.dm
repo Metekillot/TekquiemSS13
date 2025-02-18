@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southeast/laundromat
+/area/vtm/vtr/masquerade/interior/northeast/laundromat
 	name = "Laundromat"
 	icon_state = "anarch"
 	mood_bonus = 1

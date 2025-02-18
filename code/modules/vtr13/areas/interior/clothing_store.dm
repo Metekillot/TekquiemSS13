@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/northeast/clothing_store
+/area/vtm/vtr/masquerade/interior/northwest/clothing_store
 	name = "Sears clothing outlet"
 	icon_state = "anarch"
 	mood_bonus = 1

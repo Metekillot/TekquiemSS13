@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/northeast/bubway
+/area/vtm/vtr/masquerade/interior/northwest/bubway
 	name = "Bubway"
 	icon_state = "anarch"
 	mood_bonus = 1

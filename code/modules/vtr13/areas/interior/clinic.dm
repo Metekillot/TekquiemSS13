@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/northwest/clinic
+/area/vtm/vtr/masquerade/interior/southwest/clinic
 	name = "Unity Clinic"
 	icon_state = "clinic"
 	mood_bonus = 1

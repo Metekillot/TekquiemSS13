@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/southeast/tattoo
+/area/vtm/vtr/masquerade/interior/northeast/tattoo
 	name = "Tattoo Parlor"
 	icon_state = "anarch"
 	mood_bonus = 1
