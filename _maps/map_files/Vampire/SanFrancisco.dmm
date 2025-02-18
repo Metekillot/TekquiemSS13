@@ -32491,6 +32491,9 @@
 /turf/open/floor/carpet/black,
 /area/vtm/interior)
 "fdp" = (
+/obj/effect/turf_decal/siding/white{
+	dir = 1
+	},
 /turf/open/openspace,
 /area/vtm/interior/millennium_tower/f2)
 "fdO" = (
