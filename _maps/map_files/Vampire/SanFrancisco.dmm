@@ -51617,7 +51617,9 @@
 /turf/open/floor/plating/rough,
 /area/vtm/interior/giovanni)
 "psT" = (
-/obj/effect/vip_barrier/elysium,
+/obj/effect/vip_barrier/elysium{
+	dir = 6
+	},
 /turf/open/floor/mineral/plastitanium,
 /area/vtm/interior/millennium_tower)
 "psU" = (
