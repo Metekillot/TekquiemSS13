@@ -167,8 +167,8 @@
 	switch(type_of_infraction)
 		if(INFRACTION_TYPE_UGLY)
 			if(our_npc.tolerates_ugly)
-				return TRUE
-	return FALSE
+				return FALSE
+	return TRUE
 
 /mob/proc/can_respawn()
 	if (client?.ckey)
