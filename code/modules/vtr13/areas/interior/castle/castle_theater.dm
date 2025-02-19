@@ -1,4 +1,4 @@
-/area/vtm/vtr/elysium/interior/central/castle_elysium
+/area/vtm/vtr/elysium/interior/central/castle_theater
 	name = "Castle Elysium"
 	icon_state = "theatre"
 	music = /datum/vampiremusic/theatre
