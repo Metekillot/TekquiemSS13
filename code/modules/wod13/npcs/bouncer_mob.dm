@@ -28,6 +28,10 @@
 	var/turf/start_turf = null //Where the creature spawns so it can return from whence it came
 	var/our_role = /datum/socialrole/bouncer
 
+	var/default_direction = 1 //Allows mappers to set the bouncer's regular orientation with dir.
+
+	tolerates_ugly = TRUE
+
 	var/is_guarding = TRUE
 
 	my_weapon_type = /obj/item/gun/ballistic/shotgun/vampire
@@ -55,6 +59,9 @@
 		linked_perm.add_bouncer(src)
 	else if(SSbouncer_barriers.initialized)
 		CRASH("A Bouncer was created for vip_barrier_perms that were not loaded!")
+
+/mob/living/carbon/human/npc/bouncer/LateInitialize()
+	default_direction = dir
 
 /mob/living/carbon/human/npc/bouncer/on_knockedout_trait_gain(datum/source)
 	..()
@@ -138,15 +145,15 @@
 		addtimer(CALLBACK(src, PROC_REF(position_hard_reset)), warp_home_timer)
 
 /mob/living/carbon/human/npc/bouncer/proc/position_hard_reset()
-	if(is_guarding && get_turf(src) != start_turf)
+	if(is_guarding)
 		danger_source = null
-		forceMove(start_turf)
+		if(get_turf(src) != start_turf)
+			forceMove(start_turf)
+		dir = default_direction
 
 
 
-/mob/living/carbon/human/npc/bouncer/examine(mob/user)
-	
-
+/mob/living/carbon/human/npc/bouncer/ShiftClick(mob/user)
 	if(istype(user, /mob/living/carbon/human) && user.stat != DEAD && can_be_reasoned_with() && in_range(src, user))
 		var/list/interact_options = list(
 			"Persuade for Entry" = image(icon = 'icons/obj/dice.dmi', icon_state = "d10"))
@@ -190,4 +197,4 @@
 		addtimer(CALLBACK(src, PROC_REF(resume_neutral_direction)), resume_neutral_direction_delay)
 
 /mob/living/carbon/human/npc/bouncer/proc/resume_neutral_direction()
-	dir = initial(dir)
+	dir = default_direction
