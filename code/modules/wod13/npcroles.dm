@@ -1427,6 +1427,7 @@
 
 /mob/living/carbon/human/npc/stripper
 	staying = TRUE
+	tolerates_ugly = TRUE
 
 /mob/living/carbon/human/npc/stripper/Initialize()
 	. = ..()
