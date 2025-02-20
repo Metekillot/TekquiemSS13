@@ -74,8 +74,6 @@
 
 	var/list/drop_on_death_list = null
 
-	var/tolerates_ugly = FALSE
-
 /mob/living/carbon/human/npc/LateInitialize()
 	. = ..()
 	if(role_weapons_chances.Find(type))
