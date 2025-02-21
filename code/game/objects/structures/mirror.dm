@@ -203,7 +203,7 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 				H.dna.real_name = newname
 			if(H.mind)
 				H.mind.name = newname
-
+/*
 		if("race")
 			var/newrace
 			var/racechoice = input(H, "What are we again?", "Race change") as null|anything in choosable_races
@@ -223,7 +223,7 @@ GLOBAL_LIST_EMPTY(las_mirrors)
 				if(new_s_tone)
 					H.skin_tone = new_s_tone
 					H.dna.update_ui_block(DNA_SKIN_TONE_BLOCK)
-
+*/
 			if(MUTCOLORS in H.dna.species.species_traits)
 				var/new_mutantcolor = input(user, "Choose your skin color:", "Race change","#"+H.dna.features["mcolor"]) as color|null
 				if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
