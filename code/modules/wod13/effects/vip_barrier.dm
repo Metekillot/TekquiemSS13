@@ -6,6 +6,7 @@
 	desc = "Not a real checkpoint."
 	icon = 'icons/obj/wod13/barrier.dmi'
 	icon_state = "camarilla_blocking"
+	flags_1 = ON_BORDER_1
 	var/block_sound = "sound/wod13/bouncer_blocked.ogg"
 
 	//Social bypass numbers
