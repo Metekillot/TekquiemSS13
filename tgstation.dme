@@ -3440,7 +3440,7 @@
 #include "code\modules\wod13\datums\crafting_recipes\weed\weed_blunt.dm"
 #include "code\modules\wod13\datums\vip_barrier_perm.dm"
 #include "code\modules\wod13\datums\bouncer_roles\bouncer_elysium_role.dm"
-#include "code\modules\wod13\datums\powers\discipline\valeren.dm"
+#include "code\modules\wod13\datums\powers\discipline\healer_valeren.dm"
 #include "code\modules\wod13\datums\powers\discipline\melpominee.dm"
 #include "code\modules\wod13\datums\bouncer_roles\bouncer_giovanni_role.dm"
 #include "code\modules\wod13\datums\bouncer_roles\bouncer_mob_role.dm"

@@ -72,13 +72,14 @@
 /datum/discipline_power/valeren/corpore_sano/activate(mob/living/target)
 	. = ..()
 	owner.Beam(target, icon_state="sm_arc", time = 5 SECONDS, maxdistance = 9, beam_type = /obj/effect/ebeam/medical)
-	target.adjustBruteLoss(-50, TRUE)
+
+	target.heal_ordered_damage(65, list(BRUTE, TOX, BURN, CLONE, OXY, BRAIN))
 	if(ishuman(target))
 		var/mob/living/carbon/human/human_target = target
 		if(length(human_target.all_wounds))
 			var/datum/wound/wound = pick(human_target.all_wounds)
 			wound.remove_wound()
-	target.adjustFireLoss(-50, TRUE)
+
 	target.update_damage_overlays()
 	target.update_health_hud()
 
