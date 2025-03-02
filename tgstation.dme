@@ -3457,6 +3457,7 @@
 #include "code\modules\vtr13\areas\interior\nightclub\nightclub_elysium.dm"
 #include "code\modules\vtr13\areas\interior\police_station\police_lockup.dm"
 #include "code\modules\vtr13\areas\interior\police_station\police_station.dm"
+#include "code\modules\vtr13\effects\queen_lilith.dm"
 #include "code\modules\vtr13\items\ids.dm"
 #include "code\modules\vtr13\items\keys.dm"
 #include "code\modules\vtr13\items\clothing\hats.dm"
