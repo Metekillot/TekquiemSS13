@@ -245,10 +245,8 @@
 	var/parry_cd = 0
 	var/blocking = FALSE
 	var/last_m_intent = MOVE_INTENT_RUN
-	var/last_bloodheal_use = 0
 	var/last_bloodpower_use = 0
 	var/last_drinkblood_use = 0
-	var/last_bloodheal_click = 0
 	var/last_bloodpower_click = 0
 	var/last_drinkblood_click = 0
 	var/harm_focus = SOUTH

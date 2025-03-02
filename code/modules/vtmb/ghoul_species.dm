@@ -14,6 +14,7 @@
 	punchdamagehigh = 20
 	dust_anim = "dust-h"
 	var/mob/living/carbon/human/master
+	var/changed_master = FALSE
 	var/last_vitae = 0
 	var/list/datum/discipline/disciplines = list()
 	selectable = TRUE
@@ -42,22 +43,28 @@
 			dat += "[host.real_name],"
 		if(!host.real_name)
 			dat += "Unknown,"
-		dat += " the ghoul"
-		if(host.mind)
-			if(host.mind.assigned_role)
-				if(host.mind.special_role)
-					dat += ", carrying the [host.mind.assigned_role] (<font color=red>[host.mind.special_role]</font>) role."
-				else
-					dat += ", carrying the [host.mind.assigned_role] role."
-			if(!host.mind.assigned_role)
-				dat += "."
-			
-			dat += "<BR>"
-			
+		var/datum/species/ghoul/G
+		if(host.dna.species.name == "Ghoul")
+			G = host.dna.species
+			dat += " the ghoul"
+
+		if(host.mind.assigned_role)
 			if(host.mind.special_role)
-				for(var/datum/antagonist/A in host.mind.antag_datums)
-					if(A.objectives)
-						dat += "[printobjectives(A.objectives)]<BR>"
+				dat += ", carrying the [host.mind.assigned_role] (<font color=red>[host.mind.special_role]</font>) role."
+			else
+				dat += ", carrying the [host.mind.assigned_role] role."
+		if(!host.mind.assigned_role)
+			dat += "."
+		dat += "<BR>"
+		if(G.master)
+			dat += "My Regnant is [G.master.real_name], I should obey their wants.<BR>"
+			if(G.master.clane)
+				if(G.master.clane.name != "Caitiff")
+					dat += "Regnant's clan is [G.master.clane], maybe I can try some of it's disciplines..."
+		if(host.mind.special_role)
+			for(var/datum/antagonist/A in host.mind.antag_datums)
+				if(A.objectives)
+					dat += "[printobjectives(A.objectives)]<BR>"
 		var/masquerade_level = " followed the Masquerade Tradition perfectly."
 		switch(host.masquerade)
 			if(4)
@@ -120,18 +127,8 @@
 		for(var/datum/vtm_bank_account/account in GLOB.bank_account_list)
 			if(host.bank_id == account.bank_id)
 				dat += "<b>My bank account code is: [account.code]</b><BR>"
-		if(host.mind)
-			dat += "<BR>"
-			for(var/datum/character_connection/connection in host.mind.character_connections)
-				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[connection.group_id]'>Delete</a><BR>"
-			dat += "<BR>"
-		host << browse(dat, "window=vampire;size=500x450;border=1;can_resize=1;can_minimize=0")
+		host << browse(dat, "window=vampire;size=400x450;border=1;can_resize=1;can_minimize=0")
 		onclose(host, "ghoul", src)
-
-/datum/action/ghoulinfo/Topic(href, href_list)
-	if(href_list["delete_connection"])
-		host.retire_connection(text2num(href_list["delete_connection"]))
-		Trigger()
 
 /datum/species/ghoul/on_species_gain(mob/living/carbon/human/C)
 	..()
@@ -140,8 +137,10 @@
 	var/datum/action/ghoulinfo/infor = new()
 	infor.host = C
 	infor.Grant(C)
-	var/datum/action/blood_heal/bloodheal = new()
-	bloodheal.Grant(C)
+
+	var/datum/discipline/bloodheal/giving_bloodheal = new(1)
+	C.give_discipline(giving_bloodheal)
+
 	C.generation = 13
 	C.bloodpool = 10
 	C.maxbloodpool = 10

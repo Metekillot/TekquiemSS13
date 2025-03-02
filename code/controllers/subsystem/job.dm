@@ -12,7 +12,7 @@ SUBSYSTEM_DEF(job)
 	var/list/prioritized_jobs = list()
 	var/list/latejoin_trackers = list()	//Don't read this list, use GetLateJoinTurfs() instead
 
-	var/overflow_role = "Pedestrian"
+	var/overflow_role = "Citizen"
 
 	var/list/level_order = list(JP_HIGH,JP_MEDIUM,JP_LOW)
 
@@ -44,7 +44,7 @@ SUBSYSTEM_DEF(job)
 
 /datum/controller/subsystem/job/proc/SetupOccupations(faction = "Vampire")
 	occupations = list()
-	var/list/all_jobs = subtypesof(/datum/job/vamp/vtr)
+	var/list/all_jobs = subtypesof(/datum/job/vamp)
 	if(!all_jobs.len)
 		to_chat(world, "<span class='boldannounce'>Error setting up jobs, no job datums found</span>")
 		return FALSE
@@ -181,7 +181,7 @@ SUBSYSTEM_DEF(job)
 		if(istype(job, GetJob(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
-		if(job.title in GLOB.leader_positions) //If you want a command position, select it!
+		if(job.title in GLOB.command_positions) //If you want a command position, select it!
 			continue
 
 		if(is_banned_from(player.ckey, job.title) || QDELETED(player))

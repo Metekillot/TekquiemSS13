@@ -31,7 +31,7 @@
 	//Eye colour
 	var/eye_color = "000"
 
-	var/skin_tone = LATINO	//Skin tone
+	var/skin_tone = "caucasian1"	//Skin tone
 
 	var/lip_style = null	//no lipstick by default- arguably misleading, as it could be used for general makeup
 	var/lip_color = "white"
@@ -134,5 +134,3 @@
 	max_yang_chi = 4
 	yin_chi = 2
 	max_yin_chi = 2
-
-	var/headshot_link = null

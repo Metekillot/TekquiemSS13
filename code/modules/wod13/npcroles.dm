@@ -1280,7 +1280,6 @@
 	max_stat = 4
 	my_weapon_type = /obj/item/gun/ballistic/automatic/vampire/m1911
 	my_backup_weapon_type = /obj/item/melee/classic_baton/vampire
-	tolerates_ugly = TRUE
 
 /mob/living/carbon/human/npc/guard/Initialize()
 	. = ..()
@@ -1427,7 +1426,6 @@
 
 /mob/living/carbon/human/npc/stripper
 	staying = TRUE
-	tolerates_ugly = TRUE
 
 /mob/living/carbon/human/npc/stripper/Initialize()
 	. = ..()
