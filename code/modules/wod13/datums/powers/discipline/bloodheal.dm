@@ -1,3 +1,6 @@
+#define HEAL_BASHING_LETHAL 20
+#define HEAL_AGGRAVATED 4
+
 /datum/discipline/bloodheal
 	name = "Bloodheal"
 	desc = "Use the power of your Vitae to mend your flesh."
@@ -17,20 +20,28 @@
 
 	violates_masquerade = FALSE
 
-	toggled = TRUE
-	duration_length = DURATION_TURN
+	cooldown_length = 1 * DURATION_TURN
+
+	grouped_powers = list(
+		/datum/discipline_power/bloodheal/one,
+		/datum/discipline_power/bloodheal/two,
+		/datum/discipline_power/bloodheal/three,
+		/datum/discipline_power/bloodheal/four,
+		/datum/discipline_power/bloodheal/five,
+		/datum/discipline_power/bloodheal/six,
+		/datum/discipline_power/bloodheal/seven,
+		/datum/discipline_power/bloodheal/eight,
+		/datum/discipline_power/bloodheal/nine,
+		/datum/discipline_power/bloodheal/ten
+	)
 
 /datum/discipline_power/bloodheal/activate()
-	//no damage at all to heal, just skip
-	var/continue_power = adjust_vitae_cost(no_waste = FALSE)
+	adjust_vitae_cost()
 
 	. = ..()
 
-	if (!continue_power)
-		return
-
 	//normal bashing/lethal damage
-	owner.heal_ordered_damage(20 * vitae_cost, list(BRUTE, TOX, OXY, STAMINA))
+	owner.heal_ordered_damage(HEAL_BASHING_LETHAL * vitae_cost, list(BRUTE, TOX, OXY, STAMINA))
 
 	if(length(owner.all_wounds))
 		for (var/i in 1 to min(vitae_cost, length(owner.all_wounds)))
@@ -38,16 +49,22 @@
 			wound.remove_wound()
 
 	//aggravated damage
-	owner.heal_ordered_damage(4 * vitae_cost, list(BURN, CLONE))
+	owner.heal_ordered_damage(HEAL_AGGRAVATED * vitae_cost, list(BURN, CLONE))
 
-	//organ damage healing
+	//brain damage and traumas healing
 	var/obj/item/organ/brain/brain = owner.getorganslot(ORGAN_SLOT_BRAIN)
 	if (brain)
-		brain.applyOrganDamage(-20 * vitae_cost)
+		brain.applyOrganDamage(-HEAL_BASHING_LETHAL * vitae_cost)
 
+		for (var/i in 1 to min(vitae_cost, length(brain.get_traumas_type())))
+			var/datum/brain_trauma/healing_trauma = pick(brain.get_traumas_type())
+			brain.cure_trauma_type(healing_trauma)
+
+	//miscellaneous organ damage healing
 	var/obj/item/organ/eyes/eyes = owner.getorganslot(ORGAN_SLOT_EYES)
 	if (eyes)
-		eyes.applyOrganDamage(-20 * vitae_cost)
+		eyes.applyOrganDamage(-HEAL_BASHING_LETHAL * vitae_cost)
+
 		owner.adjust_blindness(-5 * vitae_cost)
 		owner.adjust_blurriness(-5 * vitae_cost)
 
@@ -62,65 +79,31 @@
 	owner.update_damage_overlays()
 	owner.update_health_hud()
 
-/datum/discipline_power/bloodheal/deactivate()
+/datum/discipline_power/bloodheal/can_activate_untargeted(alert)
+	adjust_vitae_cost()
+
 	. = ..()
 
-	//reset vitae cost after being bumped down
+/datum/discipline_power/bloodheal/proc/adjust_vitae_cost()
 	vitae_cost = initial(vitae_cost)
-
-/datum/discipline_power/bloodheal/can_activate(atom/target, alert)
-	adjust_vitae_cost(no_waste = FALSE)
-	. = ..()
-	vitae_cost = initial(vitae_cost)
-
-/datum/discipline_power/bloodheal/refresh()
-	if (!active)
-		return
-	if (!owner)
-		return
-
-	//adjust vitae costs and skip if it would just waste vitae
-	if (!adjust_vitae_cost(no_waste = TRUE))
-		addtimer(CALLBACK(src, PROC_REF(refresh)), duration_length)
-		return
-
-	var/repeat = FALSE
-	if (owner.bloodpool >= vitae_cost)
-		owner.bloodpool = max(owner.bloodpool - vitae_cost, 0)
-		repeat = TRUE
-	else
-		to_chat(owner, "<span class='warning'>You don't have enough blood to keep using [src]!")
-
-	if (repeat)
-		COOLDOWN_START(src, duration, duration_length)
-		activate()
-	else
-		addtimer(CALLBACK(src, PROC_REF(refresh)), duration_length)
-
-/datum/discipline_power/bloodheal/proc/adjust_vitae_cost(no_waste = FALSE)
-	vitae_cost = initial(vitae_cost)
+	//tally up damage
 	var/total_bashing_lethal_damage = owner.getBruteLoss() + owner.getToxLoss() + owner.getOxyLoss()
 	var/total_aggravated_damage = owner.getCloneLoss() + owner.getFireLoss()
 
-	if (total_bashing_lethal_damage + total_aggravated_damage <= 0)
-		vitae_cost = 0
-		return FALSE
+	//lower blood expenditure to what's necessary
+	var/vitae_to_heal_bashing_lethal = ceil(total_bashing_lethal_damage * 0.05)
+	var/vitae_to_heal_aggravated = ceil(total_aggravated_damage * 0.0125)
 
-	//not enough damage to justify spending blood this turn
-	if (((total_bashing_lethal_damage < 20) && (total_aggravated_damage < 4)) && no_waste)
-		return FALSE
+	var/vitae_needed = max(vitae_to_heal_bashing_lethal, vitae_to_heal_aggravated)
 
-	var/heal_bashing_lethal_left_over = (20 * vitae_cost) - total_bashing_lethal_damage
-	var/heal_aggravated_left_over = (4 * vitae_cost) - total_aggravated_damage
+	//vitae used to heal is the smaller of max vitae expenditure and what's needed to heal the damage
+	vitae_cost = max(min(vitae_cost, vitae_needed), 1)
 
-	var/enough_damage_to_heal = (heal_bashing_lethal_left_over < 0) || (heal_aggravated_left_over < 0)
-	if (!enough_damage_to_heal)
-		//lower blood expenditure to what's necessary
-		var/vitae_to_heal_bashing_lethal = vitae_cost - ceil(heal_bashing_lethal_left_over * 0.05)
-		var/vitae_to_heal_aggravated = vitae_cost - ceil(heal_aggravated_left_over * 0.0125)
-		vitae_cost = min(vitae_to_heal_bashing_lethal, vitae_to_heal_aggravated)
-
-	return TRUE
+	//healing is a masquerade breach if it's done at level 3 and above
+	if (vitae_cost > 2)
+		violates_masquerade = TRUE
+	else
+		violates_masquerade = FALSE
 
 //BLOODHEAL 1
 /datum/discipline_power/bloodheal/one
@@ -221,3 +204,6 @@
 	vitae_cost = 10
 
 	violates_masquerade = TRUE
+
+#undef HEAL_BASHING_LETHAL
+#undef HEAL_AGGRAVATED

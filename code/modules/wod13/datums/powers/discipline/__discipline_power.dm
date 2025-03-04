@@ -351,15 +351,19 @@
 	if (target)
 		SEND_SIGNAL(target, COMSIG_POWER_DEACTIVATE_ON, src)
 
-	if (!fire_and_forget && (duration_length != 0))
+	if (!fire_and_forget && (duration_length > 0))
 		active = FALSE
 
 	if (duration_length)
 		COOLDOWN_RESET(src, duration)
+
 	if (!fire_and_forget)
 		COOLDOWN_START(src, cooldown, cooldown_length)
+
 	if (deactivate_sound)
 		owner.playsound_local(owner, deactivate_sound, 50, FALSE)
+
+	owner.update_action_buttons()
 
 /datum/discipline_power/proc/try_deactivate(atom/target)
 	SHOULD_NOT_OVERRIDE(TRUE)
