@@ -20,7 +20,7 @@
 
 	activate_sound = 'code/modules/wod13/sounds/insanity.ogg'
 
-	fire_and_forget = TRUE
+	multi_activate = TRUE
 	cooldown = 10 SECONDS
 	duration_length = 0
 

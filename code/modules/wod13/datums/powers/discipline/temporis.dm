@@ -66,7 +66,7 @@
 
 	hostile = TRUE
 
-	fire_and_forget = TRUE
+	multi_activate = TRUE
 	duration_length = 10 SECONDS
 	cooldown_length = 15 SECONDS
 

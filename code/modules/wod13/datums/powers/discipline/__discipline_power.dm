@@ -35,8 +35,8 @@
 	var/toggled = FALSE
 	/// If this power can be turned on and off.
 	var/cancelable = FALSE
-	/// If this power's duration is maintained by the caster, or simply casted on something else and then not used by the caster again.
-	var/fire_and_forget = FALSE
+	/// If this power can (theoretically, not in reality) have multiple of its effects active at once.
+	var/multi_activate = FALSE
 	/// Amount of time it takes until this Discipline deactivates itself. 0 if instantaneous.
 	var/duration_length = 0
 	/// Amount of time it takes until this Discipline can be used again after activation.
@@ -49,7 +49,7 @@
 	var/list/grouped_powers = list()
 
 	/* NOT MEANT TO BE OVERRIDDEN */
-	/// Timer tracking the duration of the power. Not used if fire_and_forget is TRUE.
+	/// Timer tracking the duration of the power. Not used if multi_activate is TRUE.
 	COOLDOWN_DECLARE(duration)
 	/// Timer tracking the cooldown of the power. Starts after deactivation if cancellable or toggled, after activation otherwise.
 	COOLDOWN_DECLARE(cooldown)
@@ -261,16 +261,16 @@
 		SEND_SIGNAL(target, COMSIG_POWER_ACTIVATE_ON, src)
 
 	//make it active if it can only have one active instance at a time
-	if (!fire_and_forget && (duration_length != 0))
+	if (!multi_activate && (duration_length != 0))
 		active = TRUE
 
 	//start the cooldown if there is one, instead triggers on deactivate() if it has a duration and isn't fire and forget
-	if (cooldown_length && !cancelable && !cooldown_override && (!duration_length || fire_and_forget))
+	if (cooldown_length && !cancelable && !cooldown_override && (!duration_length || multi_activate))
 		COOLDOWN_START(src, cooldown, cooldown_length)
 
 	//handle Discipline power duration, start duration timer if it can't have multiple effects running at once
 	if (duration_length && !duration_override)
-		if (!fire_and_forget)
+		if (!multi_activate)
 			COOLDOWN_START(src, duration, duration_length)
 		if (toggled)
 			addtimer(CALLBACK(src, PROC_REF(refresh), target), duration_length)
@@ -351,13 +351,13 @@
 	if (target)
 		SEND_SIGNAL(target, COMSIG_POWER_DEACTIVATE_ON, src)
 
-	if (!fire_and_forget && (duration_length > 0))
+	if (!multi_activate && (duration_length > 0))
 		active = FALSE
 
 	if (duration_length)
 		COOLDOWN_RESET(src, duration)
 
-	if (!fire_and_forget)
+	if (!multi_activate)
 		COOLDOWN_START(src, cooldown, cooldown_length)
 
 	if (deactivate_sound)
@@ -388,7 +388,7 @@
 		to_chat(owner, "<span class='warning'>You don't have enough blood to keep [src] active!")
 
 	if (repeat)
-		if (!fire_and_forget && !duration_override)
+		if (!multi_activate && !duration_override)
 			COOLDOWN_START(src, duration, duration_length)
 		addtimer(CALLBACK(src, PROC_REF(refresh), target), duration_length)
 		to_chat(owner, "<span class='warning'>[src] consumes your blood to stay active.</span>")

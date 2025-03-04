@@ -21,7 +21,7 @@
 	target_type = TARGET_TURF | TARGET_MOB | TARGET_OBJ | TARGET_SELF
 	range = 7
 
-	fire_and_forget = TRUE
+	multi_activate = TRUE
 	duration_length = 10 SECONDS
 	cooldown_length = 10 SECONDS
 

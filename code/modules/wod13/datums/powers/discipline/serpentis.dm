@@ -25,7 +25,7 @@
 	hostile = FALSE
 	violates_masquerade = TRUE
 
-	fire_and_forget = TRUE
+	multi_activate = TRUE
 	duration_length = 0.5 SECONDS
 	cooldown_length = 5 SECONDS
 
