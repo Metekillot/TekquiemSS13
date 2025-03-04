@@ -11,12 +11,16 @@
 #define TARGET_OBJ (1<<1)
 ///Targets anything of type /turf and its children
 #define TARGET_TURF (1<<2)
-///Targets anything of type /mob/living and its children if it is not dead
+///Targets anything of type /mob/living and its children only if it is not dead
 #define TARGET_LIVING (1<<3)
 ///Targets anything of type /mob/dead and its children, ie targets ghosts
 #define TARGET_GHOST (1<<4)
 ///Targets anything of type /mob/living and its children, dead or not
 #define TARGET_MOB (1<<5)
+///Targets anything of type /mob/living/carbon/human and its children
+#define TARGET_HUMAN (1<<6)
+///Targets anything with a client attached to it (mostly humans)
+#define TARGET_PLAYER (1<<7)
 
 //bitflags to check for certain conditions determining ability to actually cast a discipline
 //flags overlap, like DISC_CHECK_CAPABLE covers DISC_CHECK_CONSCIOUS and DISC_CHECK_TORPOR

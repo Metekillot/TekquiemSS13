@@ -83,10 +83,13 @@
 
 	//can always be deactivated if that's an option
 	if (active && (toggled || cancelable))
-		return TRUE
+		if (can_deactivate_untargeted())
+			return TRUE
+		else
+			return FALSE
 
 	//the power is currently active
-	if (active)
+	if (active && !multi_activate)
 		if (alert)
 			to_chat(owner, "<span class='warning'>[src] is already active!</span>")
 		return FALSE
@@ -94,7 +97,7 @@
 	//a mutually exclusive power is already active or on cooldown
 	for (var/exclude_power in grouped_powers)
 		var/datum/discipline_power/found_power = discipline.get_power(exclude_power)
-		if (!found_power)
+		if (!found_power || (found_power == src))
 			continue
 
 		if (found_power.active)
@@ -201,23 +204,40 @@
 				to_chat(owner, "<span class='warning'>You can't use this power on yourself!</span>")
 			return FALSE
 
+	//account for complete supernatural resistance
+	if (HAS_TRAIT(target, TRAIT_ANTIMAGIC))
+		if (alert)
+			to_chat(owner, "<span class='warning'>[target] resists your Disciplines!</span>")
+		return FALSE
+
 	//check target type
-	if (((target_type & TARGET_MOB) || (target_type & TARGET_LIVING)) && istype(target, /mob/living))
+	if ((target_type & TARGET_PLAYER) && ismob(target))
+		var/mob/mob_target = target
+		if (mob_target.client)
+			return TRUE
+
+	if (((target_type & TARGET_MOB) || (target_type & TARGET_LIVING) || (target_type & TARGET_HUMAN)) && istype(target, /mob/living))
 		//make sure our LIVING target isn't DEAD
 		var/mob/living/living = target
 		if ((target_type & TARGET_LIVING) && (living.stat == DEAD))
 			if (alert)
-				to_chat(owner, "<span class='warning'>You cannot cast [name] on dead things!</span>")
+				to_chat(owner, "<span class='warning'>You cannot cast [src] on dead things!</span>")
 			return FALSE
 
-		//make sure they can be targeted by Disciplines
+		//human-specific checks
 		if (ishuman(target))
 			var/mob/living/carbon/human/human = living
-			if (human.resistant_to_disciplines || HAS_TRAIT(human, TRAIT_ANTIMAGIC))
+			//make sure they can be targeted by Disciplines specifically
+			if (human.resistant_to_disciplines)
 				if (alert)
 					to_chat(owner, "<span class='warning'>[target] resists your Disciplines!</span>")
 				return FALSE
-		return TRUE
+
+		if (target_type & TARGET_HUMAN)
+			if (ishuman(target))
+				return TRUE
+		else
+			return TRUE
 
 	if ((target_type & TARGET_OBJ) && istype(target, /obj))
 		return TRUE
