@@ -67,7 +67,7 @@
 	hostile = TRUE
 
 	multi_activate = TRUE
-	duration_length = 10 SECONDS
+	duration_length = 15 SECONDS
 	cooldown_length = 15 SECONDS
 
 /datum/discipline_power/temporis/leaden_moment/activate(mob/living/target)

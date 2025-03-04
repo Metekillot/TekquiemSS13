@@ -23,7 +23,7 @@
 
 	multi_activate = TRUE
 	duration_length = 10 SECONDS
-	cooldown_length = 10 SECONDS
+	cooldown_length = 5 SECONDS
 
 	var/atom/movable/shadow
 
@@ -69,8 +69,8 @@
 	violates_masquerade = TRUE
 
 	cancelable = TRUE
-	duration_length = 20 SECONDS
-	cooldown_length = 10 SECONDS
+	duration_length = 30 SECONDS
+	cooldown_length = 15 SECONDS
 
 /datum/discipline_power/obtenebration/arms_of_the_abyss/activate()
 	. = ..()

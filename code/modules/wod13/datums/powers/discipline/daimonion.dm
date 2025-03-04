@@ -20,7 +20,7 @@
 	level = 1
 
 	cancelable = TRUE
-	duration_length = 10 SECONDS
+	duration_length = 20 SECONDS
 	cooldown_length = 10 SECONDS
 
 /datum/discipline_power/daimonion/sense_the_sin/activate()
@@ -44,8 +44,8 @@
 	violates_masquerade = TRUE
 
 	cancelable = TRUE
-	duration_length = 10 SECONDS
-	cooldown_length = 10 SECONDS
+	duration_length = 30 SECONDS
+	cooldown_length = 20 SECONDS
 
 /datum/discipline_power/daimonion/fear_of_the_void_below/activate()
 	. = ..()
@@ -66,7 +66,7 @@
 	violates_masquerade = TRUE
 
 	cancelable = TRUE
-	duration_length = 10 SECONDS
+	duration_length = 30 SECONDS
 	cooldown_length = 10 SECONDS
 
 /datum/discipline_power/daimonion/conflagration/activate()
@@ -113,7 +113,7 @@
 
 	violates_masquerade = TRUE
 
-	duration_length = 10 SECONDS
+	duration_length = 30 SECONDS
 	cooldown_length = 10 SECONDS
 	grouped_powers = list(/datum/discipline_power/daimonion/condemnation)
 
@@ -143,7 +143,7 @@
 
 	violates_masquerade = TRUE
 
-	duration_length = 10 SECONDS
+	duration_length = 30 SECONDS
 	cooldown_length = 10 SECONDS
 	grouped_powers = list(/datum/discipline_power/daimonion/psychomachia)
 

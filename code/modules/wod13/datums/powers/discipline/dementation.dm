@@ -22,7 +22,7 @@
 
 	multi_activate = TRUE
 	cooldown_length = 10 SECONDS
-	duration_length = 0
+	duration_length = 3 SECONDS
 
 /datum/discipline_power/dementation/activate(mob/living/carbon/human/target)
 	. = ..()
