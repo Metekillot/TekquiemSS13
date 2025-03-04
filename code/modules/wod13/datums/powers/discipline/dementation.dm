@@ -21,7 +21,7 @@
 	activate_sound = 'code/modules/wod13/sounds/insanity.ogg'
 
 	multi_activate = TRUE
-	cooldown = 10 SECONDS
+	cooldown_length = 10 SECONDS
 	duration_length = 0
 
 /datum/discipline_power/dementation/activate(mob/living/carbon/human/target)

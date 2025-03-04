@@ -51,8 +51,8 @@
 	/* NOT MEANT TO BE OVERRIDDEN */
 	/// Timer(s) tracking the duration of the power. Can have multiple if multi_activate is true.
 	var/list/duration_timers = list()
-	/// Timer tracking the cooldown of the power. Starts after deactivation if cancellable or toggled, after activation otherwise.
-	COOLDOWN_DECLARE(cooldown)
+	/// Timer tracking the cooldown of the power. Starts after deactivation if it has a duration and multi_active isn't true, after activation otherwise.
+	var/cooldown_timer
 	/// If this Discipline is currently in use.
 	var/active = FALSE
 	/// The Discipline that this power is part of.
@@ -66,13 +66,20 @@
 		src.owner = discipline.owner
 
 /datum/discipline_power/proc/get_cooldown()
-	return COOLDOWN_TIMELEFT(src, cooldown)
+	var/time_left = timeleft(cooldown_timer)
+	if (isnull(time_left))
+		time_left = 0
+
+	return time_left
 
 /datum/discipline_power/proc/get_duration()
 	var/highest_timeleft = 0
 	for (var/timer_id in duration_timers)
-		if (timeleft(timer_id) > highest_timeleft)
-			highest_timeleft = timeleft(timer_id)
+		var/time_left = timeleft(timer_id)
+		if (isnull(time_left))
+			continue
+		if (time_left > highest_timeleft)
+			highest_timeleft = time_left
 
 	return highest_timeleft
 
@@ -109,9 +116,9 @@
 			if (alert)
 				to_chat(owner, "<span class='warning'>You cannot have [src] and [found_power] active at the same time!")
 			return FALSE
-		if (!COOLDOWN_FINISHED(found_power, cooldown))
+		if (found_power.get_cooldown())
 			if (alert)
-				to_chat(owner, "<span class='warning'>You cannot activate [src] before [found_power]'s cooldown expires in [DisplayTimeText(COOLDOWN_TIMELEFT(found_power, cooldown))].")
+				to_chat(owner, "<span class='warning'>You cannot activate [src] before [found_power]'s cooldown expires in [DisplayTimeText(found_power.get_cooldown())].")
 			return FALSE
 
 	//the user cannot afford the power's vitae expenditure
@@ -121,9 +128,9 @@
 		return FALSE
 
 	//the power's cooldown has not elapsed
-	if (!COOLDOWN_FINISHED(src, cooldown))
+	if (get_cooldown())
 		if (alert)
-			to_chat(owner, "<span class='warning'>[src] is still on cooldown for [DisplayTimeText(COOLDOWN_TIMELEFT(src, cooldown))]!</span>")
+			to_chat(owner, "<span class='warning'>[src] is still on cooldown for [DisplayTimeText(get_cooldown())]!</span>")
 		return FALSE
 
 	//status checks
@@ -289,9 +296,7 @@
 	if (!multi_activate)
 		active = TRUE
 
-	//start the cooldown if there is one, instead triggers on deactivate() if it has a duration and isn't fire and forget
-	if (cooldown_length && multi_activate && !cooldown_override)
-		COOLDOWN_START(src, cooldown, cooldown_length)
+	do_cooldown(TRUE)
 
 	do_duration(target)
 
@@ -324,10 +329,18 @@
 	to_chat(owner, "<span class='warning'>You cast [name][target ? " on [target]!" : "."]")
 	log_combat(owner, target ? target : owner, "casted the power [src.name] of the Discipline [discipline.name] on")
 
+	owner.update_action_buttons()
+
 	return TRUE
 
 /datum/discipline_power/proc/do_duration(atom/target)
 	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
+
+/datum/discipline_power/proc/do_cooldown(on_activation = FALSE)
+	if (multi_activate && !on_activation)
+		return
+
+	cooldown_timer = addtimer(CALLBACK(src, PROC_REF(cooldown_expire)), cooldown_length, TIMER_STOPPABLE | TIMER_DELETE_ME)
 
 /datum/discipline_power/proc/try_activate(atom/target)
 	if (can_activate(target, TRUE))
@@ -347,6 +360,9 @@
 	else
 		try_deactivate(target)
 
+	owner.update_action_buttons()
+
+/datum/discipline_power/proc/cooldown_expire()
 	owner.update_action_buttons()
 
 /datum/discipline_power/proc/can_deactivate_untargeted()
@@ -392,8 +408,7 @@
 	if (!multi_activate)
 		active = FALSE
 
-	if (!multi_activate)
-		COOLDOWN_START(src, cooldown, cooldown_length)
+	do_cooldown()
 
 	if (deactivate_sound)
 		owner.playsound_local(owner, deactivate_sound, 50, FALSE)
