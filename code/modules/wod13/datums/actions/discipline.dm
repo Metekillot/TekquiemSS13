@@ -47,7 +47,7 @@
 	if (power.active) //deactivation logic
 		if (power.cancelable || power.toggled)
 			to_chat(owner, "<span class='warning'>You deactivate [power].</span>")
-			power.try_deactivate()
+			power.try_deactivate(direct = TRUE)
 		else
 			to_chat(owner, "<span class='warning'>[power] is already active!</span>")
 	else //activate

@@ -49,8 +49,8 @@
 	var/list/grouped_powers = list()
 
 	/* NOT MEANT TO BE OVERRIDDEN */
-	/// Timer tracking the duration of the power. Not used if multi_activate is TRUE.
-	COOLDOWN_DECLARE(duration)
+	/// Timer(s) tracking the duration of the power. Can have multiple if multi_activate is true.
+	var/list/duration_timers = list()
 	/// Timer tracking the cooldown of the power. Starts after deactivation if cancellable or toggled, after activation otherwise.
 	COOLDOWN_DECLARE(cooldown)
 	/// If this Discipline is currently in use.
@@ -69,7 +69,12 @@
 	return COOLDOWN_TIMELEFT(src, cooldown)
 
 /datum/discipline_power/proc/get_duration()
-	return COOLDOWN_TIMELEFT(src, duration)
+	var/highest_timeleft = 0
+	for (var/timer_id in duration_timers)
+		if (timeleft(timer_id) > highest_timeleft)
+			highest_timeleft = timeleft(timer_id)
+
+	return highest_timeleft
 
 /datum/discipline_power/proc/can_afford()
 	return (owner.bloodpool >= vitae_cost)
@@ -288,15 +293,7 @@
 	if (cooldown_length && multi_activate && !cooldown_override)
 		COOLDOWN_START(src, cooldown, cooldown_length)
 
-	//handle Discipline power duration, start duration timer if it can't have multiple effects running at once
-	if (!duration_override)
-		if (!multi_activate)
-			COOLDOWN_START(src, duration, duration_length)
-
-		if (toggled)
-			addtimer(CALLBACK(src, PROC_REF(refresh), target), duration_length)
-		else
-			addtimer(CALLBACK(src, PROC_REF(try_deactivate), target), duration_length)
+	do_duration(target)
 
 	//play the Discipline power's activation sound to the user if there is one
 	if (activate_sound)
@@ -329,12 +326,28 @@
 
 	return TRUE
 
+/datum/discipline_power/proc/do_duration(atom/target)
+	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
+
 /datum/discipline_power/proc/try_activate(atom/target)
 	if (can_activate(target, TRUE))
 		pre_activation(target)
 		return TRUE
 
 	return FALSE
+
+/datum/discipline_power/proc/duration_expire(atom/target)
+	//clean up the expired timer, which SHOULD be the first in the list
+	deltimer(duration_timers[1])
+	duration_timers.Cut(1, 2)
+
+	//proceed to deactivation or refreshing
+	if (toggled)
+		refresh(target)
+	else
+		try_deactivate(target)
+
+	owner.update_action_buttons()
 
 /datum/discipline_power/proc/can_deactivate_untargeted()
 	SHOULD_CALL_PARENT(TRUE)
@@ -364,8 +377,12 @@
 
 	return TRUE
 
-/datum/discipline_power/proc/deactivate(atom/target)
+/datum/discipline_power/proc/deactivate(atom/target, direct = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
+
+	if (direct)
+		deltimer(duration_timers[1])
+		duration_timers.Cut(1, 2)
 
 	SEND_SIGNAL(src, COMSIG_POWER_DEACTIVATE, src, target)
 	SEND_SIGNAL(owner, COMSIG_POWER_DEACTIVATE, src, target)
@@ -375,9 +392,6 @@
 	if (!multi_activate)
 		active = FALSE
 
-	if (duration_length)
-		COOLDOWN_RESET(src, duration)
-
 	if (!multi_activate)
 		COOLDOWN_START(src, cooldown, cooldown_length)
 
@@ -386,11 +400,11 @@
 
 	owner.update_action_buttons()
 
-/datum/discipline_power/proc/try_deactivate(atom/target)
+/datum/discipline_power/proc/try_deactivate(atom/target, direct = FALSE)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
 	if (can_deactivate(target))
-		deactivate(target)
+		deactivate(target, direct)
 
 /datum/discipline_power/proc/post_gain()
 	return
@@ -401,18 +415,11 @@
 	if (!owner)
 		return
 
-	var/repeat = FALSE
 	if (owner.bloodpool >= vitae_cost)
 		owner.bloodpool = max(owner.bloodpool - vitae_cost, 0)
-		repeat = TRUE
+		to_chat(owner, "<span class='warning'>[src] consumes your blood to stay active.</span>")
+		do_duration(target)
 	else
 		to_chat(owner, "<span class='warning'>You don't have enough blood to keep [src] active!")
+		try_deactivate(target, direct = TRUE)
 
-	if (repeat)
-		if (!multi_activate && !duration_override)
-			COOLDOWN_START(src, duration, duration_length)
-		addtimer(CALLBACK(src, PROC_REF(refresh), target), duration_length)
-		to_chat(owner, "<span class='warning'>[src] consumes your blood to stay active.</span>")
-		return
-
-	try_deactivate(target)
