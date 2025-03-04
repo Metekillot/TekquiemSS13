@@ -57,9 +57,9 @@
 
 /datum/discipline_power/presence/awe/activate(mob/living/carbon/human/target)
 	. = ..()
-	var/datum/cb = CALLBACK(H, /mob/living/carbon/human/proc/walk_to_caster, owner)
+	var/datum/cb = CALLBACK(target, /mob/living/carbon/human/proc/walk_to_caster, owner)
 	for(var/i in 1 to 30)
-		addtimer(cb, (i - 1) * H.total_multiplicative_slowdown())
+		addtimer(cb, (i - 1) * target.total_multiplicative_slowdown())
 	to_chat(target, "<span class='userlove'><b>COME HERE</b></span>")
 	owner.say("COME HERE!!")
 

@@ -281,21 +281,22 @@
 		SEND_SIGNAL(target, COMSIG_POWER_ACTIVATE_ON, src)
 
 	//make it active if it can only have one active instance at a time
-	if (!multi_activate && (duration_length != 0))
+	if (!multi_activate)
 		active = TRUE
 
 	//start the cooldown if there is one, instead triggers on deactivate() if it has a duration and isn't fire and forget
-	if (cooldown_length && !cancelable && !cooldown_override && (!duration_length || multi_activate))
+	if (cooldown_length && multi_activate && !cooldown_override)
 		COOLDOWN_START(src, cooldown, cooldown_length)
 
 	//handle Discipline power duration, start duration timer if it can't have multiple effects running at once
-	if (duration_length && !duration_override)
+	if (!duration_override)
 		if (!multi_activate)
 			COOLDOWN_START(src, duration, duration_length)
+
 		if (toggled)
 			addtimer(CALLBACK(src, PROC_REF(refresh), target), duration_length)
 		else
-			addtimer(CALLBACK(src, PROC_REF(deactivate), target), duration_length)
+			addtimer(CALLBACK(src, PROC_REF(try_deactivate), target), duration_length)
 
 	//play the Discipline power's activation sound to the user if there is one
 	if (activate_sound)
@@ -371,7 +372,7 @@
 	if (target)
 		SEND_SIGNAL(target, COMSIG_POWER_DEACTIVATE_ON, src)
 
-	if (!multi_activate && (duration_length > 0))
+	if (!multi_activate)
 		active = FALSE
 
 	if (duration_length)
