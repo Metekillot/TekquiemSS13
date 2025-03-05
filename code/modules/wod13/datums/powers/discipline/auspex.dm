@@ -26,18 +26,20 @@
 /datum/discipline_power/auspex/heightened_senses/activate()
 	. = ..()
 	owner.add_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	ADD_TRAIT(owner, TRAIT_THERMAL_VISION, TRAIT_GENERIC)
 	ADD_TRAIT(owner, TRAIT_NIGHT_VISION, TRAIT_GENERIC)
 
+	owner.update_sight()
+
 /datum/discipline_power/auspex/heightened_senses/deactivate()
 	. = ..()
 	owner.remove_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	REMOVE_TRAIT(owner, TRAIT_THERMAL_VISION, TRAIT_GENERIC)
 	REMOVE_TRAIT(owner, TRAIT_NIGHT_VISION, TRAIT_GENERIC)
+
+	owner.update_sight()
 
 //AURA PERCEPTION
 /datum/discipline_power/auspex/aura_perception
@@ -54,18 +56,20 @@
 /datum/discipline_power/auspex/aura_perception/activate()
 	. = ..()
 	owner.add_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.add_hud_to(owner)
 
+	owner.update_sight()
+
 /datum/discipline_power/auspex/aura_perception/deactivate()
 	. = ..()
 	owner.remove_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.remove_hud_from(owner)
+
+	owner.update_sight()
 
 //THE SPIRIT'S TOUCH
 /datum/discipline_power/auspex/the_spirits_touch
@@ -82,18 +86,20 @@
 /datum/discipline_power/auspex/the_spirits_touch/activate()
 	. = ..()
 	owner.add_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	var/datum/atom_hud/health_hud = GLOB.huds[DATA_HUD_MEDICAL_ADVANCED]
 	health_hud.add_hud_to(owner)
 
+	owner.update_sight()
+
 /datum/discipline_power/auspex/the_spirits_touch/deactivate()
 	. = ..()
 	owner.remove_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	var/datum/atom_hud/health_hud = GLOB.huds[DATA_HUD_MEDICAL_ADVANCED]
 	health_hud.remove_hud_from(owner)
+
+	owner.update_sight()
 
 //TELEPATHY
 /datum/discipline_power/auspex/telepathy
@@ -110,16 +116,18 @@
 /datum/discipline_power/auspex/telepathy/activate()
 	. = ..()
 	owner.add_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	owner.auspex_examine = TRUE
+
+	owner.update_sight()
 
 /datum/discipline_power/auspex/telepathy/deactivate()
 	. = ..()
 	owner.remove_client_colour(/datum/client_colour/glass_colour/lightblue)
-	owner.update_sight()
 
 	owner.auspex_examine = FALSE
+
+	owner.update_sight()
 
 //sobs loudly
 //rework me
