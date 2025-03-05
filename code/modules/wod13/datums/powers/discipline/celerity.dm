@@ -8,13 +8,8 @@
 	name = "Celerity power name"
 	desc = "Celerity power description"
 
-	check_flags = DISC_CHECK_LYING | DISC_CHECK_IMMOBILE
-
 	activate_sound = 'code/modules/wod13/sounds/celerity_activate.ogg'
 	deactivate_sound = 'code/modules/wod13/sounds/celerity_deactivate.ogg'
-
-	toggled = TRUE
-	duration_length = DURATION_TURN
 
 /datum/discipline_power/celerity/proc/celerity_visual(datum/discipline_power/celerity/source, atom/newloc, dir)
 	SIGNAL_HANDLER
@@ -40,16 +35,6 @@
 
 	return POWER_CANCEL_ACTIVATION
 
-/datum/discipline_power/celerity/activate()
-	. = ..()
-	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
-	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
-
-/datum/discipline_power/celerity/deactivate()
-	. = ..()
-	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
-	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
-
 /obj/effect/celerity
 	name = "Afterimage"
 	desc = "..."
@@ -68,6 +53,11 @@
 	name = "Celerity 1"
 	desc = "Enhances your speed to make everything a little bit easier."
 
+	check_flags = DISC_CHECK_LYING | DISC_CHECK_IMMOBILE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
 	grouped_powers = list(
 		/datum/discipline_power/celerity/two,
 		/datum/discipline_power/celerity/three,
@@ -77,10 +67,16 @@
 
 /datum/discipline_power/celerity/one/activate()
 	. = ..()
+	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
+	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
+
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity)
 
 /datum/discipline_power/celerity/one/deactivate()
 	. = ..()
+	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
+	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
+
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity)
 
 //CELERITY 2
@@ -91,6 +87,11 @@
 	name = "Celerity 2"
 	desc = "Significantly improves your speed and reaction time."
 
+	check_flags = DISC_CHECK_LYING | DISC_CHECK_IMMOBILE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
 	grouped_powers = list(
 		/datum/discipline_power/celerity/one,
 		/datum/discipline_power/celerity/three,
@@ -100,10 +101,16 @@
 
 /datum/discipline_power/celerity/two/activate()
 	. = ..()
+	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
+	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
+
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity2)
 
 /datum/discipline_power/celerity/two/deactivate()
 	. = ..()
+	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
+	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
+
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity2)
 
 //CELERITY 3
@@ -114,6 +121,11 @@
 	name = "Celerity 3"
 	desc = "Move faster. React in less time. Your body is under perfect control."
 
+	check_flags = DISC_CHECK_LYING | DISC_CHECK_IMMOBILE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
 	grouped_powers = list(
 		/datum/discipline_power/celerity/one,
 		/datum/discipline_power/celerity/two,
@@ -123,10 +135,16 @@
 
 /datum/discipline_power/celerity/three/activate()
 	. = ..()
+	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
+	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
+
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity3)
 
 /datum/discipline_power/celerity/three/deactivate()
 	. = ..()
+	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
+	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
+
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity3)
 
 //CELERITY 4
@@ -137,6 +155,11 @@
 	name = "Celerity 4"
 	desc = "Breach the limits of what is humanly possible. Move like a lightning bolt."
 
+	check_flags = DISC_CHECK_LYING | DISC_CHECK_IMMOBILE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
 	grouped_powers = list(
 		/datum/discipline_power/celerity/one,
 		/datum/discipline_power/celerity/two,
@@ -146,10 +169,16 @@
 
 /datum/discipline_power/celerity/four/activate()
 	. = ..()
+	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
+	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
+
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity4)
 
 /datum/discipline_power/celerity/four/deactivate()
 	. = ..()
+	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
+	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
+
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity4)
 
 //CELERITY 5
@@ -160,6 +189,11 @@
 	name = "Celerity 5"
 	desc = "You are like light. Blaze your way through the world."
 
+	check_flags = DISC_CHECK_LYING | DISC_CHECK_IMMOBILE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
 	grouped_powers = list(
 		/datum/discipline_power/celerity/one,
 		/datum/discipline_power/celerity/two,
@@ -169,8 +203,14 @@
 
 /datum/discipline_power/celerity/five/activate()
 	. = ..()
+	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
+	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
+
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity5)
 
 /datum/discipline_power/celerity/five/deactivate()
 	. = ..()
+	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
+	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
+
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity5)
