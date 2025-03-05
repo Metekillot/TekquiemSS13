@@ -152,7 +152,7 @@
 	if(target.stat == DEAD && dead_restricted)
 		return FALSE
 
-	if(target.resistant_to_disciplines || target.spell_immunity)
+	if(target.resistant_to_disciplines)
 		to_chat(caster, "<span class='danger'>[target] resists your powers!</span>")
 		return FALSE
 

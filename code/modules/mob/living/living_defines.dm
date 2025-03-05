@@ -236,8 +236,6 @@
 	var/wait_for_music = 30
 	var/wasforced
 
-	var/spell_immunity = FALSE
-
 	var/isfishing = FALSE
 
 	var/mob/parrying = null
