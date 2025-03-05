@@ -8,13 +8,8 @@
 	name = "Fortitude power name"
 	desc = "Fortitude power description"
 
-	check_flags = DISC_CHECK_CONSCIOUS
-
 	activate_sound = 'code/modules/wod13/sounds/fortitude_activate.ogg'
 	deactivate_sound = 'code/modules/wod13/sounds/fortitude_deactivate.ogg'
-
-	toggled = TRUE
-	duration_length = DURATION_TURN
 
 //FORTITUDE 1
 /datum/discipline_power/fortitude/one
@@ -22,6 +17,11 @@
 	desc = "Harden your muscles. Become sturdier than the bodybuilders."
 
 	level = 1
+
+	check_flags = DISC_CHECK_CONSCIOUS
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
 
 	grouped_powers = list(
 		/datum/discipline_power/fortitude/two,
@@ -49,6 +49,11 @@
 
 	level = 2
 
+	check_flags = DISC_CHECK_CONSCIOUS
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
 	grouped_powers = list(
 		/datum/discipline_power/fortitude/one,
 		/datum/discipline_power/fortitude/three,
@@ -74,6 +79,11 @@
 	desc = "Look down upon those who would try to kill you. Shrug off grievous attacks."
 
 	level = 3
+
+	check_flags = DISC_CHECK_CONSCIOUS
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
 
 	grouped_powers = list(
 		/datum/discipline_power/fortitude/one,
@@ -101,6 +111,11 @@
 
 	level = 4
 
+	check_flags = DISC_CHECK_CONSCIOUS
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
 	grouped_powers = list(
 		/datum/discipline_power/fortitude/one,
 		/datum/discipline_power/fortitude/two,
@@ -126,6 +141,11 @@
 	desc = "Reach the pinnacle of toughness. Never fear anything again."
 
 	level = 5
+
+	check_flags = DISC_CHECK_CONSCIOUS
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
 
 	grouped_powers = list(
 		/datum/discipline_power/fortitude/one,
