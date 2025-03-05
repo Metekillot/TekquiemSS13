@@ -46,8 +46,7 @@
 	var/datum/discipline_power/power = discipline.current_power
 	if (power.active) //deactivation logic
 		if (power.cancelable || power.toggled)
-			to_chat(owner, span_warning("You deactivate [power]."))
-			power.try_deactivate(direct = TRUE)
+			power.try_deactivate(direct = TRUE, alert = TRUE)
 		else
 			to_chat(owner, span_warning("[power] is already active!"))
 	else //activate

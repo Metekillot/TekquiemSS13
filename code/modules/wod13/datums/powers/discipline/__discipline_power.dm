@@ -113,12 +113,17 @@
 			continue
 
 		if (found_power.active)
-			if (alert)
-				to_chat(owner, "<span class='warning'>You cannot have [src] and [found_power] active at the same time!")
-			return FALSE
+			if (found_power.cancelable || found_power.toggled)
+				if (alert)
+					found_power.try_deactivate(direct = TRUE, alert = TRUE)
+				return TRUE
+			else
+				if (alert)
+					to_chat(owner, span_warning("You cannot have [src] and [found_power] active at the same time!"))
+				return FALSE
 		if (found_power.get_cooldown())
 			if (alert)
-				to_chat(owner, "<span class='warning'>You cannot activate [src] before [found_power]'s cooldown expires in [DisplayTimeText(found_power.get_cooldown())].")
+				to_chat(owner, span_warning("You cannot activate [src] before [found_power]'s cooldown expires in [DisplayTimeText(found_power.get_cooldown())]."))
 			return FALSE
 
 	//the user cannot afford the power's vitae expenditure
@@ -445,11 +450,14 @@
 
 	owner.update_action_buttons()
 
-/datum/discipline_power/proc/try_deactivate(atom/target, direct = FALSE)
+/datum/discipline_power/proc/try_deactivate(atom/target, direct = FALSE, alert = FALSE)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
 	if (can_deactivate(target))
 		deactivate(target, direct)
+
+		if (alert)
+			to_chat(owner, span_warning("You deactivate [src]."))
 
 /datum/discipline_power/proc/post_gain()
 	return
