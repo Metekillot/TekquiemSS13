@@ -71,8 +71,8 @@
 	//healing too quickly attracts attention
 	if (violates_masquerade)
 		owner.visible_message(
-			"<span class='warning'>[owner]'s wounds heal with unnatural speed!</span>",
-			"<span class='warning'>Your wounds visibly heal with unnatural speed!</span>"
+			span_warning("[owner]'s wounds heal with unnatural speed!"),
+			span_warning("Your wounds visibly heal with unnatural speed!")
 		)
 
 	//update UI

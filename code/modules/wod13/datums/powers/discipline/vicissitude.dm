@@ -77,7 +77,7 @@
 	for (var/mob/living/carbon/human/adding_victim in oviewers(3, owner))
 		potential_victims += adding_victim
 	if (!length(potential_victims))
-		to_chat(owner, "<span class='warning'>No one is close enough for you to examine...</span>")
+		to_chat(owner, span_warning("No one is close enough for you to examine..."))
 		return
 	var/mob/living/carbon/human/victim = input(owner, "Who do you wish to impersonate?", name) as null|mob in potential_victims
 	if (!victim)
@@ -125,7 +125,7 @@
 			time_delay += 5 SECONDS
 		if (original_alt_sprite != impersonating_alt_sprite)
 			time_delay += 10 SECONDS
-		to_chat(owner, "<span class='notice'>You begin molding your appearance... This will take [DisplayTimeText(time_delay)].</span>")
+		to_chat(owner, span_notice("You begin molding your appearance... This will take [DisplayTimeText(time_delay)]."))
 		if (!do_after(owner, time_delay))
 			return
 
@@ -178,7 +178,7 @@
 	owner.clane.alt_sprite = original_alt_sprite
 	owner.clane.alt_sprite_greyscale = original_alt_sprite_greyscale
 
-	to_chat(owner, "<span class='warning'>Your cursed appearance reasserts itself!</span>")
+	to_chat(owner, span_warning("Your cursed appearance reasserts itself!"))
 
 //FLESHCRAFTING
 /datum/discipline_power/vicissitude/fleshcrafting
@@ -304,7 +304,7 @@
 	var/upgrade = input(owner, "Choose basic upgrade:", "Vicissitude Upgrades") as null|anything in list("Skin armor", "Centipede legs", "Second pair of arms", "Leather wings")
 	if(!upgrade)
 		return
-	to_chat(user, "<span class='notice'>You begin molding your flesh and bone into a stronger form...</span>")
+	to_chat(user, span_notice("You begin molding your flesh and bone into a stronger form..."))
 	if (!do_after(user, 10 SECONDS))
 		return
 	if(selected_upgrade)
@@ -348,7 +348,7 @@
 	var/mob/living/carbon/human/user = owner
 	if (!selected_upgrade)
 		return
-	to_chat(user, "<span class='notice'>You begin surgically removing your enhancements...</span>")
+	to_chat(user, span_notice("You begin surgically removing your enhancements..."))
 	if (!do_after(user, 10 SECONDS))
 		return
 	REMOVE_TRAIT(user, TRAIT_NONMASQUERADE, TRAUMA_TRAIT)

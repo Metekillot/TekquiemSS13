@@ -45,11 +45,11 @@
 	var/theirpower = target.get_total_mentality()
 	if(theirpower >= mypower)
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target]'s mind is too powerful to corrupt!</span>")
+			to_chat(owner, span_warning("[target]'s mind is too powerful to corrupt!"))
 		return FALSE
 	if(!ishuman(target))
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target] doesn't have enough mind to get affected by this discipline!</span>")
+			to_chat(owner, span_warning("[target] doesn't have enough mind to get affected by this discipline!"))
 		return FALSE
 	return TRUE
 

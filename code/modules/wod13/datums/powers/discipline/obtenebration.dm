@@ -159,7 +159,7 @@
 	. = ..()
 	var/mob/living/carbon/human/H = owner
 	if(H.bloodpool < 2)
-		to_chat(H, "<span class='warning'>You need more <b>BLOOD</b> to do that!</span>")
+		to_chat(H, span_warning("You need more <b>BLOOD</b> to do that!"))
 		return
 	if(drawing)
 		return

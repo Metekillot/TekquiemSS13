@@ -52,7 +52,7 @@
 			dominate_me = TRUE
 	if(((theirpower >= mypower) || (owner.generation > target.generation)) && !dominate_me)
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target]'s mind is too powerful to dominate!</span>")
+			to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
 		. = FALSE
 	return .
 
@@ -167,6 +167,6 @@
 	if (!ishuman(target))
 		. = FALSE
 		if (alert)
-			to_chat(owner, "<span class='warning'>[name] can only be used on humans!</span>")
+			to_chat(owner, span_warning("[name] can only be used on humans!"))
 	return .
 

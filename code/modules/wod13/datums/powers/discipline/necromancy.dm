@@ -133,13 +133,13 @@
 		return
 	var/mob/living/user = owner
 	if (user.bloodpool < 1)
-		to_chat(owner, "<span class='warning'>You don't have enough blood to peek into the Shadowlands!</span>")
+		to_chat(owner, span_warning("You don't have enough blood to peek into the Shadowlands!"))
 		return
 	user.bloodpool = max(user.bloodpool - 1, 0)
 
 	loop_timer = addtimer(CALLBACK(src, PROC_REF(refresh)), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME)
 	user.see_invisible = SEE_INVISIBLE_OBSERVER
-	to_chat(owner, "<span class='notice'>You peek beyond the Shroud to see ghosts.</span>")
+	to_chat(owner, span_notice("You peek beyond the Shroud to see ghosts."))
 
 /datum/action/ghost_hear/proc/deactivate()
 	if(!isliving(owner))
@@ -149,7 +149,7 @@
 	deltimer(loop_timer)
 	loop_timer = null
 	user.see_invisible = initial(owner.see_invisible)
-	to_chat(owner, "<span class='warning'>Your vision returns to the mortal realm.</span>")
+	to_chat(owner, span_warning("Your vision returns to the mortal realm."))
 
 /datum/action/ghost_hear/proc/refresh()
 	if(!isliving(owner))
@@ -158,7 +158,7 @@
 
 	if (user.bloodpool >= 1)
 		user.bloodpool = max(user.bloodpool - 1, 0)
-		to_chat(owner, "<span class='warning'>Your ghost sight consumes blood to stay active...</span>")
+		to_chat(owner, span_warning("Your ghost sight consumes blood to stay active..."))
 		loop_timer = addtimer(CALLBACK(src, PROC_REF(refresh)), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME)
 	else
 		deactivate()

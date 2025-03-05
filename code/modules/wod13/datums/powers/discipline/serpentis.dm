@@ -33,7 +33,7 @@
 	. = ..()
 	if (owner?.is_eyes_covered())
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot use [name] with your eyes covered!</span>")
+			to_chat(owner, span_warning("You cannot use [name] with your eyes covered!"))
 		. = FALSE
 	return .
 
@@ -51,7 +51,7 @@
 			antidir = WEST
 	if(target.dir == antidir)
 		target.Immobilize(2 SECONDS)
-		target.visible_message("<span class='warning'><b>[owner] hypnotizes [target] with [owner.p_their()] eyes!</b></span>", "<span class='warning'><b>[owner] hypnotizes you like a cobra!</b></span>")
+		target.visible_message(span_warning("<b>[owner] hypnotizes [target] with [owner.p_their()] eyes!</b>"), span_warning("<b>[owner] hypnotizes you like a cobra!</b>"))
 		if(ishuman(target))
 			var/mob/living/carbon/human/H = target
 			H.remove_overlay(MUTATIONS_LAYER)
@@ -86,7 +86,7 @@
 	. = ..()
 	if (owner?.is_mouth_covered())
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot use [name] with your mouth covered!</span>")
+			to_chat(owner, span_warning("You cannot use [name] with your mouth covered!"))
 		. = FALSE
 	return .
 

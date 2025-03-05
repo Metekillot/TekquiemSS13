@@ -38,13 +38,13 @@
 	if (!ishuman(target))
 		. = FALSE
 		if (alert)
-			to_chat(owner, "<span class='warning'>[name] can only be used on humans!</span>")
+			to_chat(owner, span_warning("[name] can only be used on humans!"))
 		return .
 	var/mypower = owner.get_total_social()
 	var/theirpower = target.get_total_mentality()
 	if((theirpower >= mypower) || ((owner.generation - 3) >= target.generation))
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target]'s mind is too powerful to sway!</span>")
+			to_chat(owner, span_warning("[target]'s mind is too powerful to sway!"))
 		. = FALSE
 	return .
 

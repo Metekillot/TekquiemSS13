@@ -118,14 +118,14 @@
 
 	if (!istype(target, /obj/item/melee/vampirearms))
 		if (alert)
-			to_chat(owner, "<span class='warning'>[src] can only be used on weapons!</span>")
+			to_chat(owner, span_warning("[src] can only be used on weapons!"))
 		return FALSE
 	var/obj/item/melee/vampirearms/weapon = target
 
 	//ensure the target is a weapon with an edge to use the toxin with
 	if (!weapon.sharpness)
 		if (alert)
-			to_chat(owner, "<span class='warning'>[src] can only be used on bladed weapons!</span>")
+			to_chat(owner, span_warning("[src] can only be used on bladed weapons!"))
 		return FALSE
 
 	return .

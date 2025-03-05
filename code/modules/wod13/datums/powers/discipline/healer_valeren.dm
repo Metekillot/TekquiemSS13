@@ -116,7 +116,7 @@
 
 	if (points_can_restore <= 0)
 		if (alert)
-			to_chat(owner, "<span class='warning'>You've exhausted yourself too much to cleanse more souls.</span>")
+			to_chat(owner, span_warning("You've exhausted yourself too much to cleanse more souls."))
 		return FALSE
 
 	return .
@@ -126,17 +126,17 @@
 
 	if (!iskindred(target))
 		if (alert)
-			to_chat(owner, "<span class='warning'>[src] can only be used on Kindred.</span>")
+			to_chat(owner, span_warning("[src] can only be used on Kindred."))
 		return FALSE
 
 	if (!target.client)
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target] does not have a soul to cleanse!</span>")
+			to_chat(owner, span_warning("[target] does not have a soul to cleanse!"))
 		return FALSE
 
 	if (target.humanity >= 10 && !target.client?.prefs?.enlightenment)
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target]'s soul is already completely pure.</span>")
+			to_chat(owner, span_warning("[target]'s soul is already completely pure."))
 		return FALSE
 
 	return .
@@ -150,13 +150,13 @@
 		//feedback is sent by the proc cancelling activation
 		return
 
-	to_chat(owner, "<span class='warning'>You begin cleansing [target]'s soul...</span>")
+	to_chat(owner, span_warning("You begin cleansing [target]'s soul..."))
 	if (do_mob(owner, target, 10 SECONDS))
 		activate(target)
 
 /datum/discipline_power/valeren/unburden_the_bestial_soul/activate(mob/living/carbon/human/target)
 	. = ..()
-	to_chat(owner, "<span class='notice'>You have healed [target]'s soul slightly.</span>")
+	to_chat(owner, span_notice("You have healed [target]'s soul slightly."))
 	target.AdjustHumanity(1, 10)
 	points_can_restore--
 

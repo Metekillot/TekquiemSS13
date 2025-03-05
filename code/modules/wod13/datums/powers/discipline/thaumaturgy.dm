@@ -76,7 +76,7 @@
 					var/sucked = min(VL.bloodpool, 2)
 					VL.bloodpool = max(VL.bloodpool - sucked, 0)
 					VL.apply_damage(45, BURN)
-					VL.visible_message("<span class='danger'>[target]'s wounds spray boiling hot blood!</span>", "<span class='userdanger'>Your blood boils!</span>")
+					VL.visible_message(span_danger("[target]'s wounds spray boiling hot blood!"), "<span class='userdanger'>Your blood boils!</span>")
 					VL.add_splatter_floor(get_turf(target))
 					VL.add_splatter_floor(get_turf(get_step(target, target.dir)))
 				if(!iskindred(target))
@@ -200,7 +200,7 @@
 	. = ..()
 	if(iscarbon(target))
 		target.Stun(2.5 SECONDS)
-		target.visible_message("<span class='danger'>[target] throws up!</span>", "<span class='userdanger'>You throw up!</span>")
+		target.visible_message(span_danger("[target] throws up!"), "<span class='userdanger'>You throw up!</span>")
 		target.add_splatter_floor(get_turf(target))
 		target.add_splatter_floor(get_turf(get_step(target, target.dir)))
 	else
@@ -228,7 +228,7 @@
 	. = ..()
 	if(iscarbon(target))
 		target.Stun(2.5 SECONDS)
-		target.visible_message("<span class='danger'>[target] throws up!</span>", "<span class='userdanger'>You throw up!</span>")
+		target.visible_message(span_danger("[target] throws up!"), "<span class='userdanger'>You throw up!</span>")
 		target.add_splatter_floor(get_turf(target))
 		target.add_splatter_floor(get_turf(get_step(target, target.dir)))
 	else
@@ -250,7 +250,7 @@
 	. = ..()
 	var/mob/living/carbon/human/H = owner
 	if(H.bloodpool < 2)
-		to_chat(H, "<span class='warning'>You need more <b>BLOOD</b> to do that!</span>")
+		to_chat(H, span_warning("You need more <b>BLOOD</b> to do that!"))
 		return
 	if(drawing)
 		return
@@ -307,7 +307,7 @@
 		return
 	var/mob/living/carbon/human/H = owner
 	if(H.bloodpool < 2)
-		to_chat(owner, "<span class='warning'>You don't have enough <b>BLOOD</b> to do that!</span>")
+		to_chat(owner, span_warning("You don't have enough <b>BLOOD</b> to do that!"))
 		return
 	H.bloodpool = max(H.bloodpool - 2, 0)
 	playsound(H.loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)

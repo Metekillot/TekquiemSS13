@@ -32,11 +32,11 @@
 	//prevent forceful emoting and whatnot
 	new_say = trim(copytext_char(sanitize(new_say), 1, MAX_MESSAGE_LEN))
 	if (findtext(new_say, "*"))
-		to_chat(owner, "<span class='danger'>You can't force others to perform emotes!</span>")
+		to_chat(owner, span_danger("You can't force others to perform emotes!"))
 		return
 
 	if (CHAT_FILTER_CHECK(new_say))
-		to_chat(owner, "<span class='warning'>That message contained a word prohibited in IC chat! Consider reviewing the server rules.\n<span replaceRegex='show_filtered_ic_chat'>\"[new_say]\"</span></span>")
+		to_chat(owner, span_warning("That message contained a word prohibited in IC chat! Consider reviewing the server rules.\n<span replaceRegex='show_filtered_ic_chat'>\"[new_say]\"</span>"))
 		SSblackbox.record_feedback("tally", "ic_blocked_words", 1, lowertext(config.ic_filter_regex.match))
 		return
 
@@ -65,9 +65,9 @@
 			difficulty_malus += 1
 		if (storyteller_roll(hearer.get_total_mentality(), base_difficulty + difficulty_malus) == ROLL_SUCCESS)
 			if (masked)
-				to_chat(hearer, "<span class='warning'>[target]'s jaw isn't moving to match [target.p_their()] words.</span>")
+				to_chat(hearer, span_warning("[target]'s jaw isn't moving to match [target.p_their()] words."))
 			else
-				to_chat(hearer, "<span class='warning'>[target]'s lips aren't moving to match [target.p_their()] words.</span>")
+				to_chat(hearer, span_warning("[target]'s lips aren't moving to match [target.p_their()] words."))
 
 //PHANTOM SPEAKER
 /datum/discipline_power/melpominee/phantom_speaker
@@ -92,7 +92,7 @@
 	//sanitisation!
 	input_message = trim(copytext_char(sanitize(input_message), 1, MAX_MESSAGE_LEN))
 	if(CHAT_FILTER_CHECK(input_message))
-		to_chat(owner, "<span class='warning'>That message contained a word prohibited in IC chat! Consider reviewing the server rules.\n<span replaceRegex='show_filtered_ic_chat'>\"[input_message]\"</span></span>")
+		to_chat(owner, span_warning("That message contained a word prohibited in IC chat! Consider reviewing the server rules.\n<span replaceRegex='show_filtered_ic_chat'>\"[input_message]\"</span>"))
 		SSblackbox.record_feedback("tally", "ic_blocked_words", 1, lowertext(config.ic_filter_regex.match))
 		return
 
@@ -100,7 +100,7 @@
 	var/message = owner.compose_message(owner, language, input_message, , list())
 	to_chat(target, "<span class='purple'><i>You hear someone's voice in your head...</i></span>")
 	target.Hear(message, target, language, input_message, , , )
-	to_chat(owner, "<span class='notice'>You project your voice to [target]'s ears.</span>")
+	to_chat(owner, span_notice("You project your voice to [target]'s ears."))
 
 //MADRIGAL
 /datum/discipline_power/melpominee/madrigal

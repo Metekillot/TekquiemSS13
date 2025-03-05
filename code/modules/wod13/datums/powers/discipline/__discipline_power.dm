@@ -103,7 +103,7 @@
 	//the power is currently active
 	if (active && !multi_activate)
 		if (alert)
-			to_chat(owner, "<span class='warning'>[src] is already active!</span>")
+			to_chat(owner, span_warning("[src] is already active!"))
 		return FALSE
 
 	//a mutually exclusive power is already active or on cooldown
@@ -124,60 +124,60 @@
 	//the user cannot afford the power's vitae expenditure
 	if (!can_afford())
 		if (alert)
-			to_chat(owner, "<span class='warning'>You do not have enough blood to cast [src]!</span>")
+			to_chat(owner, span_warning("You do not have enough blood to cast [src]!"))
 		return FALSE
 
 	//the power's cooldown has not elapsed
 	if (get_cooldown())
 		if (alert)
-			to_chat(owner, "<span class='warning'>[src] is still on cooldown for [DisplayTimeText(get_cooldown())]!</span>")
+			to_chat(owner, span_warning("[src] is still on cooldown for [DisplayTimeText(get_cooldown())]!"))
 		return FALSE
 
 	//status checks
 	if ((check_flags & DISC_CHECK_TORPORED) && HAS_TRAIT(owner, TRAIT_TORPOR))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] while in Torpor!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] while in Torpor!"))
 		return FALSE
 
 	if ((check_flags & DISC_CHECK_CONSCIOUS) && HAS_TRAIT(owner, TRAIT_KNOCKEDOUT))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] while unconscious!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] while unconscious!"))
 		return FALSE
 
 	if ((check_flags & DISC_CHECK_CAPABLE) && HAS_TRAIT(owner, TRAIT_INCAPACITATED))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] while incapacitated!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] while incapacitated!"))
 		return FALSE
 
 	if ((check_flags & DISC_CHECK_IMMOBILE) && HAS_TRAIT(owner, TRAIT_IMMOBILIZED))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] while immobilised!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] while immobilised!"))
 		return FALSE
 
 	if ((check_flags & DISC_CHECK_LYING) && HAS_TRAIT(owner, TRAIT_FLOORED))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] while lying on the floor!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] while lying on the floor!"))
 		return FALSE
 
 	if ((check_flags & DISC_CHECK_SEE) && HAS_TRAIT(owner, TRAIT_BLIND))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] without your sight!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] without your sight!"))
 		return FALSE
 
 	if ((check_flags & DISC_CHECK_SPEAK) && HAS_TRAIT(owner, TRAIT_MUTE))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] without speaking!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] without speaking!"))
 		return FALSE
 
 	if ((check_flags & DISC_CHECK_FREE_HAND) && HAS_TRAIT(owner, TRAIT_HANDS_BLOCKED))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] without free hands!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] without free hands!"))
 		return FALSE
 
 	//respect pacifism, prevent hostile Discipline usage from pacifists
 	if (hostile && HAS_TRAIT(owner, TRAIT_PACIFISM))
 		if (alert)
-			to_chat(owner, "<span class='warning'>You cannot cast [src] as a pacifist!</span>")
+			to_chat(owner, span_warning("You cannot cast [src] as a pacifist!"))
 		return FALSE
 
 	//nothing found, it can be casted
@@ -204,7 +204,7 @@
 	//check if distance is in range
 	if (get_dist(owner, target) > range)
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target] is out of range!</span>")
+			to_chat(owner, span_warning("[target] is out of range!"))
 		return FALSE
 
 	//handling for if a ranged Discipline is being used on its caster
@@ -213,13 +213,13 @@
 			return TRUE
 		else
 			if (alert)
-				to_chat(owner, "<span class='warning'>You can't use this power on yourself!</span>")
+				to_chat(owner, span_warning("You can't use this power on yourself!"))
 			return FALSE
 
 	//account for complete supernatural resistance
 	if (HAS_TRAIT(target, TRAIT_ANTIMAGIC))
 		if (alert)
-			to_chat(owner, "<span class='warning'>[target] resists your Disciplines!</span>")
+			to_chat(owner, span_warning("[target] resists your Disciplines!"))
 		return FALSE
 
 	//check target type
@@ -233,7 +233,7 @@
 		var/mob/living/living = target
 		if ((target_type & TARGET_LIVING) && (living.stat == DEAD))
 			if (alert)
-				to_chat(owner, "<span class='warning'>You cannot cast [src] on dead things!</span>")
+				to_chat(owner, span_warning("You cannot cast [src] on dead things!"))
 			return FALSE
 
 		//human-specific checks
@@ -242,7 +242,7 @@
 			//make sure they can be targeted by Disciplines specifically
 			if (human.resistant_to_disciplines)
 				if (alert)
-					to_chat(owner, "<span class='warning'>[target] resists your Disciplines!</span>")
+					to_chat(owner, span_warning("[target] resists your Disciplines!"))
 				return FALSE
 
 		if (target_type & TARGET_HUMAN)
@@ -262,7 +262,7 @@
 
 	//target doesn't match any targeted types, so can't activate on them
 	if (alert)
-		to_chat(owner, "<span class='warning'>You cannot cast [src] on [target]!</span>")
+		to_chat(owner, span_warning("You cannot cast [src] on [target]!"))
 	return FALSE
 
 /datum/discipline_power/proc/pre_activation(atom/target)
@@ -449,7 +449,7 @@
 
 	if (owner.bloodpool >= vitae_cost)
 		owner.bloodpool = max(owner.bloodpool - vitae_cost, 0)
-		to_chat(owner, "<span class='warning'>[src] consumes your blood to stay active.</span>")
+		to_chat(owner, span_warning("[src] consumes your blood to stay active."))
 		if (!duration_override)
 			do_duration(target)
 	else

@@ -100,7 +100,7 @@
 	if(iscarbon(user))
 		var/mob/living/carbon/C = user
 		C.adjustBruteLoss(5)
-		to_chat(user, "<span class='warning'>[src] bites!</span>")
+		to_chat(user, span_warning("[src] bites!"))
 		return
 	. = ..()
 
@@ -112,7 +112,7 @@
 		var/mob/living/carbon/target = M
 		if(target.wear_mask && istype(target.wear_mask, /obj/item/clothing/mask/facehugger/kiasyd))
 			return FALSE
-	M.visible_message("<span class='danger'>[src] leaps at [M]'s face!</span>", \
+	M.visible_message(span_danger("[src] leaps at [M]'s face!"), \
 		"<span class='userdanger'>[src] leaps at your face!</span>")
 	if(iscarbon(M))
 		var/mob/living/carbon/target = M
@@ -125,7 +125,7 @@
 			var/obj/item/clothing/W = target.wear_mask
 			if(target.dropItemToGround(W, TRUE))
 				target.visible_message(
-					"<span class='danger'>[src] tears [W] off of [target]'s face!</span>", \
+					span_danger("[src] tears [W] off of [target]'s face!"), \
 					"<span class='userdanger'>[src] tears [W] off of your face!</span>")
 		target.equip_to_slot_if_possible(src, ITEM_SLOT_MASK, 0, 1, 1)
 		var/datum/cb = CALLBACK(src,/obj/item/clothing/mask/facehugger/kiasyd/proc/eat_head)
@@ -138,7 +138,7 @@
 /obj/item/clothing/mask/facehugger/kiasyd/proc/eat_head()
 	if(iscarbon(loc))
 		var/mob/living/carbon/C = loc
-		to_chat(C, "<span class='warning'>[src] is eating your face!</span>")
+		to_chat(C, span_warning("[src] is eating your face!"))
 		C.apply_damage(5, BRUTE)
 
 /datum/action/mytherceria
@@ -154,7 +154,7 @@
 	var/try_trap = input(H, "Select a Trap:", "Trap") as null|anything in list("Brutal", "Spin", "Drop")
 	if(try_trap)
 		if(H.bloodpool < 1)
-			to_chat(owner, "<span class='warning'>You don't have enough <b>BLOOD</b> to do that!</span>")
+			to_chat(owner, span_warning("You don't have enough <b>BLOOD</b> to do that!"))
 			return
 		H.bloodpool = max(H.bloodpool - 1, 0)
 		switch(try_trap)
@@ -167,7 +167,7 @@
 			if("Drop")
 				var/obj/mytherceria_trap/drop/trap = new (get_turf(owner))
 				trap.owner = owner
-		to_chat(owner, "<span class='notice'>You've created a trap!</span>")
+		to_chat(owner, span_notice("You've created a trap!"))
 
 /obj/mytherceria_trap
 	name = "mytherceria trap"
@@ -270,7 +270,7 @@
 		return .
 
 	if (!target.client)
-		to_chat(owner, "<span class='warning'>You cannot cast [src] on mindless entities!</span>")
+		to_chat(owner, span_warning("You cannot cast [src] on mindless entities!"))
 		return FALSE
 
 	return .
@@ -378,14 +378,14 @@
 		to_chat(riddler, "New riddle created.")
 		return src
 	else
-		to_chat(riddler, "<span class='danger'>Your riddle is too complicated.</span>")
+		to_chat(riddler, span_danger("Your riddle is too complicated."))
 		return FALSE
 
 /datum/riddle/proc/answer_riddle(mob/living/answerer, the_answer, var/atom/movable/screen/alert/riddle/alert)
 	if(the_answer != riddle_answer)
 		alert.bad_answers++
 		to_chat(answerer,
-			"<span class='danger'>WRONG ANSWER.</span>")
+			span_danger("WRONG ANSWER."))
 		if(alert.bad_answers >= round(length(riddle_options)/2))
 			if(iscarbon(answerer))
 				var/mob/living/carbon/C = answerer
@@ -393,7 +393,7 @@
 				if(tongue)
 					tongue.Remove(C)
 			to_chat(answerer,
-				"<span class='danger'>THE RIDDLE REMOVES YOUR LYING TONGUE AS IT FLEES.</span>")
+				span_danger("THE RIDDLE REMOVES YOUR LYING TONGUE AS IT FLEES."))
 			answerer.remove_movespeed_modifier(/datum/movespeed_modifier/riddle)
 			alert.bad_answers = 0
 			alert.riddle = null

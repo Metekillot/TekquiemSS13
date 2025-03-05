@@ -181,10 +181,10 @@
 	if(user.stat >= UNCONSCIOUS || user.IsSleeping() || user.IsUnconscious() || user.IsParalyzed() || user.IsKnockdown() || user.IsStun() || HAS_TRAIT(user, TRAIT_RESTRAINED) || !isturf(user.loc))
 		return
 	if(used)
-		to_chat(owner, "<span class='warning'>You've already signed this contract!</span>")
+		to_chat(owner, span_warning("You've already signed this contract!"))
 		return
 	used = TRUE
 	user.antifrenzy = TRUE
 	SEND_SOUND(owner, sound('sound/magic/curse.ogg', 0, 0, 50))
-	to_chat(owner, "<span class='warning'>You feel control over your Beast, but at what cost...</span>")
+	to_chat(owner, span_warning("You feel control over your Beast, but at what cost..."))
 	qdel(src)
