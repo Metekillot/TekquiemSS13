@@ -91,7 +91,7 @@
 				if(VL.bloodpool >= 1)
 					var/sucked = min(VL.bloodpool, level)
 					VL.bloodpool = max(VL.bloodpool - sucked, 0)
-					VH.bloodpool = min(VH.bloodpool + sucked, 0)
+					VH.bloodpool = min(VH.bloodpool + sucked, VH.maxbloodpool)
 
 /datum/discipline_power/thaumaturgy/a_taste_for_blood
 	name = "A Taste for Blood"
