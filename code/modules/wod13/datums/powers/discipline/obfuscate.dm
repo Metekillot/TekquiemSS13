@@ -1,3 +1,5 @@
+#define COMBAT_COOLDOWN_LENGTH 45 SECONDS
+
 /datum/discipline/obfuscate
 	name = "Obfuscate"
 	desc = "Makes you less noticable for living and un-living beings."
@@ -8,13 +10,9 @@
 	name = "Obfuscate power name"
 	desc = "Obfuscate power description"
 
-	check_flags = DISC_CHECK_CAPABLE
-
 	activate_sound = 'code/modules/wod13/sounds/obfuscate_activate.ogg'
 	deactivate_sound = 'code/modules/wod13/sounds/obfuscate_deactivate.ogg'
 
-	toggled = TRUE
-	COOLDOWN_DECLARE(obfuscate_combat_cooldown)
 	var/static/list/aggressive_signals = list(
 		COMSIG_MOB_ATTACK_HAND,
 		COMSIG_MOB_ATTACKED_HAND,
@@ -25,32 +23,14 @@
 		COMSIG_MOB_ATTACKED_BY_MELEE,
 	)
 
-/datum/discipline_power/obfuscate/activate()
-	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal))
-	. = ..()
-
 /datum/discipline_power/obfuscate/proc/on_combat_signal(datum/source)
 	SIGNAL_HANDLER
-	to_chat(owner, span_danger("The concept of your obfuscation is disrupted by such a conspicuous act! You're exposed!"))
-	COOLDOWN_START(src, obfuscate_combat_cooldown, (65 - ( level * 5)) SECONDS)
-	deactivate()
-	active = FALSE
-	RegisterSignal(src, COMSIG_POWER_TRY_ACTIVATE, PROC_REF(on_try_activate))
 
-/datum/discipline_power/obfuscate/proc/on_try_activate(datum/source, datum/target)
-	SIGNAL_HANDLER
+	to_chat(owner, span_danger("Your Obfuscate falls away as you reveal yourself!"))
+	try_deactivate(direct = TRUE)
 
-	if (COOLDOWN_FINISHED(src, obfuscate_combat_cooldown))
-		UnregisterSignal(src, COMSIG_POWER_TRY_ACTIVATE)
-		return NONE
-	to_chat(owner, span_warning("You're still too exposed to activate your cloak of obfuscation!"))
-	return POWER_PREVENT_ACTIVATE
-
-
-/datum/discipline_power/obfuscate/deactivate()
-	. = ..()
-	UnregisterSignal(owner, aggressive_signals)
-
+	deltimer(cooldown_timer)
+	cooldown_timer = addtimer(CALLBACK(src, PROC_REF(cooldown_expire)), COMBAT_COOLDOWN_LENGTH, TIMER_STOPPABLE | TIMER_DELETE_ME)
 
 //CLOAK OF SHADOWS
 /datum/discipline_power/obfuscate/cloak_of_shadows
@@ -59,19 +39,41 @@
 
 	level = 1
 
+	check_flags = DISC_CHECK_CAPABLE
+
 	duration_length = 10 SECONDS
+
+	toggled = TRUE
+
+	grouped_powers = list(
+		/datum/discipline_power/obfuscate/cloak_of_shadows,
+		/datum/discipline_power/obfuscate/unseen_presence,
+		/datum/discipline_power/obfuscate/mask_of_a_thousand_faces,
+		/datum/discipline_power/obfuscate/vanish_from_the_minds_eye,
+		/datum/discipline_power/obfuscate/cloak_the_gathering
+	)
 
 /datum/discipline_power/obfuscate/cloak_of_shadows/activate()
 	. = ..()
+	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal), override = TRUE)
+	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(handle_move))
+
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
 		if (NPC.danger_source == owner)
 			NPC.danger_source = null
 	owner.alpha = 10
-	owner.obfuscate_level = 1
 
 /datum/discipline_power/obfuscate/cloak_of_shadows/deactivate()
 	. = ..()
+	UnregisterSignal(owner, aggressive_signals)
+	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
+
 	owner.alpha = 255
+
+/datum/discipline_power/obfuscate/cloak_of_shadows/proc/handle_move(datum/source, atom/moving_thing, dir)
+	SIGNAL_HANDLER
+
+	try_deactivate(direct = TRUE)
 
 //UNSEEN PRESENCE
 /datum/discipline_power/obfuscate/unseen_presence
@@ -80,19 +82,42 @@
 
 	level = 2
 
+	check_flags = DISC_CHECK_CAPABLE
+
 	duration_length = 20 SECONDS
+
+	toggled = TRUE
+
+	grouped_powers = list(
+		/datum/discipline_power/obfuscate/cloak_of_shadows,
+		/datum/discipline_power/obfuscate/unseen_presence,
+		/datum/discipline_power/obfuscate/mask_of_a_thousand_faces,
+		/datum/discipline_power/obfuscate/vanish_from_the_minds_eye,
+		/datum/discipline_power/obfuscate/cloak_the_gathering
+	)
 
 /datum/discipline_power/obfuscate/unseen_presence/activate()
 	. = ..()
+	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal), override = TRUE)
+	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(handle_move))
+
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
 		if (NPC.danger_source == owner)
 			NPC.danger_source = null
 	owner.alpha = 10
-	owner.obfuscate_level = 2
 
 /datum/discipline_power/obfuscate/unseen_presence/deactivate()
 	. = ..()
+	UnregisterSignal(owner, aggressive_signals)
+	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
+
 	owner.alpha = 255
+
+/datum/discipline_power/obfuscate/unseen_presence/proc/handle_move(datum/source, atom/moving_thing, dir)
+	SIGNAL_HANDLER
+
+	if (owner.m_intent != MOVE_INTENT_WALK)
+		try_deactivate(direct = TRUE)
 
 //MASK OF A THOUSAND FACES
 /datum/discipline_power/obfuscate/mask_of_a_thousand_faces
@@ -101,18 +126,33 @@
 
 	level = 3
 
+	check_flags = DISC_CHECK_CAPABLE
+
 	duration_length = 30 SECONDS
+
+	toggled = TRUE
+
+	grouped_powers = list(
+		/datum/discipline_power/obfuscate/cloak_of_shadows,
+		/datum/discipline_power/obfuscate/unseen_presence,
+		/datum/discipline_power/obfuscate/mask_of_a_thousand_faces,
+		/datum/discipline_power/obfuscate/vanish_from_the_minds_eye,
+		/datum/discipline_power/obfuscate/cloak_the_gathering
+	)
 
 /datum/discipline_power/obfuscate/mask_of_a_thousand_faces/activate()
 	. = ..()
+	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal), override = TRUE)
+
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
 		if (NPC.danger_source == owner)
 			NPC.danger_source = null
 	owner.alpha = 10
-	owner.obfuscate_level = 3
 
 /datum/discipline_power/obfuscate/mask_of_a_thousand_faces/deactivate()
 	. = ..()
+	UnregisterSignal(owner, aggressive_signals)
+
 	owner.alpha = 255
 
 //VANISH FROM THE MIND'S EYE
@@ -122,18 +162,33 @@
 
 	level = 4
 
+	check_flags = DISC_CHECK_CAPABLE
+
 	duration_length = 40 SECONDS
+
+	toggled = TRUE
+
+	grouped_powers = list(
+		/datum/discipline_power/obfuscate/cloak_of_shadows,
+		/datum/discipline_power/obfuscate/unseen_presence,
+		/datum/discipline_power/obfuscate/mask_of_a_thousand_faces,
+		/datum/discipline_power/obfuscate/vanish_from_the_minds_eye,
+		/datum/discipline_power/obfuscate/cloak_the_gathering
+	)
 
 /datum/discipline_power/obfuscate/mask_of_a_thousand_faces/activate()
 	. = ..()
+	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal), override = TRUE)
+
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
 		if (NPC.danger_source == owner)
 			NPC.danger_source = null
 	owner.alpha = 10
-	owner.obfuscate_level = 4
 
 /datum/discipline_power/obfuscate/mask_of_a_thousand_faces/deactivate()
 	. = ..()
+	UnregisterSignal(owner, aggressive_signals)
+
 	owner.alpha = 255
 
 //CLOAK THE GATHERING
@@ -143,17 +198,33 @@
 
 	level = 5
 
+	check_flags = DISC_CHECK_CAPABLE
+
 	duration_length = 50 SECONDS
+
+	toggled = TRUE
+
+	grouped_powers = list(
+		/datum/discipline_power/obfuscate/cloak_of_shadows,
+		/datum/discipline_power/obfuscate/unseen_presence,
+		/datum/discipline_power/obfuscate/mask_of_a_thousand_faces,
+		/datum/discipline_power/obfuscate/vanish_from_the_minds_eye,
+		/datum/discipline_power/obfuscate/cloak_the_gathering
+	)
 
 /datum/discipline_power/obfuscate/cloak_the_gathering/activate()
 	. = ..()
+	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal), override = TRUE)
+
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
 		if (NPC.danger_source == owner)
 			NPC.danger_source = null
 	owner.alpha = 10
-	owner.obfuscate_level = 5
 
 /datum/discipline_power/obfuscate/cloak_the_gathering/deactivate()
 	. = ..()
+	UnregisterSignal(owner, aggressive_signals)
+
 	owner.alpha = 255
 
+#undef COMBAT_COOLDOWN_LENGTH

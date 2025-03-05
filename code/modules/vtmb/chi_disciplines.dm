@@ -417,11 +417,9 @@
 		if(3)
 			ADD_TRAIT(caster, TRAIT_PASS_THROUGH_WALLS, "jade shintai 3")
 			caster.alpha = 128
-			caster.obfuscate_level = 3
 			caster.add_movespeed_modifier(/datum/movespeed_modifier/wall_passing)
 			spawn(delay+caster.discipline_time_plus)
 				if(caster)
-					caster.obfuscate_level = 0
 					caster.alpha = 255
 					REMOVE_TRAIT(caster, TRAIT_PASS_THROUGH_WALLS, "jade shintai 3")
 					caster.remove_movespeed_modifier(/datum/movespeed_modifier/wall_passing)
@@ -2159,10 +2157,8 @@
 	switch(level_casting)
 		if(1)
 			animate(caster, alpha = 10, time = 1 SECONDS)
-			caster.obfuscate_level = 3
 			spawn(delay+caster.discipline_time_plus)
 				if(caster)
-					caster.obfuscate_level = 0
 					if(caster.alpha != 255)
 						caster.playsound_local(caster.loc, 'code/modules/wod13/sounds/obfuscate_deactivate.ogg', 50, FALSE)
 						caster.alpha = 255

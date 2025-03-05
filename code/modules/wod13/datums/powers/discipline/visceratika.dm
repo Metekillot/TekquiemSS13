@@ -66,12 +66,10 @@
 /datum/discipline_power/visceratika/bond_with_the_mountain/activate()
 	. = ..()
 	owner.alpha = 10
-	owner.obfuscate_level = 3
 
 /datum/discipline_power/visceratika/bond_with_the_mountain/deactivate()
 	. = ..()
 	owner.alpha = 255
-	owner.obfuscate_level = 0
 
 //ARMOR OF TERRA
 /datum/discipline_power/visceratika/armor_of_terra
@@ -109,11 +107,9 @@
 	. = ..()
 	ADD_TRAIT(owner, TRAIT_PASS_THROUGH_WALLS, "Visceratika Flow Within the Mountain")
 	owner.alpha = 10
-	owner.obfuscate_level = 3
 
 /datum/discipline_power/visceratika/flow_within_the_mountain/deactivate()
 	. = ..()
-	owner.obfuscate_level = 0
 	owner.alpha = 255
 	REMOVE_TRAIT(owner, TRAIT_PASS_THROUGH_WALLS, "Visceratika Flow Within the Mountain")
 
