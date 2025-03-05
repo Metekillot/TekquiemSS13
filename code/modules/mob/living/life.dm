@@ -5,8 +5,6 @@
 	set waitfor = FALSE
 
 	if (client)
-		update_action_buttons()
-
 		var/turf/T = get_turf(src)
 		if(!T)
 			move_to_error_room()

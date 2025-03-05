@@ -223,33 +223,31 @@
 		return FALSE
 
 	//check target type
-	if ((target_type & TARGET_PLAYER) && ismob(target))
-		var/mob/mob_target = target
-		if (mob_target.client)
-			return TRUE
-
-	if (((target_type & TARGET_MOB) || (target_type & TARGET_LIVING) || (target_type & TARGET_HUMAN)) && istype(target, /mob/living))
+	if (((target_type & TARGET_MOB) || (target_type & TARGET_LIVING) || (target_type & TARGET_HUMAN) || (target_type & TARGET_PLAYER)) && istype(target, /mob/living))
 		//make sure our LIVING target isn't DEAD
-		var/mob/living/living = target
-		if ((target_type & TARGET_LIVING) && (living.stat == DEAD))
+		var/mob/living/living_target = target
+		if ((target_type & TARGET_LIVING) && (living_target.stat == DEAD))
 			if (alert)
 				to_chat(owner, span_warning("You cannot cast [src] on dead things!"))
 			return FALSE
 
-		//human-specific checks
+		if ((target_type & TARGET_PLAYER) && !living_target.client)
+			if (alert)
+				to_chat(owner, span_warning("You can only cast [src] on other players!"))
+			return FALSE
+
 		if (ishuman(target))
-			var/mob/living/carbon/human/human = living
-			//make sure they can be targeted by Disciplines specifically
-			if (human.resistant_to_disciplines)
+			var/mob/living/carbon/human/human_target = living_target
+			//todo: remove this variable and refactor it into TRAIT_ANTIMAGIC
+			if (human_target.resistant_to_disciplines)
 				if (alert)
 					to_chat(owner, span_warning("[target] resists your Disciplines!"))
 				return FALSE
 
-		if (target_type & TARGET_HUMAN)
-			if (ishuman(target))
+			if (target_type & TARGET_HUMAN)
 				return TRUE
-		else
-			return TRUE
+
+		return TRUE
 
 	if ((target_type & TARGET_OBJ) && istype(target, /obj))
 		return TRUE
