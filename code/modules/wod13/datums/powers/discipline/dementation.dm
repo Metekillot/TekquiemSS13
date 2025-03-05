@@ -29,7 +29,9 @@
 	target.remove_overlay(MUTATIONS_LAYER)
 	var/mutable_appearance/dementation_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "dementation", -MUTATIONS_LAYER)
 	dementation_overlay.pixel_z = 1
-	target.add_overlay(dementation_overlay)
+	//what the fuck
+	target.overlays_standing[MUTATIONS_LAYER] = dementation_overlay
+	target.apply_overlay(MUTATIONS_LAYER)
 
 /datum/discipline_power/dementation/deactivate(mob/living/carbon/human/target)
 	. = ..()
