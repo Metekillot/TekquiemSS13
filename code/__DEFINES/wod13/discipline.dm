@@ -19,8 +19,10 @@
 #define TARGET_MOB (1<<5)
 ///Targets anything of type /mob/living/carbon/human and its children
 #define TARGET_HUMAN (1<<6)
-///Targets anything with a client attached to it (mostly humans)
+///Targets anything of type /mob/living and its children only if it has a client attached to it
 #define TARGET_PLAYER (1<<7)
+///Targets mobs only if they are vampires/Kindred
+#define TARGET_VAMPIRE (1<<8)
 
 //bitflags to check for certain conditions determining ability to actually cast a discipline
 //flags overlap, like DISC_CHECK_CAPABLE covers DISC_CHECK_CONSCIOUS and DISC_CHECK_TORPOR

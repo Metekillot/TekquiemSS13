@@ -223,7 +223,8 @@
 		return FALSE
 
 	//check target type
-	if (((target_type & TARGET_MOB) || (target_type & TARGET_LIVING) || (target_type & TARGET_HUMAN) || (target_type & TARGET_PLAYER)) && istype(target, /mob/living))
+	// mob/living with a bunch of extra conditions
+	if (((target_type & TARGET_MOB) || (target_type & TARGET_LIVING) || (target_type & TARGET_HUMAN) || (target_type & TARGET_PLAYER) || (target_type & TARGET_VAMPIRE)) && istype(target, /mob/living))
 		//make sure our LIVING target isn't DEAD
 		var/mob/living/living_target = target
 		if ((target_type & TARGET_LIVING) && (living_target.stat == DEAD))
@@ -234,6 +235,11 @@
 		if ((target_type & TARGET_PLAYER) && !living_target.client)
 			if (alert)
 				to_chat(owner, span_warning("You can only cast [src] on other players!"))
+			return FALSE
+
+		if ((target_type & TARGET_VAMPIRE) && !iskindred(target))
+			if (alert)
+				to_chat(owner, span_warning("You can only cast [src] on Kindred!"))
 			return FALSE
 
 		if (ishuman(target))
