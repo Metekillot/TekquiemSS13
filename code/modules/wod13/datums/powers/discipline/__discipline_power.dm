@@ -267,9 +267,11 @@
 	return FALSE
 
 /datum/discipline_power/proc/pre_activation(atom/target)
-	SHOULD_CALL_PARENT(FALSE)
+	SHOULD_NOT_OVERRIDE(TRUE)
 
-	//overrides should take care to still send and receive these signals! copy and paste this!
+	//resources are still spent if activation is theoretically possible, but it gets prevented
+	spend_resources()
+
 	var/signal_return = SEND_SIGNAL(src, COMSIG_POWER_PRE_ACTIVATION, src, target) | SEND_SIGNAL(owner, COMSIG_POWER_PRE_ACTIVATION, src, target)
 	if (target)
 		signal_return |= SEND_SIGNAL(target, COMSIG_POWER_PRE_ACTIVATION_ON, src)
@@ -277,7 +279,13 @@
 		//feedback is sent by the proc cancelling activation
 		return
 
+	if (!pre_activation_checks(target))
+		return
+
 	activate(target)
+
+/datum/discipline_power/proc/pre_activation_checks(atom/target)
+	return TRUE
 
 /datum/discipline_power/proc/activate(atom/target)
 	SHOULD_CALL_PARENT(TRUE)
@@ -310,8 +318,6 @@
 	INVOKE_ASYNC(src, PROC_REF(do_npc_aggro), target)
 
 	INVOKE_ASYNC(src, PROC_REF(do_masquerade_violation), target)
-
-	spend_resources()
 
 	do_caster_notification(target)
 	do_logging(target)

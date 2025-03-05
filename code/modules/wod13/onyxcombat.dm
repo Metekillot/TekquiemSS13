@@ -649,6 +649,7 @@
 	update_shadow()
 	handle_vampire_music()
 	update_auspex_hud()
+	update_action_buttons()
 	if(warrant)
 		last_nonraid = world.time
 		if(key)
