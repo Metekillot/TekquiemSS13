@@ -259,6 +259,8 @@
 				return TRUE
 
 		if (target_type & TARGET_HUMAN)
+			if (alert)
+				to_chat(owner, span_warning("You can only cast [src] on humans!"))
 			return FALSE
 
 		return TRUE
