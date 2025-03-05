@@ -247,6 +247,9 @@
 			if (target_type & TARGET_HUMAN)
 				return TRUE
 
+		if (target_type & TARGET_HUMAN)
+			return FALSE
+
 		return TRUE
 
 	if ((target_type & TARGET_OBJ) && istype(target, /obj))
