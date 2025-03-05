@@ -9,15 +9,8 @@
 	name = "Protean power name"
 	desc = "Protean power description"
 
-	check_flags = DISC_CHECK_IMMOBILE | DISC_CHECK_CAPABLE
-
 	activate_sound = 'code/modules/wod13/sounds/protean_activate.ogg'
 	deactivate_sound = 'code/modules/wod13/sounds/protean_deactivate.ogg'
-	violates_masquerade = TRUE
-
-	cancelable = TRUE
-	duration_length = 20 SECONDS
-	cooldown_length = 20 SECONDS
 
 //EYES OF THE BEAST
 /datum/discipline_power/protean/eyes_of_the_beast
@@ -25,6 +18,14 @@
 	desc = "Let your eyes be a gateway to your Beast. Gain its eyes."
 
 	level = 1
+
+	check_flags = DISC_CHECK_IMMOBILE | DISC_CHECK_CAPABLE
+
+	violates_masquerade = TRUE
+
+	cancelable = TRUE
+	duration_length = 20 SECONDS
+	cooldown_length = 20 SECONDS
 
 	grouped_powers = list(
 		/datum/discipline_power/protean/feral_claws,
@@ -55,6 +56,14 @@
 	desc = "Become a predator and grow hideous talons."
 
 	level = 2
+
+	check_flags = DISC_CHECK_IMMOBILE | DISC_CHECK_CAPABLE
+
+	violates_masquerade = TRUE
+
+	cancelable = TRUE
+	duration_length = 20 SECONDS
+	cooldown_length = 20 SECONDS
 
 	grouped_powers = list(
 		/datum/discipline_power/protean/eyes_of_the_beast,
@@ -94,6 +103,14 @@
 
 	level = 3
 
+	check_flags = DISC_CHECK_IMMOBILE | DISC_CHECK_CAPABLE
+
+	violates_masquerade = TRUE
+
+	cancelable = TRUE
+	duration_length = 20 SECONDS
+	cooldown_length = 20 SECONDS
+
 	grouped_powers = list(
 		/datum/discipline_power/protean/eyes_of_the_beast,
 		/datum/discipline_power/protean/feral_claws,
@@ -126,6 +143,14 @@
 
 	level = 4
 
+	check_flags = DISC_CHECK_IMMOBILE | DISC_CHECK_CAPABLE
+
+	violates_masquerade = TRUE
+
+	cancelable = TRUE
+	duration_length = 20 SECONDS
+	cooldown_length = 20 SECONDS
+
 	grouped_powers = list(
 		/datum/discipline_power/protean/eyes_of_the_beast,
 		/datum/discipline_power/protean/feral_claws,
@@ -157,6 +182,14 @@
 	desc = "Dissipate your body and move as mist."
 
 	level = 5
+
+	check_flags = DISC_CHECK_IMMOBILE | DISC_CHECK_CAPABLE
+
+	violates_masquerade = TRUE
+
+	cancelable = TRUE
+	duration_length = 20 SECONDS
+	cooldown_length = 20 SECONDS
 
 	grouped_powers = list(
 		/datum/discipline_power/protean/eyes_of_the_beast,
