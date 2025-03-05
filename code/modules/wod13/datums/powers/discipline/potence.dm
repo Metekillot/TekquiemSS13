@@ -8,15 +8,8 @@
 	name = "Potence power name"
 	desc = "Potence power description"
 
-	check_flags = DISC_CHECK_CAPABLE
-
 	activate_sound = 'code/modules/wod13/sounds/potence_activate.ogg'
 	deactivate_sound = 'code/modules/wod13/sounds/potence_deactivate.ogg'
-
-	toggled = TRUE
-	duration_length = DURATION_TURN
-
-	var/datum/component/tackler
 
 //POTENCE 1
 /datum/discipline_power/potence/one
@@ -24,6 +17,13 @@
 	desc = "Enhance your muscles. Never hit softly."
 
 	level = 1
+
+	check_flags = DISC_CHECK_CAPABLE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
+	var/datum/component/tackler
 
 	grouped_powers = list(
 		/datum/discipline_power/potence/two,
@@ -58,6 +58,13 @@
 
 	level = 2
 
+	check_flags = DISC_CHECK_CAPABLE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
+	var/datum/component/tackler
+
 	grouped_powers = list(
 		/datum/discipline_power/potence/one,
 		/datum/discipline_power/potence/three,
@@ -90,6 +97,13 @@
 	desc = "Become a force of destruction. Lift and break the unliftable and the unbreakable."
 
 	level = 3
+
+	check_flags = DISC_CHECK_CAPABLE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
+	var/datum/component/tackler
 
 	grouped_powers = list(
 		/datum/discipline_power/potence/one,
@@ -124,6 +138,13 @@
 
 	level = 4
 
+	check_flags = DISC_CHECK_CAPABLE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
+	var/datum/component/tackler
+
 	grouped_powers = list(
 		/datum/discipline_power/potence/one,
 		/datum/discipline_power/potence/two,
@@ -156,6 +177,13 @@
 	desc = "The people could worship you as a god if you showed them this."
 
 	level = 5
+
+	check_flags = DISC_CHECK_CAPABLE
+
+	toggled = TRUE
+	duration_length = DURATION_TURN
+
+	var/datum/component/tackler
 
 	grouped_powers = list(
 		/datum/discipline_power/potence/one,
