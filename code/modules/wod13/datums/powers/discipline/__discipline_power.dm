@@ -296,42 +296,58 @@
 	if (!multi_activate)
 		active = TRUE
 
-	do_cooldown(TRUE)
+	if (!cooldown_override)
+		do_cooldown(TRUE)
 
-	do_duration(target)
+	if (!duration_override)
+		do_duration(target)
 
-	//play the Discipline power's activation sound to the user if there is one
-	if (activate_sound)
-		owner.playsound_local(owner, activate_sound, 50, FALSE)
+	do_activate_sound()
 
-	//play the Discipline power's effect sound on the user or target if there is one
-	if (effect_sound)
-		playsound(target ? target : owner, effect_sound, 50, FALSE)
+	do_effect_sound(target)
 
-	//make NPCs aggro if the power is aggravating, and do so as an attack if the power is hostile
-	if (aggravating && isnpc(target))
-		var/mob/living/carbon/human/npc/npc = target
-		spawn()
-			npc.Aggro(owner, hostile)
+	INVOKE_ASYNC(src, PROC_REF(do_npc_aggro), target)
 
-	//causes a Masquerade violation if masquerade violating power is used around NPCs
-	if (violates_masquerade)
-		spawn()
-			if(owner.CheckEyewitness(target ? target : owner, owner, 7, TRUE))
-				//TODO: detach this from being a human
-				if (ishuman(owner))
-					var/mob/living/carbon/human/human = owner
-					human.AdjustMasquerade(-1)
+	INVOKE_ASYNC(src, PROC_REF(do_masquerade_violation), target)
 
-	//spend the necessary blood points
-	owner.bloodpool = max(owner.bloodpool - vitae_cost, 0)
+	spend_resources()
 
-	to_chat(owner, "<span class='warning'>You cast [name][target ? " on [target]!" : "."]")
-	log_combat(owner, target ? target : owner, "casted the power [src.name] of the Discipline [discipline.name] on")
+	do_caster_notification(target)
+	do_logging(target)
 
 	owner.update_action_buttons()
 
 	return TRUE
+
+/datum/discipline_power/proc/do_activate_sound()
+	if (activate_sound)
+		owner.playsound_local(owner, activate_sound, 50, FALSE)
+
+/datum/discipline_power/proc/do_effect_sound(atom/target)
+	if (effect_sound)
+		playsound(target ? target : owner, effect_sound, 50, FALSE)
+
+/datum/discipline_power/proc/do_npc_aggro(atom/target)
+	if (aggravating && isnpc(target))
+		var/mob/living/carbon/human/npc/npc = target
+		npc.Aggro(owner, hostile)
+
+/datum/discipline_power/proc/do_masquerade_violation(atom/target)
+	if (violates_masquerade)
+		if (owner.CheckEyewitness(target ? target : owner, owner, 7, TRUE))
+			//TODO: detach this from being a human
+			if (ishuman(owner))
+				var/mob/living/carbon/human/human = owner
+				human.AdjustMasquerade(-1)
+
+/datum/discipline_power/proc/spend_resources()
+	owner.bloodpool = clamp(owner.bloodpool - vitae_cost, 0, owner.maxbloodpool)
+
+/datum/discipline_power/proc/do_caster_notification(target)
+	to_chat(owner, span_warning("You cast [name][target ? " on [target]!" : "."]"))
+
+/datum/discipline_power/proc/do_logging(target)
+	log_combat(owner, target ? target : owner, "casted the power [src.name] of the Discipline [discipline.name] on")
 
 /datum/discipline_power/proc/do_duration(atom/target)
 	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
@@ -408,7 +424,8 @@
 	if (!multi_activate)
 		active = FALSE
 
-	do_cooldown()
+	if (!cooldown_override)
+		do_cooldown()
 
 	if (deactivate_sound)
 		owner.playsound_local(owner, deactivate_sound, 50, FALSE)
@@ -433,7 +450,8 @@
 	if (owner.bloodpool >= vitae_cost)
 		owner.bloodpool = max(owner.bloodpool - vitae_cost, 0)
 		to_chat(owner, "<span class='warning'>[src] consumes your blood to stay active.</span>")
-		do_duration(target)
+		if (!duration_override)
+			do_duration(target)
 	else
 		to_chat(owner, "<span class='warning'>You don't have enough blood to keep [src] active!")
 		try_deactivate(target, direct = TRUE)
