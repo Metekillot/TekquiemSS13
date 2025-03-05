@@ -106,8 +106,11 @@
 /datum/action/discipline/proc/handle_click(mob/source, atom/target, click_parameters)
 	SIGNAL_HANDLER
 
-	//ensure we actually need a target
-	if (!targeting)
+	var/list/modifiers = params2list(click_parameters)
+
+	//ensure we actually need a target, or cancel on right click
+	if (!targeting || modifiers["right"])
+		SEND_SOUND(owner, sound('code/modules/wod13/sounds/highlight.ogg', 0, 0, 50))
 		end_targeting()
 		return
 
