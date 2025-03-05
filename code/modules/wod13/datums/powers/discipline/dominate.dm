@@ -14,15 +14,7 @@
 	name = "Dominate power name"
 	desc = "Dominate power description"
 
-	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
-	target_type = TARGET_LIVING
-
 	activate_sound = 'code/modules/wod13/sounds/dominate.ogg'
-
-	multi_activate = TRUE
-	cooldown_length = 15 SECONDS
-	duration_length = 3 SECONDS
-	range = 7
 
 /datum/discipline_power/dominate/activate(mob/living/target)
 	. = ..()
@@ -39,23 +31,6 @@
 				TRGT.remove_overlay(MUTATIONS_LAYER)
 	return TRUE
 
-/datum/discipline_power/dominate/can_activate(mob/living/target, alert = FALSE)
-	. = ..()
-	if (!.)
-		return .
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
-	var/dominate_me = FALSE
-	if(ishuman(target))
-		var/mob/living/carbon/human/H = target
-		if(H.clane?.name == "Gargoyle")
-			dominate_me = TRUE
-	if(((theirpower >= mypower) || (owner.generation > target.generation)) && !dominate_me)
-		if (alert)
-			to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
-		. = FALSE
-	return .
-
 /datum/movespeed_modifier/dominate
 	multiplicative_slowdown = 5
 
@@ -65,6 +40,29 @@
 	desc = "Speak one word and force others to obey."
 
 	level = 1
+
+	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
+	target_type = TARGET_LIVING
+
+	multi_activate = TRUE
+	cooldown_length = 15 SECONDS
+	duration_length = 3 SECONDS
+	range = 7
+
+/datum/discipline_power/dominate/command/pre_activation_checks(mob/living/target)
+	var/mypower = owner.get_total_social()
+	var/theirpower = target.get_total_mentality()
+
+	if(ishuman(target))
+		var/mob/living/carbon/human/human_target = target
+		if(human_target.clane?.name == "Gargoyle")
+			return TRUE
+
+	if((theirpower >= mypower) || (owner.generation > target.generation))
+		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
+		return FALSE
+
+	return TRUE
 
 /datum/discipline_power/dominate/command/activate(mob/living/target)
 	. = ..()
@@ -83,7 +81,27 @@
 
 	level = 2
 
-	duration_length = 0
+	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
+	target_type = TARGET_LIVING
+
+	multi_activate = TRUE
+	cooldown_length = 15 SECONDS
+	range = 7
+
+/datum/discipline_power/dominate/mesmerize/pre_activation_checks(mob/living/target)
+	var/mypower = owner.get_total_social()
+	var/theirpower = target.get_total_mentality()
+
+	if(ishuman(target))
+		var/mob/living/carbon/human/human_target = target
+		if(human_target.clane?.name == "Gargoyle")
+			return TRUE
+
+	if((theirpower >= mypower) || (owner.generation > target.generation))
+		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
+		return FALSE
+
+	return TRUE
 
 /datum/discipline_power/dominate/mesmerize/activate(mob/living/target)
 	. = ..()
@@ -103,6 +121,29 @@
 
 	level = 3
 
+	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
+	target_type = TARGET_LIVING
+
+	multi_activate = TRUE
+	cooldown_length = 15 SECONDS
+	duration_length = 3 SECONDS
+	range = 7
+
+/datum/discipline_power/dominate/the_forgetful_mind/pre_activation_checks(mob/living/target)
+	var/mypower = owner.get_total_social()
+	var/theirpower = target.get_total_mentality()
+
+	if(ishuman(target))
+		var/mob/living/carbon/human/human_target = target
+		if(human_target.clane?.name == "Gargoyle")
+			return TRUE
+
+	if((theirpower >= mypower) || (owner.generation > target.generation))
+		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
+		return FALSE
+
+	return TRUE
+
 /datum/discipline_power/dominate/the_forgetful_mind/activate(mob/living/target)
 	. = ..()
 	to_chat(target, "<span class='userdanger'><b>THINK TWICE</b></span>")
@@ -120,7 +161,28 @@
 
 	level = 4
 
+	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
+	target_type = TARGET_LIVING
+
+	multi_activate = TRUE
+	cooldown_length = 15 SECONDS
 	duration_length = 6 SECONDS
+	range = 7
+
+/datum/discipline_power/dominate/conditioning/pre_activation_checks(mob/living/target)
+	var/mypower = owner.get_total_social()
+	var/theirpower = target.get_total_mentality()
+
+	if(ishuman(target))
+		var/mob/living/carbon/human/human_target = target
+		if(human_target.clane?.name == "Gargoyle")
+			return TRUE
+
+	if((theirpower >= mypower) || (owner.generation > target.generation))
+		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
+		return FALSE
+
+	return TRUE
 
 /datum/discipline_power/dominate/conditioning/activate(mob/living/target)
 	. = ..()
@@ -139,7 +201,27 @@
 
 	level = 5
 
-	duration_length = 0
+	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
+	target_type = TARGET_HUMAN
+
+	multi_activate = TRUE
+	cooldown_length = 15 SECONDS
+	range = 7
+
+/datum/discipline_power/dominate/possession/pre_activation_checks(mob/living/target)
+	var/mypower = owner.get_total_social()
+	var/theirpower = target.get_total_mentality()
+
+	if(ishuman(target))
+		var/mob/living/carbon/human/human_target = target
+		if(human_target.clane?.name == "Gargoyle")
+			return TRUE
+
+	if((theirpower >= mypower) || (owner.generation > target.generation))
+		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
+		return FALSE
+
+	return TRUE
 
 /datum/discipline_power/dominate/possession/activate(mob/living/carbon/human/target)
 	. = ..()
@@ -161,12 +243,3 @@
 				ClickOn(src)
 		else
 			ClickOn(src)
-
-/datum/discipline_power/dominate/possession/can_activate(mob/living/target, alert)
-	. = ..()
-	if (!ishuman(target))
-		. = FALSE
-		if (alert)
-			to_chat(owner, span_warning("[name] can only be used on humans!"))
-	return .
-
