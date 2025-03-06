@@ -42,8 +42,6 @@
 	if(stat != DEAD)
 		return 1
 
-	update_action_buttons()
-
 ///////////////
 // BREATHING //
 ///////////////

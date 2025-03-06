@@ -18,6 +18,43 @@
 	. = ..()
 	discipline.assign(M)
 
+	register_to_availability_signals()
+
+/datum/action/discipline/proc/register_to_availability_signals()
+	//this should only go through if it's the first Discipline gained by the mob
+	for (var/datum/action/action in owner.actions)
+		if (action == src)
+			continue
+		if (istype(action, /datum/action/discipline))
+			return
+
+	//irrelevant for NPCs
+	if (!owner.client)
+		return
+
+	var/list/relevant_signals = list(
+		SIGNAL_ADDTRAIT(TRAIT_TORPOR),
+		SIGNAL_REMOVETRAIT(TRAIT_TORPOR),
+		SIGNAL_ADDTRAIT(TRAIT_KNOCKEDOUT),
+		SIGNAL_REMOVETRAIT(TRAIT_KNOCKEDOUT),
+		SIGNAL_ADDTRAIT(TRAIT_INCAPACITATED),
+		SIGNAL_REMOVETRAIT(TRAIT_INCAPACITATED),
+		SIGNAL_ADDTRAIT(TRAIT_IMMOBILIZED),
+		SIGNAL_REMOVETRAIT(TRAIT_IMMOBILIZED),
+		SIGNAL_ADDTRAIT(TRAIT_FLOORED),
+		SIGNAL_REMOVETRAIT(TRAIT_FLOORED),
+		SIGNAL_ADDTRAIT(TRAIT_BLIND),
+		SIGNAL_REMOVETRAIT(TRAIT_BLIND),
+		SIGNAL_ADDTRAIT(TRAIT_MUTE),
+		SIGNAL_REMOVETRAIT(TRAIT_MUTE),
+		SIGNAL_ADDTRAIT(TRAIT_HANDS_BLOCKED),
+		SIGNAL_REMOVETRAIT(TRAIT_HANDS_BLOCKED),
+		SIGNAL_ADDTRAIT(TRAIT_PACIFISM),
+		SIGNAL_REMOVETRAIT(TRAIT_PACIFISM),
+	)
+
+	RegisterSignal(owner, relevant_signals, TYPE_PROC_REF(/mob, update_action_buttons))
+
 /datum/action/discipline/IsAvailable()
 	return discipline.can_activate_untargeted()
 
