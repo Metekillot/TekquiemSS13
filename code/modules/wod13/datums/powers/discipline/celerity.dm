@@ -70,6 +70,8 @@
 	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
 
+	//put this out of its misery
+	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity)
 
 /datum/discipline_power/celerity/one/deactivate()
@@ -77,6 +79,7 @@
 	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
 	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
 
+	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity)
 
 //CELERITY 2
@@ -104,6 +107,7 @@
 	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
 
+	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity2)
 
 /datum/discipline_power/celerity/two/deactivate()
@@ -111,6 +115,7 @@
 	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
 	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
 
+	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity2)
 
 //CELERITY 3
@@ -138,6 +143,7 @@
 	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
 
+	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity3)
 
 /datum/discipline_power/celerity/three/deactivate()
@@ -145,6 +151,7 @@
 	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
 	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
 
+	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity3)
 
 //CELERITY 4
@@ -172,6 +179,7 @@
 	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
 
+	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity4)
 
 /datum/discipline_power/celerity/four/deactivate()
@@ -179,6 +187,7 @@
 	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
 	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
 
+	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity4)
 
 //CELERITY 5
@@ -206,6 +215,7 @@
 	RegisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(temporis_explode))
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
 
+	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/celerity5)
 
 /datum/discipline_power/celerity/five/deactivate()
@@ -213,4 +223,5 @@
 	UnregisterSignal(owner, COMSIG_POWER_PRE_ACTIVATION)
 	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
 
+	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/celerity5)
