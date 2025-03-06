@@ -466,8 +466,9 @@
  * returns FALSE otherwise.
  */
 /datum/discipline_power/proc/spend_resources()
-	if ((owner.bloodpool - vitae_cost) >= 0)
+	if (can_afford())
 		owner.bloodpool = owner.bloodpool - vitae_cost
+		owner.update_action_buttons()
 		return TRUE
 	else
 		return FALSE
