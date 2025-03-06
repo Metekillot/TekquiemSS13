@@ -1,7 +1,7 @@
 //normal duration defines
-///Duration of one "turn", which is 5 seconds according to us
-#define DURATION_TURN 5 SECONDS
-///Duration of one "scene" as defined in tabletop: 5 minutes
+///Duration of one "turn", which is 6 seconds according to us
+#define DURATION_TURN 6 SECONDS
+///Duration of one "scene", which is 5 minutes according to us
 #define DURATION_SCENE 5 MINUTES
 
 //targeting bitflags, NONE or 0 if targeting self exclusively
