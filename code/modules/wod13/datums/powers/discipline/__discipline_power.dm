@@ -65,6 +65,11 @@
 		src.discipline = discipline
 		src.owner = discipline.owner
 
+/**
+ * Returns the time left the cooldown timer, or
+ * 0 if there is none. Returning 0 means not on
+ * cooldown.
+ */
 /datum/discipline_power/proc/get_cooldown()
 	var/time_left = timeleft(cooldown_timer)
 	if (isnull(time_left))
@@ -72,6 +77,11 @@
 
 	return time_left
 
+/**
+ * Returns the highest time left on any duration
+ * timers, or 0 if there are none. Returning 0
+ * means not active.
+ */
 /datum/discipline_power/proc/get_duration()
 	var/highest_timeleft = 0
 	for (var/timer_id in duration_timers)
@@ -83,9 +93,27 @@
 
 	return highest_timeleft
 
+/**
+ * Returns a boolean of if the caster can afford
+ * this power's vitae cost.
+ */
 /datum/discipline_power/proc/can_afford()
 	return (owner.bloodpool >= vitae_cost)
 
+/**
+ * Returns if this power can currently be activated
+ * without accounting for target restrictions.
+ *
+ * This is where all checks according to check_flags for if a
+ * power can be activated that don't concern the target are handled.
+ * This is almost entirely checking traits on the owner to see if they're
+ * incapacitated or whatnot, but some backend like deactivation
+ * is also handled here. This is what's checked to see if the
+ * power is selectable or unselectable (red).
+ *
+ * Arguments:
+ * * alert - if this is being checked by the user and should give feedback on why it can't activate.
+ */
 /datum/discipline_power/proc/can_activate_untargeted(alert = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
@@ -188,6 +216,21 @@
 	//nothing found, it can be casted
 	return TRUE
 
+/**
+ * Activation requirement checking proc that determines
+ * if a given target is valid while also checking
+ * can_activate_untargeted().
+ *
+ * When activating a power, this is called to get the final
+ * result on if it can be activated or not. It first checks
+ * can_activate_untargeted(), then if the power is targeted,
+ * it handles logic for determining if a given target is valid
+ * according to the given target_type.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ * * alert - if this is being checked by the user and should give feedback on why it can't activate.
+ */
 /datum/discipline_power/proc/can_activate(atom/target, alert = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
@@ -279,6 +322,20 @@
 		to_chat(owner, span_warning("You cannot cast [src] on [target]!"))
 	return FALSE
 
+/**
+ * Spends necessary resources (vitae) and makes sure activation is valid
+ * before fully activating the power.
+ *
+ * The intermediary between can_activate() and activate(), this proc spends
+ * resources, sends signals, checks an overridable proc to see if it should
+ * continue or not, then fully activates the power. This can only fail
+ * if an override of pre_activation_checks() or a signal handler forces it to.
+ * This is useful for code that should trigger after activation is initiated, but
+ * before the effects (probably) start.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ */
 /datum/discipline_power/proc/pre_activation(atom/target)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
@@ -297,9 +354,36 @@
 
 	activate(target)
 
+/**
+ * An overridable proc that allows for custom pre_activation() behaviour.
+ *
+ * This is meant to be overridden by powers to allow for extra checks
+ * on activation (eg. Social vs. Mentality for mental disciplines), to
+ * delay activation with a do_after() (eg. Valeren 5 taking 10 seconds),
+ * or possibly to hijack the pre_activation() proc by returning FALSE and
+ * using its own logic instead (like activating on several targets in an
+ * AoE rather than on one). Don't be fooled by the name, this is not just
+ * for checks.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ */
 /datum/discipline_power/proc/pre_activation_checks(atom/target)
 	return TRUE
 
+/**
+ * Triggers all the effects of the power being fully activated.
+ *
+ * An overridable proc where the effects of the power are stored.
+ * This being called means that activation has fully succeeded, so
+ * duration and cooldown (when multi_activate is true) also begin
+ * here. Specific basic activation behaviour (like the sound it makes
+ * or the message it logs) can be modified by overriding the relevant
+ * proc.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ */
 /datum/discipline_power/proc/activate(atom/target)
 	SHOULD_CALL_PARENT(TRUE)
 
@@ -339,19 +423,35 @@
 
 	return TRUE
 
+/**
+ * Overridable proc handling the sound played to the owner
+ * only when using powers.
+ */
 /datum/discipline_power/proc/do_activate_sound()
 	if (activate_sound)
 		owner.playsound_local(owner, activate_sound, 50, FALSE)
 
+/**
+ * Overridable proc handling the sound caused by the power's
+ * effects, audible to everyone around it.
+ */
 /datum/discipline_power/proc/do_effect_sound(atom/target)
 	if (effect_sound)
 		playsound(target ? target : owner, effect_sound, 50, FALSE)
 
+/**
+ * Overridable proc handling how the power aggravates NPCs
+ * it's used on.
+ */
 /datum/discipline_power/proc/do_npc_aggro(atom/target)
 	if (aggravating && isnpc(target))
 		var/mob/living/carbon/human/npc/npc = target
 		npc.Aggro(owner, hostile)
 
+/**
+ * Overridable proc handling Masquerade violations as a result
+ * of using this power amongst NPCs.
+ */
 /datum/discipline_power/proc/do_masquerade_violation(atom/target)
 	if (violates_masquerade)
 		if (owner.CheckEyewitness(target ? target : owner, owner, 7, TRUE))
@@ -360,24 +460,65 @@
 				var/mob/living/carbon/human/human = owner
 				human.AdjustMasquerade(-1)
 
+/**
+ * Overridable proc handling the spending of resources (vitae/blood)
+ * when casting the power. Returns TRUE if successfully spent,
+ * returns FALSE otherwise.
+ */
 /datum/discipline_power/proc/spend_resources()
-	owner.bloodpool = clamp(owner.bloodpool - vitae_cost, 0, owner.maxbloodpool)
+	if ((owner.bloodpool - vitae_cost) >= 0)
+		owner.bloodpool = owner.bloodpool - vitae_cost
+		return TRUE
+	else
+		return FALSE
 
+/**
+ * Overridable proc handling the message sent to the user when activating
+ * the power.
+ */
 /datum/discipline_power/proc/do_caster_notification(target)
 	to_chat(owner, span_warning("You cast [name][target ? " on [target]!" : "."]"))
 
+/**
+ * Overridable proc handling the combat log created by using this power.
+ */
 /datum/discipline_power/proc/do_logging(target)
 	log_combat(owner, target ? target : owner, "casted the power [src.name] of the Discipline [discipline.name] on")
 
+/**
+ * Overridable proc handling the power's duration, which is a timer that triggers the
+ * duration_expire proc when it ends, and is saved in duration_timers then deleted and cut
+ * when it ends. The duration_override variable stops this from being triggered by activate()
+ * and allows for extra modular behaviour. Duration expiring can be done manually by calling
+ * try_deactivate(direct = TRUE).
+ */
 /datum/discipline_power/proc/do_duration(atom/target)
 	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
 
+/**
+ * Overridable proc handling the power's cooldown, which is a timer that triggers the cooldown_expire
+ * proc when it ends, and is saved in cooldown_timer. This is called by both activate() and deactivate(),
+ * but it only actually starts the cooldown in deactivate() unless multi_activate is TRUE. The
+ * cooldown_override variable stops this from being triggered by activate() and deactivate() and allows
+ * for extra modular behaviour. Cooldowns can manually be started by calling try_deactivate(), then deltimer()
+ * and starting a new cooldown timer with your own length.
+ *
+ * Arguments:
+ * * on_activation - if this proc is being called by activate(), which will stop it from triggering unless multi_activate is true.
+ */
 /datum/discipline_power/proc/do_cooldown(on_activation = FALSE)
 	if (multi_activate && !on_activation)
 		return
 
 	cooldown_timer = addtimer(CALLBACK(src, PROC_REF(cooldown_expire)), cooldown_length, TIMER_STOPPABLE | TIMER_DELETE_ME)
 
+/**
+ * Checks if activation is possible through can_activate(), then calls pre_activation() if it is.
+ * Returns if activation successfully begun or not.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ */
 /datum/discipline_power/proc/try_activate(atom/target)
 	if (can_activate(target, TRUE))
 		pre_activation(target)
@@ -385,6 +526,11 @@
 
 	return FALSE
 
+/**
+ * Overridable proc called by the duration timer to handle
+ * duration expiring. Will refresh if toggled, or deactivate
+ * otherwise after deleting the timer calling it.
+ */
 /datum/discipline_power/proc/duration_expire(atom/target)
 	//clean up the expired timer, which SHOULD be the first in the list
 	deltimer(duration_timers[1])
@@ -398,18 +544,39 @@
 
 	owner.update_action_buttons()
 
+/**
+ * Overridable proc called by the cooldown timer to handle
+ * cooldown expiring. Has no behaviour besides making the action
+ * visibly available again.
+ */
 /datum/discipline_power/proc/cooldown_expire()
 	owner.update_action_buttons()
 
+/**
+ * Overridable proc called by try_deactivate() to make sure that
+ * deactivating won't result in a runtime in case of the power
+ * targeting the owner with them not existing. The equivalent
+ * of can_activate_untargeted().
+ */
 /datum/discipline_power/proc/can_deactivate_untargeted()
 	SHOULD_CALL_PARENT(TRUE)
 
 	if (target_type == NONE)
-		if (!owner)
+		if (isnull(owner))
 			return FALSE
 
 	return TRUE
 
+/**
+ * Overridable proc mirroring can_activate(), making sure
+ * that deactivation won't result in a runtime in case of
+ * the target not existing anymore while also checking
+ * can_deactivate_untargeted(). Also sends signals that
+ * allow for manual prevention of deactivation.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ */
 /datum/discipline_power/proc/can_deactivate(atom/target)
 	SHOULD_CALL_PARENT(TRUE)
 
@@ -429,6 +596,20 @@
 
 	return TRUE
 
+/**
+ * Cancels the effects of the previously activated power.
+ *
+ * Handles all logic for deactivating the power, including
+ * playing the deactivation sound, sending relevant signals,
+ * and starting the cooldown. If directly called rather
+ * than as a result of duration_expire, this also deletes
+ * the relevant duration timer. Still called if duration_length
+ * is 0.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ * * direct - if this is being directly called instead of by duration_expire, and should delete the timer.
+ */
 /datum/discipline_power/proc/deactivate(atom/target, direct = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
@@ -452,6 +633,16 @@
 
 	owner.update_action_buttons()
 
+/**
+ * Checks if the power can_deactivate() and deactivate()s if it can.
+ * Also sends feedback the user if they successfully manually cancel it.
+ * The deactivation equivalent of try_activate().
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ * * direct - if the power is being directly deactivated or as a result of duration_expire.
+ * * alert - if the caster is manually deactivating and feedback should be sent on success.
+ */
 /datum/discipline_power/proc/try_deactivate(atom/target, direct = FALSE, alert = FALSE)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
@@ -461,21 +652,44 @@
 		if (alert)
 			to_chat(owner, span_warning("You deactivate [src]."))
 
+/**
+ * Overridable proc that allows for code to affect the power's owner
+ * when it is gained. Triggered by parent /datum/discipline/post_gain().
+ */
 /datum/discipline_power/proc/post_gain()
 	return
 
+/**
+ * Handles refreshing toggled powers on a loop, spending necessary
+ * resources and restarting the duration timer if it can proceed. If
+ * it can't proceed, it directly deactivates the power.
+ *
+ * Arguments:
+ * * target - what the targeted Discipline (null otherwise) is being used on.
+ */
 /datum/discipline_power/proc/refresh(atom/target)
 	if (!active)
 		return
 	if (!owner)
 		return
 
-	if (owner.bloodpool >= vitae_cost)
-		owner.bloodpool = max(owner.bloodpool - vitae_cost, 0)
+	//cancels if overridable proc returns FALSE
+	if (!do_refresh_checks(target))
+		return
+
+	if (spend_resources())
 		to_chat(owner, span_warning("[src] consumes your blood to stay active."))
 		if (!duration_override)
 			do_duration(target)
 	else
-		to_chat(owner, "<span class='warning'>You don't have enough blood to keep [src] active!")
-		try_deactivate(target, direct = TRUE)
+		to_chat(owner, span_warning("You don't have enough blood to keep [src] active!"))
+		try_deactivate(target)
 
+/**
+ * Overridable proc that allows for extra modular code
+ * in refreshing behaviour. Can do custom checks to see if activation
+ * proceeds or not (must give its own feedback!) or can hijack
+ * the refresh proc for its own behaviour.
+ */
+/datum/discipline_power/proc/do_refresh_checks(atom/target)
+	return TRUE

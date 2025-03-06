@@ -43,6 +43,15 @@
 		known_powers += new_power
 	current_power = known_powers[1]
 
+/**
+ * Modifies a Discipline's level, updating its available powers
+ * to conform to the new level. This proc will be removed when
+ * power loadouts are implemented, but for now it's useful for dynamically
+ * adding and removing powers.
+ *
+ * Arguments:
+ * * level - the level to set the Discipline as, powers included
+ */
 /datum/discipline/proc/set_level(level)
 	if (level == src.level)
 		return
@@ -65,6 +74,13 @@
 	known_powers = new_known_powers
 	src.level = level
 
+/**
+ * Assigns the Discipline to a mob, setting its owner and applying
+ * post_gain effects.
+ *
+ * Arguments:
+ * * owner - the mob to assign the Discipline to
+ */
 /datum/discipline/proc/assign(mob/owner)
 	src.owner = owner
 	for (var/datum/discipline_power/power in known_powers)
@@ -74,6 +90,13 @@
 		post_gain()
 	initialized = TRUE
 
+/**
+ * Returns a known Discipline power in this Discipline
+ * searching by name or type.
+ *
+ * Arguments:
+ * * power - the power name or type to search for
+ */
 /datum/discipline/proc/get_power(power)
 	for (var/datum/discipline_power/found_power in known_powers)
 		if (istext(power))
@@ -107,6 +130,12 @@
 /datum/discipline/proc/deactivate(atom/target)
 	current_power.deactivate(target)
 
+/**
+ * Applies effects specific to the Discipline to
+ * its owner. Also triggers post_gain effects of all
+ * known (possessed) powers. Meant to be overridden
+ * for modular code.
+ */
 /datum/discipline/proc/post_gain()
 	SHOULD_CALL_PARENT(TRUE)
 
