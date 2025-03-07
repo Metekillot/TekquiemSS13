@@ -2583,7 +2583,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						return
 					var/s_tone_choice = input(user, "Choose your character's skin-tone:", "Character Preference")  as null|anything in skin_tone_presets
 					var/new_s_tone_preset = skin_tone_presets[s_tone_choice]
-					if(new_s_tone_preset)
+					if(s_tone_choice)
 						skin_tone = sanitize_hexcolor(new_s_tone_preset)
 
 				if("ooccolor")
@@ -3160,11 +3160,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.hair_color = hair_color
 	character.facial_hair_color = facial_hair_color
 
-	if(pref_species.name == "Vampire")
-		if(clane.alt_sprite && !clane.alt_sprite_greyscale)
-			character.skin_tone = ALBINO
-	else
-		character.skin_tone = skin_tone
+	character.skin_tone = skin_tone
 
 	character.hairstyle = hairstyle
 	if(character.age < 16)
