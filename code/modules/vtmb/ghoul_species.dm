@@ -43,28 +43,28 @@
 			dat += "[host.real_name],"
 		if(!host.real_name)
 			dat += "Unknown,"
-		var/datum/species/ghoul/G
-		if(host.dna.species.name == "Ghoul")
-			G = host.dna.species
-			dat += " the ghoul"
+		dat += " the ghoul"
 
-		if(host.mind.assigned_role)
-			if(host.mind.special_role)
-				dat += ", carrying the [host.mind.assigned_role] (<font color=red>[host.mind.special_role]</font>) role."
-			else
-				dat += ", carrying the [host.mind.assigned_role] role."
-		if(!host.mind.assigned_role)
-			dat += "."
 		dat += "<BR>"
-		if(G.master)
-			dat += "My Regnant is [G.master.real_name], I should obey their wants.<BR>"
-			if(G.master.clane)
-				if(G.master.clane.name != "Caitiff")
-					dat += "Regnant's clan is [G.master.clane], maybe I can try some of it's disciplines..."
-		if(host.mind.special_role)
-			for(var/datum/antagonist/A in host.mind.antag_datums)
-				if(A.objectives)
-					dat += "[printobjectives(A.objectives)]<BR>"
+		if(host.mind)
+			if(host.mind.assigned_role)
+				if(host.mind.special_role)
+					dat += ", carrying the [host.mind.assigned_role] (<font color=red>[host.mind.special_role]</font>) role."
+				else
+					dat += ", carrying the [host.mind.assigned_role] role."
+			if(!host.mind.assigned_role)
+				dat += "."
+			
+			dat += "<BR>"
+			
+			if(host.mind.special_role)
+				for(var/datum/antagonist/A in host.mind.antag_datums)
+					if(A.objectives)
+						dat += "[printobjectives(A.objectives)]<BR>"
+		
+			for(var/datum/character_connection/connection in host.mind.character_connections)
+				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[REF(connection.group_id)]'>Delete</a><BR>"
+		
 		var/masquerade_level = " followed the Masquerade Tradition perfectly."
 		switch(host.masquerade)
 			if(4)
@@ -129,6 +129,15 @@
 				dat += "<b>My bank account code is: [account.code]</b><BR>"
 		host << browse(dat, "window=vampire;size=400x450;border=1;can_resize=1;can_minimize=0")
 		onclose(host, "ghoul", src)
+
+/datum/action/ghoulinfo/Topic(href, href_list)
+	if(href_list["delete_connection"] && alert(host, "Are you sure?", "Delete Connection", "I'm Sure", "Cancel") == "I'm Sure")
+		var/deleting_group_id = href_list["delete_connection"]
+		for(var/datum/character_connection/connection in host.mind.character_connections)
+			if(connection.group_id == deleting_group_id)
+				host.retire_character_connection_by_group_id(connection.group_id)
+				break
+		host.mind.character_connections = host.get_character_connections()
 
 /datum/species/ghoul/on_species_gain(mob/living/carbon/human/C)
 	..()

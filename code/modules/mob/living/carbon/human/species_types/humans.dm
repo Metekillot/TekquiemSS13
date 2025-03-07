@@ -47,8 +47,9 @@
 			if(!host.mind.assigned_role)
 				dat += "."
 			dat += "<BR>"
-			if(host.mind.enslaved_to)
-				dat += "My Regnant is [host.mind.enslaved_to], I should obey their wants.<BR>"
+			for(var/datum/character_connection/connection in host.mind.character_connections)
+				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[REF(connection.group_id)]'>Delete</a><BR>"
+			dat += "<BR>"
 		if(host.mind.special_role)
 			for(var/datum/antagonist/A in host.mind.antag_datums)
 				if(A.objectives)
@@ -90,6 +91,15 @@
 				break
 		host << browse(dat, "window=vampire;size=400x450;border=1;can_resize=1;can_minimize=0")
 		onclose(host, "vampire", src)
+
+/datum/action/humaninfo/Topic(href, href_list)
+	if(href_list["delete_connection"] && alert(host, "Are you sure?", "Delete Connection", "I'm Sure", "Cancel") == "I'm Sure")
+		var/deleting_group_id = href_list["delete_connection"]
+		for(var/datum/character_connection/connection in host.mind.character_connections)
+			if(connection.group_id == deleting_group_id)
+				host.retire_character_connection_by_group_id(connection.group_id)
+				break
+		host.mind.character_connections = host.get_character_connections()
 
 /datum/species/human/on_species_gain(mob/living/carbon/human/C)
 	. = ..()

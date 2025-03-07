@@ -1,4 +1,5 @@
-/mob/living/proc/insert_character_connection(group_type, member_type, player_ckey, character_name, connection_desc, group_id = NULL)
+
+/mob/living/proc/insert_character_connection(group_type, member_type, connection_desc, group_id = null)
 	var/our_group_id = group_id
 	if(!our_group_id)
 		our_group_id = get_next_character_connection_group_id()
@@ -10,12 +11,12 @@
 			"group_id" = group_id, 
 			"group_type" = group_type, 
 			"member_type" = member_type, 
-			"ckey" = player_ckey, 
-			"char_name" = character_name, 
+			"ckey" = ckey, 
+			"char_name" = true_real_name, 
 			"connection_desc" = connection_desc, 
 			"round_id" = GLOB.round_id)
 	)
 	query.Execute()
-	qdel(query_log_connection)
+	qdel(query)
 	
 	return our_group_id

@@ -74,8 +74,8 @@
 			if(!host.mind.assigned_role)
 				dat += "."
 			dat += "<BR>"
-			if(host.mind.enslaved_to)
-				dat += "My Regnant is [host.mind.enslaved_to], I should obey their wants.<BR>"
+			for(var/datum/character_connection/connection in host.mind.character_connections)
+				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[REF(connection.group_id)]'>Delete</a><BR>"
 		if(host.generation)
 			dat += "I'm from [host.generation] generation.<BR>"
 		if(host.mind.special_role)
@@ -211,6 +211,15 @@
 				dat += "<b>My bank account code is: [account.code]</b><BR>"
 		host << browse(dat, "window=vampire;size=400x450;border=1;can_resize=1;can_minimize=0")
 		onclose(host, "vampire", src)
+
+/datum/action/vampireinfo/Topic(href, href_list)
+	if(href_list["delete_connection"] && alert(host, "Are you sure?", "Delete Connection", "I'm Sure", "Cancel") == "I'm Sure")
+		var/deleting_group_id = href_list["delete_connection"]
+		for(var/datum/character_connection/connection in host.mind.character_connections)
+			if(connection.group_id == deleting_group_id)
+				host.retire_character_connection_by_group_id(connection.group_id)
+				break
+		host.mind.character_connections = host.get_character_connections()
 
 /datum/species/kindred/on_species_gain(mob/living/carbon/human/C)
 	. = ..()
@@ -526,16 +535,14 @@
 						var/mob/living/carbon/human/npc/NPC = H.pulling
 						if(NPC.ghoulificate(owner))
 							new_master = TRUE
-//							if(NPC.hud_used)
-//								var/datum/hud/human/HU = NPC.hud_used
-//								HU.create_ghoulic()
 							NPC.roundstart_vampire = FALSE
+					var/blood_bond_result = 0
 					if(BLOODBONDED.mind)
-						if(BLOODBONDED.mind.enslaved_to != owner)
+						blood_bond_result = BLOODBONDED.create_blood_bond_to(H)
+						if(blood_bond_result == 3 && BLOODBONDED.mind.enslaved_to != owner)
 							BLOODBONDED.mind.enslave_mind_to_creator(owner)
-							to_chat(BLOODBONDED, "<span class='userdanger'><b>AS PRECIOUS VITAE ENTER YOUR MOUTH, YOU NOW ARE IN THE BLOODBOND OF [H]. SERVE YOUR REGNANT CORRECTLY, OR YOUR ACTIONS WILL NOT BE TOLERATED.</b></span>")
 							new_master = TRUE
-					if(isghoul(BLOODBONDED))
+					if(isghoul(BLOODBONDED) && blood_bond_result == 3)
 						var/datum/species/ghoul/G = BLOODBONDED.dna.species
 						G.master = owner
 						G.last_vitae = world.time

@@ -145,6 +145,7 @@
 #include "code\__DEFINES\dcs\signals.dm"
 #include "code\__DEFINES\research\anomalies.dm"
 #include "code\__DEFINES\vtr13\area_sector.dm"
+#include "code\__DEFINES\vtr13\character_connections.dm"
 #include "code\__DEFINES\vtr13\jobs.dm"
 #include "code\__DEFINES\vtr13\skintone.dm"
 #include "code\__DEFINES\wod13\lockpick_difficulty.dm"
