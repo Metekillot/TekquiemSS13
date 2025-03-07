@@ -44,7 +44,6 @@
 
 /datum/action/vampireinfo/Trigger()
 	if(host)
-		host.mind.character_connections = host.get_character_connections()
 		var/dat = {"
 			<style type="text/css">
 
@@ -217,6 +216,7 @@
 /datum/action/vampireinfo/Topic(href, href_list)
 	if(href_list["delete_connection"])
 		host.retire_connection(text2num(href_list["delete_connection"]))
+	Trigger()
 
 /datum/species/kindred/on_species_gain(mob/living/carbon/human/C)
 	. = ..()
