@@ -8,7 +8,7 @@
 			INSERT INTO [format_table_name("character_connection")] (`group_id`, `group_type`, `member_type`, `player_ckey`, `character_name`, `connection_desc`, `round_id_established`, `date_established`)
 			VALUES (:group_id, :group_type, :member_type, :ckey, :char_name, :connection_desc, :round_id, Now())
 		"}, list(
-			"group_id" = group_id, 
+			"group_id" = our_group_id, 
 			"group_type" = group_type, 
 			"member_type" = member_type, 
 			"ckey" = ckey, 

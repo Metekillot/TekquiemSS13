@@ -161,7 +161,6 @@
 						if(HV.stakeimmune)
 							to_chat(BD, "<span class='warning'>There is no <b>HEART</b> in this creature.</span>")
 							return
-					BD.drinksomeblood(LV)
-					if(iskindred(LV))
-						BD.create_blood_bond_to(LV)
+					BD.drinksomeblood(LV, TRUE)
+					
 	return TRUE

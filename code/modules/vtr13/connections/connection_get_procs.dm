@@ -6,7 +6,7 @@
 		FROM [format_table_name("character_connection")] \
 		WHERE \
 			player_ckey = :ckey AND \
-			character_name = :char_name AND\
+			character_name = :char_name AND \
 			date_ended = NULL AND \
 			group_type = :bb3 AND \
 			member_type = :member_type \
@@ -39,7 +39,7 @@
 			date_ended = NULL AND \
 			group_type IN ( :bb2 , :bb1 ) AND \
 			round_id_established = :round_id AND \
-			member_type = :member_type AND\
+			member_type = :member_type AND \
 			group_id IN ( \
 				SELECT group_id \
 				FROM [format_table_name("character_connection")] \
@@ -152,7 +152,7 @@
 		list("ckey" = ckey, "char_name" = true_real_name)
 	)
 
-	if(!query.Execute(async = TRUE))
+	if(!query.Execute())
 		qdel(query)
 		return null
 

@@ -133,7 +133,7 @@
 						playsound(src, 'code/modules/wod13/sounds/drinkblood1.ogg', 50, TRUE)
 						L.visible_message("<span class='warning'><b>[src] bites [L]'s neck!</b></span>", "<span class='warning'><b>[src] bites your neck!</b></span>")
 						face_atom(L)
-						H.drinksomeblood(L)
+						H.drinksomeblood(L, TRUE)
 			else
 				step_to(src,frenzy_target,0)
 				face_atom(frenzy_target)
