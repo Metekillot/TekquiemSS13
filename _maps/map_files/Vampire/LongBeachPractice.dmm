@@ -2287,9 +2287,6 @@
 /obj/structure/closet/crate/bin,
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/northeast/hotel)
-"cWj" = (
-/turf/open/openspace,
-/area/vtm/vtr/elysium/interior/central/castle_theater)
 "cWx" = (
 /obj/structure/chair/wood{
 	dir = 1
@@ -6222,6 +6219,9 @@
 /obj/item/pen,
 /turf/open/floor/plating/parquetry,
 /area/vtm/vtr/masquerade/interior/northwest/police_station)
+"hLk" = (
+/turf/open/floor/plating/parquetry,
+/area/vtm/vtr/elysium/interior/central/castle_theater)
 "hLq" = (
 /obj/structure/table/wood,
 /obj/item/folder/red,
@@ -7673,12 +7673,6 @@
 /obj/structure/vampdoor/wood,
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/elysium/interior/central/castle_theater)
-"jEx" = (
-/obj/machinery/light/prince{
-	pixel_y = 32
-	},
-/turf/open/floor/plating/parquetry,
-/area/vtm/vtr/elysium/interior/central/castle_theater)
 "jFi" = (
 /obj/structure/flora/ausbushes/fullgrass,
 /obj/effect/landmark/start/vtr/acolyte,
@@ -8638,6 +8632,9 @@
 /obj/effect/turf_decal/siding/wideplating/dark,
 /turf/open/floor/carpet/red,
 /area/vtm/vtr/elysium/interior/central/nightclub_elysium)
+"kVM" = (
+/turf/open/openspace,
+/area/vtm/vtr/elysium/interior/central/castle_theater)
 "kVZ" = (
 /obj/structure/closet,
 /obj/item/storage/box/gloves,
@@ -10627,9 +10624,6 @@
 	},
 /turf/open/floor/plasteel,
 /area/vtm/vtr/masquerade/interior/northeast/bright_house)
-"nsc" = (
-/turf/open/floor/plating/parquetry,
-/area/vtm/vtr/elysium/interior/central/castle_theater)
 "nse" = (
 /obj/structure/vampipe{
 	icon_state = "piping9";
@@ -11035,13 +11029,13 @@
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/northeast/church)
 "nOJ" = (
-/obj/structure/foodrack{
-	dir = 4;
-	pixel_x = 0;
-	pixel_y = 13
-	},
 /obj/machinery/light{
 	pixel_y = 32
+	},
+/obj/structure/foodrack{
+	dir = 4;
+	pixel_x = -7;
+	pixel_y = 7
 	},
 /turf/open/floor/plating/circled,
 /area/vtm/vtr/masquerade/interior/northwest/gas_station)
@@ -13143,9 +13137,9 @@
 /turf/open/floor/carpet,
 /area/vtm/vtr/masquerade/interior/southeast/queen_lilith)
 "qro" = (
-/obj/effect/decal/trash,
-/turf/open/floor/plating/asphalt,
-/area/vtm/vtr/masquerade/exterior/northwest/northwest_long_beach)
+/obj/effect/decal/wallpaper/stone,
+/turf/closed/wall/vampwall/rich,
+/area/vtm/vtr/elysium/interior/central/castle_theater)
 "qru" = (
 /obj/structure/chair/stool,
 /turf/open/floor/plating/vampcanalplating,
@@ -13377,6 +13371,12 @@
 /obj/structure/window/reinforced,
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/southwest/gun_store)
+"qIg" = (
+/obj/machinery/light/prince{
+	pixel_y = 32
+	},
+/turf/open/floor/plating/parquetry,
+/area/vtm/vtr/elysium/interior/central/castle_theater)
 "qIm" = (
 /obj/effect/decal/bordur/corner{
 	dir = 1
@@ -14101,10 +14101,6 @@
 	},
 /turf/open/floor/plating/sidewalk,
 /area/vtm/vtr/masquerade/exterior/northwest/northwest_long_beach)
-"rvg" = (
-/obj/effect/decal/wallpaper/stone,
-/turf/closed/wall/vampwall/rich,
-/area/vtm/vtr/elysium/interior/central/castle_theater)
 "rvw" = (
 /obj/machinery/light/prince{
 	dir = 4
@@ -14667,9 +14663,6 @@
 	},
 /turf/open/floor/plating/vampwood,
 /area/vtm/vtr/masquerade/interior/southwest/warehouse)
-"sbj" = (
-/turf/closed/wall/vampwall/rich,
-/area/vtm/vtr/elysium/interior/central/castle_theater)
 "sbG" = (
 /obj/structure/closet/secure_closet/weapons{
 	pixel_y = 10
@@ -18141,10 +18134,9 @@
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/exterior/northeast/northeast_long_beach)
 "vQC" = (
-/obj/structure/foodrack{
-	dir = 4;
-	pixel_x = -10;
-	pixel_y = 13
+/obj/structure/closet/crate/bin{
+	pixel_x = 0;
+	pixel_y = 10
 	},
 /turf/open/floor/plating/circled,
 /area/vtm/vtr/masquerade/interior/northwest/gas_station)
@@ -19108,12 +19100,6 @@
 	},
 /turf/open/floor/plating/vampcarpet,
 /area/vtm/vtr/masquerade/interior/northeast/bright_house)
-"wVI" = (
-/obj/structure/vampdoor/wood{
-	dir = 4
-	},
-/turf/open/floor/plating/parquetry,
-/area/vtm/vtr/elysium/interior/central/castle_theater)
 "wWj" = (
 /obj/structure/chair/office/light{
 	dir = 4
@@ -19598,6 +19584,9 @@
 /obj/structure/vampdoor/old,
 /turf/open/floor/plating/vampcanalplating,
 /area/vtm/vtr/masquerade/interior/northwest/abandoned_store_spooky)
+"xDs" = (
+/turf/closed/wall/vampwall/rich,
+/area/vtm/vtr/elysium/interior/central/castle_theater)
 "xDC" = (
 /obj/structure/closet,
 /obj/item/storage/box/bodybags,
@@ -19655,6 +19644,12 @@
 /obj/effect/decal/trash,
 /turf/open/floor/plating/concrete,
 /area/vtm/vtr/masquerade/exterior/northeast/northeast_long_beach)
+"xGT" = (
+/obj/structure/vampdoor/wood{
+	dir = 4
+	},
+/turf/open/floor/plating/parquetry,
+/area/vtm/vtr/elysium/interior/central/castle_theater)
 "xGU" = (
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/southeast/queen_lilith)
@@ -95511,7 +95506,7 @@ oWd
 oWd
 oWd
 ghk
-sft
+oWd
 oWd
 oWd
 ghk
@@ -96029,7 +96024,7 @@ oWd
 oWd
 oWd
 tNc
-qro
+oWd
 oWd
 oWd
 oWd
@@ -113010,7 +113005,7 @@ mXL
 uLs
 mXL
 mXL
-mXL
+fVC
 vis
 dqo
 cRD
@@ -113486,12 +113481,12 @@ nXf
 nXf
 nXf
 nXf
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
 smH
 bMP
 bMP
@@ -113737,13 +113732,13 @@ gkm
 ure
 nQr
 cMx
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
 hIJ
 mGk
 mGk
@@ -113994,7 +113989,7 @@ gkm
 ure
 nQr
 cMx
-sbj
+xDs
 lQK
 lQK
 fIl
@@ -114251,13 +114246,13 @@ gkm
 ure
 nQr
 day
-sbj
+xDs
 lQK
 lQK
 lQK
 lQK
 lQK
-sbj
+xDs
 gEM
 aCd
 agy
@@ -114508,18 +114503,18 @@ gkm
 ure
 nQr
 cMx
-sbj
+xDs
 oHj
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
-sbj
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
+xDs
 smH
 bMP
 bMP
@@ -114537,7 +114532,7 @@ lZp
 ium
 aUn
 nTM
-pok
+cpj
 irj
 sBh
 sBh
@@ -114764,10 +114759,10 @@ gkm
 gkm
 ure
 nQr
-sbj
-sbj
-wVI
-rvg
+xDs
+xDs
+xGT
+qro
 aHy
 hIJ
 ijK
@@ -115021,9 +115016,9 @@ gkm
 gkm
 ure
 nQr
-rvg
-nsc
-nsc
+qro
+hLk
+hLk
 fwq
 lKL
 npp
@@ -115051,7 +115046,7 @@ qUJ
 aNx
 aNx
 aNx
-cpj
+pok
 irj
 sBh
 sBh
@@ -115278,9 +115273,9 @@ anY
 gkm
 ure
 nQr
-rvg
-jEx
-nsc
+qro
+qIg
+hLk
 fwq
 idi
 byy
@@ -115535,10 +115530,10 @@ anY
 gkm
 ure
 nQr
-rvg
-nsc
-nsc
-nsc
+qro
+hLk
+hLk
+hLk
 vLr
 vqX
 vPl
@@ -115792,10 +115787,10 @@ anY
 gkm
 wyv
 nQr
-rvg
-nsc
-nsc
-nsc
+qro
+hLk
+hLk
+hLk
 vLr
 nGF
 ijK
@@ -116049,8 +116044,8 @@ anY
 gkm
 ure
 nQr
-rvg
-jEx
+qro
+qIg
 rxU
 tYA
 vLr
@@ -116306,10 +116301,10 @@ anY
 gkm
 ure
 nQr
-rvg
-nsc
-nsc
-nsc
+qro
+hLk
+hLk
+hLk
 vLr
 nGF
 xpa
@@ -116563,10 +116558,10 @@ gkm
 gkm
 ure
 nQr
-rvg
-nsc
-nsc
-nsc
+qro
+hLk
+hLk
+hLk
 vLr
 byy
 guR
@@ -116820,9 +116815,9 @@ gkm
 gkm
 ure
 nQr
-rvg
-jEx
-nsc
+qro
+qIg
+hLk
 fwq
 aWX
 vqX
@@ -117077,9 +117072,9 @@ gkm
 gkm
 ure
 nQr
-rvg
-nsc
-nsc
+qro
+hLk
+hLk
 fwq
 lKL
 lQj
@@ -117334,10 +117329,10 @@ gkm
 gkm
 ure
 nQr
-sbj
-sbj
-wVI
-rvg
+xDs
+xDs
+xGT
+qro
 aHy
 gwq
 xpa
@@ -117592,13 +117587,13 @@ gkm
 ure
 nQr
 cMx
-sbj
+xDs
 mPL
-sbj
-sbj
-sbj
-sbj
-sbj
+xDs
+xDs
+xDs
+xDs
+xDs
 smH
 smH
 smH
@@ -117849,13 +117844,13 @@ gkm
 ure
 nQr
 day
-sbj
+xDs
 lQK
 lQK
 lQK
 lQK
 lQK
-rvg
+qro
 jzQ
 rAK
 uAG
@@ -118106,13 +118101,13 @@ gkm
 ure
 nQr
 cMx
-sbj
+xDs
 lQK
 lQK
 tXH
 lQK
 lQK
-rvg
+qro
 vqk
 rAK
 uip
@@ -118363,13 +118358,13 @@ gkm
 ure
 nQr
 cMx
-sbj
-sbj
-sbj
-sbj
-sbj
+xDs
+xDs
+xDs
+xDs
+xDs
 dAb
-sbj
+xDs
 smH
 rRY
 smH
@@ -125069,7 +125064,7 @@ thT
 bAz
 sAr
 gkm
-ujY
+gkm
 gkm
 gkm
 gkm
@@ -125326,7 +125321,7 @@ qpy
 bAz
 gkm
 anY
-gkm
+ujY
 anY
 gkm
 anY
@@ -180300,15 +180295,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-sbj
-sbj
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+xDs
+xDs
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 bEH
 hIJ
@@ -180557,15 +180552,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 aCd
 lQK
@@ -180814,15 +180809,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 nnJ
 lQK
@@ -181071,15 +181066,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 bft
 lQK
@@ -181328,15 +181323,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 sar
 lQK
@@ -181585,15 +181580,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 bhS
 oSN
@@ -181842,15 +181837,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 cUW
 lQK
@@ -182099,15 +182094,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 bft
 lQK
@@ -182356,15 +182351,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 rsE
 lQK
@@ -182613,15 +182608,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 aCd
 lQK
@@ -182870,15 +182865,15 @@ nTg
 nTg
 nTg
 nTg
-sbj
-sbj
-sbj
-sbj
-cWj
-cWj
-cWj
-cWj
-cWj
+xDs
+xDs
+xDs
+xDs
+kVM
+kVM
+kVM
+kVM
+kVM
 mGG
 bEH
 gwq
