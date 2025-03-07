@@ -140,7 +140,6 @@
 
 //Get all active connection datums for a single character
 /mob/living/proc/get_character_connections()
-	log_sql("i reached char connections proc.")
 	var/list/connection_list = list()
 	var/datum/db_query/query = SSdbcore.NewQuery(
 		"SELECT \
@@ -155,13 +154,10 @@
 		ORDER BY group_type, member_type DESC", 
 		list("ckey" = ckey, "char_name" = true_real_name)
 	)
-	log_sql("i built char connections query.")
 
 	if(!query.Execute(async = TRUE))
-		log_sql("get char connections proc execute failed.")
 		qdel(query)
 		return null
-	log_sql("i executed char connections query.")
 	while(query.NextRow())
 		var/datum/character_connection/connection = new(
 			query.item[1],
@@ -176,7 +172,6 @@
 			query.item[10]
 		)
 		connection_list += connection
-		log_sql("added char connections to list.")
 	qdel(query)
 	return connection_list
 

@@ -1,7 +1,7 @@
 /mob/living/proc/retire_connection(deleting_group_id)
 	if(!deleting_group_id || !mind)
 		return
-	if(alert(src, "Are you sure?", "Delete Connection", "I'm Sure", "Cancel") != "I'm Sure")
+	if(alert(src, "Are you sure?", "Delete Connection [deleting_group_id]", "I'm Sure", "Cancel") != "I'm Sure")
 		return
 	for(var/datum/character_connection/connection in src.mind.character_connections)
 		if(connection.group_id == deleting_group_id)

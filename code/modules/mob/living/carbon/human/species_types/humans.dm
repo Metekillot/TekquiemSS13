@@ -48,7 +48,7 @@
 				dat += "."
 			dat += "<BR>"
 			for(var/datum/character_connection/connection in host.mind.character_connections)
-				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[REF(connection.group_id)]'>Delete</a><BR>"
+				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[connection.group_id]'>Delete</a><BR>"
 			dat += "<BR>"
 		if(host.mind.special_role)
 			for(var/datum/antagonist/A in host.mind.antag_datums)
@@ -89,7 +89,7 @@
 			if(host.bank_id == account.bank_id)
 				dat += "<b>My bank account code is: [account.code]</b><BR>"
 				break
-		host << browse(dat, "window=vampire;size=400x450;border=1;can_resize=1;can_minimize=0")
+		host << browse(dat, "window=vampire;size=500x450;border=1;can_resize=1;can_minimize=0")
 		onclose(host, "vampire", src)
 
 /datum/action/humaninfo/Topic(href, href_list)
