@@ -64,6 +64,7 @@
 		return FALSE
 	if(query.NextRow())
 		return TRUE
+	qdel(query)
 	return FALSE
 
 
