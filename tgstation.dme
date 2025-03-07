@@ -3465,6 +3465,7 @@
 #include "code\modules\vtr13\connections\connection_get_procs.dm"
 #include "code\modules\vtr13\connections\connection_insert_procs.dm"
 #include "code\modules\vtr13\connections\connection_update_procs.dm"
+#include "code\modules\vtr13\connections\embraces\create_embrace_connection.dm"
 #include "code\modules\vtr13\effects\queen_lilith.dm"
 #include "code\modules\vtr13\items\ids.dm"
 #include "code\modules\vtr13\items\keys.dm"

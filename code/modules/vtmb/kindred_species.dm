@@ -495,7 +495,7 @@
 								BLOODBONDED_prefs_v.generation = 13 // Game always set to 13 anyways, 14 is not possible.
 								BLOODBONDED_prefs_v.clane = new /datum/vampireclane/caitiff()
 								BLOODBONDED_prefs_v.save_character()
-
+							BLOODBONDED.create_embrace_connection(H)
 					else
 
 						to_chat(owner, "<span class='notice'>[BLOODBONDED] is totally <b>DEAD</b>!</span>")
