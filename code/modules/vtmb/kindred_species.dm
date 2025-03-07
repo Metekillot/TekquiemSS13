@@ -216,7 +216,7 @@
 
 /datum/action/vampireinfo/Topic(href, href_list)
 	if(href_list["delete_connection"])
-		host.retire_connection(href_list["delete_connection"])
+		host.retire_connection(text2num(href_list["delete_connection"]))
 
 /datum/species/kindred/on_species_gain(mob/living/carbon/human/C)
 	. = ..()
