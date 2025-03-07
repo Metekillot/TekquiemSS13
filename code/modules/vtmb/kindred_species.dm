@@ -73,12 +73,8 @@
 					dat += ", carrying the [host.mind.assigned_role] role."
 			if(!host.mind.assigned_role)
 				dat += "."
-			dat += "<BR><BR>"
-			for(var/datum/character_connection/connection in host.mind.character_connections)
-				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[connection.group_id]'>Delete</a><BR>"
-			dat += "<BR><BR>"
 		if(host.generation)
-			dat += "I'm from [host.generation] generation.<BR>"
+			dat += "I'm from the [host.generation] generation.<BR>"
 		if(host.mind.special_role)
 			for(var/datum/antagonist/A in host.mind.antag_datums)
 				if(A.objectives)
@@ -210,13 +206,18 @@
 		for(var/datum/vtm_bank_account/account in GLOB.bank_account_list)
 			if(host.bank_id == account.bank_id)
 				dat += "<b>My bank account code is: [account.code]</b><BR>"
+		if(host.mind)
+			dat += "<BR>"
+			for(var/datum/character_connection/connection in host.mind.character_connections)
+				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[connection.group_id]'>Delete</a><BR>"
+			dat += "<BR>"
 		host << browse(dat, "window=vampire;size=500x450;border=1;can_resize=1;can_minimize=0")
 		onclose(host, "vampire", src)
 
 /datum/action/vampireinfo/Topic(href, href_list)
 	if(href_list["delete_connection"])
 		host.retire_connection(text2num(href_list["delete_connection"]))
-	Trigger()
+		Trigger()
 
 /datum/species/kindred/on_species_gain(mob/living/carbon/human/C)
 	. = ..()
