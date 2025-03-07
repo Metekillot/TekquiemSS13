@@ -23,6 +23,8 @@
 		return FALSE
 	if(query.NextRow())
 		return FALSE
+	
+	qdel(query)
 	return TRUE
 
 
@@ -138,7 +140,7 @@
 
 //Get all active connection datums for a single character
 /mob/living/proc/get_character_connections()
-	var/connection_list = null
+	var/list/connection_list = list()
 	var/datum/db_query/query = SSdbcore.NewQuery(
 		"SELECT \
 			id, group_id, group_type, member_type, \
@@ -153,7 +155,8 @@
 		list("ckey" = ckey, "char_name" = true_real_name)
 	)
 
-	if(!query.Execute())
+	if(!query.Execute(async = TRUE))
+		log_query_debug("get char connections proc execute failed.")
 		qdel(query)
 		return null
 
@@ -170,9 +173,9 @@
 			query.item[9],
 			query.item[10]
 		)
-		LAZYADD(connection_list, connection)
+		connection_list += connection
+		log_query_debug("added char connections to list.")
 	qdel(query)
-	
 	return connection_list
 
 //Get all active connection datums for a single character
