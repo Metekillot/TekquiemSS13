@@ -7,7 +7,7 @@
 		WHERE \
 			player_ckey = :ckey AND \
 			character_name = :char_name AND \
-			date_ended = NULL AND \
+			date_ended IS NULL AND \
 			group_type = :bb3 AND \
 			member_type = :member_type \
 		LIMIT 1", 
@@ -38,7 +38,7 @@
 		WHERE \
 			player_ckey = :ckey AND \
 			character_name = :char_name AND \
-			date_ended = NULL AND \
+			date_ended IS NULL AND \
 			group_type IN ( :bb2 , :bb1 ) AND \
 			round_id_established = :round_id AND \
 			member_type = :member_type AND \
@@ -48,7 +48,7 @@
 				WHERE \
 					player_ckey = :domitor_ckey AND \
 					character_name = :domitor_name AND \
-					date_ended = NULL ) \
+					date_ended IS NULL ) \
 		LIMIT 1",
 		list(
 			"ckey" = ckey,
@@ -82,7 +82,7 @@
 		WHERE \
 			player_ckey = :ckey AND \
 			character_name = :char_name AND \
-			date_ended = NULL AND \
+			date_ended IS NULL AND \
 			group_type IN ( :bb3 , :bb2 , :bb1 ) AND \
 			member_type = :member_type AND \
 			group_id IN ( \
@@ -91,7 +91,7 @@
 				WHERE \
 					player_ckey = :domitor_ckey AND \
 					character_name = :domitor_name AND \
-					date_ended = NULL ) \
+					date_ended IS NULL ) \
 		LIMIT 1",
 		list(
 			"ckey" = ckey,
@@ -140,6 +140,7 @@
 
 //Get all active connection datums for a single character
 /mob/living/proc/get_character_connections()
+	log_sql("i reached char connections proc.")
 	var/list/connection_list = list()
 	var/datum/db_query/query = SSdbcore.NewQuery(
 		"SELECT \
@@ -150,16 +151,17 @@
 		WHERE \
 			player_ckey = :ckey AND \
 			character_name = :char_name AND \
-			date_ended = NULL \
+			date_ended IS NULL \
 		ORDER BY group_type, member_type DESC", 
 		list("ckey" = ckey, "char_name" = true_real_name)
 	)
+	log_sql("i built char connections query.")
 
 	if(!query.Execute(async = TRUE))
 		log_sql("get char connections proc execute failed.")
 		qdel(query)
 		return null
-
+	log_sql("i executed char connections query.")
 	while(query.NextRow())
 		var/datum/character_connection/connection = new(
 			query.item[1],
@@ -193,7 +195,7 @@
 			player_ckey = :ckey AND \
 			character_name = :char_name AND \
 			group_id = :grp_id \
-			date_ended = NULL \
+			date_ended IS NULL \
 		LIMIT 1", 
 		list("ckey" = ckey, "char_name" = true_real_name, "grp_id" = group_id)
 	)

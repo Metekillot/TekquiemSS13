@@ -1,54 +1,53 @@
 //Crude tools for converting skintone saves, hopefully I can destroy it later
 /proc/convert_old_skintone(skin_tone)
-	. = 0
 	switch(skin_tone)
 		if("caucasian1")
-			. = CAUCASIAN_1
+			return CAUCASIAN_1
 		if("caucasian2")
-			. = CAUCASIAN_2
+			return CAUCASIAN_2
 		if("caucasian3")
-			. = CAUCASIAN_3
+			return CAUCASIAN_3
 		if("latino")
-			. = LATINO
+			return LATINO
 		if("mediterranean")
-			. = MEDITERRANEAN
+			return MEDITERRANEAN
 		if("asian1")
-			. = ASIAN_1
+			return ASIAN_1
 		if("asian2")
-			. = ASIAN_2
+			return ASIAN_2
 		if("arab")
-			. = ARAB
+			return ARAB
 		if("indian")
-			. = INDIAN
+			return INDIAN
 		if("african1")
-			. = AFRICAN_1
+			return AFRICAN_1
 		if("african2")
-			. = AFRICAN_2
+			return AFRICAN_2
 		if("albino")
-			. = ALBINO
+			return ALBINO
 		if("orange")
-			. = ORANGE
+			return ORANGE
 		if("vamp1")
-			. = VAMP_1
+			return VAMP_1
 		if("vamp2")
-			. = VAMP_2
+			return VAMP_2
 		if("vamp3")
-			. = VAMP_3
+			return VAMP_3
 		if("vamp4")
-			. = VAMP_4
+			return VAMP_4
 		if("vamp5")
-			. = VAMP_5
+			return VAMP_5
 		if("vamp6")
-			. = VAMP_6
+			return VAMP_6
 		if("vamp7")
-			. = VAMP_7
+			return VAMP_7
 		if("vamp8")
-			. = VAMP_8
+			return VAMP_8
 		if("vamp9")
-			. = VAMP_9
+			return VAMP_9
 		if("vamp10")
-			. = VAMP_10
+			return VAMP_10
 		if("vamp11")
-			. = VAMP_11
-		else
-			. = skin_tone
+			return VAMP_11
+	
+	return skin_tone

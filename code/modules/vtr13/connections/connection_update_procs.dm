@@ -18,7 +18,7 @@
 					WHERE \
 						ckey = :ckey AND \
 						character_name = :char_name AND \
-						date_ended = NULL AND \
+						date_ended IS NULL AND \
 						member_type = :m_type AND \
 						group_type IN (:bb1,:bb2,:bb3)\
 				)",
