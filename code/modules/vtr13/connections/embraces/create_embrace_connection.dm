@@ -1,5 +1,5 @@
 /mob/living/proc/create_embrace_connection(mob/living/carbon/human/sire)
-	var/sire_description = "I am [sire.true_real_name]'s sire."
+	var/sire_description = "I am [src.true_real_name]'s sire."
 	var/childe_description = "I am [sire.true_real_name]'s childe."
 
 	var/new_group_id = src.insert_character_connection(
