@@ -156,7 +156,7 @@
 	)
 
 	if(!query.Execute(async = TRUE))
-		log_query_debug("get char connections proc execute failed.")
+		log_sql("get char connections proc execute failed.")
 		qdel(query)
 		return null
 
@@ -174,7 +174,7 @@
 			query.item[10]
 		)
 		connection_list += connection
-		log_query_debug("added char connections to list.")
+		log_sql("added char connections to list.")
 	qdel(query)
 	return connection_list
 

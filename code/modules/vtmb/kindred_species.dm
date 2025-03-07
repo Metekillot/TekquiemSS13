@@ -44,6 +44,7 @@
 
 /datum/action/vampireinfo/Trigger()
 	if(host)
+		host.mind.character_connections = host.get_character_connections()
 		var/dat = {"
 			<style type="text/css">
 
@@ -73,9 +74,10 @@
 					dat += ", carrying the [host.mind.assigned_role] role."
 			if(!host.mind.assigned_role)
 				dat += "."
-			dat += "<BR>"
+			dat += "<BR><BR>"
 			for(var/datum/character_connection/connection in host.mind.character_connections)
 				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[REF(connection.group_id)]'>Delete</a><BR>"
+			dat += "<BR><BR>"
 		if(host.generation)
 			dat += "I'm from [host.generation] generation.<BR>"
 		if(host.mind.special_role)
