@@ -26,8 +26,8 @@
 				return 3
 		retire_existing_connection = TRUE
 
-	message_admins("[ADMIN_LOOKUPFLW(H)] has bloodbonded [ADMIN_LOOKUPFLW(src)] with [bond_type].")
-	log_game("[key_name(H)] has bloodbonded [key_name(src)] with [bond_type].")
+	message_admins("[ADMIN_LOOKUPFLW(domitor)] has bloodbonded [ADMIN_LOOKUPFLW(src)] with [bond_type].")
+	log_game("[key_name(domitor)] has bloodbonded [key_name(src)] with [bond_type].")
 
 	var/purge_other_blood_bonds = FALSE
 	switch(bond_type)
@@ -82,10 +82,11 @@
 	if(purge_other_blood_bonds)
 		retire_all_character_connection_blood_bonds()
 
-	var/new_group_id = insert_character_connection(
+	var/new_group_id = src.insert_character_connection(
 			bond_type, 
 			MEMBER_TYPE_THRALL,
-			thrall_description)
+			thrall_description,
+			null)
 	mind.character_connections = get_character_connections()
 	
 	domitor.insert_character_connection(
