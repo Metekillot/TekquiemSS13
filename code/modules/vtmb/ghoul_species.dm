@@ -14,7 +14,6 @@
 	punchdamagehigh = 20
 	dust_anim = "dust-h"
 	var/mob/living/carbon/human/master
-	var/changed_master = FALSE
 	var/last_vitae = 0
 	var/list/datum/discipline/disciplines = list()
 	selectable = TRUE
@@ -44,8 +43,6 @@
 		if(!host.real_name)
 			dat += "Unknown,"
 		dat += " the ghoul"
-
-		dat += "<BR>"
 		if(host.mind)
 			if(host.mind.assigned_role)
 				if(host.mind.special_role)
@@ -131,13 +128,8 @@
 		onclose(host, "ghoul", src)
 
 /datum/action/ghoulinfo/Topic(href, href_list)
-	if(href_list["delete_connection"] && alert(host, "Are you sure?", "Delete Connection", "I'm Sure", "Cancel") == "I'm Sure")
-		var/deleting_group_id = href_list["delete_connection"]
-		for(var/datum/character_connection/connection in host.mind.character_connections)
-			if(connection.group_id == deleting_group_id)
-				host.retire_character_connection_by_group_id(connection.group_id)
-				break
-		host.mind.character_connections = host.get_character_connections()
+	if(href_list["delete_connection"])
+		host.retire_connection(href_list["delete_connection"])
 
 /datum/species/ghoul/on_species_gain(mob/living/carbon/human/C)
 	..()

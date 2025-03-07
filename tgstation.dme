@@ -3458,6 +3458,7 @@
 #include "code\modules\vtr13\areas\interior\nightclub\nightclub_elysium.dm"
 #include "code\modules\vtr13\areas\interior\police_station\police_lockup.dm"
 #include "code\modules\vtr13\areas\interior\police_station\police_station.dm"
+#include "code\modules\vtr13\connections\retire_connection.dm"
 #include "code\modules\vtr13\connections\blood_bonds\can_be_blood_bonded_by.dm"
 #include "code\modules\vtr13\connections\blood_bonds\create_blood_bond_to.dm"
 #include "code\modules\vtr13\connections\character_connection.dm"

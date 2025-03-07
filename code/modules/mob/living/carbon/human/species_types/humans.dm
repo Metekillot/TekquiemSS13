@@ -93,13 +93,8 @@
 		onclose(host, "vampire", src)
 
 /datum/action/humaninfo/Topic(href, href_list)
-	if(href_list["delete_connection"] && alert(host, "Are you sure?", "Delete Connection", "I'm Sure", "Cancel") == "I'm Sure")
-		var/deleting_group_id = href_list["delete_connection"]
-		for(var/datum/character_connection/connection in host.mind.character_connections)
-			if(connection.group_id == deleting_group_id)
-				host.retire_character_connection_by_group_id(connection.group_id)
-				break
-		host.mind.character_connections = host.get_character_connections()
+	if(href_list["delete_connection"])
+		host.retire_connection(href_list["delete_connection"])
 
 /datum/species/human/on_species_gain(mob/living/carbon/human/C)
 	. = ..()

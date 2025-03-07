@@ -213,13 +213,8 @@
 		onclose(host, "vampire", src)
 
 /datum/action/vampireinfo/Topic(href, href_list)
-	if(href_list["delete_connection"] && alert(host, "Are you sure?", "Delete Connection", "I'm Sure", "Cancel") == "I'm Sure")
-		var/deleting_group_id = href_list["delete_connection"]
-		for(var/datum/character_connection/connection in host.mind.character_connections)
-			if(connection.group_id == deleting_group_id)
-				host.retire_character_connection_by_group_id(connection.group_id)
-				break
-		host.mind.character_connections = host.get_character_connections()
+	if(href_list["delete_connection"])
+		host.retire_connection(href_list["delete_connection"])
 
 /datum/species/kindred/on_species_gain(mob/living/carbon/human/C)
 	. = ..()
@@ -373,8 +368,6 @@
 			if(do_mob(owner, BLOODBONDED, 10 SECONDS))
 				H.bloodpool = max(0, H.bloodpool-2)
 				giving = FALSE
-
-				var/new_master = FALSE
 				BLOODBONDED.drunked_of |= "[H.dna.real_name]"
 
 				if(BLOODBONDED.stat == DEAD && !iskindred(BLOODBONDED))
@@ -512,9 +505,6 @@
 					to_chat(owner, "<span class='notice'>You successfuly fed [BLOODBONDED] with vitae.</span>")
 					to_chat(BLOODBONDED, "<span class='userlove'>You feel good when you drink this <b>BLOOD</b>...</span>")
 
-					message_admins("[ADMIN_LOOKUPFLW(H)] has bloodbonded [ADMIN_LOOKUPFLW(BLOODBONDED)].")
-					log_game("[key_name(H)] has bloodbonded [key_name(BLOODBONDED)].")
-
 					if(H.reagents)
 						if(length(H.reagents.reagent_list))
 							H.reagents.trans_to(BLOODBONDED, min(10, H.reagents.total_volume), transfered_by = H, methods = VAMPIRE)
@@ -534,50 +524,17 @@
 					if(!isghoul(H.pulling) && istype(H.pulling, /mob/living/carbon/human/npc))
 						var/mob/living/carbon/human/npc/NPC = H.pulling
 						if(NPC.ghoulificate(owner))
-							new_master = TRUE
 							NPC.roundstart_vampire = FALSE
 					var/blood_bond_result = 0
+
+					//apply the blood bond to the database
 					if(BLOODBONDED.mind)
 						blood_bond_result = BLOODBONDED.create_blood_bond_to(H)
 						if(blood_bond_result == 3 && BLOODBONDED.mind.enslaved_to != owner)
 							BLOODBONDED.mind.enslave_mind_to_creator(owner)
-							new_master = TRUE
-					if(isghoul(BLOODBONDED) && blood_bond_result == 3)
+					if(isghoul(BLOODBONDED) && blood_bond_result > 1)
 						var/datum/species/ghoul/G = BLOODBONDED.dna.species
-						G.master = owner
 						G.last_vitae = world.time
-						if(new_master)
-							G.changed_master = TRUE
-					else if(!iskindred(BLOODBONDED) && !isnpc(BLOODBONDED))
-						var/save_data_g = FALSE
-						BLOODBONDED.set_species(/datum/species/ghoul)
-						BLOODBONDED.clane = null
-						var/response_g = input(BLOODBONDED, "Do you wish to keep being a ghoul on your save slot?(Yes will be a permanent choice and you can't go back)") in list("Yes", "No")
-//						if(BLOODBONDED.hud_used)
-//							var/datum/hud/human/HU = BLOODBONDED.hud_used
-//							HU.create_ghoulic()
-						BLOODBONDED.roundstart_vampire = FALSE
-						var/datum/species/ghoul/G = BLOODBONDED.dna.species
-						G.master = owner
-						G.last_vitae = world.time
-						if(new_master)
-							G.changed_master = TRUE
-						if(response_g == "Yes")
-							save_data_g = TRUE
-						else
-							save_data_g = FALSE
-						if(save_data_g)
-							var/datum/preferences/BLOODBONDED_prefs_g = BLOODBONDED.client.prefs
-							if(BLOODBONDED_prefs_g.discipline_types.len == 3)
-								for (var/i in 1 to 3)
-									var/removing_discipline = BLOODBONDED_prefs_g.discipline_types[1]
-									if (removing_discipline)
-										var/index = BLOODBONDED_prefs_g.discipline_types.Find(removing_discipline)
-										BLOODBONDED_prefs_g.discipline_types.Cut(index, index + 1)
-										BLOODBONDED_prefs_g.discipline_levels.Cut(index, index + 1)
-							BLOODBONDED_prefs_g.pref_species.name = "Ghoul"
-							BLOODBONDED_prefs_g.pref_species.id = "ghoul"
-							BLOODBONDED_prefs_g.save_character()
 			else
 				giving = FALSE
 
