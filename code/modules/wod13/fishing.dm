@@ -11,34 +11,22 @@
 /obj/item/food/fish/shark
 	name = "leopard shark"
 	icon_state = "fish1"
-
-/obj/item/food/fish/shark/Initialize()
-	. = ..()
-	AddComponent(/datum/component/selling, 400, "fish", FALSE)
+	cost = 400
 
 /obj/item/food/fish/tune
 	name = "tune"
 	icon_state = "fish2"
-
-/obj/item/food/fish/tune/Initialize()
-	. = ..()
-	AddComponent(/datum/component/selling, 125, "fish", FALSE)
+	cost = 125
 
 /obj/item/food/fish/catfish
 	name = "catfish"
 	icon_state = "fish3"
-
-/obj/item/food/fish/catfish/Initialize()
-	. = ..()
-	AddComponent(/datum/component/selling, 50, "fish", FALSE)
+	cost = 50
 
 /obj/item/food/fish/crab
 	name = "crab"
 	icon_state = "fish4"
-
-/obj/item/food/fish/crab/Initialize()
-	. = ..()
-	AddComponent(/datum/component/selling, 200, "fish", FALSE)
+	cost = 200
 
 /obj/item/fishing_rod
 	name = "fishing rod"

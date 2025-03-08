@@ -386,8 +386,6 @@ GLOBAL_LIST_EMPTY(p25_tranceivers)
 	if(!A)
 		return
 
-	if(!isMasqueradeEnforced(A))
-		return
 	var/coords = "[location.x]:[location.y]"
 	var/message = ""
 	var/should_announce = FALSE

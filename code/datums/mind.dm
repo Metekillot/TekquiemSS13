@@ -144,8 +144,6 @@
 		new_character.client.init_verbs() // re-initialize character specific verbs
 	current.update_atom_languages()
 
-	SEND_SIGNAL(src, COMSIG_MIND_TRANSFERRED, new_character)
-
 /datum/mind/proc/init_known_skills()
 	for (var/type in GLOB.skill_types)
 		known_skills[type] = list(SKILL_LEVEL_NONE, 0)
@@ -813,13 +811,10 @@
 	if(!mind.name)
 		mind.name = real_name
 	mind.current = src
-	if(!CONFIG_GET(flag/disable_area_ambiance))
-		mind.AddComponent(/datum/component/ambiance_memory)
 
 /mob/living/carbon/mind_initialize()
 	..()
 	last_mind = mind
-	mind.refresh_memory()
 
 //HUMAN
 /mob/living/carbon/human/mind_initialize()

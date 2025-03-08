@@ -43,6 +43,10 @@
 	v_duty = "You are the Seneschal, the right hand of the Prince. Rule over the Invictus in his name. Work with the Sheriff to keep the Traditions secure. Work with the leaders of the other covenants to keep the masses in line."
 	experience_addition = 25
 
+/datum/job/vamp/vtr/seneschal_vtr/announce(mob/living/carbon/human/H)
+	..()
+	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, PROC_REF(minor_announce), "Seneschal [H.real_name] is in the city!"))
+
 /datum/outfit/job/seneschal_vtr
 	name = "Seneschal"
 	jobtype = /datum/job/vamp/vtr/seneschal_vtr
@@ -56,7 +60,7 @@
 	shoes = /obj/item/clothing/shoes/vampire
 	l_pocket = /obj/item/vamp/phone/seneschal_vtr
 	r_pocket = /obj/item/vamp/keys/seneschal_vtr
-	backpack_contents = list(/obj/item/gun/ballistic/automatic/vampire/deagle=1, /obj/item/phone_book=1, /obj/item/cockclock=1, /obj/item/flashlight=1, /obj/item/masquerade_contract=1, /obj/item/vamp/creditcard/prince=1)
+	backpack_contents = list(/obj/item/gun/ballistic/automatic/vampire/deagle=1, /obj/item/phone_book=1, /obj/item/passport=1, /obj/item/cockclock=1, /obj/item/flashlight=1, /obj/item/masquerade_contract=1, /obj/item/vamp/creditcard/prince=1)
 
 
 	backpack = /obj/item/storage/backpack

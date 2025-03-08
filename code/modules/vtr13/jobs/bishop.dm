@@ -39,7 +39,7 @@
 	r_pocket = /obj/item/flashlight
 	l_hand = /obj/item/vamp/keys/bishop
 	back = /obj/item/storage/backpack/satchel
-	backpack_contents = list(/obj/item/vamp/creditcard=1)
+	backpack_contents = list(/obj/item/passport=1, /obj/item/vamp/creditcard=1)
 
 ///datum/outfit/job/bishop/pre_equip(mob/living/carbon/human/H)
 //	..()

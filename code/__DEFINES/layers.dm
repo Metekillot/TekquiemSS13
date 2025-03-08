@@ -132,13 +132,10 @@
 #define CAMERA_STATIC_LAYER 19
 #define CAMERA_STATIC_RENDER_TARGET "CAMERA_STATIC_PLANE"
 
-///Popup Chat Messages
 #define RUNECHAT_PLANE 20
-/// Plane for balloon text (text that fades up)
-#define BALLOON_CHAT_PLANE 21
 
-#define ATMOS_GROUP_PLANE 22
-#define ATMOS_GROUP_LAYER 22
+#define ATMOS_GROUP_PLANE 21
+#define ATMOS_GROUP_LAYER 21
 
 //HUD layer defines
 

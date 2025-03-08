@@ -355,7 +355,7 @@
 					call_sound = 'code/modules/wod13/sounds/nokia.ogg'
 					to_chat(usr, "<span class='notice'>Code activated.</span>")
 				else if(choosed_number == "#666")
-					call_sound = 'sound/mobs/humanoids/human/scream/malescream_6.ogg'
+					call_sound = 'sound/voice/human/malescream_6.ogg'
 					to_chat(usr, "<span class='notice'>Code activated.</span>")
 				else if(choosed_number == "#34")
 					if(ishuman(usr))
@@ -670,7 +670,7 @@
 						call_sound = 'code/modules/wod13/sounds/nokia.ogg'
 						to_chat(usr, "<span class='notice'>Code activated.</span>")
 					else if(choosed_number == "#666")
-						call_sound = 'sound/mobs/humanoids/human/scream/malescream_6.ogg'
+						call_sound = 'sound/voice/human/malescream_6.ogg'
 						to_chat(usr, "<span class='notice'>Code activated.</span>")
 					else if(choosed_number == "#34")
 						usr << link("https://rule34.xxx/index.php?page=post&s=list&tags=werewolf")

@@ -14,10 +14,7 @@
 	can_be_tied = FALSE
 	onflooricon = 'code/modules/wod13/onfloor.dmi'
 	body_worn = TRUE
-
-/obj/item/clothing/shoes/vampire/Initialize()
-	. = ..()
-	AddComponent(/datum/component/selling, 5, "shoes", FALSE)
+	cost = 5
 
 /obj/item/clothing/shoes/vampire/brown
 	icon_state = "shoes_brown"

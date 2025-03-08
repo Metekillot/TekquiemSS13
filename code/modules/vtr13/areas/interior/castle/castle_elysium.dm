@@ -3,5 +3,5 @@
 	icon_state = "theatre"
 	music = /datum/vampiremusic/santamonica
 	fire_controled = TRUE
-
-	ambiance_message = " elge needs to write entering the castle's elysium or nix this"
+	mood_bonus = 1
+	mood_message = "<span class='notice'> elge needs to write entering the castle's elysium or nix this</span>"

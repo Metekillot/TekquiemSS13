@@ -24,17 +24,6 @@
 	experience_addition = 15
 	allowed_bloodlines =  list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 	known_contacts = list("Clinic Director")
-	alt_titles = list(
-		"Medical Student",
-		"Intern",
-		"Nurse",
-		"Resident",
-		"General Practitioner",
-		"Surgeon",
-		"Physician",
-		"Paramedic",
-		"EMT",
-	)
 
 /datum/outfit/job/doctor_vtr
 	name = "Doctor"
@@ -48,7 +37,7 @@
 	gloves = /obj/item/clothing/gloves/vampire/latex
 	l_pocket = /obj/item/vamp/phone
 	r_pocket = /obj/item/vamp/keys/doctor_vtr
-	backpack_contents = list(/obj/item/cockclock=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1, /obj/item/storage/firstaid/medical=1)
+	backpack_contents = list(/obj/item/passport=1, /obj/item/cockclock=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1, /obj/item/storage/firstaid/medical=1)
 
 	backpack = /obj/item/storage/backpack
 	satchel = /obj/item/storage/backpack/satchel

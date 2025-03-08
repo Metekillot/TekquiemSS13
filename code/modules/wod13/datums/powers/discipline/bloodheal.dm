@@ -20,7 +20,7 @@
 
 	violates_masquerade = FALSE
 
-	cooldown_length = 1 TURNS
+	cooldown_length = 1 * DURATION_TURN
 
 	grouped_powers = list(
 		/datum/discipline_power/bloodheal/one,
