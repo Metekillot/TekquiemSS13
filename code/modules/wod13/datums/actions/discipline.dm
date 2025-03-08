@@ -111,12 +111,15 @@
 			current_button.add_overlay(mutable_appearance(icon_icon, button_icon_state))
 			current_button.button_icon_state = button_icon_state
 
-/datum/action/discipline/proc/switch_level()
+/datum/action/discipline/proc/switch_level(to_advance = 1)
 	SEND_SOUND(owner, sound('code/modules/wod13/sounds/highlight.ogg', 0, 0, 50))
-	if (discipline.known_powers.len >= (discipline.level_casting + 1))
-		discipline.level_casting++
-	else
+
+	if (discipline.level_casting + to_advance > length(discipline.known_powers))
 		discipline.level_casting = 1
+	else if (discipline.level_casting + to_advance < 1)
+		discipline.level_casting = length(discipline.known_powers)
+	else
+		discipline.level_casting += to_advance
 
 	if (targeting)
 		end_targeting()
@@ -174,9 +177,14 @@
 /atom/movable/screen/movable/action_button/Click(location, control, params)
 	if(istype(linked_action, /datum/action/discipline))
 		var/list/modifiers = params2list(params)
+
+		//increase on right click, decrease on shift right click
 		if(LAZYACCESS(modifiers, "right"))
-			var/datum/action/discipline/D = linked_action
-			D.switch_level()
+			var/datum/action/discipline/discipline = linked_action
+			if (LAZYACCESS(modifiers, "alt"))
+				discipline.switch_level(-1)
+			else
+				discipline.switch_level(1)
 			return
 		//TODO: middle click to swap loadout
 	. = ..()
