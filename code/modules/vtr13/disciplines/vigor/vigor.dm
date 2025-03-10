@@ -42,7 +42,7 @@
 	SIGNAL_HANDLER
 	if(!proximity)
 		return
-	if(attacker.a_intent == "harm")
+	if(attacker.a_intent != "harm")
 		return
 	//punching person
 	if(istype(attacked_thing, /mob/living/carbon/human))
@@ -63,7 +63,7 @@
 			car_thing.get_damage(10)
 			car_thing.throw_at(throw_target, rand(4, 6), 4, attacker)
 			violate_masquerade(owner, owner)
-			return COMPONENT_CANCEL_ATTACK_CHAIN
+		return COMPONENT_CANCEL_ATTACK_CHAIN
 
 	//punching door
 	if(istype(attacked_thing, /obj/structure/vampdoor))
