@@ -20,13 +20,16 @@
 /datum/discipline_power/vtr/animalism/possess/can_activate(mob/living/simple_animal/target, alert = FALSE)
 	. = ..()
 	if(possessed_creature)
-		to_chat(owner, span_warning("You are already possessing a creature!</span>"))
+		if(alert)
+			to_chat(owner, span_warning("You are already possessing a creature!</span>"))
 
 	if(!target || !allowed_types.Find(target.type))
-		to_chat(owner, span_warning("You cannot cast [src] on [target]!</span>"))
+		if(alert)
+			to_chat(owner, span_warning("You cannot cast [src] on [target]!</span>"))
 		return FALSE
 	if(target.mind)
-		to_chat(owner, span_warning("[target] resists your possession!"))
+		if(alert)
+			to_chat(owner, span_warning("[target] resists your possession!"))
 		return FALSE
 	
 	
