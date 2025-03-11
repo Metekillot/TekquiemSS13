@@ -138,7 +138,7 @@
 
 /proc/random_skin_tone()
 	return pick(GLOB.skin_tones)
-
+/*
 GLOBAL_LIST_INIT(skin_tones, sortList(list(
 	"albino",
 	"caucasian1",
@@ -153,7 +153,7 @@ GLOBAL_LIST_INIT(skin_tones, sortList(list(
 	"african1",
 	"african2"
 	)))
-
+*/
 GLOBAL_LIST_EMPTY(species_list)
 
 /proc/age2agedescription(age)

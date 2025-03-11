@@ -1,3 +1,4 @@
+/*
 GLOBAL_LIST_INIT(leader_positions, list(
 	"Prince",
 	"Baron",
@@ -58,7 +59,7 @@ GLOBAL_LIST_INIT(clinic_positions, list(
     "Clinic Director",
     "Doctor"
 ))
-
+*/
 GLOBAL_LIST_INIT(neutral_positions, list())
 
 GLOBAL_LIST_INIT(giovanni_positions, list(
@@ -91,6 +92,7 @@ GLOBAL_LIST_INIT(church_positions, list(
 GLOBAL_LIST_INIT(gang_positions, list(
 	"Triad Soldier",
 ))
+*/
 
 GLOBAL_LIST_INIT(ss13, list(
     "SS13",
@@ -98,6 +100,7 @@ GLOBAL_LIST_INIT(ss13, list(
 
 GLOBAL_LIST_INIT(nonhuman_positions, list())
 
+/*
 // job categories for rendering the late join menu
 GLOBAL_LIST_INIT(position_categories, list(
 	EXP_TYPE_CAMARILLIA = list("jobs" = command_positions, "color" = "#9f1111"),
@@ -135,6 +138,7 @@ GLOBAL_LIST_INIT(exp_jobsmap, list(
     EXP_TYPE_NATIONAL_SECURITY = list("titles" = national_security_positions),
 
 ))
+*/
 
 GLOBAL_LIST_INIT(exp_specialmap, list(
 	EXP_TYPE_LIVING = list(), // all living mobs

@@ -275,8 +275,6 @@
 			msg += "[t_He] look[p_s()] extremely disgusted.\n"
 
 	var/apparent_blood_volume = bloodpool
-	if(skin_tone == "albino")
-		apparent_blood_volume -= 3
 	if((apparent_blood_volume >= round(maxbloodpool * 0.5)) && (apparent_blood_volume < maxbloodpool))
 		msg += "[t_He] [t_has] pale skin.\n"
 	else if((apparent_blood_volume >= 1) && (apparent_blood_volume < round(maxbloodpool/2)))
@@ -495,9 +493,17 @@
 
 	if(ishuman(user))
 		. += "<a href='?src=[REF(src)];masquerade=1'>Spot a Masquerade violation</a>"
+	
+	// TFN EDIT ADDITION START: view headshot & big flavortext via examine
+	if(!obscure_name && headshot_link)
+		. += "<a href='?src=[REF(src)];view_headshot=1'>View face closely</a>"
 
 	if(flavor_text)
-		. += "[sanitize_text(flavor_text)]\n"
+		if(length(flavor_text) < 110)
+			. += span_notice("[sanitize_text(flavor_text)]\n")
+		else
+			. += span_notice("[copytext(sanitize_text(flavor_text), 1, 110)]... <a href='?src=[REF(src)];view_flavortext=1'>More...</a>")
+	// TFN EDIT ADDITION END
 
 	var/perpname = get_face_name(get_id_name(""))
 	if(perpname && (HAS_TRAIT(user, TRAIT_SECURITY_HUD) || HAS_TRAIT(user, TRAIT_MEDICAL_HUD)))
