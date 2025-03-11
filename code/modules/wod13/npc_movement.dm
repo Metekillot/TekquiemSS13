@@ -223,7 +223,6 @@
 
 
 /mob/living/carbon/human/npc/proc/route_optimisation()
-	var/sosat = FALSE
 	for(var/mob/M in viewers(7, src))
 		if(M.client)
 			return FALSE
