@@ -335,7 +335,7 @@ Works together with spawning an observer, noted above.
 			ghost.mind = null
 		return ghost
 
-/mob/living/ghostize(can_reenter_corpse = TRUE, aghosted = FALSE, auspex_ghosted = FALSE)
+/mob/living/ghostize(can_reenter_corpse = TRUE)
 	. = ..()
 	if(. && can_reenter_corpse)
 		var/mob/dead/observer/ghost = .

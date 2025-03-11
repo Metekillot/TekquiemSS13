@@ -33,8 +33,6 @@
 	.=..()
 	GLOB.npc_list += src
 	GLOB.alive_npc_list += src
-	if(!istype(src, /mob/living/carbon/human/npc/police) && !istype(src, /mob/living/carbon/human/npc/guard) && !istype(src, /mob/living/carbon/human/npc/bacotell) && !istype(src, /mob/living/carbon/human/npc/bubway) && !istype(src, /mob/living/carbon/human/npc/bouncer))
-		GLOB.boring_npc_list += src
 	add_movespeed_modifier(/datum/movespeed_modifier/npc)
 	return INITIALIZE_HINT_LATELOAD
 
@@ -81,7 +79,6 @@
 	..()
 	GLOB.npc_list -= src
 	GLOB.alive_npc_list -= src
-	GLOB.boring_npc_list -= src
 	SShumannpcpool.npclost()
 
 /mob/living/carbon/human/npc/Life()

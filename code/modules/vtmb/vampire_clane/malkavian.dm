@@ -19,6 +19,10 @@
 	malk_font.Grant(malky)
 	GLOB.malkavian_list += malky
 
+/datum/discipline/dementation/post_gain(mob/living/carbon/human/H)
+	..()
+	H.add_quirk(/datum/quirk/insanity)
+
 /datum/action/cooldown/malk_hivemind
 	name = "Hivemind"
 	desc = "Talk"

@@ -1,11 +1,4 @@
 /mob/living/carbon/human/examine(mob/user)
-
-	//VTR EDIT BEGIN
-	if(disguise_description)
-		SEND_SIGNAL(src, COMSIG_PARENT_EXAMINE, user, disguise_description)
-		return disguise_description
-	//VTR EDIT END
-
 //this is very slightly better than it was because you can use it more places. still can't do \his[src] though.
 	var/t_He = p_they(TRUE)
 	var/t_His = p_their(TRUE)
