@@ -2486,7 +2486,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						return
 
 					var/list/choose_species = list()
-					for (var/key in GLOB.selectable_races)
+					for (var/key in get_selectable_species())
 						var/newtype = GLOB.species_list[key]
 						var/datum/species/selecting_species = new newtype
 						if (!selecting_species.selectable)
