@@ -2276,10 +2276,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 					var/list/archetypes = list()
 					for(var/i in subtypesof(/datum/archetype))
-						archetypes += i
+						var/datum/archetype/the_archetype = i
+						archetypes[initial(the_archetype.name)] = i
 					var/result = tgui_input_list(user, "Select an archetype", "Attributes Selection", sortList(archetypes))
 					if(result)
-						archetype = result
+						archetype = archetypes[result]
 						var/datum/archetype/archetip = new archetype()
 						physique = archetip.start_physique
 						dexterity = archetip.start_dexterity
