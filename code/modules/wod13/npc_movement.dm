@@ -226,9 +226,7 @@
 	var/sosat = FALSE
 	for(var/mob/M in viewers(7, src))
 		if(M.client)
-			sosat = TRUE
-	if(sosat)
-		return FALSE
+			return FALSE
 	return TRUE
 
 /mob/living/carbon/human/npc/proc/handle_automated_movement()
