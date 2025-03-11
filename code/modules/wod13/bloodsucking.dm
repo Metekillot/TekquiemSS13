@@ -15,7 +15,7 @@
 	else
 		return 1
 
-/mob/living/carbon/human/proc/drinksomeblood(var/mob/living/mob, first_drink = FALSE)
+/mob/living/carbon/human/proc/drinksomeblood(var/mob/living/mob)
 	last_drinkblood_use = world.time
 	if(client)
 		client.images -= suckbar
@@ -130,8 +130,6 @@
 			to_chat(src, "<span class='userlove'>[mob]'s blood tastes HEAVENLY...</span>")
 			adjustBruteLoss(-25, TRUE)
 			adjustFireLoss(-25, TRUE)
-			if(first_drink)
-				src.create_blood_bond_to(mob)
 		else
 			to_chat(src, "<span class='warning'>You sip some <b>BLOOD</b> from your victim. It feels good.</span>")
 		bloodpool = min(maxbloodpool, bloodpool+1*max(1, mob.bloodquality-1))

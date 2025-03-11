@@ -167,7 +167,7 @@
 		chosen_department = "engineering"
 	if(oldmind.assigned_role in GLOB.ss13)
 		chosen_department = "medical"
-	if(oldmind.assigned_role in GLOB.ss13)
+	if(oldmind.assigned_role in GLOB.anarch_positions)
 		chosen_department = "science"
 	if(oldmind.assigned_role in GLOB.ss13)
 		chosen_department = "supply"
@@ -186,7 +186,7 @@
 			their_chosen_department = "engineering"
 		if(H.mind.assigned_role in GLOB.ss13)
 			their_chosen_department = "medical"
-		if(H.mind.assigned_role in GLOB.ss13)
+		if(H.mind.assigned_role in GLOB.anarch_positions)
 			their_chosen_department = "science"
 		if(H.mind.assigned_role in GLOB.ss13)
 			their_chosen_department = "supply"

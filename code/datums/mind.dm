@@ -86,8 +86,6 @@
 	//Dharma path
 	var/datum/dharma/dharma
 
-	var/list/character_connections
-
 /datum/mind/New(_key)
 	key = _key
 	martial_art = default_martial_art

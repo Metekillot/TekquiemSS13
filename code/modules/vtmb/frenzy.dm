@@ -133,7 +133,7 @@
 						playsound(src, 'code/modules/wod13/sounds/drinkblood1.ogg', 50, TRUE)
 						L.visible_message("<span class='warning'><b>[src] bites [L]'s neck!</b></span>", "<span class='warning'><b>[src] bites your neck!</b></span>")
 						face_atom(L)
-						H.drinksomeblood(L, TRUE)
+						H.drinksomeblood(L)
 			else
 				step_to(src,frenzy_target,0)
 				face_atom(frenzy_target)
@@ -226,15 +226,15 @@
 			if ("kiasyd")
 				//masquerade breach if eyes are uncovered, short range
 				if (!H.is_eyes_covered())
-					if (H.CheckEyewitness(H, H, 3, FALSE, INFRACTION_TYPE_UGLY))
+					if (H.CheckEyewitness(H, H, 3, FALSE))
 						H.AdjustMasquerade(-1)
 			if ("rotten3")
 				//slightly less range than if fully decomposed
-				if (H.CheckEyewitness(H, H, 5, FALSE, INFRACTION_TYPE_UGLY))
+				if (H.CheckEyewitness(H, H, 5, FALSE))
 					H.AdjustMasquerade(-1)
 			else
 				//gargoyles, nosferatu, skeletons, that kind of thing
-				if (H.CheckEyewitness(H, H, 7, FALSE, INFRACTION_TYPE_UGLY))
+				if (H.CheckEyewitness(H, H, 7, FALSE))
 					H.AdjustMasquerade(-1)
 
 	if(HAS_TRAIT(H, TRAIT_UNMASQUERADE))

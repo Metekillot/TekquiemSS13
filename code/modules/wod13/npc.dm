@@ -74,8 +74,6 @@
 
 	var/list/drop_on_death_list = null
 
-	var/tolerates_ugly = FALSE
-
 /mob/living/carbon/human/npc/LateInitialize()
 	. = ..()
 	if(role_weapons_chances.Find(type))
@@ -85,7 +83,7 @@
 				break
 	if(!my_weapon && my_weapon_type)
 		my_weapon = new my_weapon_type(src)
-
+		
 
 
 	if(my_weapon)
@@ -121,7 +119,7 @@
 /mob/living/carbon/human/npc/doUnEquip(obj/item/I, force, newloc, no_move, invdrop = TRUE, silent = FALSE)
 	if(I && HAS_TRAIT(I, TRAIT_NODROP))
 		return FALSE
-	. = ..()
+	. = ..() 
 //============================================================
 
 
@@ -129,8 +127,7 @@
 	multiplicative_slowdown = 2
 
 /datum/socialrole
-	//For randomizing 
-	//I turned this off, -hex
+	//For randomizing
 	var/list/s_tones = list("albino",
 		"caucasian1",
 		"caucasian2",
@@ -387,7 +384,7 @@
 		else
 			s_names = GLOB.last_names
 		age = rand(socialrole.min_age, socialrole.max_age)
-		skin_tone = pick(GLOB.skin_tones)
+		skin_tone = pick(socialrole.s_tones)
 		if(age >= 55)
 			hair_color = "a2a2a2"
 			facial_hair_color = hair_color
@@ -516,6 +513,15 @@
 			NPC.Annoy(src)
 
 /mob/living/carbon/Move(NewLoc, direct)
+	if(obfuscate_level < 2)
+		if(alpha < 200)
+			playsound(loc, 'code/modules/wod13/sounds/obfuscate_deactivate.ogg', 50, FALSE)
+			alpha = 255
+	if(m_intent != MOVE_INTENT_WALK)
+		if(obfuscate_level < 3)
+			if(alpha < 200)
+				playsound(loc, 'code/modules/wod13/sounds/obfuscate_deactivate.ogg', 50, FALSE)
+				alpha = 255
 	if(ishuman(src))
 		var/mob/living/carbon/human/H = src
 		H.update_shadow()
