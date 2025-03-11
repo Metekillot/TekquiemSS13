@@ -71,8 +71,8 @@ SUBSYSTEM_DEF(job)
 	var/datum/job/job = GetJob(rank)
 	if(!job)
 		return FALSE
-	if (job.species_slots[mob.dna.species.name] >= 0)
-		job.species_slots[mob.dna.species.name]++
+	if (mob?.dna?.species && job.species_slots[mob.dna.species.name] >= 0)
+		job.species_slots[mob.dna?.species.name]++
 	job.current_positions = max(0, job.current_positions - 1)
 
 /datum/controller/subsystem/job/proc/GetJob(rank)
