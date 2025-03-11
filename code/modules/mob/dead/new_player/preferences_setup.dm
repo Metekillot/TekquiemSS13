@@ -125,6 +125,8 @@
 		available_hardcore_quirks -= picked_quirk
 
 /datum/preferences/proc/update_preview_icon()
+	if(!parent) // If we don't have anyone to show, don't waste our time making a preview
+		return
 	// Determine what job is marked as 'High' priority, and dress them up as such.
 	var/datum/job/previewJob
 	var/highest_pref = 0

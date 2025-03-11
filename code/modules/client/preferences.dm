@@ -351,6 +351,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		return coolfont
 
 /datum/preferences/proc/ShowChoices(mob/user)
+	if(!SSatoms.initialized)
+		to_chat(user, span_warning("Please wait for the game to do a little more setup first...!"))
+		return TRUE
 	if(slot_randomized)
 		load_character(default_slot) // Reloads the character slot. Prevents random features from overwriting the slot if saved.
 		slot_randomized = FALSE
@@ -569,8 +572,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						gifts_text += "[ACT.name].<BR>"
 					qdel(ACT)
 				dat += "<b>Initial Gifts:</b> [gifts_text]"
-				var/mob/living/carbon/werewolf/crinos/DAWOF = new(get_turf(parent.mob))
-				var/mob/living/carbon/werewolf/lupus/DAWOF2 = new(get_turf(parent.mob))
+				// These mobs should be made in nullspace to avoid dumping them onto the map somewhere.
+				var/mob/living/carbon/werewolf/crinos/DAWOF = new
+				var/mob/living/carbon/werewolf/lupus/DAWOF2 = new
 
 				DAWOF.sprite_color = werewolf_color
 				DAWOF2.sprite_color = werewolf_color
@@ -2699,7 +2703,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					var/pickedui = input(user, "Choose your UI style.", "Character Preference", UI_style)  as null|anything in sortList(GLOB.available_ui_styles)
 					if(pickedui)
 						UI_style = pickedui
-						if (parent && parent.mob && parent.mob.hud_used)
+						if (parent?.mob?.hud_used)
 							parent.mob.hud_used.update_ui_style(ui_style2icon(UI_style))
 				if("pda_style")
 					var/pickedPDAStyle = input(user, "Choose your PDA style.", "Character Preference", pda_style)  as null|anything in GLOB.pda_styles
@@ -2982,17 +2986,17 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 				if("parallaxup")
 					parallax = WRAP(parallax + 1, PARALLAX_INSANE, PARALLAX_DISABLE + 1)
-					if (parent && parent.mob && parent.mob.hud_used)
+					if (parent?.mob?.hud_used)
 						parent.mob.hud_used.update_parallax_pref(parent.mob)
 
 				if("parallaxdown")
 					parallax = WRAP(parallax - 1, PARALLAX_INSANE, PARALLAX_DISABLE + 1)
-					if (parent && parent.mob && parent.mob.hud_used)
+					if (parent?.mob?.hud_used)
 						parent.mob.hud_used.update_parallax_pref(parent.mob)
 
 				if("ambientocclusion")
 					ambientocclusion = !ambientocclusion
-					if(parent?.screen && parent.screen.len)
+					if(length(parent?.screen))
 						var/atom/movable/screen/plane_master/game_world/PM = locate(/atom/movable/screen/plane_master/game_world) in parent.screen
 						PM.backdrop(parent.mob)
 
