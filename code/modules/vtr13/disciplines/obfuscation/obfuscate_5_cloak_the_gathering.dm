@@ -49,7 +49,7 @@
 		if (NPC.danger_source == target)
 			NPC.danger_source = null
 	
-	target.invisibility = get_obfuscate_level()
+	target.invisibility = OBFUSCATE_LEVEL_2
 
 	cloaked_persons += 1
 
