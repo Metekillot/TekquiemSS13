@@ -66,7 +66,7 @@ GLOBAL_LIST_INIT(giovanni_positions, list(
     "La Squadra",
     "La Famiglia"
 ))
-
+/*
 GLOBAL_LIST_INIT(tzimisce_positions, list(
     "Voivode",
     "Bogatyr",
