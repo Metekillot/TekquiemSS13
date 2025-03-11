@@ -60,6 +60,9 @@
 	/// The player using this Discipline power.
 	var/mob/living/carbon/human/owner
 
+	///if I actually want to bother working with the duration timer system
+	var/bothers_with_duration_timers = TRUE
+
 /datum/discipline_power/New(datum/discipline/discipline)
 	if (discipline)
 		src.discipline = discipline
@@ -614,7 +617,7 @@
 /datum/discipline_power/proc/deactivate(atom/target, direct = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
-	if (direct)
+	if (direct && bothers_with_duration_timers)
 		deltimer(duration_timers[1])
 		duration_timers.Cut(1, 2)
 

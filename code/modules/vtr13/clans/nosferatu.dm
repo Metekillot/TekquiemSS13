@@ -2,11 +2,9 @@
 	name = "Nosferatu"
 	desc = "The Nosferatu wear their curse on the outside. Elgeon wears her curse on the inside."
 	curse = "Masquerade-violating appearance."
-	alt_sprite = "nosferatu"
 	clane_disciplines = list(
 		/datum/discipline/vtr/vigor,
-		/datum/discipline/dementation,
-		/datum/discipline/obfuscate
+		/datum/discipline/vtr/obfuscate
 	)
 
 	male_clothes = /obj/item/clothing/under/vampire/nosferatu

@@ -21,11 +21,12 @@
 	. = ..()
 	if(possessed_creature)
 		if(alert)
-			to_chat(owner, span_warning("You are already possessing a creature!</span>"))
+			to_chat(owner, span_warning("You are already possessing a creature!"))
+		return FALSE
 
 	if(!target || !allowed_types.Find(target.type))
 		if(alert)
-			to_chat(owner, span_warning("You cannot cast [src] on [target]!</span>"))
+			to_chat(owner, span_warning("You cannot cast [src] on [target]!"))
 		return FALSE
 	if(target.mind)
 		if(alert)
