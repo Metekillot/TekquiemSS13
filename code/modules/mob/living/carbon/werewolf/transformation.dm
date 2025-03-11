@@ -1,3 +1,5 @@
+// this is evil
+// todo: use a datum or something instead lol
 /obj/werewolf_holder/transformation
 	var/mob/living/carbon/human/human_form
 	var/mob/living/carbon/werewolf/crinos/crinos_form
@@ -6,6 +8,10 @@
 	var/transformating = FALSE
 	var/given_quirks = FALSE
 
+// we should really initialize on creation always
+// if this were a datum we'd just use New()
+// but since it's an atom subtype we have to use INITIALIZE_IMMEDIATE
+INITIALIZE_IMMEDIATE(/obj/werewolf_holder/transformation)
 /obj/werewolf_holder/transformation/Initialize()
 	. = ..()
 	crinos_form = new()
