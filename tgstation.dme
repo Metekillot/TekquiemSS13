@@ -3500,6 +3500,7 @@
 #include "code\modules\vtr13\jobs\sworn.dm"
 #include "code\modules\vtr13\jobs\taxi_vtr.dm"
 #include "code\modules\vtr13\jobs\voivode_vtr.dm"
+#include "code\modules\vtr13\structure\longbeach_map.dm"
 #include "code\modules\vtr13\structure\signs.dm"
 #include "code\modules\vtr13\structure\vinylrack.dm"
 #include "code\modules\vtr13\subtle\subtle.dm"
