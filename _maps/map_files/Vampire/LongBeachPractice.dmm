@@ -1096,10 +1096,12 @@
 /turf/open/openspace,
 /area/vtm/vtr/masquerade/exterior/southeast/southeast_long_beach)
 "bsY" = (
-/obj/structure/flora/ausbushes/sparsegrass,
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/vampgrass,
-/area/vtm/vtr/masquerade/exterior/northeast/northeast_long_beach)
+/obj/effect/decal/bordur{
+	dir = 1
+	},
+/obj/structure/longbeach_map,
+/turf/open/floor/plating/sidewalk/rich,
+/area/vtm/vtr/masquerade/exterior/central/central_long_beach)
 "btB" = (
 /obj/structure/chair/wood,
 /turf/open/floor/plating/parquetry,
@@ -3594,10 +3596,6 @@
 	},
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/masquerade/interior/central/nightclub)
-"ehf" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/vampgrass,
-/area/vtm/vtr/masquerade/exterior/park/shoreline_park)
 "ehj" = (
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/interior/northeast/old_house)
@@ -5904,10 +5902,6 @@
 	},
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/central/library)
-"gHC" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/concrete,
-/area/vtm/vtr/masquerade/exterior/southeast/southeast_long_beach)
 "gHL" = (
 /obj/machinery/light/prince{
 	dir = 1
@@ -5944,10 +5938,6 @@
 	},
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/northwest/police_station)
-"gKY" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/vampgrass,
-/area/vtm/vtr/masquerade/exterior/northwest/northwest_long_beach)
 "gMH" = (
 /obj/structure/fence,
 /turf/open/floor/plating/vampgrass,
@@ -6427,10 +6417,6 @@
 	},
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/interior/northeast/bright_house)
-"hlo" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/sidewalk/rich,
-/area/vtm/vtr/masquerade/exterior/southwest/southwest_long_beach)
 "hlx" = (
 /obj/structure/railing{
 	dir = 4
@@ -8157,10 +8143,6 @@
 	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/northwest/bubway)
-"jsg" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/vampgrass,
-/area/vtm/vtr/masquerade/exterior/northeast/northeast_long_beach)
 "jsu" = (
 /obj/structure/railing{
 	dir = 8
@@ -8970,7 +8952,6 @@
 /obj/structure/railing{
 	layer = 4.2
 	},
-/obj/structure/vampmap/longbeach,
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/park/shoreline_park)
 "ktz" = (
@@ -12112,11 +12093,6 @@
 	},
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/central/central_long_beach)
-"nWa" = (
-/obj/structure/flora/ausbushes/fullgrass,
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/vampgrass,
-/area/vtm/vtr/masquerade/exterior/northeast/northeast_long_beach)
 "nWn" = (
 /obj/machinery/mineral/equipment_vendor/fastfood/sodavendor/blue{
 	pixel_x = 0;
@@ -12187,10 +12163,6 @@
 /obj/effect/turf_decal/siding/wideplating,
 /turf/open/floor/carpet/orange,
 /area/vtm/vtr/elysium/interior/central/castle_elysium)
-"nYE" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/sidewalk,
-/area/vtm/vtr/masquerade/exterior/central/central_long_beach)
 "nYG" = (
 /obj/structure/toilet{
 	dir = 8;
@@ -15674,13 +15646,6 @@
 /obj/structure/table/wood,
 /turf/closed/wall/vampwall/brick/low,
 /area/vtm/vtr/masquerade/interior/southwest/warehouse)
-"rSW" = (
-/obj/structure/railing{
-	layer = 4.2
-	},
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/sidewalk/rich,
-/area/vtm/vtr/masquerade/exterior/southeast/southeast_long_beach)
 "rTr" = (
 /obj/effect/decal/bordur{
 	dir = 1
@@ -17836,10 +17801,6 @@
 	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/northeast/bakery)
-"tTO" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/concrete,
-/area/vtm/vtr/masquerade/exterior/southwest/southwest_long_beach)
 "tTQ" = (
 /obj/effect/decal/bordur{
 	dir = 8
@@ -19059,11 +19020,6 @@
 	},
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/central/library_basement)
-"vnR" = (
-/obj/structure/railing,
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/sidewalk/rich,
-/area/vtm/vtr/masquerade/exterior/southeast/southeast_long_beach)
 "voa" = (
 /obj/structure/table/wood,
 /obj/item/reagent_containers/glass/rag{
@@ -19808,10 +19764,6 @@
 	},
 /turf/open/floor/plating/toilet,
 /area/vtm/vtr/masquerade/interior/southeast/queen_lilith)
-"wcq" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/vampwood,
-/area/vtm/vtr/masquerade/exterior/southeast/southeast_long_beach)
 "wcu" = (
 /obj/structure/chair/wood{
 	dir = 4;
@@ -20828,10 +20780,6 @@
 	},
 /turf/open/floor/mineral/plastitanium,
 /area/vtm/vtr/elysium/interior/central/nightclub_elysium)
-"xfl" = (
-/obj/structure/vampmap/longbeach,
-/turf/open/floor/plating/sidewalk/rich,
-/area/vtm/vtr/masquerade/exterior/northwest/northwest_long_beach)
 "xfy" = (
 /obj/structure/chair/wood/wings{
 	dir = 8
@@ -94265,7 +94213,7 @@ sDs
 sDs
 sDs
 sfB
-xfl
+sDs
 sDs
 sDs
 sDs
@@ -94309,15 +94257,8 @@ byw
 tzh
 vAi
 rfT
-hlo
 vAi
 vAi
-vAi
-vAi
-vAi
-vAi
-vAi
-rfT
 vAi
 vAi
 vAi
@@ -94339,7 +94280,14 @@ vAi
 vAi
 vAi
 rfT
-hlo
+vAi
+vAi
+vAi
+vAi
+vAi
+vAi
+rfT
+vAi
 vAi
 vAi
 vAi
@@ -101714,7 +101662,7 @@ rjC
 pFr
 xal
 eTa
-gKY
+eTa
 rYY
 vlj
 oWd
@@ -107206,7 +107154,7 @@ rLT
 nxX
 sWR
 rLT
-ehf
+rLT
 wBK
 aBz
 uca
@@ -111270,7 +111218,7 @@ sBh
 sBh
 cpj
 irj
-nYE
+nAO
 nAO
 cMJ
 ium
@@ -111302,7 +111250,7 @@ mTc
 vSW
 fxO
 fxO
-tTO
+fxO
 tzh
 lTr
 byw
@@ -113793,7 +113741,7 @@ edU
 pqZ
 asp
 asp
-bsY
+edU
 ure
 nQr
 gkm
@@ -117683,7 +117631,7 @@ qUJ
 uEw
 uEw
 eNM
-cpj
+bsY
 hcV
 hcV
 hcV
@@ -120800,7 +120748,7 @@ kvC
 kvC
 kvC
 kvC
-gHC
+kvC
 foP
 vur
 dpe
@@ -123349,7 +123297,7 @@ vur
 vur
 vrE
 tsr
-rSW
+rOt
 klW
 flf
 flf
@@ -129087,7 +129035,7 @@ mHF
 aLk
 aLk
 ccf
-wcq
+rhb
 rhb
 rhb
 rhb
@@ -131573,7 +131521,7 @@ vur
 vur
 vrE
 tsr
-rSW
+rOt
 klW
 flf
 flf
@@ -133076,7 +133024,7 @@ gkm
 gkm
 ure
 nQr
-nWa
+pqZ
 asp
 asp
 asp
@@ -135161,7 +135109,7 @@ asp
 asp
 asp
 asp
-jsg
+asp
 vrE
 jCH
 vur
@@ -148792,7 +148740,7 @@ vur
 vur
 vrE
 tsr
-vnR
+gIB
 klW
 flf
 flf
