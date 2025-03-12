@@ -7641,6 +7641,7 @@
 /area/vtm/vtr/masquerade/exterior/central/central_long_beach)
 "iOP" = (
 /obj/structure/vampdoor/old,
+/obj/effect/vip_barrier/boris,
 /turf/open/floor/plating/concrete,
 /area/vtm/vtr/masquerade/interior/central/nightclub)
 "iOS" = (
@@ -12952,6 +12953,10 @@
 /obj/effect/decal/stock,
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/exterior/southwest/southwest_long_beach)
+"oRC" = (
+/mob/living/carbon/human/npc/bouncer/boris,
+/turf/open/floor/plating/concrete,
+/area/vtm/vtr/masquerade/exterior/southeast/southeast_long_beach)
 "oSu" = (
 /obj/structure/vamprocks,
 /turf/open/floor/plating/vampgrass,
@@ -119456,7 +119461,7 @@ eYz
 eYz
 eYz
 vis
-kvC
+oRC
 jxM
 ohP
 qTJ
