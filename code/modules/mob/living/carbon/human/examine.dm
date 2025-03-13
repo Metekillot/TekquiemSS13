@@ -278,6 +278,7 @@
 	else if(bloodpool <= 0)
 		msg += "<span class='deadsay'><b>[t_He] resemble[p_s()] a crushed, empty juice pouch.</b></span>\n"
 
+
 	if(!for_disguise)
 		var/notify_beast = FALSE
 		if(iskindred(user))
@@ -287,9 +288,10 @@
 			if(user_human?.using_auspex)
 				notify_beast = TRUE
 		
-		if(notify_beast)
-			msg += span_danger("You the beast within [t_him] - [t_He] [t_is] a kindred.") + "\n"
+		if(notify_beast && iskindred(src))
+			msg += span_danger("You sense the beast within [t_him] - [t_He] [t_is] a kindred.") + "\n"
 	//VTR EDIT END
+
 
 	if(is_bleeding())
 		var/list/obj/item/bodypart/bleeding_limbs = list()
