@@ -59,6 +59,8 @@
 	var/datum/discipline/discipline
 	/// The player using this Discipline power.
 	var/mob/living/carbon/human/owner
+	///if I actually want to bother working with the duration timer system
+	var/bothers_with_duration_timers = TRUE
 
 /datum/discipline_power/New(datum/discipline/discipline)
 	if(!discipline)
@@ -619,7 +621,7 @@
 /datum/discipline_power/proc/deactivate(atom/target, direct = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
-	if (direct)
+	if (direct && bothers_with_duration_timers)
 		clear_duration_timer()
 
 	SEND_SIGNAL(src, COMSIG_POWER_DEACTIVATE, src, target)
