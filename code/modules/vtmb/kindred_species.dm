@@ -223,15 +223,21 @@
 	. = ..()
 	C.update_body(0)
 	C.last_experience = world.time + 5 MINUTES
+
 	var/datum/action/vampireinfo/infor = new()
 	infor.host = C
 	infor.Grant(C)
+
 	var/datum/action/give_vitae/vitae = new()
 	vitae.Grant(C)
-	var/datum/action/blood_heal/bloodheal = new()
-	bloodheal.Grant(C)
+
+	//this needs to be adjusted to be more accurate for blood spending rates
+	var/datum/discipline/bloodheal/giving_bloodheal = new(clamp(11 - C.generation, 1, 10))
+	C.give_discipline(giving_bloodheal)
+
 	var/datum/action/blood_power/bloodpower = new()
 	bloodpower.Grant(C)
+
 	add_verb(C, /mob/living/carbon/human/verb/teach_discipline)
 
 	C.yang_chi = 0
@@ -496,6 +502,7 @@
 								BLOODBONDED_prefs_v.clane = new /datum/vampireclane/caitiff()
 								BLOODBONDED_prefs_v.save_character()
 							BLOODBONDED.create_embrace_connection(H)
+							BLOODBONDED.update_auspex_hud_vtr()
 					else
 
 						to_chat(owner, "<span class='notice'>[BLOODBONDED] is totally <b>DEAD</b>!</span>")
@@ -538,6 +545,7 @@
 					if(isghoul(BLOODBONDED) && blood_bond_result > 1)
 						var/datum/species/ghoul/G = BLOODBONDED.dna.species
 						G.last_vitae = world.time
+					BLOODBONDED.update_auspex_hud_vtr()
 			else
 				giving = FALSE
 
@@ -562,23 +570,23 @@
 	if((dna.species.id == "kindred") || (dna.species.id == "ghoul")) //only splats that have Disciplines qualify
 		var/list/datum/discipline/adding_disciplines = list()
 
-		if (discipline_pref) //initialise character's own disciplines
+		if (discipline_pref) //initialise player's own disciplines
 			for (var/i in 1 to client.prefs.discipline_types.len)
 				var/type_to_create = client.prefs.discipline_types[i]
-				var/datum/discipline/discipline = new type_to_create
+				var/level = client.prefs.discipline_levels[i]
+				var/datum/discipline/discipline = new type_to_create(level)
 
 				//prevent Disciplines from being used if not whitelisted for them
-				if (discipline.clane_restricted)
+				if (discipline.clan_restricted)
 					if (!can_access_discipline(src, type_to_create))
 						qdel(discipline)
 						continue
 
-				discipline.level = client.prefs.discipline_levels[i]
 				adding_disciplines += discipline
 		else if (disciplines.len) //initialise given disciplines
 			for (var/i in 1 to disciplines.len)
 				var/type_to_create = disciplines[i]
-				var/datum/discipline/discipline = new type_to_create
+				var/datum/discipline/discipline = new type_to_create(1)
 				adding_disciplines += discipline
 
 		for (var/datum/discipline/discipline in adding_disciplines)
@@ -608,10 +616,8 @@
  */
 /mob/living/carbon/human/proc/give_discipline(datum/discipline/discipline)
 	if (discipline.level > 0)
-		var/datum/action/discipline/action = new
-		action.discipline = discipline
+		var/datum/action/discipline/action = new(discipline)
 		action.Grant(src)
-	discipline.post_gain(src)
 	var/datum/species/kindred/species = dna.species
 	species.disciplines += discipline
 
@@ -734,7 +740,7 @@
 		var/datum/discipline/giving_discipline = new teaching_discipline
 
 		//if a Discipline is clan-restricted, it must be checked if the student has access to at least one Clan with that Discipline
-		if (giving_discipline.clane_restricted)
+		if (giving_discipline.clan_restricted)
 			if (!can_access_discipline(student, teaching_discipline))
 				to_chat(teacher, "<span class='warning'>Your student is not whitelisted for any Clans with this Discipline, so they cannot learn it.</span>")
 				qdel(giving_discipline)
@@ -746,7 +752,7 @@
 			qdel(giving_discipline)
 			return
 
-		var/restricted = giving_discipline.clane_restricted
+		var/restricted = giving_discipline.clan_restricted
 		if (restricted)
 			if (alert(teacher, "Are you sure you want to teach [student] [giving_discipline], one of your Clan's most tightly guarded secrets? This will cost 10 experience points.", "Confirmation", "Yes", "No") != "Yes")
 				qdel(giving_discipline)
@@ -829,7 +835,7 @@
 
 	//make sure it's actually restricted and this check is necessary
 	var/datum/discipline/discipline_object_checking = new discipline_checking
-	if (!discipline_object_checking.clane_restricted)
+	if (!discipline_object_checking.clan_restricted)
 		qdel(discipline_object_checking)
 		return TRUE
 	qdel(discipline_object_checking)
