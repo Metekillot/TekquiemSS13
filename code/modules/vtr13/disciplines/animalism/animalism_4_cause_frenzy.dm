@@ -3,6 +3,7 @@
 	desc = "Elgeon write a description kthx. Summon a cat or rat"
 	level = 4
 	violates_masquerade = FALSE
+	cooldown_length = 30 SECONDS
 
 /datum/discipline_power/vtr/animalism/cause_frenzy/activate()
 	. = ..()

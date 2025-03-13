@@ -1,4 +1,7 @@
 /datum/discipline_power/vtr/auspex/telepathy
+	name = "Telepathy"
+	desc = "Allows you to perceive the auras of those near you."
+
 	level = 4
 	target_type = TARGET_HUMAN | TARGET_SELF
 	range = 7
