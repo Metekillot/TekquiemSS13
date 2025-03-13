@@ -9,12 +9,7 @@
 	var/mob/living/simple_animal/possessed_creature = null
 
 	var/datum/action/unpossess/unpossess_datum = null
-	var/list/allowed_types = list(
-		/mob/living/simple_animal/hostile/beastmaster/rat,
-		/mob/living/simple_animal/hostile/beastmaster/cat,
-		/mob/living/simple_animal/pet/rat,
-		/mob/living/simple_animal/pet/cat/vampire
-	)
+
 	range = 7
 
 /datum/discipline_power/vtr/animalism/possess/can_activate(mob/living/simple_animal/target, alert = FALSE)
@@ -23,8 +18,8 @@
 		if(alert)
 			to_chat(owner, span_warning("You are already possessing a creature!"))
 		return FALSE
-
-	if(!target || !allowed_types.Find(target.type))
+	var/datum/discipline/vtr/animalism/our_disc = discipline
+	if(!target || !our_disc.allowed_types.Find(target.type))
 		if(alert)
 			to_chat(owner, span_warning("You cannot cast [src] on [target]!"))
 		return FALSE
@@ -32,8 +27,6 @@
 		if(alert)
 			to_chat(owner, span_warning("[target] resists your possession!"))
 		return FALSE
-	
-	
 
 /datum/discipline_power/vtr/animalism/possess/activate(mob/living/simple_animal/target)
 	..()
