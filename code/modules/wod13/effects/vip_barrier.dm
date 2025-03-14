@@ -4,8 +4,8 @@
 /obj/effect/vip_barrier
 	name = "Basic Check Point"
 	desc = "Not a real checkpoint."
-	icon = 'icons/obj/wod13/barrier.dmi'
-	icon_state = "camarilla_blocking"
+	icon = 'icons/vtr13/effect/barrier.dmi'
+	icon_state = "vipbarrier"
 	flags_1 = ON_BORDER_1
 	var/block_sound = "sound/wod13/bouncer_blocked.ogg"
 
@@ -65,7 +65,7 @@
 
 		if(handle_masked_entry(mover))
 			return FALSE
-		
+
 		entry_allowed = check_entry_permission_base(mover_mob)
 
 	if(!entry_allowed && mover.pulledby && isliving(mover.pulledby))
@@ -85,10 +85,10 @@
 
 	var/mob/living/carbon/human/mover_human = mover
 	if((mover_human?.wear_mask?.flags_inv&HIDEFACE || mover_human?.head?.flags_inv&HIDEFACE) && !LAZYFIND(linked_perm.allow_list, mover))
-		
+
 		SEND_SIGNAL(src, COMSIG_BARRIER_NOTIFY_GUARD_MASKED, mover)
 		return TRUE
-	
+
 	return FALSE
 
 /obj/effect/vip_barrier/proc/check_direction_always_allowed(atom/movable/mover)

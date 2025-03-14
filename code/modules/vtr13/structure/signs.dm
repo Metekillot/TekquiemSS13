@@ -16,3 +16,21 @@
 	icon = 'icons/vtr13/structure/signs.dmi'
 	icon_state = "bar"
 
+/obj/structure/streetsign
+	name = "street sign"
+	desc = "Tells you what streets meet at this intersection."
+	icon = 'icons/vtr13/structure/lamppost.dmi'
+	icon_state = "streetsign"
+	plane = GAME_PLANE
+	layer = SPACEVINE_LAYER
+	anchored = TRUE
+	pixel_w = -32
+
+/obj/structure/clinicsign
+	name = "Unity Clinic"
+	desc = "A sign reading \"Unity Clinic\"."
+	icon = 'icons/vtr13/structure/64x64.dmi'
+	icon_state = "unityclinic"
+	anchored = TRUE
+	density = 1
+	bound_width = 64
