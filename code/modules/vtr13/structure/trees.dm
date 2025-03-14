@@ -7,6 +7,10 @@
 /obj/structure/vamptree/palmtree/Initialize()
 	. = ..()
 	icon_state = "palm[rand(1, 2)]"
+	if(prob(50))
+		var/matrix/flip_matrix = matrix()
+		flip_matrix.Scale(-1, 1)
+		src.transform = flip_matrix
 	//winter sprite changes deliberately not included
 
 /obj/structure/vamptree/palmtree/burnshit()
