@@ -27,7 +27,6 @@
 	bloodpool = 0
 	maxbloodpool = 0
 	alpha = 30
-	speed = 5
 	color = "#9C3636"
 
 
