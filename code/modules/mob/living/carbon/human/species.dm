@@ -2127,10 +2127,17 @@ GLOBAL_LIST_EMPTY(selectable_races)
 		H.dna.features["wings"] = wings_icon
 		H.update_body()
 	var/datum/action/fly_upper/A = locate() in H.actions
-	if(A)
-		return
-	var/datum/action/fly_upper/DA = new()
-	DA.Grant(H)
+
+	//VTR EDIT BEGIN
+	if(!A)
+		var/datum/action/fly_upper/DA = new()
+		DA.Grant(H)
+	
+	var/datum/action/fly_downer/fly_down_existing = locate() in H.actions
+	if(!fly_down_existing)
+		var/datum/action/fly_downer/fly_down = new()
+		fly_down.Grant(H)
+	//VTR EDIT END
 
 /datum/species/proc/RemoveSpeciesFlight(mob/living/carbon/human/H)
 	if(flying_species)
@@ -2142,6 +2149,13 @@ GLOBAL_LIST_EMPTY(selectable_races)
 		var/datum/action/fly_upper/A = locate() in H.actions
 		if(A)
 			qdel(A)
+
+		//VTR EDIT BEGIN
+		var/datum/action/fly_downer/B = locate() in H.actions
+		if(B)
+			qdel(B)
+		//VTR EDIT END
+
 		if(H.dna && H.dna.species && (H.dna.features["wings"] == wings_icon))
 			H.dna.species.mutant_bodyparts -= "wings"
 			H.dna.features["wings"] = "None"

@@ -923,7 +923,7 @@
 	is_flying_animal = TRUE
 	maxHealth = 10
 	health = 10
-	speed = -0.8
+	speed = -0.4
 
 /mob/living/simple_animal/hostile/beastmaster/rat/flying/UnarmedAttack(atom/A)
 	. = ..()

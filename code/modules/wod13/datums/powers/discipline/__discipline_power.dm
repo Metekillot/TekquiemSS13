@@ -344,6 +344,9 @@
 /datum/discipline_power/proc/pre_activation(atom/target)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
+	if(!pre_activation_check_no_spend(target))
+		return
+
 	//resources are still spent if activation is theoretically possible, but it gets prevented
 	spend_resources()
 
@@ -375,6 +378,18 @@
  */
 /datum/discipline_power/proc/pre_activation_checks(atom/target)
 	return TRUE
+
+
+/**
+ * An overridable proc that allows for custom pre_activation() behaviour.
+ *
+ * Unlike pre_activation_check(), returning FALSE here doesn't expend blood,
+ * and does not fire PRE_ACTIVATION signals. It is used by Protean 1 and 3
+ * for configuring an adaptation for a round.
+ */
+/datum/discipline_power/proc/pre_activation_check_no_spend(atom/target)
+	return TRUE
+
 
 /**
  * Triggers all the effects of the power being fully activated.

@@ -12,8 +12,6 @@
 
 /datum/discipline_power/vtr/auspex/heightened_senses/activate()
 	. = ..()
-	owner.add_client_colour(/datum/client_colour/glass_colour/lightblue)
-
 	ADD_TRAIT(owner, TRAIT_THERMAL_VISION, TRAIT_GENERIC)
 	ADD_TRAIT(owner, TRAIT_NIGHT_VISION, TRAIT_GENERIC)
 
@@ -22,8 +20,6 @@
 
 /datum/discipline_power/vtr/auspex/heightened_senses/deactivate()
 	. = ..()
-	owner.remove_client_colour(/datum/client_colour/glass_colour/lightblue)
-
 	REMOVE_TRAIT(owner, TRAIT_THERMAL_VISION, TRAIT_GENERIC)
 	REMOVE_TRAIT(owner, TRAIT_NIGHT_VISION, TRAIT_GENERIC)
 	owner.using_auspex = FALSE

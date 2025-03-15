@@ -109,7 +109,7 @@ SUBSYSTEM_DEF(beastmastering)
 	var/mob/living/targa
 
 /mob/living/simple_animal/hostile/beastmaster/proc/handle_automated_beasting()
-	if(client)
+	if(client || mind)
 		return
 	if(stat > 0)
 		GLOB.beast_list -= src

@@ -17,9 +17,10 @@
 	if(level > 3)
 		allowed_types += /mob/living/simple_animal/hostile/beastmaster
 		allowed_types += /mob/living/simple_animal/hostile/beastmaster/rat/flying
-
-	if(level == 5)
 		allowed_types += /mob/living/simple_animal/deer
+	if(level == 5)
+		allowed_types += /mob/living/simple_animal/hostile/bear/wod13
+		
 
 
 

@@ -12,7 +12,6 @@
 
 /datum/discipline_power/vtr/auspex/pierce_the_veil/activate()
 	. = ..()
-	owner.add_client_colour(/datum/client_colour/glass_colour/lightblue)
 
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.add_hud_to(owner)
@@ -29,7 +28,6 @@
 
 /datum/discipline_power/vtr/auspex/pierce_the_veil/deactivate()
 	. = ..()
-	owner.remove_client_colour(/datum/client_colour/glass_colour/lightblue)
 
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.remove_hud_from(owner)

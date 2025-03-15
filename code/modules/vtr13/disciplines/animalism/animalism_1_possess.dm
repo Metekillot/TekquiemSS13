@@ -41,11 +41,6 @@
 	RegisterSignal(owner, list(COMSIG_PARENT_QDELETING, COMSIG_LIVING_DEATH), PROC_REF(deactivate_trigger))
 	RegisterSignal(owner, COMSIG_POWER_TRY_ACTIVATE, PROC_REF(prevent_other_powers))
 
-/datum/discipline_power/vtr/animalism/possess/proc/prevent_other_powers(datum/source, datum/target)
-	SIGNAL_HANDLER
-	to_chat(owner, span_warning("You cannot use other disciplines while possessing a creature!"))
-	return POWER_PREVENT_ACTIVATE
-
 /datum/discipline_power/vtr/animalism/possess/proc/deactivate_trigger(datum/source)
 	SIGNAL_HANDLER
 	try_deactivate()
@@ -61,7 +56,7 @@
 	unpossess_datum.Remove(possessed_creature)
 	qdel(unpossess_datum)
 	possessed_creature = null
-	
+
 
 
 /datum/action/unpossess

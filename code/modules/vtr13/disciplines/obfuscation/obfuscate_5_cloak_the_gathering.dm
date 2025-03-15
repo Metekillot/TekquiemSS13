@@ -77,12 +77,6 @@
 	else
 		return FALSE
 
-/datum/discipline_power/vtr/obfuscate/cloak_the_gathering/proc/prevent_other_powers(mob/living/culprit, datum/target)
-	SIGNAL_HANDLER
-	to_chat(owner, span_warning("You cannot use other disciplines while cloaked like this!"))
-	return POWER_PREVENT_ACTIVATE
-
-
 /datum/discipline_power/vtr/obfuscate/cloak_the_gathering/proc/gathering_on_combat_signal(mob/living/culprit)
 	SIGNAL_HANDLER
 	trigger_off(culprit)
