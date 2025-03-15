@@ -7,7 +7,7 @@
 	max_age = 30
 	male_hair = list("Bald")
 	male_facial = list("Shaved")
-	s_tones = list("latino")
+	s_tones_force = "latino"
 	shoes = list(/obj/item/clothing/shoes/vampire/jackboots)
 	uniforms = list(/obj/item/clothing/under/vampire/turtleneck_navy)
 	pockets = list(/obj/item/vamp/keys/npc, /obj/item/stack/dollar/rand)
