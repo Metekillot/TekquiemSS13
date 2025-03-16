@@ -1,12 +1,12 @@
 /datum/movespeed_modifier/vtr/predatory_legs
 	multiplicative_slowdown = -0.5
 
-/datum/adaptation/unnatural/legs
+/datum/adaptation/predatory/legs
 	name = "Digitigrade Legs"
 	var/mutable_appearance/acc_overlay
 	var/old_overlay
 
-/datum/adaptation/unnatural/legs/activate(mob/living/carbon/human/owner)
+/datum/adaptation/predatory/legs/activate(mob/living/carbon/human/owner)
 	playsound(get_turf(owner), 'sound/effects/dismember.ogg', 100, TRUE, -6)
 	owner.visible_message(span_alert("[owner]'s shins make a horrid noise as they snap in two and elongate! Their legs become digitigrade and covered in thick fur!"))
 
@@ -24,14 +24,12 @@
 	ADD_TRAIT(owner, TRAIT_QUICK_JUMP, PROTEAN_1_ADAPTATION_TRAIT)
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/vtr/predatory_legs)
 	
-/datum/adaptation/unnatural/legs/deactivate(mob/living/carbon/human/owner)
+/datum/adaptation/predatory/legs/deactivate(mob/living/carbon/human/owner)
 	playsound(get_turf(owner), 'sound/effects/dismember.ogg', 100, TRUE, -6)
 	owner.visible_message(span_alert("[owner]'s legs return to a normal form."))
-
 	owner.remove_overlay(MARKS_LAYER)
-	owner.overlays_standing[MARKS_LAYER] -= acc_overlay
 	if(old_overlay)
-		owner.overlays_standing[MARKS_LAYER] += old_overlay
+		owner.overlays_standing[MARKS_LAYER] = old_overlay
 		owner.apply_overlay(MARKS_LAYER)
 	owner.update_body()
 	owner.update_icon()
