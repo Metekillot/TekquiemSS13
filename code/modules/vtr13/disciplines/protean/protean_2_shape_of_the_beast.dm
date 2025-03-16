@@ -40,11 +40,9 @@
 
 	var/obj/effect/proc_holder/spell/targeted/shapeshift/protean/GA
 
-	var/datum/action/select_protean_shape/select_shape_action
-
 	var/datum/action/deactivate_protean_shape/deactivate_shape_action
 
-	var/desired_form = PROTEAN_ANIMAL_FORM_RAT
+	var/desired_form
 	
 /datum/discipline_power/vtr/protean/shape_of_the_beast/post_gain()
 	. = ..()
@@ -55,8 +53,15 @@
 		shapeshift_types[PROTEAN_ANIMAL_FORM_WOLF] = /mob/living/simple_animal/hostile/beastmaster
 	if(discipline.level == 5)
 		shapeshift_types[PROTEAN_ANIMAL_FORM_BEAR] = /mob/living/simple_animal/hostile/bear/wod13/protean_shapeshift_bear
-	select_shape_action =  new(owner, src)
-	select_shape_action.Grant(owner)
+
+
+/datum/discipline_power/vtr/protean/shape_of_the_beast/pre_activation_check_no_spend()
+	if(desired_form)
+		return TRUE
+	var/selection = tgui_input_list(owner, "Select a shape for this form - choosing will lock you into this choice for the round!", "Animal Shapeshift Selection", shapeshift_types, null)
+	if(selection)
+		desired_form = selection
+	return FALSE
 
 /datum/discipline_power/vtr/protean/shape_of_the_beast/spend_resources()
 	var/cost = 1
@@ -120,25 +125,6 @@
 		playsound(get_turf(shapeshifted_creature), 'sound/effects/dismember.ogg', 100, TRUE, -6)
 		shapeshifted_creature.visible_message(span_alert("[shapeshifted_creature]'s body emits visceral cracks and groans as they suddenly revert into [owner]!"))
 		GA.Restore(GA.myshape)
-
-//Action button for selecting
-/datum/action/select_protean_shape
-	name = "Select Protean Shapes"
-	desc = "Choose which creatures to turn into when you use your protean abilities."
-	background_icon_state = "gift"
-	icon_icon = 'code/modules/wod13/UI/actions.dmi'
-	button_icon_state = "protean"
-	var/datum/discipline_power/vtr/protean/shape_of_the_beast/discipline_power
-
-/datum/action/select_protean_shape/New(Target, datum/discipline_power/vtr/protean/shape_of_the_beast/power)
-	..(Target)
-	discipline_power = power
-
-
-/datum/action/select_protean_shape/Trigger()
-	var/selection = tgui_input_list(owner, "Select what creature Shape of the Beast turns you into:", "Animal Shapeshift Selection", discipline_power.shapeshift_types, discipline_power.desired_form)
-	if(selection)
-		discipline_power.desired_form = selection
 
 
 #undef PROTEAN_ANIMAL_FORM_RAT
