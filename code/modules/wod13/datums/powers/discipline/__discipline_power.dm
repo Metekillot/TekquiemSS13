@@ -59,8 +59,6 @@
 	var/datum/discipline/discipline
 	/// The player using this Discipline power.
 	var/mob/living/carbon/human/owner
-	///if I actually want to bother working with the duration timer system
-	var/bothers_with_duration_timers = TRUE
 
 /datum/discipline_power/New(datum/discipline/discipline)
 	if(!discipline)
@@ -344,9 +342,6 @@
 /datum/discipline_power/proc/pre_activation(atom/target)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
-	if(!pre_activation_check_no_spend(target))
-		return
-
 	//resources are still spent if activation is theoretically possible, but it gets prevented
 	spend_resources()
 
@@ -378,18 +373,6 @@
  */
 /datum/discipline_power/proc/pre_activation_checks(atom/target)
 	return TRUE
-
-
-/**
- * An overridable proc that allows for custom pre_activation() behaviour.
- *
- * Unlike pre_activation_check(), returning FALSE here doesn't expend blood,
- * and does not fire PRE_ACTIVATION signals. It is used by Protean 1 and 3
- * for configuring an adaptation for a round.
- */
-/datum/discipline_power/proc/pre_activation_check_no_spend(atom/target)
-	return TRUE
-
 
 /**
  * Triggers all the effects of the power being fully activated.
@@ -636,7 +619,7 @@
 /datum/discipline_power/proc/deactivate(atom/target, direct = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
-	if (direct && bothers_with_duration_timers)
+	if (direct)
 		clear_duration_timer()
 
 	SEND_SIGNAL(src, COMSIG_POWER_DEACTIVATE, src, target)
