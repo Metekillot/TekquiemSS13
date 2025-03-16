@@ -1,6 +1,6 @@
 //normal duration defines
-///Duration of one "turn", which is 6 seconds according to us
-#define DURATION_TURN 6 SECONDS
+///Duration of one "turn", which is 10 seconds according to me, hex
+#define DURATION_TURN 10 SECONDS
 ///Duration of one "scene", which is 5 minutes according to us
 #define DURATION_SCENE 5 MINUTES
 

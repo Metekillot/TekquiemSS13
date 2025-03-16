@@ -21,6 +21,8 @@
 	. = ..()
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(celerity_visual))
 
+	ADD_TRAIT(owner, TRAIT_NONMASQUERADE, CELERITY_TRAIT)
+	ADD_TRAIT(owner, TRAIT_QUICK_JUMP, CELERITY_TRAIT)
 	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/vtr/celerity4)
 
@@ -28,5 +30,7 @@
 	. = ..()
 	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
 
+	REMOVE_TRAIT(owner, TRAIT_NONMASQUERADE, CELERITY_TRAIT)
+	REMOVE_TRAIT(owner, TRAIT_QUICK_JUMP, CELERITY_TRAIT)
 	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/vtr/celerity4)

@@ -18,7 +18,6 @@
 	C.appearance = owner.appearance
 	C.dir = owner.dir
 	animate(C, pixel_x = rand(-16, 16), pixel_y = rand(-16, 16), alpha = 0, time = 0.5 SECONDS)
-	violate_masquerade(owner, owner)
 
 
 /obj/effect/celerity

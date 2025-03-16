@@ -346,7 +346,6 @@ Dancer
 	var/target_turf = get_step_multiz(owner, UP)
 	if(target_turf)
 		if(istype(get_step_multiz(owner, UP), /turf/open/openspace))
-			var/mob/living/carbon/H = owner
 			animate(owner, pixel_y = 32, time = 20)
 			if(do_mob(owner, owner, 2 SECONDS))
 				owner.forceMove(target_turf)
@@ -362,8 +361,7 @@ Dancer
 /datum/action/fly_downer/Trigger()
 	owner.down()
 //VTR EDIT END
-/*	
-*/
+
 /datum/quirk/dancer
 	name = "Dancer"
 	desc = "You know a couple of dance moves."
