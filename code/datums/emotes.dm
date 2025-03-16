@@ -1,9 +1,7 @@
-#define EMOTE_VISIBLE 1
-#define EMOTE_AUDIBLE 2
-
 /datum/emote
 	var/key = "" //What calls the emote
 	var/key_third_person = "" //This will also call the emote
+	var/name = "" /// Needed for more user-friendly emote names, so emotes with keys like "aflap" will show as "flap angry". Defaulted to key.
 	var/message = "" //Message displayed when emote is used
 	var/message_mime = "" //Message displayed if the user is a mime
 	var/message_alien = "" //Message displayed if the user is a grown alien

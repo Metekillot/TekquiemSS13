@@ -639,6 +639,15 @@
 ///Called when an armor plate is successfully applied to an object
 #define COMSIG_ARMOR_PLATED "armor_plated"
 
+///Called when an item is being offered, from [/obj/item/proc/on_offered(mob/living/carbon/offerer)]
+#define COMSIG_ITEM_OFFERING "item_offering"
+	///Interrupts the offer proc
+	#define COMPONENT_OFFER_INTERRUPT (1<<0)
+///Called when an someone tries accepting an offered item, from [/obj/item/proc/on_offer_taken(mob/living/carbon/offerer, mob/living/carbon/taker)]
+#define COMSIG_ITEM_OFFER_TAKEN "item_offer_taken"
+	///Interrupts the offer acceptance
+	#define COMPONENT_OFFER_TAKE_INTERRUPT (1<<0)
+
 ///from base of [/obj/item/proc/tool_check_callback]: (mob/living/user)
 #define COMSIG_TOOL_IN_USE "tool_in_use"
 ///from base of [/obj/item/proc/tool_start_check]: (mob/living/user)

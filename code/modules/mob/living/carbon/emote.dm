@@ -5,46 +5,39 @@
 	key = "airguitar"
 	message = "is strumming the air and headbanging like a safari chimp."
 	hands_use_check = TRUE
-
-/datum/emote/living/carbon/blink
-	key = "blink"
-	key_third_person = "blinks"
-	message = "blinks."
-
-/datum/emote/living/carbon/blink_r
-	key = "blink_r"
-	message = "blinks rapidly."
+	emote_type = EMOTE_VISIBLE
 
 /datum/emote/living/carbon/clap
 	key = "clap"
 	key_third_person = "claps"
 	message = "claps."
-	muzzle_ignore = TRUE
 	hands_use_check = TRUE
-	emote_type = EMOTE_AUDIBLE
+	emote_type = EMOTE_AUDIBLE | EMOTE_VISIBLE
 	vary = TRUE
 
 /datum/emote/living/carbon/clap/get_sound(mob/living/user)
-	if(ishuman(user))
-		if(!user.get_bodypart(BODY_ZONE_L_ARM) || !user.get_bodypart(BODY_ZONE_R_ARM))
-			return
-		else
-			return pick('sound/misc/clap1.ogg',
-							'sound/misc/clap2.ogg',
-							'sound/misc/clap3.ogg',
-							'sound/misc/clap4.ogg')
+	if(!user.get_bodypart(BODY_ZONE_L_ARM) || !user.get_bodypart(BODY_ZONE_R_ARM))
+		return
+	return pick(
+		'sound/wod13/human/clap/clap1.ogg',
+		'sound/wod13/human/clap/clap2.ogg',
+		'sound/wod13/human/clap/clap3.ogg',
+		'sound/wod13/human/clap/clap4.ogg',
+	)
 
 /datum/emote/living/carbon/crack
 	key = "crack"
 	key_third_person = "cracks"
 	message = "cracks their knuckles."
-	sound = 'sound/misc/knuckles.ogg'
+	sound = 'sound/wod13/human/knuckle_crack/knuckles.ogg'
+	hands_use_check = TRUE
 	cooldown = 6 SECONDS
 
-/datum/emote/living/carbon/crack/can_run_emote(mob/living/carbon/user, status_check = TRUE , intentional)
+/datum/emote/living/carbon/crack/can_run_emote(mob/living/carbon/user, status_check = TRUE , intentional, params)
 	if(!iscarbon(user) || user.usable_hands < 2)
 		return FALSE
 	return ..()
+
 /datum/emote/living/carbon/moan
 	key = "moan"
 	key_third_person = "moans"
@@ -65,6 +58,7 @@
 	message = "scratches."
 	mob_type_allowed_typecache = list(/mob/living/carbon/alien)
 	hands_use_check = TRUE
+
 /datum/emote/living/carbon/sign
 	key = "sign"
 	key_third_person = "signs"
@@ -104,7 +98,7 @@
 	if(!length(user.get_empty_held_indexes()))
 		to_chat(user, "<span class='warning'>You don't have any free hands to make a circle with.</span>")
 		return
-	var/obj/item/circlegame/N = new(user)
+	var/obj/item/hand_item/circlegame/N = new(user)
 	if(user.put_in_hands(N))
 		to_chat(user, "<span class='notice'>You make a circle with your hand.</span>")
 
@@ -117,7 +111,7 @@
 	. = ..()
 	if(!.)
 		return
-	var/obj/item/slapper/N = new(user)
+	var/obj/item/hand_item/slapper/N = new(user)
 	if(user.put_in_hands(N))
 		to_chat(user, "<span class='notice'>You ready your slapping hand.</span>")
 	else
@@ -133,7 +127,7 @@
 	. = ..()
 	if(!.)
 		return
-	var/obj/item/noogie/noogie = new(user)
+	var/obj/item/hand_item/noogie/noogie = new(user)
 	if(user.put_in_hands(noogie))
 		to_chat(user, "<span class='notice'>You ready your noogie'ing hand.</span>")
 	else

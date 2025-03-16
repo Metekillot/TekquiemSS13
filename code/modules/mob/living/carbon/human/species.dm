@@ -2284,3 +2284,87 @@ GLOBAL_LIST_EMPTY(selectable_races)
 			continue
 
 		current_part.change_bodypart(species_part)
+
+/datum/species/proc/get_scream_sound(mob/living/carbon/human/human)
+	if(human.gender == MALE)
+		if(prob(1))
+			return 'sound/mobs/humanoids/human/scream/wilhelm_scream.ogg'
+		return pick(
+			'sound/mobs/humanoids/human/scream/malescream_1.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_2.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_3.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_4.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_5.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_6.ogg',
+		)
+
+	return pick(
+		'sound/mobs/humanoids/human/scream/femalescream_1.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_2.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_3.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_4.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_5.ogg',
+	)
+
+/datum/species/proc/get_cough_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return pick(
+			'sound/wod13/human/cough/female_cough1.ogg',
+			'sound/wod13/human/cough/female_cough2.ogg',
+			'sound/wod13/human/cough/female_cough3.ogg',
+			'sound/wod13/human/cough/female_cough4.ogg',
+			'sound/wod13/human/cough/female_cough5.ogg',
+			'sound/wod13/human/cough/female_cough6.ogg',
+		)
+	return pick(
+		'sound/wod13/human/cough/male_cough1.ogg',
+		'sound/wod13/human/cough/male_cough2.ogg',
+		'sound/wod13/human/cough/male_cough3.ogg',
+		'sound/wod13/human/cough/male_cough4.ogg',
+		'sound/wod13/human/cough/male_cough5.ogg',
+		'sound/wod13/human/cough/male_cough6.ogg',
+	)
+
+/datum/species/proc/get_cry_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return pick(
+			'sound/wod13/human/cry/female_cry1.ogg',
+			'sound/wod13/human/cry/female_cry2.ogg',
+		)
+	return pick(
+		'sound/wod13/human/cry/male_cry1.ogg',
+		'sound/wod13/human/cry/male_cry2.ogg',
+		'sound/wod13/human/cry/male_cry3.ogg',
+	)
+
+
+/datum/species/proc/get_sneeze_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return 'sound/wod13/human/sneeze/female_sneeze1.ogg'
+	return 'sound/wod13/human/sneeze/male_sneeze1.ogg'
+
+/datum/species/proc/get_laugh_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return 'sound/wod13/human/laugh/womanlaugh.ogg'
+	return pick(
+		'sound/wod13/human/laugh/manlaugh1.ogg',
+		'sound/wod13/human/laugh/manlaugh2.ogg',
+	)
+
+/datum/species/proc/get_sigh_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return "female_sigh"
+	return "male_sigh"
+
+/datum/species/proc/get_sniff_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return 'sound/wod13/human/sniff/female_sniff.ogg'
+	return 'sound/wod13/human/sniff/male_sniff.ogg'
+
+/datum/species/proc/get_snore_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return "snore_female"
+	return "snore_male"
+
+/datum/species/proc/get_hiss_sound(mob/living/carbon/human/human)
+	return 'sound/wod13/human/hiss/human_hiss.ogg'
