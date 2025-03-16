@@ -169,13 +169,13 @@
 	var/mob/living/carbon/human/human_user = user
 	if(human_user.physique == FEMALE)
 		return pick(
-			'sound/wod13/human/gasp/gasp_female1.ogg',
-			'sound/wod13/human/gasp/gasp_female2.ogg',
-			'sound/wod13/human/gasp/gasp_female3.ogg',
+			'sound/mobs/humanoids/human/gasp/gasp_female1.ogg',
+			'sound/mobs/humanoids/human/gasp/gasp_female2.ogg',
+			'sound/mobs/humanoids/human/gasp/gasp_female3.ogg',
 			)
 	return pick(
-		'sound/wod13/human/gasp/gasp_male1.ogg',
-		'sound/wod13/human/gasp/gasp_male2.ogg',
+		'sound/mobs/humanoids/human/gasp/gasp_male1.ogg',
+		'sound/mobs/humanoids/human/gasp/gasp_male2.ogg',
 		)
 
 /datum/emote/living/gasp/shock
