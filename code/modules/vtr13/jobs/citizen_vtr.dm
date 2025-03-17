@@ -63,7 +63,7 @@
 	id = /obj/item/cockclock
 	uniform = /obj/item/clothing/under/vampire/emo
 	shoes = /obj/item/clothing/shoes/vampire
-	backpack_contents = list(/obj/item/passport=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1)
+	backpack_contents = list(/obj/item/travel_brochure=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1)
 
 
 /obj/effect/landmark/start/vtr/citizen_vtr
