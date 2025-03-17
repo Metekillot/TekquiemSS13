@@ -38,6 +38,7 @@
 			dat += "Unknown,"
 
 		if(host.mind)
+
 			if(host.mind.assigned_role)
 				if(host.mind.special_role)
 					dat += ", carrying the [host.mind.assigned_role] (<font color=red>[host.mind.special_role]</font>) role."
@@ -45,6 +46,9 @@
 					dat += ", carrying the [host.mind.assigned_role] role."
 			if(!host.mind.assigned_role)
 				dat += "."
+			dat += "<BR>"
+			if(host.mind.enslaved_to)
+				dat += "My Regnant is [host.mind.enslaved_to], I should obey their wants.<BR>"
 		if(host.mind.special_role)
 			for(var/datum/antagonist/A in host.mind.antag_datums)
 				if(A.objectives)
@@ -84,21 +88,8 @@
 			if(host.bank_id == account.bank_id)
 				dat += "<b>My bank account code is: [account.code]</b><BR>"
 				break
-		
-		
-		if(host.mind)
-			dat += "<BR>"
-			for(var/datum/character_connection/connection in host.mind.character_connections)
-				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='?src=[REF(src)];delete_connection=[connection.group_id]'>Delete</a><BR>"
-			dat += "<BR>"
-
-		host << browse(dat, "window=vampire;size=500x450;border=1;can_resize=1;can_minimize=0")
+		host << browse(dat, "window=vampire;size=400x450;border=1;can_resize=1;can_minimize=0")
 		onclose(host, "vampire", src)
-
-/datum/action/humaninfo/Topic(href, href_list)
-	if(href_list["delete_connection"])
-		host.retire_connection(text2num(href_list["delete_connection"]))
-		Trigger()
 
 /datum/species/human/on_species_gain(mob/living/carbon/human/C)
 	. = ..()

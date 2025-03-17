@@ -377,7 +377,7 @@
 						if(HV.stakeimmune)
 							to_chat(BD, "<span class='warning'>There is no <b>HEART</b> in this creature.</span>")
 							return
-					BD.drinksomeblood(LV, TRUE)
+					BD.drinksomeblood(LV)
 
 /atom/movable/screen/bloodpower
 	name = "Bloodpower"

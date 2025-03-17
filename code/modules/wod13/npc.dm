@@ -74,8 +74,6 @@
 
 	var/list/drop_on_death_list = null
 
-	var/tolerates_ugly = FALSE
-
 /mob/living/carbon/human/npc/LateInitialize()
 	. = ..()
 	if(role_weapons_chances.Find(type))
@@ -129,9 +127,7 @@
 	multiplicative_slowdown = 2
 
 /datum/socialrole
-	//For randomizing 
-	//I turned this off, -hex
-	var/s_tones_force = null
+	//For randomizing
 	var/list/s_tones = list("albino",
 		"caucasian1",
 		"caucasian2",
@@ -388,10 +384,7 @@
 		else
 			s_names = GLOB.last_names
 		age = rand(socialrole.min_age, socialrole.max_age)
-		if(socialrole.s_tones_force)
-			skin_tone = socialrole.s_tones_force
-		else
-			skin_tone = pick(GLOB.skin_tones)
+		skin_tone = pick(socialrole.s_tones)
 		if(age >= 55)
 			hair_color = "a2a2a2"
 			facial_hair_color = hair_color
