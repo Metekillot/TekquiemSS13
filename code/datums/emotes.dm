@@ -53,22 +53,24 @@
  *
  */
 /datum/emote/proc/run_emote(mob/user, params, type_override, intentional = FALSE)
+	// We want sounds to play first incase the emote doesn't actually have text. Example: *annoyed
+	var/tmp_sound = get_sound(user)
+	if(tmp_sound)
+		if(!TIMER_COOLDOWN_CHECK(user, COOLDOWN_MOB_AUDIO))
+			TIMER_COOLDOWN_START(user, type, audio_cooldown)
+			S_TIMER_COOLDOWN_START(user, COOLDOWN_MOB_AUDIO, audio_cooldown)
+			playsound(user, tmp_sound, 50, vary)
+
 	var/msg = select_message_type(user, message, intentional)
 	if(params && message_param)
 		msg = select_param(user, params)
 
 	msg = replace_pronoun(user, msg)
+
+	user.log_message(msg ? msg : key, LOG_EMOTE)
+
 	if(!msg)
 		return
-
-	user.log_message(msg, LOG_EMOTE)
-
-	var/tmp_sound = get_sound(user)
-	if(tmp_sound)
-		if(!TIMER_COOLDOWN_CHECK(user, COOLDOWN_MOB_AUDIO))
-			TIMER_COOLDOWN_START(user, type, audio_cooldown)
-			S_TIMER_COOLDOWN_START(user, COOLDOWN_MOB_AUDIO, 10 SECONDS)
-			playsound(user, tmp_sound, 50, vary)
 
 	var/is_important = emote_type & EMOTE_IMPORTANT
 	var/is_visual = emote_type & EMOTE_VISIBLE
