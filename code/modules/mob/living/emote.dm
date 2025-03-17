@@ -593,12 +593,14 @@
 	else if(!params)
 		custom_emote = copytext(sanitize(input("Choose an emote to display.") as text|null), 1, MAX_MESSAGE_LEN)
 		if(custom_emote && !check_invalid(user, custom_emote))
-			var/type = input("Is this a visible or hearable emote?") as null|anything in list("Visible", "Hearable")
+			var/type = input("Is this a visible or hearable emote?") as null|anything in list("Visible", "Hearable", "Both")
 			switch(type)
 				if("Visible")
 					custom_emote_type = EMOTE_VISIBLE
 				if("Hearable")
 					custom_emote_type = EMOTE_AUDIBLE
+				if("Both")
+					custom_emote_type = EMOTE_AUDIBLE | EMOTE_VISIBLE
 				else
 					tgui_alert(usr,"Unable to use this emote, must be either hearable or visible.")
 					return
