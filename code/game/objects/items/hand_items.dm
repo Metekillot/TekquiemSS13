@@ -128,7 +128,6 @@
 		return FALSE
 
 	// [user] gives [target] a [prefix_desc] noogie[affix_desc]!
-	var/brutal_noogie = FALSE // was it an extra hard noogie?
 	var/prefix_desc = "rough"
 	var/affix_desc = ""
 	var/affix_desc_target = ""
@@ -152,11 +151,6 @@
 		to_chat(user, span_warning("You fail to give [target] a noogie!"))
 		to_chat(target, span_danger("[user] fails to give you a noogie!"))
 		return
-
-	if(brutal_noogie)
-		target.add_mood_event("noogie_harsh", /datum/mood_event/noogie_harsh)
-	else
-		target.add_mood_event("noogie", /datum/mood_event/noogie)
 
 	noogie_loop(user, target, 0)
 
@@ -215,9 +209,6 @@
 	SEND_SIGNAL(user, COMSIG_LIVING_SLAP_MOB, slapped)
 	SEND_SIGNAL(slapped, COMSIG_LIVING_SLAPPED, user)
 
-	if(iscarbon(slapped))
-		var/mob/living/carbon/potential_tailed = slapped
-		potential_tailed.unwag_tail()
 	user.do_attack_animation(slapped)
 
 	var/slap_volume = 50
@@ -231,10 +222,10 @@
 		)
 		to_chat(slapped, span_userdanger("You see [user] scoff and pull back [user.p_their()] arm, then suddenly you're on the ground with an ungodly ringing in your ears!"))
 		slap_volume = 120
-		SEND_SOUND(slapped, sound('sound/items/weapons/flash_ring.ogg'))
+		SEND_SOUND(slapped, sound('sound/weapons/flash_ring.ogg'))
 		shake_camera(slapped, 2, 2)
 		slapped.Paralyze(2.5 SECONDS)
-		slapped.adjust_confusion(7 SECONDS)
+		slapped.add_confusion(7 SECONDS)
 		slapped.adjustStaminaLoss(40)
 	else if(user.zone_selected == BODY_ZONE_HEAD || user.zone_selected == BODY_ZONE_PRECISE_MOUTH)
 		if(user == slapped)
@@ -274,15 +265,8 @@
 			span_notice("You slap [slapped]!"),
 			span_hear("You hear a slap."),
 		)
-	playsound(slapped, 'sound/items/weapons/slap.ogg', slap_volume, TRUE, -1)
+	playsound(slapped, 'sound/weapons/slap.ogg', slap_volume, TRUE, -1)
 	return
-
-/obj/item/hand_item/slapper/pre_attack_secondary(atom/target, mob/living/user, params)
-	if(!loc.Adjacent(target) || !istype(target, /obj/structure/table))
-		return ..()
-
-	slam_table(target, user)
-	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 
 /obj/item/hand_item/slapper/pre_attack(atom/target, mob/living/user, params)
 	if(!loc.Adjacent(target) || !istype(target, /obj/structure/table))
@@ -341,18 +325,6 @@
 		to_chat(helper, span_warning("You can't act gentlemanly when you're lying down!"))
 		return TRUE
 
-
-/obj/item/hand_item/hand/pre_attack_secondary(mob/living/carbon/help_target, mob/living/carbon/helper, params)
-	if(!loc.Adjacent(help_target) || !istype(helper) || !istype(help_target))
-		return ..()
-
-	if(helper.resting)
-		to_chat(helper, span_warning("You can't act gentlemanly when you're lying down!"))
-		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
-
-	return SECONDARY_ATTACK_CALL_NORMAL
-
-
 /obj/item/hand_item/hand/attack(mob/living/carbon/target_mob, mob/living/carbon/user, params)
 	if(!loc.Adjacent(target_mob) || !istype(user) || !istype(target_mob))
 		return TRUE
@@ -400,11 +372,6 @@
 		offerer.visible_message(span_notice("[offerer] helps [taker] up!"), span_nicegreen("You help [taker] up!"), span_hear("You hear someone helping someone else up!"), ignored_mobs = taker)
 		to_chat(taker, span_nicegreen("You take [offerer]'s hand, letting [offerer.p_them()] help your up! How nice of them!"))
 
-		offerer.add_mob_memory(/datum/memory/helped_up, protagonist = offerer, deuteragonist = taker)
-		taker.add_mob_memory(/datum/memory/helped_up, protagonist = offerer, deuteragonist = taker)
-
-		offerer.add_mood_event("helping_up", /datum/mood_event/helped_up, taker, TRUE) // Different IDs because you could be helped up and then help someone else up.
-		taker.add_mood_event("helped_up", /datum/mood_event/helped_up, offerer, FALSE)
 
 		qdel(src)
 		return
@@ -553,16 +520,11 @@
 	if(!suppressed)  // direct
 		living_target.visible_message(span_danger("[living_target] is hit by \a [src]."), span_userdanger("You're hit by \a [src]!"), vision_distance=COMBAT_MESSAGE_RANGE)
 
-	living_target.add_mob_memory(/datum/memory/kissed, deuteragonist = firer)
-	living_target.add_mood_event("kiss", /datum/mood_event/kiss, firer, suppressed)
-	if(isliving(firer))
-		var/mob/living/kisser = firer
-		kisser.add_mob_memory(/datum/memory/kissed, protagonist = living_target, deuteragonist = firer)
 	try_fluster(living_target)
 
 /obj/projectile/kiss/proc/try_fluster(mob/living/living_target)
 	// people with the social anxiety quirk can get flustered when hit by a kiss
-	if(!HAS_TRAIT(living_target, TRAIT_ANXIOUS) || (living_target.stat > SOFT_CRIT) || living_target.is_blind())
+	if((living_target.stat > SOFT_CRIT) || living_target.is_blind())
 		return
 	if(HAS_TRAIT(living_target, TRAIT_FEARLESS) || prob(50)) // 50% chance for it to apply, also immune while on meds
 		return
@@ -574,12 +536,12 @@
 		if(1)
 			other_msg = "stumbles slightly, turning a bright red!"
 			self_msg = "You lose control of your limbs for a moment as your blood rushes to your face, turning it bright red!"
-			living_target.adjust_confusion(rand(5 SECONDS, 10 SECONDS))
+			living_target.add_confusion(rand(5 SECONDS, 10 SECONDS))
 		if(2)
 			other_msg = "stammers softly for a moment before choking on something!"
 			self_msg = "You feel your tongue disappear down your throat as you fight to remember how to make words!"
 			addtimer(CALLBACK(living_target, TYPE_PROC_REF(/atom/movable, say), pick("Uhhh...", "O-oh, uhm...", "I- uhhhhh??", "You too!!", "What?")), rand(0.5 SECONDS, 1.5 SECONDS))
-			living_target.adjust_stutter(rand(10 SECONDS, 30 SECONDS))
+			living_target.stuttering += (rand(10 SECONDS, 30 SECONDS))
 		if(3)
 			other_msg = "locks up with a stunned look on [living_target.p_their()] face, staring at [firer ? firer : "the ceiling"]!"
 			self_msg = "Your brain completely fails to process what just happened, leaving you rooted in place staring at [firer ? "[firer]" : "the ceiling"] for what feels like an eternity!"
@@ -592,6 +554,5 @@
 	. = ..()
 	if(isliving(target))
 		var/mob/living/living_target = target
-		living_target.add_mood_event("kiss", /datum/mood_event/kiss, firer, suppressed)
 		try_fluster(living_target)
 
