@@ -592,12 +592,14 @@
 	else if(!params)
 		var/custom_emote = stripped_multiline_input(user, "Choose an emote to display.", "Emote", max_length = MAX_MESSAGE_LEN)
 		if(custom_emote && !check_invalid(user, custom_emote))
-			var/type = input("Is this a visible or hearable emote?") as null|anything in list("Visible", "Hearable")
+			var/type = input("Is this a visible or hearable emote?") as null|anything in list("Visible", "Hearable", "Both")
 			switch(type)
 				if("Visible")
 					emote_type = EMOTE_VISIBLE
 				if("Hearable")
 					emote_type = EMOTE_AUDIBLE
+				if("Both")
+					emote_type = EMOTE_VISIBLE | EMOTE_AUDIBLE
 				else
 					alert("Unable to use this emote, must be either hearable or visible.")
 					return
