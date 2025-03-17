@@ -24,6 +24,17 @@
 	experience_addition = 15
 	allowed_bloodlines =  list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 	known_contacts = list("Clinic Director")
+	alt_titles = list(
+		"Medical Student",
+		"Intern",
+		"Nurse",
+		"Resident",
+		"General Practitioner",
+		"Surgeon",
+		"Physician",
+		"Paramedic",
+		"EMT",
+	)
 
 /datum/outfit/job/doctor_vtr
 	name = "Doctor"
