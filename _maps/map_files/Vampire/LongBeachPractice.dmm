@@ -2012,6 +2012,9 @@
 /obj/structure/railing,
 /turf/open/openspace,
 /area/vtm/vtr/elysium/interior/central/castle_elysium)
+"cjh" = (
+/turf/open/floor/plating/sidewalkalt,
+/area/vtm/vtr/masquerade/exterior/northeast/northeast_long_beach)
 "cjD" = (
 /obj/structure/stairs/north{
 	dir = 8
@@ -11625,14 +11628,9 @@
 "mHJ" = (
 /obj/structure/table,
 /obj/machinery/mineral/equipment_vendor/fastfood/gas{
-	pixel_x = 8;
-	pixel_y = 9
+	pixel_x = 0;
+	pixel_y = 0
 	},
-/obj/machinery/mineral/equipment_vendor/fastfood/products{
-	pixel_x = -8;
-	pixel_y = 9
-	},
-/obj/machinery/mineral/equipment_vendor/fastfood/smoking,
 /turf/open/floor/plating/circled,
 /area/vtm/vtr/masquerade/interior/northwest/gas_station)
 "mIp" = (
@@ -16708,6 +16706,9 @@
 	},
 /turf/open/floor/carpet/blue,
 /area/vtm/vtr/elysium/interior/central/castle_elysium)
+"rKX" = (
+/turf/open/floor/plating/sidewalkalt,
+/area/vtm/vtr/masquerade/exterior/northwest/northwest_long_beach)
 "rLf" = (
 /obj/effect/turf_decal/siding/wideplating{
 	dir = 6
@@ -20179,6 +20180,9 @@
 /obj/item/kirbyplants/random,
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/southwest/clinic)
+"vef" = (
+/turf/open/floor/plating/sidewalkalt,
+/area/vtm/vtr/masquerade/exterior/southwest/southwest_long_beach)
 "veJ" = (
 /obj/machinery/light{
 	pixel_y = 32
@@ -44779,7 +44783,7 @@ sdz
 bCE
 sdz
 bCE
-bCE
+sdz
 bCE
 sdz
 rto
@@ -163254,7 +163258,7 @@ fTs
 fTs
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -163294,22 +163298,22 @@ eqz
 uXM
 buC
 buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
-buC
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
+vef
 buC
 buC
 buC
@@ -163511,7 +163515,7 @@ odA
 odA
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -163551,7 +163555,7 @@ pPw
 sam
 buC
 buC
-buC
+vef
 buC
 buC
 buC
@@ -163768,7 +163772,7 @@ bvb
 odA
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -163808,7 +163812,7 @@ pPw
 sam
 buC
 buC
-buC
+vef
 buC
 buC
 buC
@@ -164025,7 +164029,7 @@ bvb
 aLU
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -164065,7 +164069,7 @@ pPw
 sam
 buC
 buC
-buC
+vef
 buC
 buC
 buC
@@ -164282,7 +164286,7 @@ riu
 odA
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -164322,7 +164326,7 @@ pPw
 sam
 buC
 buC
-buC
+vef
 buC
 buC
 buC
@@ -164539,7 +164543,7 @@ odA
 odA
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -164579,7 +164583,7 @@ pPw
 sam
 buC
 buC
-buC
+vef
 buC
 buC
 buC
@@ -164796,7 +164800,7 @@ riu
 odA
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -164836,7 +164840,7 @@ pPw
 sam
 buC
 buC
-buC
+vef
 buC
 buC
 buC
@@ -165053,7 +165057,7 @@ ilm
 odA
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -165093,7 +165097,7 @@ pPw
 sam
 buC
 buC
-buC
+vef
 buC
 buC
 buC
@@ -165310,7 +165314,7 @@ riu
 odA
 fTs
 fTs
-fTs
+rKX
 fTs
 fTs
 fTs
@@ -166861,11 +166865,11 @@ bDO
 bDO
 bDO
 udg
-fTs
-fTs
-fTs
-fTs
-fTs
+rKX
+rKX
+rKX
+rKX
+rKX
 buC
 buC
 buC
@@ -194358,13 +194362,13 @@ bAz
 bAz
 bAz
 bAz
-nTg
-nTg
-nTg
-nTg
-nTg
-nTg
-nTg
+cjh
+cjh
+cjh
+cjh
+cjh
+cjh
+cjh
 aLk
 aLk
 aLk
