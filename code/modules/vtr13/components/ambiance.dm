@@ -37,4 +37,4 @@
 	var/area/vtm/vtr/ambiance_area_entered = area_entered
 	if(!ambiance_area_entered.ambiance_message)
 		return
-	to_chat(current, span_notice("<i>[ambiance_area_entered.ambiance_message]</i>"))
+	to_chat(current, span_notice("<b><i>[ambiance_area_entered.ambiance_message]</i></b>"))
