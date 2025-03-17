@@ -140,28 +140,33 @@
 
 	msg = copytext_char(msg, 1, MAX_MESSAGE_LEN)
 
+	// Return TRUE if we sent the original msg, otherwise return FALSE
+	. = TRUE
 	if(type)
 		if(type & MSG_VISUAL && is_blind() )//Vision related
 			if(!alt_msg)
-				return
+				return FALSE
 			else
 				msg = alt_msg
 				type = alt_type
+				. = FALSE
 
 		if(type & MSG_AUDIBLE && !can_hear())//Hearing related
 			if(!alt_msg)
-				return
+				return FALSE
 			else
 				msg = alt_msg
 				type = alt_type
+				. = FALSE
 				if(type & MSG_VISUAL && is_blind())
 					return
 	// voice muffling
 	if(stat == UNCONSCIOUS || stat == HARD_CRIT)
 		if(type & MSG_AUDIBLE) //audio
 			to_chat(src, "<I>... You can almost hear something ...</I>")
-		return
+		return FALSE
 	to_chat(src, msg, avoid_highlighting = avoid_highlighting)
+	return .
 
 /**
  * Generate a visible message from this atom

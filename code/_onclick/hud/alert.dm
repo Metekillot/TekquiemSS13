@@ -851,6 +851,8 @@ so as to remain in compliance with the most up-to-date laws."
 	if(master)
 		return usr.client.Click(master, location, control, params)
 
+	return TRUE
+
 /atom/movable/screen/alert/Destroy()
 	. = ..()
 	severity = 0

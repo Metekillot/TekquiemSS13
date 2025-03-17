@@ -188,8 +188,6 @@
 
 /datum/emote/living/carbon/slap/run_emote(mob/user, params, type_override, intentional)
 	. = ..()
-	if(!.)
-		return
 	var/obj/item/hand_item/slapper/N = new(user)
 	if(user.put_in_hands(N))
 		to_chat(user, "<span class='notice'>You ready your slapping hand.</span>")
@@ -204,8 +202,6 @@
 
 /datum/emote/living/carbon/noogie/run_emote(mob/user, params, type_override, intentional)
 	. = ..()
-	if(!.)
-		return
 	var/obj/item/hand_item/noogie/noogie = new(user)
 	if(user.put_in_hands(noogie))
 		to_chat(user, "<span class='notice'>You ready your noogie'ing hand.</span>")
