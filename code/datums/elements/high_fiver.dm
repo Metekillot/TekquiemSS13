@@ -51,12 +51,9 @@
 
 	if(open_hands_taker <= 0)
 		to_chat(taker, span_warning("You can't [descriptor] [offerer] with no open hands!"))
-		taker.add_mood_event(descriptor, /datum/mood_event/high_five_full_hand) // not so successful now!
 		return COMPONENT_OFFER_INTERRUPT
 
 	playsound(offerer, 'sound/weapons/slap.ogg', min(50 * slappers_giver, 300), TRUE, 1)
-	offerer.add_mob_memory(/datum/memory/high_five, deuteragonist = taker, high_five_type = descriptor, high_ten = high_ten)
-	taker.add_mob_memory(/datum/memory/high_five, deuteragonist = offerer, high_five_type = descriptor, high_ten = high_ten)
 
 	if(high_ten)
 		to_chat(taker, span_nicegreen("You give high-tenning [offerer] your all!"))
@@ -67,8 +64,6 @@
 			ignored_mobs = taker,
 		)
 
-		offerer.add_mood_event(descriptor, /datum/mood_event/high_ten)
-		taker.add_mood_event(descriptor, /datum/mood_event/high_ten)
 	else
 		to_chat(taker, span_nicegreen("You high-five [offerer]!"))
 		offerer.visible_message(
@@ -78,8 +73,6 @@
 			ignored_mobs = taker,
 		)
 
-		offerer.add_mood_event(descriptor, /datum/mood_event/high_five)
-		taker.add_mood_event(descriptor, /datum/mood_event/high_five)
 
 	offerer.remove_status_effect(/datum/status_effect/offering/no_item_received/high_five)
 	return COMPONENT_OFFER_INTERRUPT

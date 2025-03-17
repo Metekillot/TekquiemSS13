@@ -19,17 +19,30 @@
 	if(!user.get_bodypart(BODY_ZONE_L_ARM) || !user.get_bodypart(BODY_ZONE_R_ARM))
 		return
 	return pick(
-		'sound/wod13/human/clap/clap1.ogg',
-		'sound/wod13/human/clap/clap2.ogg',
-		'sound/wod13/human/clap/clap3.ogg',
-		'sound/wod13/human/clap/clap4.ogg',
+		'sound/mobs/humanoids/human/clap/clap1.ogg',
+		'sound/mobs/humanoids/human/clap/clap2.ogg',
+		'sound/mobs/humanoids/human/clap/clap3.ogg',
+		'sound/mobs/humanoids/human/clap/clap4.ogg',
 	)
+
+/datum/emote/living/carbon/eyeroll
+	key = "eyeroll"
+	key_third_person = "eyerolls"
+	message = "rolls their eyes"
+	vary = TRUE
+	mob_type_blacklist_typecache = list(/mob/living/carbon/alien)
+
+/datum/emote/living/carbon/eyeroll/can_run_emote(mob/user, status_check = TRUE, intentional)
+	if(!..())
+		return FALSE
+	var/obj/item/organ/eyes/E = user.getorganslot(ORGAN_SLOT_EYES)
+	return istype(E)
 
 /datum/emote/living/carbon/crack
 	key = "crack"
 	key_third_person = "cracks"
 	message = "cracks their knuckles."
-	sound = 'sound/wod13/human/knuckle_crack/knuckles.ogg'
+	sound = 'sound/mobs/humanoids/human/knuckle_crack/knuckles.ogg'
 	hands_use_check = TRUE
 	cooldown = 6 SECONDS
 
@@ -59,6 +72,41 @@
 	mob_type_allowed_typecache = list(/mob/living/carbon/alien)
 	hands_use_check = TRUE
 
+/datum/emote/living/carbon/snap
+	emote_type = EMOTE_AUDIBLE
+	muzzle_ignore = TRUE
+	hands_use_check = TRUE
+	vary = TRUE
+
+/datum/emote/living/carbon/snap/can_run_emote(mob/user, status_check = TRUE, intentional)
+	if(!..())
+		return FALSE
+	// sorry pal, but you need an arm to snap
+	var/mob/living/carbon/C = user
+	return C.get_bodypart(BODY_ZONE_L_ARM) || C.get_bodypart(BODY_ZONE_R_ARM)
+
+/datum/emote/living/carbon/snap/one
+	key = "snap"
+	key_third_person = "snaps"
+	message = "snaps their fingers"
+	message_param = "snaps their fingers at %t"
+	sound = 'sound/mobs/humanoids/human/snap/snap.ogg'
+
+/datum/emote/living/carbon/snap/two
+	key = "snap2"
+	key_third_person = "snaps2"
+	message = "snaps their fingers twice"
+	message_param = "snaps their fingers at %t twice"
+	sound = 'sound/mobs/humanoids/human/snap/snap2.ogg'
+
+/datum/emote/living/carbon/snap/three
+	key = "snap3"
+	key_third_person = "snaps3"
+	message = "snaps their fingers thrice"
+	message_param = "snaps their fingers at %t thrice"
+	sound = 'sound/mobs/humanoids/human/snap/snap3.ogg'
+
+
 /datum/emote/living/carbon/sign
 	key = "sign"
 	key_third_person = "signs"
@@ -87,6 +135,37 @@
 	key = "wink"
 	key_third_person = "winks"
 	message = "winks."
+
+/datum/emote/living/carbon/sweatdrop
+	key = "sweatdrop"
+	key_third_person = "sweatdrops"
+	message = "sweats"
+	emote_type = EMOTE_VISIBLE
+	vary = TRUE
+
+/datum/emote/living/carbon/sweatdrop/run_emote(mob/user, params, type_override, intentional)
+	. = ..()
+	var/image/I = image('icons/mob/human/emote_visuals.dmi', user, "sweatdrop", ABOVE_MOB_LAYER, 0, 10, 10)
+	flick_overlay_view(I, user, 3 SECONDS)
+
+/datum/emote/living/carbon/sweatdrop/get_sound(mob/living/user)
+	return 'sound/mobs/humanoids/human/sweat/sweatdrop.ogg'
+
+/datum/emote/living/carbon/sweatdrop/sweat //This is entirely the same as sweatdrop, however people might use either, so i'm adding this one instead of editing the other one.
+	key = "sweat"
+
+/datum/emote/living/carbon/annoyed
+	key = "annoyed"
+	emote_type = EMOTE_VISIBLE
+	vary = TRUE
+
+/datum/emote/living/carbon/annoyed/get_sound(mob/living/user)
+	return 'sound/mobs/humanoids/human/annoyed/annoyed.ogg'
+
+/datum/emote/living/carbon/annoyed/run_emote(mob/user, params, type_override, intentional)
+	. = ..()
+	var/image/I = image('icons/mob/human/emote_visuals.dmi', user, "annoyed", ABOVE_MOB_LAYER, 0, 10, 10)
+	flick_overlay_view(I, user, 5 SECONDS)
 
 /datum/emote/living/carbon/circle
 	key = "circle"

@@ -220,6 +220,12 @@
 	message = "grimaces."
 	emote_type = EMOTE_VISIBLE
 
+/datum/emote/living/must_breathe/huff
+	key = "huff"
+	key_third_person = "huffs"
+	message ="lets out a huff!"
+	emote_type = EMOTE_AUDIBLE
+
 /datum/emote/living/kiss
 	key = "kiss"
 	key_third_person = "kisses"
@@ -379,7 +385,7 @@
 	if(!ishuman(user))
 		return
 	var/image/emote_animation = image('icons/mob/human/emote_visuals.dmi', user, "sigh")
-	flick_overlay_global(emote_animation, GLOB.clients, 2.0 SECONDS)
+	flick_overlay_view(emote_animation, user, 2.0 SECONDS)
 
 /datum/emote/living/sigh/get_sound(mob/living/carbon/human/user)
 	if(!istype(user))
@@ -635,4 +641,4 @@
 	emote_type = EMOTE_AUDIBLE | EMOTE_VISIBLE
 
 /datum/emote/living/carbon/whistle/get_sound(mob/living/user)
-	return 'sound/wod13/human/whistle/whistle1.ogg'
+	return 'sound/mobs/humanoids/human/whistle/whistle1.ogg'
