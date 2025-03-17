@@ -19,6 +19,11 @@
 
 /obj/item/travel_brochure/attack_self(mob/user)
 	. = ..()
+
+	to_chat(user, span_notice("You begin reading the map..."))
+	if(!do_mob(user, user, 30)) //to prevent getflaticon spam
+		return
+
 	if(!user.x || !user.y || user.x > 200 || user.x < 11 || user.y > 190)
 		to_chat(user, span_notice("You don't know where you are..."))
 		return
