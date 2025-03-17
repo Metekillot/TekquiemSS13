@@ -4,6 +4,8 @@
 /obj/item/organ/liver
 	name = "liver"
 	icon_state = "liver"
+	illegal = TRUE
+	cost = 400
 	w_class = WEIGHT_CLASS_SMALL
 	zone = BODY_ZONE_CHEST
 	slot = ORGAN_SLOT_LIVER
@@ -26,7 +28,6 @@
 	// If the liver handles foods like a clown, it honks like a bike horn
 	// Don't think about it too much.
 	RegisterSignal(src, SIGNAL_ADDTRAIT(TRAIT_COMEDY_METABOLISM), PROC_REF(on_add_comedy_metabolism))
-	AddComponent(/datum/component/selling/organ, 400, "organ", TRUE, -1, 0)
 
 /* Signal handler for the liver gaining the TRAIT_COMEDY_METABOLISM trait
  *

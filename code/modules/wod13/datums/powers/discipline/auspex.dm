@@ -16,11 +16,12 @@
 	name = "Heightened Senses"
 	desc = "Enhances your senses far past human limitations."
 
-	level = 1
 	check_flags = DISC_CHECK_CONSCIOUS
-	vitae_cost = 0
+
+	level = 1
 
 	toggled = TRUE
+	duration_length = 30 SECONDS
 
 /datum/discipline_power/auspex/heightened_senses/activate()
 	. = ..()
@@ -45,11 +46,12 @@
 	name = "Aura Perception"
 	desc = "Allows you to perceive the auras of those near you."
 
-	level = 2
 	check_flags = DISC_CHECK_CONSCIOUS
-	vitae_cost = 0
+
+	level = 2
 
 	toggled = TRUE
+	duration_length = 30 SECONDS
 
 /datum/discipline_power/auspex/aura_perception/activate()
 	. = ..()
@@ -74,11 +76,12 @@
 	name = "The Spirit's Touch"
 	desc = "Allows you to feel the physical wellbeing of those near you."
 
-	level = 3
 	check_flags = DISC_CHECK_CONSCIOUS
-	vitae_cost = 0
+
+	level = 3
 
 	toggled = TRUE
+	duration_length = 30 SECONDS
 
 /datum/discipline_power/auspex/the_spirits_touch/activate()
 	. = ..()
@@ -103,11 +106,12 @@
 	name = "Telepathy"
 	desc = "Feel the psychic resonances left on objects you can touch."
 
-	level = 4
 	check_flags = DISC_CHECK_CONSCIOUS
-	vitae_cost = 0
+
+	level = 4
 
 	toggled = TRUE
+	duration_length = 30 SECONDS
 
 /datum/discipline_power/auspex/telepathy/activate()
 	. = ..()
@@ -222,9 +226,9 @@
 	name = "Psychic Projection"
 	desc = "Leave your body behind and fly across the land."
 
-	level = 5
 	check_flags = DISC_CHECK_CONSCIOUS
-	vitae_cost = 1
+
+	level = 5
 
 /datum/discipline_power/auspex/psychic_projection/activate()
 	. = ..()

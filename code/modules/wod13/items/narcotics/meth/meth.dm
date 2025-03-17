@@ -9,7 +9,5 @@
 	resistance_flags = FREEZE_PROOF
 	isGlass = FALSE
 	foodtype = BREAKFAST
-
-/obj/item/reagent_containers/food/drinks/meth/Initialize(mapload)
-	. = ..()
-	AddComponent(/datum/component/selling, 300, "meth", TRUE, -1, 4)
+	illegal = TRUE
+	cost = 300

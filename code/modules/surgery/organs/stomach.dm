@@ -4,6 +4,8 @@
 /obj/item/organ/stomach
 	name = "stomach"
 	icon_state = "stomach"
+	illegal = TRUE
+	cost = 100
 	w_class = WEIGHT_CLASS_SMALL
 	zone = BODY_ZONE_CHEST
 	slot = ORGAN_SLOT_STOMACH
@@ -35,7 +37,6 @@
 	//None edible organs do not get a reagent holder by default
 	if(!reagents)
 		create_reagents(reagent_vol)
-	AddComponent(/datum/component/selling/organ, 100, "organ", TRUE, -1, 0)
 
 /obj/item/organ/stomach/on_life()
 	. = ..()

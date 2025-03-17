@@ -90,6 +90,7 @@
 
 	var/duty
 	var/v_duty
+	var/list/alt_titles = list()
 
 /datum/job/New()
 	. = ..()

@@ -572,6 +572,8 @@
 				R.enemy_text = H.client.prefs.enemy_text
 				R.lover_text = H.client.prefs.lover_text
 				R.publish()
+
+				H.mind.character_connections = H.get_character_connections()
 		new_character = null
 		qdel(src)
 

@@ -500,9 +500,7 @@
 	if (toggled && (duration_length == 0))
 		return
 
-	//REFACTOR ME
-	var/full_duration_length = duration_length + owner.discipline_time_plus
-	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), full_duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
+	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
 
 /**
  * Overridable proc handling the power's cooldown, which is a timer that triggers the cooldown_expire

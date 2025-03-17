@@ -141,26 +141,22 @@
 
 /datum/datacore/proc/get_manifest()
 	var/list/manifest_out = list(
- 		"Camarilla",
-		"Primogen Council",
-		"Tremere",
-		"Anarch",
-		"Giovanni",
-		"Old Clan Tzimisce",
+ 		"Invictus",
+		"Lancea et Sanctum",
+		"Ordo Dracul",
+		"Circle of the Crone",
+		"Carthian Movement",
 		"Law Enforcement",
-		"Warehouse",
-		"Triad"
+		"Clinic"
 	)
 	var/list/departments = list(
-		"Camarilla" = GLOB.command_positions,
-		"Primogen Council" = GLOB.camarilla_council_positions,
-		"Tremere" = GLOB.tremere_positions,
-		"Anarch" = GLOB.anarch_positions,
-		"Giovanni" = GLOB.giovanni_positions,
-		"Old Clan Tzimisce" = GLOB.tzimisce_positions,
-		"Law Enforcement" = GLOB.police_positions + GLOB.national_security_positions,
-		"Warehouse" = GLOB.warehouse_positions,
-		"Triad" = GLOB.gang_positions
+		"Invictus" = GLOB.command_positions,
+		"Lancea et Sanctum" = GLOB.lancea_positions,
+		"Ordo Dracul" = GLOB.ordo_positions,
+		"Circle of the Crone" = GLOB.crone_positions,
+		"Carthian Movement" = GLOB.carthian_positions,
+		"Law Enforcement" = GLOB.police_positions,
+		"Clinic" = GLOB.clinic_positions
 	)
 	for(var/datum/data/record/t in GLOB.data_core.general)
 		var/name = t.fields["name"]

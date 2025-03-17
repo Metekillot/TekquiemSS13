@@ -2,6 +2,8 @@
 	name = "tongue"
 	desc = "A fleshy muscle mostly used for lying."
 	icon_state = "tonguenormal"
+	illegal = TRUE
+	cost = 100
 	zone = BODY_ZONE_PRECISE_MOUTH
 	slot = ORGAN_SLOT_TONGUE
 	attack_verb_continuous = list("licks", "slobbers", "slaps", "frenches", "tongues")
@@ -35,7 +37,6 @@
 /obj/item/organ/tongue/Initialize(mapload)
 	. = ..()
 	languages_possible = languages_possible_base
-	AddComponent(/datum/component/selling/organ, 100, "organ", TRUE, -1, 0)
 
 /obj/item/organ/tongue/proc/handle_speech(datum/source, list/speech_args)
 
