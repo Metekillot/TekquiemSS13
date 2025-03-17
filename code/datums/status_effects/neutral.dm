@@ -162,15 +162,18 @@
 	. = ..()
 	if(!.)
 		return
-
 	offered_item = offer
 	if(give_alert_override)
 		give_alert_type = give_alert_override
 
-	for(var/mob/living/carbon/possible_taker in orange(1, owner))
-		if(!owner.CanReach(possible_taker) || IS_DEAD_OR_INCAP(possible_taker) || !possible_taker.can_hold_items())
-			continue
-		register_candidate(possible_taker)
+	if(offered && is_taker_elligible(offered))
+		register_candidate(offered)
+	else
+		for(var/mob/living/carbon/possible_taker in orange(1, owner))
+			if(!is_taker_elligible(possible_taker))
+				continue
+
+			register_candidate(possible_taker)
 
 	if(!possible_takers) // no one around
 		qdel(src)
