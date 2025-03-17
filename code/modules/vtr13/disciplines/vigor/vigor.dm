@@ -65,6 +65,14 @@
 			violate_masquerade(owner, owner)
 		return COMPONENT_CANCEL_ATTACK_CHAIN
 
+	if(istype(attacked_thing, /obj/structure/table))
+		if(level >= 3)
+			playsound(get_turf(attacked_thing), 'code/modules/wod13/sounds/get_bent.ogg', 100, FALSE)
+			qdel(attacked_thing)
+			violate_masquerade(attacker, attacker)
+		return COMPONENT_CANCEL_ATTACK_CHAIN
+
+
 	//punching door
 	if(istype(attacked_thing, /obj/structure/vampdoor))
 		var/obj/structure/vampdoor/door_thing = attacked_thing
