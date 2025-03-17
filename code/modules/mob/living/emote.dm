@@ -567,47 +567,47 @@
 	key = "me"
 	key_third_person = "custom"
 	message = null
-
 /datum/emote/living/custom/can_run_emote(mob/user, status_check, intentional)
 	. = ..() && intentional
 
 /datum/emote/living/custom/proc/check_invalid(mob/user, input)
 	var/static/regex/stop_bad_mime = regex(@"says|exclaims|yells|asks")
 	if(stop_bad_mime.Find(input, 1, 1))
-		to_chat(user, "<span class='danger'>Invalid emote.</span>")
+		to_chat(user, span_danger("Invalid emote."))
 		return TRUE
 	return FALSE
 
 /datum/emote/living/custom/run_emote(mob/user, params, type_override = null, intentional = FALSE)
+	var/custom_emote
+	var/custom_emote_type
 	if(!can_run_emote(user, TRUE, intentional))
 		return FALSE
 	if(is_banned_from(user.ckey, "Emote"))
-		to_chat(user, "<span class='boldwarning'>You cannot send custom emotes (banned).</span>")
+		to_chat(user, span_boldwarning("You cannot send custom emotes (banned)."))
 		return FALSE
 	else if(QDELETED(user))
 		return FALSE
 	else if(user.client && user.client.prefs.muted & MUTE_IC)
-		to_chat(user, "<span class='boldwarning'>You cannot send IC messages (muted).</span>")
+		to_chat(user, span_boldwarning("You cannot send IC messages (muted)."))
 		return FALSE
 	else if(!params)
-		var/custom_emote = stripped_multiline_input(user, "Choose an emote to display.", "Emote", max_length = MAX_MESSAGE_LEN)
+		custom_emote = copytext(sanitize(input("Choose an emote to display.") as text|null), 1, MAX_MESSAGE_LEN)
 		if(custom_emote && !check_invalid(user, custom_emote))
-			var/type = input("Is this a visible or hearable emote?") as null|anything in list("Visible", "Hearable", "Both")
+			var/type = input("Is this a visible or hearable emote?") as null|anything in list("Visible", "Hearable")
 			switch(type)
 				if("Visible")
-					emote_type = EMOTE_VISIBLE
+					custom_emote_type = EMOTE_VISIBLE
 				if("Hearable")
-					emote_type = EMOTE_AUDIBLE
-				if("Both")
-					emote_type = EMOTE_VISIBLE | EMOTE_AUDIBLE
+					custom_emote_type = EMOTE_AUDIBLE
 				else
-					alert("Unable to use this emote, must be either hearable or visible.")
+					tgui_alert(usr,"Unable to use this emote, must be either hearable or visible.")
 					return
-			message = user.say_emphasis(custom_emote)
 	else
-		message = user.say_emphasis(params)
+		custom_emote = params
 		if(type_override)
-			emote_type = type_override
+			custom_emote_type = type_override
+	message = custom_emote
+	emote_type = custom_emote_type
 	. = ..()
 	message = null
 	emote_type = EMOTE_VISIBLE
