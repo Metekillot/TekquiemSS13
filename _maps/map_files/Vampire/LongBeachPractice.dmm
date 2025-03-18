@@ -1406,11 +1406,14 @@
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/masquerade/exterior/northwest/northwest_long_beach)
 "bDW" = (
-/obj/structure/closet/secure_closet/freezer/fridge,
 /obj/item/reagent_containers/food/condiment/vampiremilk,
 /obj/item/storage/fancy/egg_box,
 /obj/machinery/light/prince{
 	pixel_y = 32
+	},
+/obj/structure/closet/crate/freezer/fridge{
+	pixel_x = 0;
+	pixel_y = 7
 	},
 /turf/open/floor/plating/circled,
 /area/vtm/vtr/masquerade/interior/northeast/well_off_house)
@@ -2586,6 +2589,10 @@
 /obj/vampire_computer,
 /turf/open/floor/plating/vampwood,
 /area/vtm/vtr/masquerade/interior/southwest/warehouse)
+"cNZ" = (
+/obj/structure/closet,
+/turf/open/floor/plating/sidewalk/poor,
+/area/vtm/vtr/elysium/interior/central/castle_elysium)
 "cOh" = (
 /obj/structure/table/wood/fancy/blue,
 /turf/open/floor/plating/parquetry,
@@ -4215,9 +4222,12 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/northwest/northwest_long_beach)
 "ezQ" = (
-/obj/structure/closet/secure_closet/freezer/fridge,
 /obj/item/reagent_containers/food/condiment/vampiremilk,
 /obj/item/storage/fancy/egg_box,
+/obj/structure/closet/crate/freezer/fridge{
+	pixel_x = 0;
+	pixel_y = 7
+	},
 /turf/open/floor/plating/toilet,
 /area/vtm/vtr/masquerade/interior/northeast/rental_house)
 "eAc" = (
@@ -4293,6 +4303,10 @@
 	},
 /turf/open/floor/plating/vampwood,
 /area/vtm/vtr/masquerade/interior/central/nightclub)
+"eCF" = (
+/obj/structure/cratestack,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/northeast/pawn_shop)
 "eCL" = (
 /obj/vampire_car/taxi{
 	dir = 1
@@ -4973,10 +4987,10 @@
 /turf/open/openspace,
 /area/vtm/vtr/masquerade/exterior/southeast/alamitos_beach)
 "flm" = (
-/obj/structure/table/reinforced,
 /obj/machinery/light/small{
 	pixel_y = 32
 	},
+/obj/structure/closet,
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/elysium/interior/central/castle_elysium)
 "flz" = (
@@ -6544,9 +6558,12 @@
 /turf/open/floor/carpet/blue,
 /area/vtm/vtr/masquerade/interior/central/castle_lobby)
 "gVU" = (
-/obj/structure/closet/secure_closet/freezer/fridge,
 /obj/item/reagent_containers/food/condiment/vampiremilk,
 /obj/item/storage/fancy/egg_box,
+/obj/structure/closet/crate/freezer/fridge{
+	pixel_x = 0;
+	pixel_y = 7
+	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/northeast/bright_house)
 "gWC" = (
@@ -6853,11 +6870,14 @@
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/northwest/police_station)
 "hjV" = (
-/obj/structure/closet/secure_closet/freezer/fridge,
 /obj/item/reagent_containers/food/condiment/vampiremilk,
 /obj/item/storage/fancy/egg_box,
 /obj/machinery/light/prince{
 	pixel_y = 32
+	},
+/obj/structure/closet/crate/freezer/fridge{
+	pixel_x = 0;
+	pixel_y = 7
 	},
 /turf/open/floor/plating/toilet,
 /area/vtm/vtr/masquerade/interior/northeast/old_house)
@@ -8441,19 +8461,19 @@
 	},
 /obj/item/food/donut/berry{
 	pixel_x = -9;
-	pixel_y = 13
+	pixel_y = 10
 	},
 /obj/item/food/donut/choco{
 	pixel_x = 4;
-	pixel_y = 13
+	pixel_y = 10
 	},
 /obj/item/food/donut/plain{
 	pixel_x = -9;
-	pixel_y = 3
+	pixel_y = 0
 	},
 /obj/item/food/donut/apple{
 	pixel_x = 4;
-	pixel_y = 3
+	pixel_y = 0
 	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/northeast/bakery)
@@ -9436,7 +9456,7 @@
 /turf/open/floor/plating/parquetry,
 /area/vtm/vtr/masquerade/interior/northwest/gym)
 "kij" = (
-/obj/structure/chair/wood/wings{
+/obj/structure/chair/greyscale{
 	dir = 1
 	},
 /turf/open/floor/plating/vampplating/stone,
@@ -16870,10 +16890,6 @@
 /obj/machinery/light{
 	pixel_y = 32
 	},
-/obj/structure/closet/crate/freezer/fridge{
-	pixel_x = 0;
-	pixel_y = 7
-	},
 /obj/item/storage/fancy/egg_box,
 /obj/item/reagent_containers/food/condiment/vampiremilk,
 /obj/item/reagent_containers/food/drinks/soda_cans/vampirecola,
@@ -16881,6 +16897,10 @@
 /obj/item/reagent_containers/food/drinks/soda_cans/vampirecola,
 /obj/item/reagent_containers/food/drinks/soda_cans/vampirecola,
 /obj/item/reagent_containers/food/drinks/soda_cans/vampirecola,
+/obj/structure/closet/crate/freezer/fridge{
+	pixel_x = 0;
+	pixel_y = 7
+	},
 /turf/open/floor/plating/parquetry,
 /area/vtm/vtr/masquerade/interior/northwest/police_station)
 "rVL" = (
@@ -19442,6 +19462,7 @@
 /obj/machinery/light/small{
 	pixel_y = 32
 	},
+/obj/item/reagent_containers/spray/cleaner,
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/southeast/baco_tell)
 "uub" = (
@@ -22149,8 +22170,10 @@
 /turf/open/floor/mineral/plastitanium,
 /area/vtm/vtr/elysium/interior/central/nightclub_elysium)
 "xfy" = (
-/obj/structure/chair/wood/wings{
-	dir = 8
+/obj/structure/chair/greyscale{
+	dir = 8;
+	pixel_x = 0;
+	pixel_y = 5
 	},
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/southwest/clinic)
@@ -22182,6 +22205,10 @@
 "xhj" = (
 /turf/closed/wall/vampwall/bar/low/window,
 /area/vtm/vtr/masquerade/interior/central/library)
+"xhw" = (
+/obj/structure/closet/crate/large,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/northeast/pawn_shop)
 "xid" = (
 /obj/structure/closet/crate/bin,
 /turf/open/floor/plating/vampgrass,
@@ -22352,6 +22379,13 @@
 /obj/structure/sign/poster/genitorturers,
 /turf/closed/wall/vampwall/brick,
 /area/vtm/vtr/masquerade/interior/northeast/record_store)
+"xqb" = (
+/obj/machinery/light{
+	dir = 4
+	},
+/obj/weapon_showcase,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/northeast/pawn_shop)
 "xqn" = (
 /obj/effect/turf_decal/siding/white/corner,
 /turf/open/floor/plating/vampplating/stone,
@@ -56580,7 +56614,7 @@ cqI
 czp
 lJi
 flm
-bOj
+xyn
 bOj
 smH
 czp
@@ -56836,9 +56870,9 @@ cqI
 cqI
 czp
 lJi
+cNZ
+xyn
 bOj
-xyn
-xyn
 smH
 smH
 paf
@@ -57350,9 +57384,9 @@ cqI
 cqI
 czp
 lJi
+cNZ
+xyn
 bOj
-xyn
-xyn
 smH
 smH
 lJi
@@ -57608,7 +57642,7 @@ cqI
 czp
 lJi
 flm
-bOj
+xyn
 bOj
 smH
 czp
@@ -134698,7 +134732,7 @@ tpb
 pqZ
 sdF
 gBd
-csx
+xhw
 mcJ
 mcJ
 mcJ
@@ -134955,8 +134989,8 @@ tpb
 qFA
 qFA
 gBd
-csx
 mcJ
+eCF
 mcJ
 mcJ
 mcJ
@@ -135212,10 +135246,10 @@ tpb
 sdF
 pqZ
 gBd
+mcJ
+mcJ
 csx
-mcJ
-mcJ
-lUz
+xqb
 faE
 vxB
 dXx
