@@ -35,6 +35,9 @@
 /datum/emote/living/carbon/eyeroll/can_run_emote(mob/user, status_check = TRUE, intentional)
 	if(!..())
 		return FALSE
+	var/obj/eyes_slot = user.get_item_by_slot(ITEM_SLOT_EYES)
+	if(istype(eyes_slot, /obj/item/clothing/glasses/sunglasses))
+		return FALSE
 	var/obj/item/organ/eyes/E = user.getorganslot(ORGAN_SLOT_EYES)
 	return istype(E)
 
