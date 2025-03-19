@@ -134,7 +134,7 @@
 // People cant see you squinting with sunglasses, moron.
 /datum/emote/living/carbon/human/squint/can_run_emote(mob/user, status_check = TRUE, intentional, params)
 	var/obj/eyes_slot = user.get_item_by_slot(ITEM_SLOT_EYES)
-	if(istype(eyes_slot, /obj/item/clothing/glasses) || istype(eyes_slot, /obj/item/clothing/glasses/sunglasses))
+	if(istype(eyes_slot, /obj/item/clothing/glasses/sunglasses))
 		return FALSE
 	return ..()
 
