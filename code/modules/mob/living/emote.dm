@@ -646,3 +646,9 @@
 
 /datum/emote/living/carbon/whistle/get_sound(mob/living/user)
 	return 'sound/mobs/humanoids/human/whistle/whistle1.ogg'
+
+/datum/emote/living/carbon/hum
+	key = "hum"
+	key_third_person = "hums"
+	message = "hums a tune."
+	emote_type = EMOTE_AUDIBLE
