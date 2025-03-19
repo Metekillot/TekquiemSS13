@@ -119,6 +119,12 @@
 	message = "shrugs."
 	emote_type = EMOTE_VISIBLE
 
+/datum/emote/living/carbon/human/smirk
+	key = "smirk"
+	key_third_person = "smirks"
+	message = "smirks."
+	emote_type = EMOTE_VISIBLE
+
 /datum/emote/living/carbon/human/wag
 	key = "wag"
 	key_third_person = "wags"
