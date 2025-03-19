@@ -36,7 +36,7 @@
 	if(!..())
 		return FALSE
 	var/obj/eyes_slot = user.get_item_by_slot(ITEM_SLOT_EYES)
-	if(istype(eyes_slot, /obj/item/clothing/glasses/sunglasses))
+	if(istype(eyes_slot, /obj/item/clothing/glasses/sunglasses)) //People can't see you rolling your eyes behind the glasses.
 		return FALSE
 	var/obj/item/organ/eyes/E = user.getorganslot(ORGAN_SLOT_EYES)
 	return istype(E)
