@@ -10,7 +10,6 @@
 		return_var = text2num(copytext(_measurement, findtextEx(_measurement, "x") + 1)); \
 	} while(FALSE);
 
-
 /// Removes characters incompatible with file names.
 #define SANITIZE_FILENAME(text) (GLOB.filename_forbidden_chars.Replace(text, ""))
 
