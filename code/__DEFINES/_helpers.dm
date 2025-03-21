@@ -14,6 +14,7 @@
 // TFN EDIT START
 #define span_nicegreen(str) ("<span class='nicegreen'>" + str + "</span>")
 #define span_boldwarning(str) ("<span class='boldwarning'>" + str + "</span>")
+#define span_hear(str) ("<span class='hear'>" + str + "</span>")
 #define span_emote(str) ("<span class='emote'>" + str + "</span>")
 #define span_subtle(str) ("<span class='subtle'>" + str + "</span>")
 #define span_subtler(str) ("<span class='subtler'>" + str + "</span>")
