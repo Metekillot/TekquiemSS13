@@ -1,6 +1,6 @@
 /datum/discipline_power/vtr/auspex/telepathy
-	name = "Telepathy"
-	desc = "Allows you to perceive the auras of those near you."
+	name = "Major Telepathy"
+	desc = "Allows you to discover the closely guarded secrets of another."
 
 	level = 4
 	target_type = TARGET_HUMAN | TARGET_SELF
@@ -13,7 +13,7 @@
 
 /datum/discipline_power/vtr/auspex/telepathy/pre_activation_checks(mob/living/carbon/human/target)
 	var/mypower = owner.get_total_mentality() + discipline.level
-	var/theirpower = target.get_total_mentality() + target.get_total_blood()
+	var/theirpower = target.get_total_mentality() + target.get_total_blood() //TODO HEX: Tie to blood_potency
 
 	to_chat(owner, span_danger("You probe [target]'s mind..."))
 	var/their_successes = target.storyteller_roll(theirpower, 6, TRUE, "" ,FALSE)

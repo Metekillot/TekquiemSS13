@@ -4,7 +4,8 @@
 	curse = "Masquerade-violating appearance."
 	clane_disciplines = list(
 		/datum/discipline/vtr/vigor,
-		/datum/discipline/vtr/obfuscate
+		/datum/discipline/vtr/obfuscate,
+		/datum/discipline/vtr/nightmare
 	)
 
 	male_clothes = /obj/item/clothing/under/vampire/nosferatu
