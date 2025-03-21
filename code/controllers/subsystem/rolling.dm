@@ -46,13 +46,13 @@ SUBSYSTEM_DEF(roll)
 	var/success_count = 0
 	for(var/roll as anything in rolled_dice)
 		if(roll >= difficulty)
-			output_text += span_greentext("[get_dice_char(roll)]")
+			output_text += span_nicegreen("[get_dice_char(roll)]")
 			success_count++
 		else if(roll == 1)
-			output_text += span_bold(span_redtext("[get_dice_char(roll)]"))
+			output_text += span_bold(span_danger("[get_dice_char(roll)]"))
 			success_count--
 		else
-			output_text += span_redtext("[get_dice_char(roll)]")
+			output_text += span_danger("[get_dice_char(roll)]")
 		output_text += " "
 	return success_count
 
@@ -61,13 +61,13 @@ SUBSYSTEM_DEF(roll)
 		return success_count
 	else
 		if(success_count < 0)
-			output_text += span_bold(span_redtext(("\n Botch!")))
+			output_text += span_bold(span_danger(("\n Botch!")))
 			return ROLL_BOTCH
 		else if(success_count == 0)
-			output_text += span_redtext("\n Failure!")
+			output_text += span_danger("\n Failure!")
 			return ROLL_FAILURE
 		else
-			output_text += span_greentext("\n Success!")
+			output_text += span_nicegreen("\n Success!")
 			return ROLL_SUCCESS
 
 /datum/controller/subsystem/roll/proc/get_dice_char(var/input)
