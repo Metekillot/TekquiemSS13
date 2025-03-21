@@ -136,8 +136,3 @@
 	max_yin_chi = 2
 
 	var/headshot_link = null
-	
-	//VTR EDIT BEGIN
-	var/disguise_description = null
-	var/using_auspex = FALSE
-	//VTR EDIT END
