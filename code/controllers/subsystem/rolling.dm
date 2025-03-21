@@ -22,6 +22,8 @@ SUBSYSTEM_DEF(roll)
 
 /datum/controller/subsystem/roll/proc/storyteller_roll(dice = 1, difficulty = 6, numerical = FALSE, list/mobs_to_show_output = list())
 	var/list/rolled_dice = roll_dice(dice)
+	if(!islist(mobs_to_show_output))
+		mobs_to_show_output = list(mobs_to_show_output)
 	var/output_text = ""
 	output_text += span_notice("Rolling [length(rolled_dice)] dice against difficulty [difficulty].")
 	var/success_count = count_success(rolled_dice, difficulty, output_text)
