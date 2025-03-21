@@ -24,14 +24,14 @@ SUBSYSTEM_DEF(roll)
 	var/list/rolled_dice = roll_dice(dice)
 	if(!islist(mobs_to_show_output))
 		mobs_to_show_output = list(mobs_to_show_output)
-	var/output_text = ""
-	output_text += span_notice("Rolling [length(rolled_dice)] dice against difficulty [difficulty].")
+	var/list/output_text = list()
+	output_text += span_notice("Rolling [length(rolled_dice)] dice against difficulty [difficulty].\n")
 	var/success_count = count_success(rolled_dice, difficulty, output_text)
 
 	var/output = roll_answer(success_count, numerical, output_text)
 	for(var/mob/player_mob as anything in mobs_to_show_output)
 		if(player_mob.client.prefs.chat_toggles & CHAT_ROLL_INFO)
-			to_chat(player_mob, output_text)
+			to_chat(player_mob, jointext(output_text, ""), trailing_newline = FALSE)
 	return output
 
 //Roll each ten sided die, see what numbers we get.
@@ -46,14 +46,14 @@ SUBSYSTEM_DEF(roll)
 	var/success_count = 0
 	for(var/roll as anything in rolled_dice)
 		if(roll >= difficulty)
-			output_text += span_nicegreen("[roll]")
+			output_text += span_nicegreen("[get_dice_char(roll)]")
 			success_count++
 		else if(roll == 1)
-			output_text += span_userdanger(span_boldwarning("[roll]"))
+			output_text += span_userdanger(span_warning("[get_dice_char(roll)]"))
 			success_count--
 		else
-			output_text += span_userdanger("[roll]")
-		output_text += ", "
+			output_text += span_userdanger("[get_dice_char(roll)]")
+		output_text += " "
 	return success_count
 
 /datum/controller/subsystem/roll/proc/roll_answer(success_count, numerical, output_text)
@@ -61,11 +61,36 @@ SUBSYSTEM_DEF(roll)
 		return success_count
 	else
 		if(success_count < 0)
-			output_text += span_userdanger(span_boldwarning("Botch!"))
+			output_text += span_userdanger(span_warning("\n Botch!"))
 			return ROLL_BOTCH
 		else if(success_count == 0)
-			output_text += span_userdanger("Failure!")
+			output_text += span_userdanger("\n Failure!")
 			return ROLL_FAILURE
 		else
-			output_text += span_nicegreen("Success!")
+			output_text += span_nicegreen("\n Success!")
 			return ROLL_SUCCESS
+
+/datum/controller/subsystem/roll/proc/get_dice_char(var/input)
+	switch(input)
+		if(1)
+			return "❶"
+		if(2)
+			return "❷"
+		if(3)
+			return "❸"
+		if(4)
+			return "❹"
+		if(5)
+			return "❺"
+		if(6)
+			return "❻"
+		if(7)
+			return "❼"
+		if(8)
+			return "❽"
+		if(9)
+			return "❾"
+		if(10)
+			return "❿"
+		else
+			return "⓿"
