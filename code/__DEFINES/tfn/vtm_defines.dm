@@ -44,3 +44,9 @@
 #define CLAN_GARGOYLE "Gargoyle"
 #define CLAN_DAUGHTERS_OF_CACOPHONY "Daughters of Cacophony"
 #define CLAN_CAPPADOCIAN "Cappadocian"
+
++/**
++ * Conditional defines
++ */
++
++#define isMasqueradeEnforced(A) (isarea(A) && A.zone_type == "masquerade")
