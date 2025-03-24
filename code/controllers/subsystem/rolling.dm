@@ -37,10 +37,10 @@ SUBSYSTEM_DEF(roll)
 		else
 			alert_text = "<span style='color: #ff0000;'>[success_count]</span>"
 		for(var/mob/show_mob in mobs_to_show_output)
-			balloon_alert_atom.balloon_alert(show_mob, alert_text)
+			balloon_alert_atom.balloon_alert(show_mob, alert_text, TRUE)
 
 	for(var/mob/player_mob as anything in mobs_to_show_output)
-		if(player_mob.client.prefs.chat_toggles & CHAT_ROLL_INFO)
+		if(player_mob?.client?.prefs.chat_toggles && player_mob.client.prefs.chat_toggles & CHAT_ROLL_INFO)
 			to_chat(player_mob, jointext(output_text, ""), trailing_newline = FALSE)
 	return output
 

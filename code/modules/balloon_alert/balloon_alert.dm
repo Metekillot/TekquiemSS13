@@ -14,11 +14,12 @@
  * Args:
  * * mob/viewer: The mob the text will be shown to. Nullable (But only in the form of it won't runtime).
  * * text: The text to be shown to viewer. Must not be null.
+ * * pixel_drift: Randomizes the start point of the balloon text
  */
-/atom/proc/balloon_alert(mob/viewer, text)
+/atom/proc/balloon_alert(mob/viewer, text, pixel_drift = FALSE)
 	SHOULD_NOT_SLEEP(TRUE)
 
-	INVOKE_ASYNC(src, PROC_REF(balloon_alert_perform), viewer, text)
+	INVOKE_ASYNC(src, PROC_REF(balloon_alert_perform), viewer, text, pixel_drift)
 
 /// Create balloon alerts (text that floats up) to everything within range.
 /// Will only display to people who can see.
@@ -38,7 +39,7 @@
 // MeasureText blocks. I have no idea for how long.
 // I would've made the maptext_height update on its own, but I don't know
 // if this would look bad on laggy clients.
-/atom/proc/balloon_alert_perform(mob/viewer, text)
+/atom/proc/balloon_alert_perform(mob/viewer, text, pixel_drift = FALSE)
 
 	var/client/viewer_client = viewer?.client
 	if (isnull(viewer_client))
@@ -52,6 +53,10 @@
 	balloon_alert.maptext_x = (BALLOON_TEXT_WIDTH - ICON_SIZE_X) * -0.5 - base_pixel_x
 	balloon_alert.maptext_height = WXH_TO_HEIGHT(viewer_client?.MeasureText(text, null, BALLOON_TEXT_WIDTH))
 	balloon_alert.maptext_width = BALLOON_TEXT_WIDTH
+
+	if(pixel_drift)
+		balloon_alert.pixel_x += rand(-8, 8)
+		balloon_alert.pixel_y += rand(-8, 8)
 
 	viewer_client?.images += balloon_alert
 
