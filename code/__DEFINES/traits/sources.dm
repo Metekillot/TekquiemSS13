@@ -133,3 +133,8 @@
 //trait from /mob/living/carbon/human/npc
 #define NPC_ITEM_TRAIT "npc_item"
 // END TRAIT DEFINES
+
+/// Apply this to make a mob not dense, and remove it when you want it to no longer make them undense, other sorces of undesity will still apply. Always define a unique source when adding a new instance of this!
+#define TRAIT_UNDENSE "undense"
+/// A trait gained by leaning against a wall
+#define TRAIT_LEANING "leaning"
