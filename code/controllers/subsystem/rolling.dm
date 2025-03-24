@@ -20,7 +20,7 @@ SUBSYSTEM_DEF(roll)
  * * roll header:
  */
 
-/datum/controller/subsystem/roll/proc/storyteller_roll(dice = 1, difficulty = 6, numerical = FALSE, list/mobs_to_show_output = list())
+/datum/controller/subsystem/roll/proc/storyteller_roll(dice = 1, difficulty = 6, numerical = FALSE, list/mobs_to_show_output = list(), atom/balloon_alert_atom = null)
 	var/list/rolled_dice = roll_dice(dice)
 	if(!islist(mobs_to_show_output))
 		mobs_to_show_output = list(mobs_to_show_output)
@@ -29,6 +29,16 @@ SUBSYSTEM_DEF(roll)
 	var/success_count = count_success(rolled_dice, difficulty, output_text)
 
 	var/output = roll_answer(success_count, numerical, output_text)
+
+	if(balloon_alert_atom)
+		var/alert_text
+		if(success_count >= 1)
+			alert_text = "<span style='color: #14a833;'>[success_count]</span>"
+		else
+			alert_text = "<span style='color: #ff0000;'>[success_count]</span>"
+		for(var/mob/show_mob in mobs_to_show_output)
+			balloon_alert_atom.balloon_alert(show_mob, alert_text)
+
 	for(var/mob/player_mob as anything in mobs_to_show_output)
 		if(player_mob.client.prefs.chat_toggles & CHAT_ROLL_INFO)
 			to_chat(player_mob, jointext(output_text, ""), trailing_newline = FALSE)
