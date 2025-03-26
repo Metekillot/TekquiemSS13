@@ -53,7 +53,7 @@ SUBSYSTEM_DEF(roll)
 		if(success_count >= 1)
 			alert_text = "<span style='color: #14a833;'>+[success_count]</span>"
 		else
-			alert_text = "<span style='color: #ff0000;'>[success_count ? "" : "-"][success_count]</span>"
+			alert_text = "<span style='color: #ff0000;'>[success_count]</span>"
 		for(var/mob/show_mob in mobs_to_show_output)
 			alert_atom.balloon_alert(show_mob, alert_text, TRUE)
 
@@ -110,14 +110,14 @@ SUBSYSTEM_DEF(roll)
 			if(player_a_succeeded)
 				alert_text = "<span style='color: #14a833;'>[is_zero ?"":"+"][success_count_a - success_count_b]</span>"
 			else
-				alert_text = "<span style='color: #ff0000;'>[is_zero ?"":"-"][success_count_a - success_count_b]</span>"
+				alert_text = "<span style='color: #ff0000;'>[success_count_a - success_count_b]</span>"
 			alert_atom.balloon_alert(player_a, alert_text, TRUE)
 		if(show_player_b)
 			var/alert_text
 			if(!player_a_succeeded)
 				alert_text = "<span style='color: #14a833;'>[is_zero ?"":"+"][success_count_b - success_count_a]</span>"
 			else
-				alert_text = "<span style='color: #ff0000;'>[is_zero ?"":"-"][success_count_b - success_count_a]</span>"
+				alert_text = "<span style='color: #ff0000;'>[success_count_b - success_count_a]</span>"
 			alert_atom.balloon_alert(player_b, alert_text, TRUE)
 	
 	return player_a_succeeded
