@@ -1,6 +1,6 @@
 //HEIGHTENED SENSES
-/datum/discipline_power/vtr/auspex/pierce_the_veil
-	name = "Pierce the Veil"
+/datum/discipline_power/vtr/auspex/beasts_hackles
+	name = "Beast's Hackles"
 	desc = "Enhances your senses far past human limitations."
 
 	check_flags = DISC_CHECK_CONSCIOUS|DISC_CHECK_SEE
@@ -10,7 +10,7 @@
 	toggled = TRUE
 	duration_length = 15 SECONDS
 
-/datum/discipline_power/vtr/auspex/pierce_the_veil/activate()
+/datum/discipline_power/vtr/auspex/beasts_hackles/activate()
 	. = ..()
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.add_hud_to(owner)
@@ -26,7 +26,7 @@
 	owner.update_sight()
 
 
-/datum/discipline_power/vtr/auspex/pierce_the_veil/deactivate()
+/datum/discipline_power/vtr/auspex/beasts_hackles/deactivate()
 	. = ..()
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.remove_hud_from(owner)

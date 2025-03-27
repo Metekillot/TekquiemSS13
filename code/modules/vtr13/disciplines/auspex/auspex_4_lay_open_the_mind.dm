@@ -1,5 +1,5 @@
-/datum/discipline_power/vtr/auspex/major_telepathy
-	name = "Major Telepathy"
+/datum/discipline_power/vtr/auspex/lay_open_the_mind
+	name = "Lay Open The Mind"
 	desc = "Allows you to discover the closely guarded secrets of another."
 
 	level = 4
@@ -8,9 +8,9 @@
 	cooldown_length = 60 SECONDS
 	var/list/question_list = list(
 		"Are you a diablerist?" = PROC_REF(ask_diablerie),
-		"Is there anything controlling you?" = PROC_REF(ask_prompt),
 		"What are your memories?" = PROC_REF(ask_memories),
 		"What are your connections?" = PROC_REF(ask_connections),
+		"Is there anything controlling you?" = PROC_REF(ask_prompt),
 		"What is your deepest desire?" = PROC_REF(ask_prompt),
 		"What is your biggest regret?" = PROC_REF(ask_prompt),
 		"Who did you kill last?" = PROC_REF(ask_prompt),
@@ -19,7 +19,7 @@
 		"What mortal are you closest to?" = PROC_REF(ask_prompt)
 	)
 
-/datum/discipline_power/vtr/auspex/major_telepathy/pre_activation_checks(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/auspex/lay_open_the_mind/pre_activation_checks(mob/living/carbon/human/target)
 	var/mypower = owner.get_total_mentality() + discipline.level
 	var/theirpower = target.get_total_mentality() + target.get_total_blood() //TODO HEX: Tie to blood_potency
 
@@ -31,14 +31,14 @@
 		return FALSE
 	return TRUE
 
-/datum/discipline_power/vtr/auspex/major_telepathy/activate(atom/target)
+/datum/discipline_power/vtr/auspex/lay_open_the_mind/activate(atom/target)
 	. = ..()
 	var/selection = tgui_input_list(owner, "[target]'s soul", "What question would you like to ask?", question_list, null)
 	if(selection)
 		INVOKE_ASYNC(src, question_list[selection], target, selection)
 
 
-/datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_diablerie(mob/living/carbon/human/target, var/question)
+/datum/discipline_power/vtr/auspex/lay_open_the_mind/proc/ask_diablerie(mob/living/carbon/human/target, var/question)
 	var/response = "You hear a response: "
 	if(target.diablerist)
 		response = span_danger(response + "You can sense the depraived taint of diablerie on [target].")
@@ -46,13 +46,13 @@
 		response = span_notice(response + "You feel that [target] is not a diablerist.")
 	to_chat(owner, response)
 
-/datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_memories(mob/living/carbon/human/target, var/question)
+/datum/discipline_power/vtr/auspex/lay_open_the_mind/proc/ask_memories(mob/living/carbon/human/target, var/question)
 	if(!target.mind)
 		to_chat(owner, span_notice("[target] doesn't have very interesting memories..."))
 		return
 	target.mind.invade_mind(owner)
 
-/datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_connections(mob/living/carbon/human/target, var/question)
+/datum/discipline_power/vtr/auspex/lay_open_the_mind/proc/ask_connections(mob/living/carbon/human/target, var/question)
 	if(!target.mind)
 		to_chat(owner, span_notice("[target] any strong connections..."))
 	var/bonds_spoken = FALSE
@@ -63,7 +63,7 @@
 	if(!bonds_spoken)
 		to_chat(owner, span_notice("[target] has no strong connections..."))
 
-/datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_prompt(mob/living/carbon/human/target, var/question)
+/datum/discipline_power/vtr/auspex/lay_open_the_mind/proc/ask_prompt(mob/living/carbon/human/target, var/question)
 	if(!target.mind)
 		to_chat(owner, span_notice("[target] doesn't have a particularly interesting response..."))
 		return
