@@ -5,7 +5,7 @@
 	level = 4
 	target_type = TARGET_HUMAN | TARGET_SELF
 	range = 7
-	cooldown_length = 10 SECONDS
+	cooldown_length = 60 SECONDS
 	var/list/question_list = list(
 		"Are you a diablerist?" = PROC_REF(ask_diablerie),
 		"Is there anything controlling you?" = PROC_REF(ask_prompt),
@@ -48,8 +48,20 @@
 
 /datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_memories(mob/living/carbon/human/target, var/question)
 	if(!target.mind)
+		to_chat(owner, span_notice("[target] doesn't have very interesting memories..."))
 		return
 	target.mind.invade_mind(owner)
+
+/datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_connections(mob/living/carbon/human/target, var/question)
+	if(!target.mind)
+		to_chat(owner, span_notice("[target] any strong connections..."))
+	var/bonds_spoken = FALSE
+	for(var/datum/character_connection/connection in target.mind.character_connections)
+		if(!bonds_spoken)
+			bonds_spoken = TRUE
+		to_chat(owner, span_notice("You hear [target]'s voice: \"[connection.connection_desc]\""))
+	if(!bonds_spoken)
+		to_chat(owner, span_notice("[target] has no strong connections..."))
 
 /datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_prompt(mob/living/carbon/human/target, var/question)
 	if(!target.mind)
