@@ -72,7 +72,7 @@
 		found_something = TRUE
 
 	// Blood
-	if (length(blood))
+	if(length(blood))
 		result += span_notice("<B>BLOOD:</B>")
 		found_something = TRUE
 		for(var/B in blood)

@@ -1,5 +1,5 @@
 /datum/element/ui_button_shake_inventory_group
-
+	element_flags = ELEMENT_DETACH
 
 /datum/element/ui_button_shake_inventory_group/Attach(datum/target, intensity)
 	. = ..()
@@ -20,7 +20,6 @@
 /datum/element/ui_button_shake_inventory_group/Detach(datum/source, force)
 	SEND_SIGNAL(source, COMSIG_UI_SHAKE_REMOVE)
 	. = ..()
-	
 
 
 /datum/component/ui_button_shake

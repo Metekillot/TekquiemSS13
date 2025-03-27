@@ -1,18 +1,17 @@
-//AURA PERCEPTION
+//HEIGHTENED SENSES
 /datum/discipline_power/vtr/auspex/pierce_the_veil
-	name = "Aura Perception"
-	desc = "Allows you to perceive the auras of those near you."
+	name = "Pierce the Veil"
+	desc = "Enhances your senses far past human limitations."
 
 	check_flags = DISC_CHECK_CONSCIOUS|DISC_CHECK_SEE
 
-	level = 2
-	
+	level = 1
+
 	toggled = TRUE
-	duration_length = 20 SECONDS
+	duration_length = 15 SECONDS
 
 /datum/discipline_power/vtr/auspex/pierce_the_veil/activate()
 	. = ..()
-
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.add_hud_to(owner)
 
@@ -26,9 +25,9 @@
 
 	owner.update_sight()
 
+
 /datum/discipline_power/vtr/auspex/pierce_the_veil/deactivate()
 	. = ..()
-
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	abductor_hud.remove_hud_from(owner)
 
