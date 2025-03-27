@@ -57,4 +57,4 @@
 		return
 	var/response = "You hear a response: "
 	response += tgui_input_text(target, question+" (Answer Honestly)", "Your mind has been read!", "", MAX_MESSAGE_LEN, TRUE, FALSE)
-	to_chat(owner, span_notice(response))
+	to_chat(owner, span_notice("You hear: \"[response]\""))
