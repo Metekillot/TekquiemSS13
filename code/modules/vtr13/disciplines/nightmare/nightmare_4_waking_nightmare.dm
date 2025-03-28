@@ -1,5 +1,5 @@
-/datum/discipline_power/vtr/nightmare/carnival
-	name = "Blood Carnival"
+/datum/discipline_power/vtr/nightmare/waking_nightmare
+	name = "Waking Nightmare"
 	desc = "Subject a victim to a horrendous, visceral experience."
 	
 	level = 4
@@ -16,7 +16,7 @@
 
 	var/datum/component/meatworld_component/tracked_meatworld
 
-/datum/discipline_power/vtr/nightmare/carnival/pre_activation_checks(mob/living/target)
+/datum/discipline_power/vtr/nightmare/waking_nightmare/pre_activation_checks(mob/living/target)
 	if(HAS_TRAIT(target, TRAIT_ATTENDING_CARNIVAL))
 		to_chat(owner, span_warning("You have already sent [target] to the Carnival!"))
 	if(SSroll.opposed_roll(
@@ -35,7 +35,7 @@
 	return FALSE
 
 
-/datum/discipline_power/vtr/nightmare/carnival/activate(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/nightmare/waking_nightmare/activate(mob/living/carbon/human/target)
 	. = ..()
 	if(!target.mind)
 		return
@@ -64,11 +64,11 @@
 	to_chat(target, span_userdanger("The world has gone mad!"))
 	target.playsound_local(get_turf(target), 'sound/magic/ethereal_enter.ogg', 100, FALSE)
 
-/datum/discipline_power/vtr/nightmare/carnival/proc/overlay_end_early(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/nightmare/waking_nightmare/proc/overlay_end_early(mob/living/carbon/human/target)
 	target.remove_overlay(MUTATIONS_LAYER)
 
 
-/datum/discipline_power/vtr/nightmare/carnival/proc/mounting_hallucinations(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/nightmare/waking_nightmare/proc/mounting_hallucinations(mob/living/carbon/human/target)
 	if(!HAS_TRAIT(target, TRAIT_ATTENDING_CARNIVAL))
 		return
 	var/halpick = pickweight(GLOB.hallucination_list_unweighted)
@@ -76,7 +76,7 @@
 	addtimer(CALLBACK(src, PROC_REF(mounting_hallucinations),target),hallucination_refresh)
 	
 
-/datum/discipline_power/vtr/nightmare/carnival/deactivate(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/nightmare/waking_nightmare/deactivate(mob/living/carbon/human/target)
 	. = ..()
 
 	if(!target.mind)
