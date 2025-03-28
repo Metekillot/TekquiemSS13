@@ -819,7 +819,6 @@
 /mob/living/carbon/mind_initialize()
 	..()
 	last_mind = mind
-	mind.refresh_memory()
 
 //HUMAN
 /mob/living/carbon/human/mind_initialize()
