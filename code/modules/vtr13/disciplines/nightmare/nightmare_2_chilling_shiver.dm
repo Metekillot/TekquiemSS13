@@ -42,6 +42,8 @@
 	to_chat(target, span_userdanger("You find yourself in the final moments of a horror you cannot remember. The danger has passed, but your body trembles like a leaf from the stress."))
 	if(target.mind)
 		target.AddElement(/datum/element/ui_button_shake_inventory_group, 16)
+	do_cooldown(TRUE)
+	owner.update_action_buttons()
 
 /datum/discipline_power/vtr/nightmare/phantom_trauma/deactivate(mob/living/carbon/human/target)
 	. = ..()

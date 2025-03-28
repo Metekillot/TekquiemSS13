@@ -23,6 +23,8 @@
 	if(target.mind)
 		to_chat(target, span_userdanger("The walls are pressing in- but you push back! You prevent the darkness from closing in!"))
 		target.Jitter(5)
+	do_cooldown(TRUE)
+	owner.update_action_buttons()
 	return FALSE
 
 

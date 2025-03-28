@@ -25,6 +25,8 @@
 	if(target.mind)
 		to_chat(target, span_userdanger("As you look at [owner] you see your horrors made manifest, but you resist!"))
 		target.Jitter(10)
+	do_cooldown(TRUE)
+	owner.update_action_buttons()
 	return FALSE
 
 

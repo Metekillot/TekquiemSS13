@@ -10,7 +10,7 @@
 
 	multi_activate = TRUE
 	cooldown_length = 10 SECONDS
-	duration_length = 30 SECONDS
+	duration_length = 5 MINUTES
 	var/overlay_time = 5 SECONDS
 
 
@@ -26,6 +26,8 @@
 	if(target.mind)
 		to_chat(target, span_userdanger("You briefly begin to dissociate, but wrench your mind back to clarity at the last moment!"))
 		target.Jitter(5)
+	do_cooldown(TRUE)
+	owner.update_action_buttons()
 	return FALSE
 
 
@@ -41,8 +43,7 @@
 
 	
 	to_chat(target, span_userdanger("The world has gone mad!"))
-	owner.playsound_local(get_turf(target), 'sound/magic/ethereal_enter.ogg', 100, FALSE)
-
+	target.playsound_local(get_turf(target), 'sound/magic/ethereal_enter.ogg', 100, FALSE)
 	addtimer(CALLBACK(src, PROC_REF(overlay_end_early),target),overlay_time)
 
 /datum/discipline_power/vtr/nightmare/carneval/proc/overlay_end_early(mob/living/carbon/human/target)
