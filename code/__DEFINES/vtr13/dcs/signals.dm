@@ -14,5 +14,18 @@
 //called in /datum/discipline_power/vtr/auspex/major_telepathy/proc/ask_memories (datum/mind, mob/living/carbon/human/invader)
 #define COMSIG_MEMORY_AUSPEX_INVADE "memory_auspex_invade"
 
+//called in /datum/component/base_memory/proc/get_memory_data
 #define COMSIG_MEMORY_DISCIPLINE_TEXT "memory_discipline_text"
-	
+
+//called in /datum/discipline_power/vtr/nightmare/carnival/deactivate
+#define COMSIG_MEATWORLD_REMOVE_COMPONENT "meatworld_remove_component"
+
+//from base of /mob/verb/pointed(): (mob/pointer)
+#define COMSIG_MOB_LIVING_POINTED "mob_living_pointed"
+
+
+//from base of mob/jump(): (atom/target, distance)
+#define COMSIG_MOB_LIVING_JUMP "mob_living_jump"
+
+
+#define COMSIG_UI_SHAKE_REMOVE "ui_shake_remove"
