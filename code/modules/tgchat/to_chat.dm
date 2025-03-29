@@ -15,16 +15,24 @@
 		handle_whitespace = TRUE,
 		trailing_newline = TRUE,
 		confidential = FALSE)
-	if(!target || (!html && !text))
+	// Useful where the integer 0 is the entire message. Use case is enabling to_chat(target, some_boolean) while preventing to_chat(target, "")
+	html = "[html]"
+	text = "[text]"
+
+	if(!target)
 		return
+	if(!html && !text)
+		CRASH("Empty or null string in to_chat proc call.")
 	if(target == world)
 		target = GLOB.clients
+
 	// Build a message
 	var/message = list()
 	if(type) message["type"] = type
 	if(text) message["text"] = text
 	if(html) message["html"] = html
 	if(avoid_highlighting) message["avoidHighlighting"] = avoid_highlighting
+
 	// Send it immediately
 	SSchat.send_immediate(target, message)
 
@@ -49,10 +57,17 @@
 	if(Master.current_runlevel == RUNLEVEL_INIT || !SSchat?.initialized)
 		to_chat_immediate(target, html, type, text)
 		return
-	if(!target || (!html && !text))
+	// Useful where the integer 0 is the entire message. Use case is enabling to_chat(target, some_boolean) while preventing to_chat(target, "")
+	html = "[html]"
+	text = "[text]"
+
+	if(!target)
 		return
+	if(!html && !text)
+		CRASH("Empty or null string in to_chat proc call.")
 	if(target == world)
 		target = GLOB.clients
+
 	// Build a message
 	var/message = list()
 	if(type) message["type"] = type
