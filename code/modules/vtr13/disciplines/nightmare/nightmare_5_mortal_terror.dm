@@ -61,7 +61,8 @@
 
 	to_chat(target, span_userdanger("A horrifying, traumatic fear grips you. Elge write a better description im weak"))
 	target.adjustOrganLoss(ORGAN_SLOT_BRAIN, success_count * base_damage, 90)
-	if(iskindred(target))
+	//if(iskindred(target))
+		//Do whatever we do to kindred
 
 
 /datum/discipline_power/vtr/nightmare/mortal_terror/proc/end_blindness(mob/living/carbon/human/target)
