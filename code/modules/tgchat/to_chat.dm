@@ -22,7 +22,8 @@
 	if(!target)
 		return
 	if(!html && !text)
-		CRASH("Empty or null string in to_chat proc call.")
+		// CRASH("Empty or null string in to_chat proc call.")  // TODO: source out what causes these
+		return
 	if(target == world)
 		target = GLOB.clients
 
@@ -64,7 +65,8 @@
 	if(!target)
 		return
 	if(!html && !text)
-		CRASH("Empty or null string in to_chat proc call.")
+		// CRASH("Empty or null string in to_chat proc call.") // TODO: source out what causes these
+		return
 	if(target == world)
 		target = GLOB.clients
 
