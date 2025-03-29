@@ -59,7 +59,7 @@ SUBSYSTEM_DEF(roll)
 
 	return output
 
-/datum/controller/subsystem/roll/proc/opposed_roll(mob/player_a, mob/player_b, dice_a = 1, dice_b = 1, difficulty=6, show_player_a=TRUE, show_player_b=TRUE, atom/alert_atom = null, draw_goes_to_b=TRUE)
+/datum/controller/subsystem/roll/proc/opposed_roll(mob/player_a, mob/player_b, dice_a = 1, dice_b = 1, difficulty=6, show_player_a=TRUE, show_player_b=TRUE, atom/alert_atom = null, draw_goes_to_b=TRUE, numerical=FALSE)
 	var/list/rolled_dice_a = roll_dice(dice_a)
 	var/list/rolled_dice_b = roll_dice(dice_b)
 	
@@ -120,7 +120,10 @@ SUBSYSTEM_DEF(roll)
 				alert_text = "<span style='color: #ff0000;'>[success_count_b - success_count_a]</span>"
 			alert_atom.balloon_alert(player_b, alert_text, TRUE)
 	
-	return player_a_succeeded
+	if(numerical)
+		return success_count_a - success_count_b
+	else
+		return player_a_succeeded
 
 //Roll each ten sided die, see what numbers we get.
 /datum/controller/subsystem/roll/proc/roll_dice(dice)

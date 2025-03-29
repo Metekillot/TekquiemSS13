@@ -11,7 +11,8 @@
 
 #define NIGHTMARE_2_TRAIT "nightmare_2"
 #define NIGHTMARE_3_TRAIT "nightmare_3"
-#define NIGHTMARE_4_TRAIT "nightmare_3"
+#define NIGHTMARE_4_TRAIT "nightmare_4"
+#define NIGHTMARE_5_TRAIT "nightmare_5"
 
 //Discipline related traits
 #define TRAIT_EYES_VIOLATING_MASQUERADE "eyes_violating_masquerade"

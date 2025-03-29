@@ -14,6 +14,11 @@
 	duration_length = 3 SECONDS
 
 /datum/discipline_power/vtr/nightmare/face_of_terror/pre_activation_checks(mob/living/target)
+	if(get_dir(target, owner) != target.dir)
+		to_chat(owner, span_warning("[target] must be looking at you to use this ability!"))
+		return FALSE
+
+	owner.dir = get_dir(owner, target)
 	if(SSroll.opposed_roll(
 		owner,
 		target,

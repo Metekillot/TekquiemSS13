@@ -9,7 +9,7 @@
 	range = 7
 
 	multi_activate = TRUE
-	cooldown_length = 10 SECONDS
+	cooldown_length = 30 SECONDS
 	duration_length = 1 MINUTES
 	var/overlay_time = 5 SECONDS
 	var/hallucination_refresh = 10 SECONDS
@@ -87,5 +87,4 @@
 	SEND_SIGNAL(target, COMSIG_MEATWORLD_REMOVE_COMPONENT)
 	target.RemoveElement(/datum/element/ui_button_shake_inventory_group)
 	target.RemoveElement(/datum/element/ui_button_shake_wide_button_group)
-	target.hallucination = 0
 	owner.remove_client_colour(/datum/client_colour/glass_colour/darkred)
