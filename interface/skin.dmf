@@ -278,7 +278,7 @@ window "outputwindow"
 		anchor2 = 100,100
 		saved-params = "splitter"
 		left = "output_legacy"
-		is-vert= false
+		is-vert = false
 
 window "output_legacy"
 	elem "output_legacy"
@@ -315,9 +315,7 @@ window "output_browser"
 		size = 640x456
 		anchor1 = 0,0
 		anchor2 = 100,100
-		background-color = #ffffff
-		is-visible = false
-		is-disabled = true
+		background-color = none
 		saved-params = ""
 
 window "popupwindow"
