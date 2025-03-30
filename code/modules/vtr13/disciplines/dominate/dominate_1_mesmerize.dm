@@ -1,16 +1,15 @@
-/datum/discipline_power/vtr/dominate/short_command
-	name = "Short Command"
-	desc = "Speak a few words and force others to obey."
+/datum/discipline_power/vtr/dominate/mesmerize
+	name = "Mesmerize"
+	desc = "Speak a short phrase that your victim must obey. Maximum of four words."
 
 	level = 1
 
 	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
-	target_type = TARGET_HUMAN|TARGET_SELF
+	target_type = TARGET_PLAYER|TARGET_LIVING|TARGET_SELF
 
-	//cooldown_length = 5 MINUTES
-	cooldown_length = 10 SECONDS
+	cooldown_length = 5 MINUTES
 	range = 7
-
+	vitae_cost = 2
 	var/word_limit = 4
 	var/max_retry_recursion = 15
 	var/guidelines = "Elge write a guideline for using this ability including some disclaimer for it, ty. The string can be long, so for the purposes of this placeholder WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD"
@@ -19,7 +18,7 @@
 	var/power_in_use = FALSE
 	var/overlay_time = 5 SECONDS
 
-/datum/discipline_power/vtr/dominate/short_command/pre_activation_check_no_spend(atom/target)
+/datum/discipline_power/vtr/dominate/mesmerize/pre_activation_check_no_spend(atom/target)
 	if(power_in_use)
 		to_chat(owner, span_warning("You are already attempting to dominate someone!"))
 		return FALSE
@@ -29,13 +28,15 @@
 	if(!current_command)
 		to_chat(owner, span_warning("You think better of dominating [target]."))
 		return FALSE
+	
 	return TRUE
 
-/datum/discipline_power/vtr/dominate/short_command/pre_activation_checks(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/dominate/mesmerize/pre_activation_checks(mob/living/carbon/human/target)
 	to_chat(owner, span_warning("You attempt to command [target] to do your bidding."))
 
-	dominate_consent_prompt(target, "[owner] is trying to dominate you!", "Dominate Consent Form", player_consent, current_command)
+	log_admin("[owner] attempted to use Dominate [level] on [target]. Command: '[current_command]'")
 
+	owner.say(current_command)
 	if(!SSroll.opposed_roll(
 		owner,
 		target,
@@ -52,14 +53,16 @@
 	
 	return TRUE
 
-/datum/discipline_power/vtr/dominate/short_command/activate(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/dominate/mesmerize/activate(mob/living/carbon/human/target)
 	. = ..()
 	playsound(target, 'code/modules/wod13/sounds/general_good.ogg', 100, FALSE)
 
 	var/the_command = current_command
 	current_command = null
 	if(!dominate_consent_prompt(target, "[owner] is trying to dominate you!", "Dominate Consent Form", player_consent, the_command))
+		log_admin("[target] rejected consent for Dominate [level] from [owner]. Command: '[the_command]'")
 		return
+	log_admin("[target] was affected by Dominate [level] from [owner]. Command: '[the_command]'")
 
 	playsound(target, 'code/modules/wod13/sounds/dominate.ogg', 100, FALSE)
 	target.remove_overlay(MUTATIONS_LAYER)
@@ -67,11 +70,11 @@
 	dominate_overlay.pixel_z = 2
 	target.overlays_standing[MUTATIONS_LAYER] = dominate_overlay
 	target.apply_overlay(MUTATIONS_LAYER)
-	to_chat(target, span_userdanger("You are compelled to follow the following command: [the_command]"))
+	to_chat(target, span_userdanger("You are compelled to obey the following command: [the_command]"))
 	addtimer(CALLBACK(src, PROC_REF(overlay_end_early),target),overlay_time)
 
 
-/datum/discipline_power/vtr/dominate/short_command/proc/overlay_end_early(mob/living/carbon/human/target)
+/datum/discipline_power/vtr/dominate/mesmerize/proc/overlay_end_early(mob/living/carbon/human/target)
 	if(!target)
 		return
 	target.remove_overlay(MUTATIONS_LAYER)

@@ -49,7 +49,7 @@
 	. = ..()
 	if(!target)
 		if(alert)
-			to_chat(owner, span_warning("Your must target a humanoid."))
+			to_chat(owner, span_warning("You must target a humanoid."))
 		return FALSE
 
 

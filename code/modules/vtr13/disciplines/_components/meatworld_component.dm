@@ -1,6 +1,6 @@
-/atom
-	var/image/meatworld_image
+#define HUD_LIST_MEATWORLD "meatworld"
 
+//Component that replaces all turfs and wallpapers with horrifying meat alternatives
 /datum/component/meatworld_component
 	var/list/tracked_meat = list()
 	var/client/ourclient
@@ -35,30 +35,36 @@
 
 	var/list/new_meat = list()
 	for(var/atom/a_atom in range(8, ourclient.mob))
+
+		if(!a_atom.hud_list)
+			a_atom.hud_list = list()
+
 		if(istype(a_atom, /turf/open/floor))
-			if(!a_atom.meatworld_image)
-				a_atom.meatworld_image = image('icons/vtr13/hud/meatworld.dmi', a_atom, "tzimisce_floor" , CULT_OVERLAY_LAYER)
+			if(!a_atom.hud_list[HUD_LIST_MEATWORLD])
+				a_atom.hud_list[HUD_LIST_MEATWORLD] = image('icons/vtr13/hud/meatworld.dmi', a_atom, "tzimisce_floor" , CULT_OVERLAY_LAYER)
 			new_meat += a_atom
 		else if(istype(a_atom, /turf/closed/wall))
-			if(!a_atom.meatworld_image)
-				a_atom.meatworld_image = image('icons/vtr13/hud/meatworld.dmi', a_atom, "fleshwall" , CLOSED_TURF_LAYER)
+			if(!a_atom.hud_list[HUD_LIST_MEATWORLD])
+				a_atom.hud_list[HUD_LIST_MEATWORLD] = image('icons/vtr13/hud/meatworld.dmi', a_atom, "fleshwall" , CLOSED_TURF_LAYER)
 			new_meat += a_atom
 		else if(istype(a_atom, /obj/effect/addwall))
-			if(!a_atom.meatworld_image)
-				a_atom.meatworld_image = image('icons/vtr13/hud/meatworld.dmi', a_atom, "fleshwall_addwall" , ABOVE_ALL_MOB_LAYERS_LAYER)
+			if(!a_atom.hud_list[HUD_LIST_MEATWORLD])
+				a_atom.hud_list[HUD_LIST_MEATWORLD] = image('icons/vtr13/hud/meatworld.dmi', a_atom, "fleshwall_addwall" , ABOVE_ALL_MOB_LAYERS_LAYER)
 			new_meat += a_atom
 		else if(istype(a_atom, /obj/effect/decal/wallpaper))
-			if(!a_atom.meatworld_image)
-				a_atom.meatworld_image = image('icons/vtr13/hud/meatworld.dmi', a_atom, "wallpaper-necro" , ABOVE_NORMAL_TURF_LAYER)
+			if(!a_atom.hud_list[HUD_LIST_MEATWORLD])
+				a_atom.hud_list[HUD_LIST_MEATWORLD] = image('icons/vtr13/hud/meatworld.dmi', a_atom, "wallpaper-necro" , ABOVE_NORMAL_TURF_LAYER)
 			new_meat += a_atom
 	
 	new_meat.Remove(tracked_meat)
 	
 	for(var/atom/new_meat_atom in new_meat)
-		ourclient.images |= new_meat_atom.meatworld_image
+		ourclient.images |= new_meat_atom.hud_list[HUD_LIST_MEATWORLD]
 	
 	tracked_meat.Add(new_meat)
 
 /datum/component/meatworld_component/UnregisterFromParent()
 	for(var/atom/delete_meat_atom in tracked_meat)
-		ourclient.images -= delete_meat_atom.meatworld_image
+		ourclient.images -= delete_meat_atom.hud_list[HUD_LIST_MEATWORLD]
+
+#undef HUD_LIST_MEATWORLD

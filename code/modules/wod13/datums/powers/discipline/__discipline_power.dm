@@ -384,8 +384,7 @@
  * An overridable proc that allows for custom pre_activation() behaviour.
  *
  * Unlike pre_activation_check(), returning FALSE here doesn't expend blood,
- * and does not fire PRE_ACTIVATION signals. It is used by Protean 1 and 3
- * for configuring an adaptation for a round.
+ * and does not fire PRE_ACTIVATION signals.
  */
 /datum/discipline_power/proc/pre_activation_check_no_spend(atom/target)
 	return TRUE
