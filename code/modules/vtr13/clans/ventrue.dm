@@ -5,7 +5,7 @@
 	clane_disciplines = list(
 		/datum/discipline/vtr/animalism,
 		/datum/discipline/vtr/resiliance,
-		/datum/discipline/dominate
+		/datum/discipline/vtr/dominate
 	)
 	male_clothes = /obj/item/clothing/under/vampire/ventrue
 	female_clothes = /obj/item/clothing/under/vampire/ventrue/female

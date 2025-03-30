@@ -65,7 +65,11 @@
 	target.playsound_local(get_turf(target), 'sound/magic/ethereal_enter.ogg', 100, FALSE)
 
 /datum/discipline_power/vtr/nightmare/waking_nightmare/proc/overlay_end_early(mob/living/carbon/human/target)
+	if(!target)
+		return
 	target.remove_overlay(MUTATIONS_LAYER)
+	playsound(target, 'code/modules/wod13/sounds/nosferatu.ogg', 100, FALSE)
+	
 
 
 /datum/discipline_power/vtr/nightmare/waking_nightmare/proc/mounting_hallucinations(mob/living/carbon/human/target)
