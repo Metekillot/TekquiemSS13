@@ -46,7 +46,6 @@
 		show_player_a = FALSE,
 		show_player_b = FALSE))
 		current_command = null
-		to_chat(owner, span_warning("[target] resists your command!"))
 		do_cooldown(TRUE)
 		owner.update_action_buttons()
 		return FALSE
@@ -59,9 +58,11 @@
 
 	var/the_command = current_command
 	current_command = null
-	if(!dominate_consent_prompt(target, "[owner] is trying to dominate you!", "Dominate Consent Form", player_consent, the_command))
+	if(!consent_prompt(target, "[owner] is trying to dominate you!", "Dominate Consent Form", player_consent, the_command))
 		log_admin("[target] rejected consent for Dominate [level] from [owner]. Command: '[the_command]'")
+		to_chat(target, span_notice("You do not consent to domination."))
 		return
+	to_chat(target, span_notice("You consent to domination. Consent may be retracted at any time."))
 	log_admin("[target] was affected by Dominate [level] from [owner]. Command: '[the_command]'")
 
 	playsound(target, 'code/modules/wod13/sounds/dominate.ogg', 100, FALSE)

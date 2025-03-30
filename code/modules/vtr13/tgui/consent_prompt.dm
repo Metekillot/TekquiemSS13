@@ -9,7 +9,7 @@
  * * buttons - The options that can be chosen by the user, each string is assigned a button on the UI.
  * * timeout - The timeout of the alert, after which the modal will close and qdel itself. Set to zero for no timeout.
  */
-/proc/dominate_consent_prompt(mob/user, message, title, disclaimer, the_command)
+/proc/consent_prompt(mob/user, message, title, disclaimer, the_command)
 	if (!user)
 		user = usr
 	if (!istype(user))
@@ -23,10 +23,6 @@
 	alert.wait()
 	if (alert)
 		. = alert.choice
-		if(.)
-			to_chat(user, span_notice("You consent to domination."))
-		else
-			to_chat(user, span_notice("You do not consent to domination."))
 		qdel(alert)
 
 
