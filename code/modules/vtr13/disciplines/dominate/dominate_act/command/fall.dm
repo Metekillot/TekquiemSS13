@@ -14,5 +14,5 @@
 	if(!.)
 		return
 	REMOVE_TRAIT(target, TRAIT_FLOORED, DOMINATE_ACT_TRAIT)
-	target.set_resting(TRUE, FALSE, TRUE)
+	target.set_resting(FALSE, FALSE, TRUE)
 
