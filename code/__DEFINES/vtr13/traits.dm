@@ -26,4 +26,5 @@
 #define TRAIT_ATTENDING_CARNIVAL "attending_carnival"
 
 //A bunch of dominate compel/command traits
+//hex: Think about adding these to the master list
 #define TRAIT_COMPEL_THINK_TWICE "compel_think_twice"
