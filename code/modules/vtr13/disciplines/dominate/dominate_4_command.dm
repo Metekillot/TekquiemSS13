@@ -5,7 +5,7 @@
 	range = 7
 	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
 	target_type = TARGET_LIVING|TARGET_SELF
-
+	cooldown_length = 20 SECONDS
 	var/datum/action/select_command_button/select_command_button = null
 	var/datum/dominate_act/selected_command
 
@@ -27,5 +27,7 @@
 		show_player_a = FALSE,
 		show_player_b = FALSE))
 		to_chat(owner, span_warning("[target] resists your command!"))
+		return
+	if(!selected_command.can_attach(target))
 		return
 	target.AddElement(/datum/element/compulsion, owner, selected_command)
