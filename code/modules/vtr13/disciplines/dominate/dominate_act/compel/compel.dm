@@ -1,3 +1,4 @@
+//a list of this datum's children is collected in SSdominate_compulsion
 /datum/dominate_act/compel
 	phrase = "PLACEHOLDER COMPEL"
 	activate_verb = "compel verb"

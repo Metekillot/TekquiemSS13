@@ -28,3 +28,5 @@
 //A bunch of dominate compel/command traits
 //hex: Think about adding these to the master list
 #define TRAIT_COMPEL_THINK_TWICE "compel_think_twice"
+
+#define TRAIT_COMMAND_FALL "command_fall"

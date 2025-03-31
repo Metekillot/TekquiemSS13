@@ -3519,6 +3519,7 @@
 #include "code\modules\vtr13\disciplines\dominate\actions\select_compel_button.dm"
 #include "code\modules\vtr13\disciplines\dominate\dominate_act\dominate_act.dm"
 #include "code\modules\vtr13\disciplines\dominate\dominate_act\command\command.dm"
+#include "code\modules\vtr13\disciplines\dominate\dominate_act\command\fall.dm"
 #include "code\modules\vtr13\disciplines\dominate\dominate_act\compel\compel.dm"
 #include "code\modules\vtr13\disciplines\dominate\dominate_act\compel\think_twice.dm"
 #include "code\modules\vtr13\disciplines\dominate\elements\compulsion.dm"
