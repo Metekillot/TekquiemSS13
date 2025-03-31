@@ -477,7 +477,7 @@
 					H.harm_focus = H.dir
 
 /mob/living/carbon/Move(atom/newloc, direct, glide_size_override)
-	..()
+	. = ..()
 	if(a_intent == INTENT_HARM && client)
 		setDir(harm_focus)
 	else
@@ -637,7 +637,7 @@
 	. = ..()
 	update_blood_hud()
 	update_rage_hud()
-	update_auspex_hud()
+	//update_auspex_hud_vtr()
 
 /mob/living/carbon/human/Life()
 	if(!iskindred(src) && !iscathayan(src))
@@ -648,7 +648,7 @@
 	update_rage_hud()
 	update_shadow()
 	handle_vampire_music()
-	update_auspex_hud()
+	//update_auspex_hud_vtr()
 	if(warrant)
 		last_nonraid = world.time
 		if(key)

@@ -4,7 +4,10 @@
 	worn_icon = 'code/modules/wod13/worn.dmi'
 	onflooricon = 'code/modules/wod13/onfloor.dmi'
 	var/quieted = FALSE
-	cost = 25
+
+/obj/item/melee/vampirearms/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 25, "melee", FALSE)
 
 /obj/item
 	var/masquerade_violating = FALSE
@@ -86,17 +89,26 @@
 	pixel_w = -8
 	resistance_flags = FIRE_PROOF
 	masquerade_violating = FALSE
-	cost = 250
 	is_iron = TRUE
+
+/obj/item/melee/vampirearms/katana/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 250, "katana", FALSE)
 
 /obj/item/melee/vampirearms/katana/fire
 	name = "burning katana"
 	icon_state = "firetana"
 	pixel_w = -8
-	cost = 0
 	item_flags = DROPDEL
 	is_iron = FALSE
 	masquerade_violating = TRUE
+
+//Do not sell the magically summoned katanas for infinite cash
+/obj/item/melee/vampirearms/katana/fire/Initialize()
+	. = ..()
+	var/datum/component/selling/sell_component = GetComponent(/datum/component/selling)
+	if(sell_component)
+		sell_component.RemoveComponent()
 
 /obj/item/melee/vampirearms/katana/fire/afterattack(atom/target, mob/living/carbon/user, proximity)
 	. = ..()
@@ -108,10 +120,15 @@
 	name = "bloody katana"
 	color = "#bb0000"
 	pixel_w = -8
-	cost = 0
 	item_flags = DROPDEL
 	is_iron = FALSE
 	masquerade_violating = TRUE
+
+/obj/item/melee/vampirearms/katana/blood/Initialize()
+	. = ..()
+	var/datum/component/selling/sell_component = GetComponent(/datum/component/selling)
+	if(sell_component)
+		sell_component.RemoveComponent()
 
 /obj/item/melee/vampirearms/katana/blood/afterattack(atom/target, mob/living/carbon/user, proximity)
 	. = ..()
@@ -138,8 +155,11 @@
 	resistance_flags = FIRE_PROOF
 	masquerade_violating = FALSE
 	w_class = WEIGHT_CLASS_NORMAL
-	cost = 800
 	is_iron = TRUE
+
+/obj/item/melee/vampirearms/rapier/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 800, "rapier", FALSE)
 
 /obj/item/melee/vampirearms/machete
     name = "machete"
@@ -162,7 +182,10 @@
     pixel_w = -8
     resistance_flags = FIRE_PROOF
     masquerade_violating = FALSE
-    cost = 150
+
+/obj/item/melee/vampirearms/machete/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 150, "machete", FALSE)
 
 /obj/item/melee/vampirearms/sabre
 	name = "sabre"
@@ -184,7 +207,10 @@
 	resistance_flags = FIRE_PROOF
 	masquerade_violating = FALSE
 	is_iron = TRUE
-	cost = 1000
+
+/obj/item/melee/vampirearms/sabre/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 1000, "sabre", FALSE)
 
 /obj/item/melee/vampirearms/longsword
 	name = "longsword"
@@ -206,8 +232,10 @@
 	resistance_flags = FIRE_PROOF
 	masquerade_violating = FALSE
 	is_iron = TRUE
-	cost = 1800
 
+/obj/item/melee/vampirearms/longsword/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 1800, "longsword", FALSE)
 
 /obj/item/storage/belt/vampire/sheathe
 	name = "sheathe"
@@ -319,8 +347,11 @@
 	attack_verb_continuous = list("beats", "smacks")
 	attack_verb_simple = list("beat", "smack")
 	w_class = WEIGHT_CLASS_NORMAL
-	cost = 50
 	is_wood = TRUE
+
+/obj/item/melee/vampirearms/baseball/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 50, "baseball", FALSE)
 
 /obj/item/melee/vampirearms/baseball/attack(mob/living/target, mob/living/user)
 	. = ..()
@@ -662,25 +693,6 @@
 /obj/item/melee/vampirearms/eguitar/update_icon_state()
 	icon_state = "rock0"
 
-/obj/item/shield/door
-	name = "\improper door"
-	desc = "It opens and closes."
-	icon_state = "door"
-	icon = 'code/modules/wod13/weapons.dmi'
-	lefthand_file = 'code/modules/wod13/righthand.dmi'
-	righthand_file = 'code/modules/wod13/lefthand.dmi'
-	force = 20
-	block_chance = 25
-	throwforce = 40
-	throw_speed = 2
-	throw_range = 3
-	masquerade_violating = FALSE
-	w_class = WEIGHT_CLASS_BULKY
-	attack_verb_continuous = list("shoves", "bashes")
-	attack_verb_simple = list("shove", "bash")
-	max_integrity = 999999
-	material_flags = MATERIAL_NO_EFFECTS
-	is_wood = TRUE
 
 /obj/item/melee/classic_baton/vampire
 	name = "police baton"

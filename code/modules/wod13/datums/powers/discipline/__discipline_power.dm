@@ -59,6 +59,8 @@
 	var/datum/discipline/discipline
 	/// The player using this Discipline power.
 	var/mob/living/carbon/human/owner
+	///if I actually want to bother working with the duration timer system
+	var/bothers_with_duration_timers = TRUE
 
 /datum/discipline_power/New(datum/discipline/discipline)
 	if(!discipline)
@@ -342,6 +344,9 @@
 /datum/discipline_power/proc/pre_activation(atom/target)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
+	if(!pre_activation_check_no_spend(target))
+		return
+
 	//resources are still spent if activation is theoretically possible, but it gets prevented
 	spend_resources()
 
@@ -373,6 +378,17 @@
  */
 /datum/discipline_power/proc/pre_activation_checks(atom/target)
 	return TRUE
+
+
+/**
+ * An overridable proc that allows for custom pre_activation() behaviour.
+ *
+ * Unlike pre_activation_check(), returning FALSE here doesn't expend blood,
+ * and does not fire PRE_ACTIVATION signals.
+ */
+/datum/discipline_power/proc/pre_activation_check_no_spend(atom/target)
+	return TRUE
+
 
 /**
  * Triggers all the effects of the power being fully activated.
@@ -500,7 +516,9 @@
 	if (toggled && (duration_length == 0))
 		return
 
-	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
+	//REFACTOR ME
+	var/full_duration_length = duration_length + owner.discipline_time_plus
+	duration_timers.Add(addtimer(CALLBACK(src, PROC_REF(duration_expire), target), full_duration_length, TIMER_STOPPABLE | TIMER_DELETE_ME))
 
 /**
  * Overridable proc handling the power's cooldown, which is a timer that triggers the cooldown_expire
@@ -619,7 +637,7 @@
 /datum/discipline_power/proc/deactivate(atom/target, direct = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 
-	if (direct)
+	if (direct && bothers_with_duration_timers)
 		clear_duration_timer()
 
 	SEND_SIGNAL(src, COMSIG_POWER_DEACTIVATE, src, target)

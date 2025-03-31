@@ -27,9 +27,9 @@
 		SEND_SOUND(src, sound('code/modules/wod13/sounds/bloodneed.ogg', 0, 0, 50))
 		var/check
 		if(iscathayan(src))
-			check = vampireroll(max(1, mind.dharma.Hun), min(10, (mind.dharma.level*2)-max_demon_chi), src)
+			check = SSroll.storyteller_roll(max(1, mind.dharma.Hun), min(10, (mind.dharma.level*2)-max_demon_chi), src)
 		else
-			check = vampireroll(max(1, round(humanity/2)), min(frenzy_chance_boost, frenzy_hardness), src)
+			check = SSroll.storyteller_roll(max(1, round(humanity/2)), min(frenzy_chance_boost, frenzy_hardness), src)
 		switch(check)
 			if(DICE_FAILURE)
 				enter_frenzymod()
@@ -220,29 +220,10 @@
 		else
 			H.remove_status_effect(STATUS_EFFECT_FEAR)
 
-	//masquerade violations due to unnatural appearances
-	if(H.is_face_visible() && H.clane?.violating_appearance)
-		switch(H.clane.alt_sprite)
-			if ("kiasyd")
-				//masquerade breach if eyes are uncovered, short range
-				if (!H.is_eyes_covered())
-					if (H.CheckEyewitness(H, H, 3, FALSE, INFRACTION_TYPE_UGLY))
-						H.AdjustMasquerade(-1)
-			if ("rotten3")
-				//slightly less range than if fully decomposed
-				if (H.CheckEyewitness(H, H, 5, FALSE, INFRACTION_TYPE_UGLY))
-					H.AdjustMasquerade(-1)
-			else
-				//gargoyles, nosferatu, skeletons, that kind of thing
-				if (H.CheckEyewitness(H, H, 7, FALSE, INFRACTION_TYPE_UGLY))
-					H.AdjustMasquerade(-1)
+	//VTR EDIT - frontload masquerade violations into traits, remove clane check
+	H.visible_masquerade_check()
+	//VTR EDIT END
 
-	if(HAS_TRAIT(H, TRAIT_UNMASQUERADE))
-		if(H.CheckEyewitness(H, H, 7, FALSE))
-			H.AdjustMasquerade(-1)
-	if(HAS_TRAIT(H, TRAIT_NONMASQUERADE))
-		if(H.CheckEyewitness(H, H, 7, FALSE))
-			H.AdjustMasquerade(-1)
 	if(istype(get_area(H), /area/vtm))
 		var/area/vtm/V = get_area(H)
 		if(V.zone_type == "masquerade" && V.upper)

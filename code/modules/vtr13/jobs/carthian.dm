@@ -37,7 +37,7 @@
 	l_pocket = /obj/item/vamp/phone/carthian
 	r_pocket = /obj/item/vamp/keys/carthian
 	shoes = /obj/item/clothing/shoes/vampire/jackboots
-	backpack_contents = list(/obj/item/passport=1, /obj/item/phone_book=1, /obj/item/cockclock=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1)
+	backpack_contents = list(/obj/item/phone_book=1, /obj/item/cockclock=1, /obj/item/flashlight=1, /obj/item/vamp/creditcard=1)
 
 /datum/outfit/job/carthian/pre_equip(mob/living/carbon/human/H)
 	..()

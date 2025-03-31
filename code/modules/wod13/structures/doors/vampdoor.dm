@@ -80,6 +80,12 @@
 		var/odds = value ? clamp((value/max_rand_value), 0, 1) : 0
 		. += "<span class='notice'>As an expert in lockpicking, you estimate that you have a [round(odds*100, 1)]% chance to lockpick this door successfully.</span>"
 
+/obj/structure/vampdoor/MouseDrop_T(atom/dropping, mob/user, params)
+	. = ..()
+
+	//Adds the component only once. We do it here & not in Initialize() because there are tons of windows & we don't want to add to their init times
+	LoadComponent(/datum/component/leanable, dropping)
+
 /obj/structure/vampdoor/attack_hand(mob/user)
 	. = ..()
 	var/mob/living/N = user
@@ -89,31 +95,11 @@
 			to_chat(user, "<span class='warning'>[src] is locked!</span>")
 		else
 			if(ishuman(user))
-				var/mob/living/carbon/human/H = user
-				if(H.potential > 0)
-					if((H.potential * 2) >= lockpick_difficulty)
-						playsound(get_turf(src), 'code/modules/wod13/sounds/get_bent.ogg', 100, FALSE)
-						var/obj/item/shield/door/D = new(get_turf(src))
-						D.icon_state = baseicon
-						var/atom/throw_target = get_edge_target_turf(src, user.dir)
-						D.throw_at(throw_target, rand(2, 4), 4, user)
-						qdel(src)
-					else
-						pixel_z = pixel_z+rand(-1, 1)
-						pixel_w = pixel_w+rand(-1, 1)
-						playsound(get_turf(src), 'code/modules/wod13/sounds/get_bent.ogg', 50, TRUE)
-						to_chat(user, "<span class='warning'>[src] is locked, and you aren't strong enough to break it down!</span>")
-						spawn(2)
-							pixel_z = initial(pixel_z)
-							pixel_w = initial(pixel_w)
-				else
-					pixel_z = pixel_z+rand(-1, 1)
-					pixel_w = pixel_w+rand(-1, 1)
-					playsound(src, 'code/modules/wod13/sounds/knock.ogg', 75, TRUE)
-					to_chat(user, "<span class='warning'>[src] is locked!</span>")
-					spawn(2)
-						pixel_z = initial(pixel_z)
-						pixel_w = initial(pixel_w)
+				pixel_z = pixel_z+rand(-1, 1)
+				pixel_w = pixel_w+rand(-1, 1)
+				playsound(src, 'code/modules/wod13/sounds/knock.ogg', 75, TRUE)
+				to_chat(user, "<span class='warning'>[src] is locked!</span>")
+				door_reset_callback()
 		return
 
 	if(closed)
@@ -124,6 +110,7 @@
 		layer = OPEN_DOOR_LAYER
 		to_chat(user, "<span class='notice'>You open [src].</span>")
 		closed = FALSE
+		SEND_SIGNAL(src, COMSIG_AIRLOCK_OPEN)
 	else
 		for(var/mob/living/L in src.loc)
 			if(L)
@@ -190,3 +177,10 @@
 						playsound(src, lock_sound, 75, TRUE)
 						to_chat(user, "[src] is now unlocked.")
 						locked = FALSE
+
+/obj/structure/vampdoor/proc/door_return_initial_state()
+	pixel_z = initial(pixel_z)
+	pixel_w = initial(pixel_w)
+
+/obj/structure/vampdoor/proc/door_reset_callback()
+	addtimer(CALLBACK(src, PROC_REF(door_return_initial_state)), 2)
