@@ -7,7 +7,7 @@
 	target_type = TARGET_LIVING|TARGET_SELF
 
 	var/datum/action/select_command_button/select_command_button = null
-	var/selected_command
+	var/datum/dominate_act/selected_command
 
 /datum/discipline_power/vtr/dominate/command/post_gain()
 	selected_command = SSdominate_compulsion.compel_list["Think Twice!"]
@@ -17,6 +17,7 @@
 /datum/discipline_power/vtr/dominate/command/activate(mob/living/target)
 	. = ..()
 	playsound(target, 'code/modules/wod13/sounds/dominate.ogg', 100, FALSE)
+	owner.say(selected_command.phrase)
 	if(!SSroll.opposed_roll(
 		owner,
 		target,

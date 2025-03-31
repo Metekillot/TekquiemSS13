@@ -6,11 +6,18 @@
 	)
 
 /datum/element/compulsion/Attach(datum/target, mob/living/aggressor, datum/dominate_act/act, custom_signals = null)
+	
+	//cancel attachment if the target is not appropriate
+	if(act && !act.can_attach(target))
+		return
+
 	..()
+
 	if(!act || !istype(act, /datum/dominate_act))
 		return COMPONENT_INCOMPATIBLE
 	if(!isliving(target))
 		return COMPONENT_INCOMPATIBLE
+
 	act.apply(target, aggressor, src)
 
 	//we don't need to listen for signals when the dominate_act is a one-off

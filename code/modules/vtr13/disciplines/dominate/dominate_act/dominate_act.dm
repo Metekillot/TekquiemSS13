@@ -8,21 +8,30 @@
 	var/no_remove = FALSE //Set to TRUE if the compulsion doesn't need to be removed
 	var/duration
 
+/datum/dominate_act/proc/can_attach(datum/target)
+	SHOULD_CALL_PARENT(TRUE)
+	if(linked_trait && HAS_TRAIT_FROM(target, linked_trait, DOMINATE_ACT_TRAIT))
+		return FALSE
+	return TRUE
+
 /datum/dominate_act/proc/apply_message(mob/living/target)
 	to_chat(target, span_danger("You are x'd to [activate_verb]."))
 
 /datum/dominate_act/proc/apply(mob/living/target, mob/living/aggressor, datum/element/linked_element)
 	SHOULD_CALL_PARENT(TRUE)
-	aggressor.say(phrase)
+
 	if(target.mind)
 		apply_message(target)
+
 	if(no_remove)
 		return
 
 	if(linked_trait)
 		ADD_TRAIT(target, linked_trait, DOMINATE_ACT_TRAIT)
+
 	if(duration)
 		addtimer(CALLBACK(src, PROC_REF(remove), target, linked_element), duration)
+
 	RegisterSignal(target, COMSIG_ELEMENT_DETACH, PROC_REF(remove)) //Detach when the parent element detaches.
 
 /datum/dominate_act/proc/remove(datum/source, datum/element/linked_element)
@@ -34,6 +43,7 @@
 
 	if(!istype(linked_element, /datum/element/compulsion))
 		return FALSE
+
 	if(!isliving(source))
 		CRASH("Are You trying to remove a dominate_act from a person who doesn't exist? What???")
 	
@@ -45,5 +55,7 @@
 		to_chat(source_mob, span_notice("You no longer need to [activate_verb]."))
 	
 	UnregisterSignal(source, COMSIG_ELEMENT_DETACH)
+
 	REMOVE_TRAIT(source, linked_trait, DOMINATE_ACT_TRAIT)
+
 	return TRUE
