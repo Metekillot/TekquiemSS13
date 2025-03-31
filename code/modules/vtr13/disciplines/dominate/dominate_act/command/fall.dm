@@ -2,7 +2,7 @@
 	phrase = "Fall!"
 	activate_verb = "fall to the floor"
 	linked_trait = TRAIT_COMMAND_FALL
-	duration = 0.5 SECONDS
+	duration = 2 SECONDS
 
 /datum/dominate_act/command/get_down/apply(mob/living/target)
 	..()

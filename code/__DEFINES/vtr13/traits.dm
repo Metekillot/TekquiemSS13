@@ -29,4 +29,7 @@
 //hex: Think about adding these to the master list
 #define TRAIT_COMPEL_THINK_TWICE "compel_think_twice"
 
+
+
 #define TRAIT_COMMAND_FALL "command_fall"
+#define TRAIT_COMMAND_BE_QUIET "command_be_quiet"

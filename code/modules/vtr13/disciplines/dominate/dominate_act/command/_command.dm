@@ -4,4 +4,4 @@
 	activate_verb = "command verb"
 
 /datum/dominate_act/command/apply_message(mob/living/target)
-	to_chat(target, span_danger("You commanded to [activate_verb]."))
+	to_chat(target, span_danger("You feel forced to [activate_verb]."))

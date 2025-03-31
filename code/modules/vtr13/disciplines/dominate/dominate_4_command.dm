@@ -2,9 +2,9 @@
 	name = "Command"
 	desc = "Quickly compel a victim to obey with a short verbal command."
 	level = 4
-
+	range = 7
 	check_flags = DISC_CHECK_CAPABLE|DISC_CHECK_SPEAK|DISC_CHECK_SEE
-	target_type = TARGET_PLAYER|TARGET_LIVING|TARGET_SELF
+	target_type = TARGET_LIVING|TARGET_SELF
 
 	var/datum/action/select_command_button/select_command_button = null
 	var/selected_command

@@ -12,7 +12,12 @@
 	if(!isliving(target))
 		return COMPONENT_INCOMPATIBLE
 	act.apply(target, aggressor, src)
-	RegisterSignal(target, mob_deactivate_signals, PROC_REF(Detach))
+
+	//we don't need to listen for signals when the dominate_act is a one-off
+	if(!act.no_remove)
+		RegisterSignal(target, mob_deactivate_signals, PROC_REF(Detach))
+	else
+		Detach(target, FALSE) //Auto-detach for no_remove instances
 
 /datum/element/compulsion/Detach(datum/source, force)
 	. = ..()
