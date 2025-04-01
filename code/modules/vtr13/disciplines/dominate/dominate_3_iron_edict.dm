@@ -24,7 +24,7 @@
 		return FALSE
 	power_in_use = TRUE
 	var/char_limit = char_limit_multiplier * discipline.level
-	current_command = dominate_tgui_input_text(target, guidelines, "Write a command ([char_limit] character limit):", "Command", null, char_limit, FALSE, FALSE)
+	current_command = dominate_tgui_input_text(owner, guidelines, "Write a command ([char_limit] character limit):", "Command", null, char_limit, FALSE, FALSE)
 	power_in_use = FALSE
 	if(!current_command)
 		to_chat(owner, span_warning("You think better of dominating [target]."))

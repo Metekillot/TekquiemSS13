@@ -23,7 +23,7 @@
 		to_chat(owner, span_warning("You are already attempting to dominate someone!"))
 		return FALSE
 	power_in_use = TRUE
-	current_command = dominate_tgui_input_text(target, guidelines, "Choose [word_limit] words for your command:", "Dominate", null, 50, FALSE, FALSE, word_limit)
+	current_command = dominate_tgui_input_text(owner, guidelines, "Choose [word_limit] words for your command:", "Dominate", null, 50, FALSE, FALSE, word_limit)
 	power_in_use = FALSE
 	if(!current_command)
 		to_chat(owner, span_warning("You think better of dominating [target]."))
