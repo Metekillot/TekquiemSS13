@@ -10,7 +10,7 @@
 
 	multi_activate = TRUE
 	cooldown_length = 30 SECONDS
-	duration_length = 5 MINUTES
+	duration_length = 3 MINUTES
 	var/overlay_time = 5 SECONDS
 	var/hallucination_refresh = 10 SECONDS
 
