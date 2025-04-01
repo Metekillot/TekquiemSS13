@@ -36,7 +36,7 @@
 
 	RegisterSignal(owner, COMSIG_UI_SHAKE_REMOVE, PROC_REF(remove_shake))
 
-	START_PROCESSING(SSui_button_shake, src)
+	START_PROCESSING(SSfastprocess, src)
 
 /datum/component/ui_button_shake/proc/remove_shake(datum/source)
 	Destroy()

@@ -61,7 +61,17 @@
 	for(var/atom/new_meat_atom in new_meat)
 		ourclient.images |= new_meat_atom.hud_list[HUD_LIST_MEATWORLD]
 	
+
 	tracked_meat.Add(new_meat)
+
+	qdel(new_meat)
+	//Try to implment some rudimentary atom removal
+	if(tracked_meat.len >= 1000)
+		var/list/delete_meat = tracked_meat.Copy(1, (tracked_meat.len - 900))
+		tracked_meat.Cut(1, (tracked_meat.len - 900))
+		for(var/atom/delete_meat_atom in delete_meat)
+			ourclient.images -= delete_meat_atom.hud_list[HUD_LIST_MEATWORLD]
+		qdel(delete_meat)
 
 /datum/component/meatworld_component/UnregisterFromParent()
 	for(var/atom/delete_meat_atom in tracked_meat)

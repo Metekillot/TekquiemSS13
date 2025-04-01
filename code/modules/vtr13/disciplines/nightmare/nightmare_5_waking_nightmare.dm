@@ -2,7 +2,7 @@
 	name = "Waking Nightmare"
 	desc = "Subject a victim to a horrendous, visceral experience."
 	
-	level = 4
+	level = 5
 	
 	check_flags = DISC_CHECK_CAPABLE | DISC_CHECK_SEE
 	target_type = TARGET_HUMAN | TARGET_SELF

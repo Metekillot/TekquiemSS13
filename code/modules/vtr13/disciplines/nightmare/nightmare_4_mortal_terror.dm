@@ -2,7 +2,7 @@
 	name = "Mortal Terror"
 	desc = "Inflict such piquant horror into your victim that they suffer physical damage."
 	
-	level = 5
+	level = 4
 
 	check_flags = DISC_CHECK_CAPABLE | DISC_CHECK_SEE
 	target_type = TARGET_HUMAN | TARGET_SELF
