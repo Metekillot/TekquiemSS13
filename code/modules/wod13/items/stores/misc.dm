@@ -48,7 +48,27 @@
 	prize_list = list(new /datum/data/mining_equipment("full gas can",	/obj/item/gas_can/full,	250),
 		new /datum/data/mining_equipment("tire iron",		/obj/item/melee/vampirearms/tire,	50),
 		new /datum/data/mining_equipment("Spray Paint",		/obj/item/toy/crayon/spraycan,		25),
+		new /datum/data/mining_equipment("Travel Brochure (City Map)", /obj/item/travel_brochure, 5),
 		new /datum/data/mining_equipment("Hair Spray",		/obj/item/dyespray,		10),
+		new /datum/data/mining_equipment("malboro",	/obj/item/storage/fancy/cigarettes/cigpack_robust,	50),
+		new /datum/data/mining_equipment("newport",		/obj/item/storage/fancy/cigarettes/cigpack_xeno,	30),
+		new /datum/data/mining_equipment("camel",	/obj/item/storage/fancy/cigarettes/dromedaryco,	30),
+		new /datum/data/mining_equipment("zippo lighter",	/obj/item/lighter,	20),
+		new /datum/data/mining_equipment("lighter",		/obj/item/lighter/greyscale,	10),
+		new /datum/data/mining_equipment("chocolate bar",	/obj/item/food/vampire/bar,	3),
+		new /datum/data/mining_equipment("chips",	/obj/item/food/vampire/crisps,	5),
+		new /datum/data/mining_equipment("water bottle",	/obj/item/reagent_containers/food/drinks/bottle/vampirewater,	3),
+		new /datum/data/mining_equipment("soda can",	/obj/item/reagent_containers/food/drinks/soda_cans/vampiresoda,	3),
+		new /datum/data/mining_equipment("two liter cola bottle",	/obj/item/reagent_containers/food/drinks/bottle/vampirecola,	7),
+		new /datum/data/mining_equipment("cola can",	/obj/item/reagent_containers/food/drinks/soda_cans/vampirecola,	5),
+		new /datum/data/mining_equipment("summer thaw", /obj/item/reagent_containers/food/drinks/bottle/vampirecola/summer_thaw, 5),
+		new /datum/data/mining_equipment("milk",	/obj/item/reagent_containers/food/condiment/vampiremilk,	5),
+		new /datum/data/mining_equipment("beer bottle",	/obj/item/reagent_containers/food/drinks/beer/vampire,	10),
+		new /datum/data/mining_equipment("blue stripe", /obj/item/reagent_containers/food/drinks/beer/vampire/blue_stripe, 8),
+		new /datum/data/mining_equipment("candle pack",	/obj/item/storage/fancy/candle_box,	12),
+		new /datum/data/mining_equipment("bruise pack", /obj/item/stack/medical/bruise_pack, 100),
+		new /datum/data/mining_equipment("respirator",	/obj/item/clothing/mask/vampire,	35)
+
 	)
 
 /obj/machinery/mineral/equipment_vendor/fastfood/library

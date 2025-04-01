@@ -12,7 +12,7 @@ SUBSYSTEM_DEF(job)
 	var/list/prioritized_jobs = list()
 	var/list/latejoin_trackers = list()	//Don't read this list, use GetLateJoinTurfs() instead
 
-	var/overflow_role = "Citizen"
+	var/overflow_role = "Pedestrian"
 
 	var/list/level_order = list(JP_HIGH,JP_MEDIUM,JP_LOW)
 
@@ -22,7 +22,6 @@ SUBSYSTEM_DEF(job)
 		SetupOccupations()
 	if(CONFIG_GET(flag/load_jobs_from_txt))
 		LoadJobs()
-	generate_selectable_species()
 	set_overflow_role(CONFIG_GET(string/overflow_job))
 	return ..()
 
@@ -44,7 +43,7 @@ SUBSYSTEM_DEF(job)
 
 /datum/controller/subsystem/job/proc/SetupOccupations(faction = "Vampire")
 	occupations = list()
-	var/list/all_jobs = subtypesof(/datum/job/vamp)
+	var/list/all_jobs = subtypesof(/datum/job/vamp/vtr)
 	if(!all_jobs.len)
 		to_chat(world, "<span class='boldannounce'>Error setting up jobs, no job datums found</span>")
 		return FALSE
@@ -72,8 +71,8 @@ SUBSYSTEM_DEF(job)
 	var/datum/job/job = GetJob(rank)
 	if(!job)
 		return FALSE
-	if (job.species_slots[mob.dna.species.name] >= 0)
-		job.species_slots[mob.dna.species.name]++
+	if (mob?.dna?.species && job.species_slots[mob.dna.species.name] >= 0)
+		job.species_slots[mob.dna?.species.name]++
 	job.current_positions = max(0, job.current_positions - 1)
 
 /datum/controller/subsystem/job/proc/GetJob(rank)
@@ -181,7 +180,7 @@ SUBSYSTEM_DEF(job)
 		if(istype(job, GetJob(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
-		if(job.title in GLOB.command_positions) //If you want a command position, select it!
+		if(job.title in GLOB.leader_positions) //If you want a command position, select it!
 			continue
 
 		if(is_banned_from(player.ckey, job.title) || QDELETED(player))
@@ -548,7 +547,13 @@ SUBSYSTEM_DEF(job)
 	if(living_mob.mind)
 		living_mob.mind.assigned_role = rank
 
-	to_chat(M, "<b>You are the [rank].</b>")
+	// TFN EDIT START: alt job titles
+	var/display_rank = rank
+	if(M?.client?.prefs?.alt_titles_preferences[rank])
+		display_rank = M.client.prefs.alt_titles_preferences[rank]
+	// TFN EDIT START
+
+	to_chat(M, "<b>You are the [display_rank].</b>")
 	if(job)
 		var/new_mob = job.equip(living_mob, null, null, joined_late , null, M.client)//silicons override this proc to return a mob
 		if(ismob(new_mob))
@@ -566,15 +571,15 @@ SUBSYSTEM_DEF(job)
 			else
 				handle_auto_deadmin_roles(M.client, rank)
 
-		to_chat(M, "<b>As the [rank] you answer directly to [job.supervisors]. Special circumstances may change this.</b>")
+		to_chat(M, "<b>As the [display_rank] you answer directly to [job.supervisors]. Special circumstances may change this.</b>")
 		var/mob/living/carbon/human/human = living_mob
 		if((iskindred(human) && human.clane) || iscathayan(human) || isgarou(human))
 			if(job.v_duty && job.v_duty != "")
-				to_chat(M, "<span class='notice'><b>[job.v_duty]</b></span>")
+				to_chat(M, span_notice("<b>[job.v_duty]</b>"))
 			if(job.title != "Prince")
 				to_chat(M, "<span class='notice' style='color:red;'><b>The Camarilla rule the city. You should obey them, their laws and the Prince, at least in public.</b></span>")
 			if(job.title == "Chantry Archivist")
-				to_chat(M, "<span class='notice'><b>As a member of the Chantry, you are part of the Tremere Pyramid and are blood bonded to the Regent. Always be loyal.</b></span>")
+				to_chat(M, span_notice("<b>As a member of the Chantry, you are part of the Tremere Pyramid and are blood bonded to the Regent. Always be loyal.</b>"))
 		else if(job.duty && job.duty != "")
 			to_chat(M, "<span class='notice'><b>[job.duty]</b></span>")
 //		job.radio_help_message(M)

@@ -285,7 +285,7 @@
 	sec_hud_set_security_status()
 	..()
 
-/mob/living/carbon/human/proc/equipOutfit(outfit, visualsOnly = FALSE)
+/mob/living/carbon/human/proc/equipOutfit(outfit, visualsOnly = FALSE, client/preference_source = null) // TFN EDIT: alt job titles
 	var/datum/outfit/O = null
 
 	if(ispath(outfit))
@@ -297,8 +297,7 @@
 	if(!O)
 		return 0
 
-	return O.equip(src, visualsOnly)
-
+	return O.equip(src, visualsOnly, preference_source) // TFN EDIT: alt job titles
 
 //delete all equipment without dropping anything
 /mob/living/carbon/human/proc/delete_equipment()
@@ -312,6 +311,10 @@
 /mob/living/carbon/human/proc/smart_equip_targeted(slot_type = ITEM_SLOT_BELT, slot_item_name = "belt")
 	if(incapacitated())
 		return
+	if(HAS_TRAIT(src, TRAIT_NO_QUICK_EQUIP))
+		to_chat(src, span_warning("Your hands fumble as you try to equip the item!"))
+		return
+	
 	var/obj/item/thing = get_active_held_item()
 	var/obj/item/equipped_item = get_item_by_slot(slot_type)
 	if(!equipped_item) // We also let you equip an item like this
