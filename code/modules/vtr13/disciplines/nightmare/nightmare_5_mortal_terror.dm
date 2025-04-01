@@ -47,14 +47,16 @@
 	target.emote("scream")
 	target.Jitter(60)
 
+	addtimer(CALLBACK(src, PROC_REF(end_mutation_overlay), target), effect_time)
+
 	if(success_count >= 2)
 		ADD_TRAIT(target, TRAIT_DEAF, NIGHTMARE_5_TRAIT)
 		target.update_blindness()
-		addtimer(CALLBACK(src, PROC_REF(end_blindness),target),effect_time)
+		addtimer(CALLBACK(src, PROC_REF(end_blindness), target), effect_time)
 
 	if(success_count >= 3)
-		addtimer(CALLBACK(src, PROC_REF(white_hair),target),effect_time)
-	
+		addtimer(CALLBACK(src, PROC_REF(white_hair), target), effect_time)
+
 	if(success_count >= 4 && (ishumanbasic(target) || isghoul(target)))
 		var/datum/disease/heart_attack = new /datum/disease/heart_failure()
 		target.ForceContractDisease(heart_attack, FALSE, TRUE)
@@ -62,6 +64,8 @@
 	to_chat(target, span_userdanger("A horrifying, traumatic fear grips you. Elge write a better description im weak"))
 	target.adjustOrganLoss(ORGAN_SLOT_BRAIN, success_count * base_damage, 90)
 
+/datum/discipline_power/vtr/nightmare/mortal_terror/proc/end_mutation_overlay(mob/living/carbon/human/target)
+	target.remove_overlay(MUTATIONS_LAYER)
 
 /datum/discipline_power/vtr/nightmare/mortal_terror/proc/end_blindness(mob/living/carbon/human/target)
 	REMOVE_TRAIT(target, TRAIT_BLIND, NIGHTMARE_5_TRAIT)

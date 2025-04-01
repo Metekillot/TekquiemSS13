@@ -68,8 +68,7 @@
 	if(!target)
 		return
 	target.remove_overlay(MUTATIONS_LAYER)
-	playsound(target, 'code/modules/wod13/sounds/nosferatu.ogg', 100, FALSE)
-	
+	SEND_SOUND(target, sound('code/modules/wod13/sounds/nosferatu.ogg'))
 
 
 /datum/discipline_power/vtr/nightmare/waking_nightmare/proc/mounting_hallucinations(mob/living/carbon/human/target)
@@ -85,10 +84,10 @@
 
 	if(!target.mind)
 		return
-
+	
 	REMOVE_TRAIT(target, TRAIT_ATTENDING_CARNIVAL, NIGHTMARE_4_TRAIT)
 	to_chat(target, span_warning("At long last, the horrors begin to fade."))
 	SEND_SIGNAL(target, COMSIG_MEATWORLD_REMOVE_COMPONENT)
 	target.RemoveElement(/datum/element/ui_button_shake_inventory_group)
 	target.RemoveElement(/datum/element/ui_button_shake_wide_button_group)
-	owner.remove_client_colour(/datum/client_colour/glass_colour/darkred)
+	target.remove_client_colour(/datum/client_colour/glass_colour/darkred)
