@@ -2,7 +2,7 @@
 //all relevant instances for it are stored in SSdominate_act, you should never declare one.
 //No procs for this datum or any of its children should be called outside of element/compulsion.
 /datum/dominate_act
-	var/phrase = "PLACEHOLDER" //MUST BE UNIQUE
+	var/phrase = "PLACEHOLDER 1" //MUST BE UNIQUE
 	var/activate_verb = "placeholder"
 	var/linked_trait = null //Set this if you set a duration
 	var/no_remove = FALSE //Set to TRUE if the compulsion doesn't need to be removed
