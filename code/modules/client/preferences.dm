@@ -69,6 +69,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/slotlocked = 0
 	var/real_name						//our character's name
 	var/headshot_link
+	var/ooc_notes
 	var/gender = MALE					//gender of character (well duh)
 	var/age = 30						//age of character
 	var/total_age = 30
