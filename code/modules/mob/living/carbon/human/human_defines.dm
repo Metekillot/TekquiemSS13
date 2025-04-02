@@ -135,7 +135,4 @@
 	yin_chi = 2
 	max_yin_chi = 2
 
-	///The Examine Panel TGUI.
-	var/datum/examine_panel/tgui = new() //create the datum
 	var/headshot_link = null
-	var/ooc_notes
