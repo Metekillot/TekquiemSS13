@@ -27,7 +27,6 @@ SUBSYSTEM_DEF(beastmastering)
 		if (QDELETED(NPC)) // Some issue causes nulls to get into this list some times. This keeps it running, but the bug is still there.
 			GLOB.npc_list -= NPC
 			GLOB.alive_npc_list -= NPC
-			GLOB.boring_npc_list -= NPC
 			log_world("Found a null in npc list!")
 			continue
 
@@ -109,7 +108,7 @@ SUBSYSTEM_DEF(beastmastering)
 	var/mob/living/targa
 
 /mob/living/simple_animal/hostile/beastmaster/proc/handle_automated_beasting()
-	if(client || mind)
+	if(client)
 		return
 	if(stat > 0)
 		GLOB.beast_list -= src

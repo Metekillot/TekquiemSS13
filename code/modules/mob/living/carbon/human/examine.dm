@@ -1,11 +1,4 @@
-/mob/living/carbon/human/examine(mob/user, for_disguise = FALSE)
-
-	//VTR EDIT BEGIN
-	if(disguise_description)
-		SEND_SIGNAL(src, COMSIG_PARENT_EXAMINE, user, disguise_description)
-		return disguise_description
-	//VTR EDIT END
-
+/mob/living/carbon/human/examine(mob/user)
 //this is very slightly better than it was because you can use it more places. still can't do \his[src] though.
 	var/t_He = p_they(TRUE)
 	var/t_His = p_their(TRUE)
@@ -155,15 +148,24 @@
 		if(100 to 200)
 			. += "<span class='warning'>[t_He] [t_is] twitching ever so slightly.</span>"
 
-	//VTR EDIT BEGIN
 	var/appears_dead = FALSE
-	if((stat == DEAD || (HAS_TRAIT(src, TRAIT_FAKEDEATH)) && !for_disguise))
+	var/just_sleeping = FALSE
+
+	if(stat == DEAD || (HAS_TRAIT(src, TRAIT_FAKEDEATH)))
 		appears_dead = TRUE
-		if(suiciding)
-			. += "<span class='warning'>[t_He] appear[p_s()] to have committed suicide... there is no hope of recovery.</span>"
-		. += generate_death_examine_text()
-	//VTR EDIT END
-	
+
+		var/obj/item/clothing/glasses/G = get_item_by_slot(ITEM_SLOT_EYES)
+		var/are_we_in_weekend_at_bernies = G?.tint && buckled && istype(buckled, /obj/vehicle/ridden/wheelchair)
+
+		if(isliving(user) && (HAS_TRAIT(user, TRAIT_NAIVE) || are_we_in_weekend_at_bernies))
+			just_sleeping = TRUE
+
+		if(!just_sleeping)
+			if(suiciding)
+				. += "<span class='warning'>[t_He] appear[p_s()] to have committed suicide... there is no hope of recovery.</span>"
+
+			. += generate_death_examine_text()
+
 	if(get_bodypart(BODY_ZONE_HEAD) && !getorgan(/obj/item/organ/brain) && surgeries.len)
 		. += "<span class='deadsay'>It appears that [t_his] brain is missing...</span>"
 
@@ -272,26 +274,13 @@
 		if(DISGUST_LEVEL_DISGUSTED to INFINITY)
 			msg += "[t_He] look[p_s()] extremely disgusted.\n"
 
-	//VTR EDIT BEGIN
-	if(ishumanbasic(src) && (bloodpool >= 1) && (bloodpool < round(maxbloodpool/2)))
-		msg += "[t_He] look[p_s()] a little anemic.\n"
+	var/apparent_blood_volume = bloodpool
+	if((apparent_blood_volume >= round(maxbloodpool * 0.5)) && (apparent_blood_volume < maxbloodpool))
+		msg += "[t_He] [t_has] pale skin.\n"
+	else if((apparent_blood_volume >= 1) && (apparent_blood_volume < round(maxbloodpool/2)))
+		msg += "[t_He] look[p_s()] like pale death.\n"
 	else if(bloodpool <= 0)
 		msg += "<span class='deadsay'><b>[t_He] resemble[p_s()] a crushed, empty juice pouch.</b></span>\n"
-
-
-	if(!for_disguise)
-		var/notify_beast = FALSE
-		if(iskindred(user))
-			notify_beast = TRUE
-		else if(isghoul(user))
-			var/mob/living/carbon/human/user_human = user
-			if(user_human?.using_auspex)
-				notify_beast = TRUE
-		
-		if(notify_beast && iskindred(src))
-			msg += span_danger("You sense the beast within [t_him] - [t_He] [t_is] a kindred.") + "\n"
-	//VTR EDIT END
-
 
 	if(is_bleeding())
 		var/list/obj/item/bodypart/bleeding_limbs = list()
@@ -342,6 +331,9 @@
 		for(var/i in stun_absorption)
 			if(stun_absorption[i]["end_time"] > world.time && stun_absorption[i]["examine_message"])
 				msg += "[t_He] [t_is][stun_absorption[i]["examine_message"]]\n"
+
+	if(just_sleeping)
+		msg += "[t_He] [t_is]n't responding to anything around [t_him] and seem[p_s()] to be asleep.\n"
 
 	if(!appears_dead)
 		if(drunkenness && !skipface) //Drunkenness
@@ -500,24 +492,27 @@
 		. += trait_exam
 
 	if(ishuman(user))
-		. += "<a href='?src=[REF(src)];masquerade=1'>Spot a Masquerade violation</a>"
+		. += "<a href='byond://?src=[REF(src)];masquerade=1'>Spot a Masquerade violation</a>"
 	
 	// TFN EDIT ADDITION START: view headshot & big flavortext via examine
-	if(!obscure_name && headshot_link)
-		. += "<a href='?src=[REF(src)];view_headshot=1'>View face closely</a>"
+	var/flavor_text_link
+	var/preview_text = copytext_char(flavor_text, 1, 110)
+	// What examine_tgui.dm uses to determine if flavor text appears as "Obscured".
+	var/face_obscured = (wear_mask && (wear_mask.flags_inv & HIDEFACE)) || (head && (head.flags_inv & HIDEFACE))
 
-	if(flavor_text)
-		if(length(flavor_text) < 110)
-			. += span_notice("[sanitize_text(flavor_text)]\n")
-		else
-			. += span_notice("[copytext(sanitize_text(flavor_text), 1, 110)]... <a href='?src=[REF(src)];view_flavortext=1'>More...</a>")
+	if (!(face_obscured))
+		flavor_text_link = span_notice("[preview_text]... <a href='byond://?src=[REF(src)];view_flavortext=1'>\[Look closer?\]</a>")
+	else
+		flavor_text_link = span_notice("<a href='byond://?src=[REF(src)];view_flavortext=1'>\[Examine closely...\]</a>")
+	if (flavor_text_link)
+		. += flavor_text_link
 	// TFN EDIT ADDITION END
 
 	var/perpname = get_face_name(get_id_name(""))
 	if(perpname && (HAS_TRAIT(user, TRAIT_SECURITY_HUD) || HAS_TRAIT(user, TRAIT_MEDICAL_HUD)))
 		var/datum/data/record/R = find_record("name", perpname, GLOB.data_core.general)
 		if(R)
-			. += "<span class='deptradio'>Rank:</span> [R.fields["rank"]]\n<a href='?src=[REF(src)];hud=1;photo_front=1'>\[Front photo\]</a><a href='?src=[REF(src)];hud=1;photo_side=1'>\[Side photo\]</a>"
+			. += "<span class='deptradio'>Rank:</span> [R.fields["rank"]]\n<a href='byond://?src=[REF(src)];hud=1;photo_front=1'>\[Front photo\]</a><a href='byond://?src=[REF(src)];hud=1;photo_side=1'>\[Side photo\]</a>"
 		if(HAS_TRAIT(user, TRAIT_MEDICAL_HUD))
 			var/cyberimp_detect
 			for(var/obj/item/organ/cyberimp/CI in internal_organs)
@@ -528,13 +523,13 @@
 				. += "<span class='notice ml-2'>[cyberimp_detect]</span>"
 			if(R)
 				var/health_r = R.fields["p_stat"]
-				. += "<a href='?src=[REF(src)];hud=m;p_stat=1'>\[[health_r]\]</a>"
+				. += "<a href='byond://?src=[REF(src)];hud=m;p_stat=1'>\[[health_r]\]</a>"
 				health_r = R.fields["m_stat"]
-				. += "<a href='?src=[REF(src)];hud=m;m_stat=1'>\[[health_r]\]</a>"
+				. += "<a href='byond://?src=[REF(src)];hud=m;m_stat=1'>\[[health_r]\]</a>"
 			R = find_record("name", perpname, GLOB.data_core.medical)
 			if(R)
-				. += "<a href='?src=[REF(src)];hud=m;evaluation=1'>\[Medical evaluation\]</a><br>"
-			. += "<a href='?src=[REF(src)];hud=m;quirk=1'>\[See quirks\]</a>"
+				. += "<a href='byond://?src=[REF(src)];hud=m;evaluation=1'>\[Medical evaluation\]</a><br>"
+			. += "<a href='byond://?src=[REF(src)];hud=m;quirk=1'>\[See quirks\]</a>"
 
 		if(HAS_TRAIT(user, TRAIT_SECURITY_HUD))
 			if(!user.stat && user != src)
@@ -545,12 +540,14 @@
 				if(R)
 					criminal = R.fields["criminal"]
 
-				. += "<span class='deptradio'>Criminal status:</span> <a href='?src=[REF(src)];hud=s;status=1'>\[[criminal]\]</a>"
-				. += jointext(list("<span class='deptradio'>Security record:</span> <a href='?src=[REF(src)];hud=s;view=1'>\[View\]</a>",
-					"<a href='?src=[REF(src)];hud=s;add_citation=1'>\[Add citation\]</a>",
-					"<a href='?src=[REF(src)];hud=s;add_crime=1'>\[Add crime\]</a>",
-					"<a href='?src=[REF(src)];hud=s;view_comment=1'>\[View comment log\]</a>",
-					"<a href='?src=[REF(src)];hud=s;add_comment=1'>\[Add comment\]</a>"), "")
+				. += "<span class='deptradio'>Criminal status:</span> <a href='byond://?src=[REF(src)];hud=s;status=1'>\[[criminal]\]</a>"
+				. += jointext(list("<span class='deptradio'>Security record:</span> <a href='byond://?src=[REF(src)];hud=s;view=1'>\[View\]</a>",
+					"<a href='byond://?src=[REF(src)];hud=s;add_citation=1'>\[Add citation\]</a>",
+					"<a href='byond://?src=[REF(src)];hud=s;add_crime=1'>\[Add crime\]</a>",
+					"<a href='byond://?src=[REF(src)];hud=s;view_comment=1'>\[View comment log\]</a>",
+					"<a href='byond://?src=[REF(src)];hud=s;add_comment=1'>\[Add comment\]</a>"), "")
+	else if(isobserver(user))
+		. += "<span class='info'><b>Traits:</b> [get_quirk_string(FALSE, CAT_QUIRK_ALL)]</span>"
 	. += "*---------*</span>"
 
 	SEND_SIGNAL(src, COMSIG_PARENT_EXAMINE, user, .)
