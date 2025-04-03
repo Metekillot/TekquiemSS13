@@ -2,7 +2,8 @@
 	var/list/mob_deactivate_signals = list(
 		COMSIG_MOB_ATTACKED_HAND,
 		COMSIG_MOB_ATTACKED_BY_MELEE,
-		COMSIG_LIVING_DEATH
+		COMSIG_LIVING_DEATH,
+		COMSIG_DOMINATE_ACT_END_EARLY
 	)
 
 /datum/element/compulsion/Attach(datum/target, mob/living/aggressor, datum/dominate_act/act, custom_signals = null)

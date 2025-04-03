@@ -12,7 +12,15 @@
 	SHOULD_CALL_PARENT(TRUE)
 	if(linked_trait && HAS_TRAIT_FROM(target, linked_trait, DOMINATE_ACT_TRAIT))
 		return FALSE
+
+	var/mob/living/living_victim = target
+	if(!living_victim || living_victim.stat >= UNCONSCIOUS || living_victim.IsSleeping() || living_victim.is_dominated)
+		return FALSE
+
 	return TRUE
+
+/datum/dominate_act/proc/request_early_removal(datum/target)
+	SEND_SIGNAL(target, COMSIG_DOMINATE_ACT_END_EARLY)
 
 /datum/dominate_act/proc/apply_message(mob/living/target)
 	to_chat(target, span_danger("You are x'd to [activate_verb]."))
@@ -25,6 +33,8 @@
 
 	if(no_remove)
 		return
+
+	target.is_dominated = TRUE
 
 	if(linked_trait)
 		ADD_TRAIT(target, linked_trait, DOMINATE_ACT_TRAIT)
@@ -40,17 +50,19 @@
 	
 	if(no_remove)
 		CRASH("Hey uh dominate_act '[phrase]' has NO_REMOVE turned on, but remove() was called.")
-
+	
 	if(!istype(linked_element, /datum/element/compulsion))
 		return FALSE
 
 	if(!isliving(source))
 		CRASH("Are You trying to remove a dominate_act from a person who doesn't exist? What???")
 	
+	var/mob/living/source_mob = source
+	source_mob.is_dominated = FALSE
+	
 	if(linked_trait && !HAS_TRAIT(source, linked_trait))
 		return FALSE
 	
-	var/mob/living/source_mob = source
 	if(source_mob.mind)
 		to_chat(source_mob, span_notice("You no longer need to [activate_verb]."))
 	

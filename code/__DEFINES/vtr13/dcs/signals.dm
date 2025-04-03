@@ -29,3 +29,6 @@
 
 
 #define COMSIG_UI_SHAKE_REMOVE "ui_shake_remove"
+
+
+#define COMSIG_DOMINATE_ACT_END_EARLY "dominate_act_end_early"

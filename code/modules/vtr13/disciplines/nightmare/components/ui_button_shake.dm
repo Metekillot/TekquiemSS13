@@ -62,7 +62,7 @@
 	return TRUE
 
 /datum/component/ui_button_shake/UnregisterFromParent()
-	STOP_PROCESSING(SSui_button_shake, src)
+	STOP_PROCESSING(SSfastprocess, src)
 	var/atom/movable/screen/inventory/parent_screen  = parent
 	parent_screen.screen_loc = original_value
 	if(istype(parent, /atom/movable/screen/inventory))
