@@ -1,6 +1,6 @@
 /datum/dominate_act/compel/say_my_name
 	phrase = "Say my name."
-	activate_verb = "awaken"
+	activate_verb = "speak"
 	no_remove = TRUE
 
 /datum/dominate_act/compel/say_my_name/apply(mob/living/target, mob/living/aggressor)
