@@ -1,5 +1,5 @@
 /datum/dominate_act/command/sleepy
-	phrase = "Sleep!"
+	phrase = "Sleep."
 	activate_verb = "sleep"
 	no_remove = TRUE
 

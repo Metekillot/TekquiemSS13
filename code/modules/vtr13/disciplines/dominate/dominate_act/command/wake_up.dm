@@ -1,5 +1,5 @@
 /datum/dominate_act/command/wake_up
-	phrase = "Wake up!"
+	phrase = "Wake up."
 	activate_verb = "awaken"
 	no_remove = TRUE
 

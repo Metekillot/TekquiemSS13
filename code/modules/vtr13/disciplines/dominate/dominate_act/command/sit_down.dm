@@ -1,7 +1,7 @@
 /datum/forced_movement/dominate_command
 
 /datum/dominate_act/command/sit_down
-	phrase = "Sit Down!"
+	phrase = "Sit down."
 	activate_verb = "sit down"
 	linked_trait = TRAIT_COMMAND_SIT_DOWN
 	duration = 5 SECONDS

@@ -2,7 +2,7 @@
 	multiplicative_slowdown = 5
 
 /datum/dominate_act/compel/think_twice
-	phrase = "Think Twice!"
+	phrase = "Think twice."
 	activate_verb = "doubt yourself"
 	linked_trait = TRAIT_COMPEL_THINK_TWICE
 

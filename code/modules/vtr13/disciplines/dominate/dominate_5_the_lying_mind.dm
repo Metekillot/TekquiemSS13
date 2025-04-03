@@ -10,8 +10,8 @@
 	range = 7
 	vitae_cost = 3
 	var/max_retry_recursion = 15
-	var/guidelines = "Elge write a guideline for using this mind erase-y ability, with disclaimer for it, ty. The string can be long, so for the purposes of this placeholder WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD WORD"
-	var/player_consent = "Elge write a message that will display when the player is faced with their memory getting borked, thanks.  The string can be long, so for the purposes of this placeholder HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX HEX"
+	var/guidelines = "On a successful roll, The Lying Mind allows you to make arbitrary edits to your target's memories, permanently. Your command can be as long as you like within the character limit, and may alter, remove, or create any number of memories. The Lying Mind cannot alter a character's emotions or relationships, only their memories of them. Their player decides how to interpret your alterations- please use clear, direct language for best effect. Their player can choose to reject your alteration for any reason- please ensure your alterations are not boring, uncomfortable, or against the rules. The text of your alterations are readable by staff. Please keep our consent guidelines in mind while using this power."
+	var/player_consent = "If you consent to the alteration below, your character's memories will be permanently altered as described. You decide how to interpret the alterations, and how to roleplay their effects going forward. It does not directly alter your character's emotional state or emotional reactions to certain people or situations. Please only consent to this alteration if you are comfortable doing so and believe it would make for a more engaging roleplaying experience. If you do not consent to this alteration, it will appear as though it were a failed roll. You do not have to justify rejecting this alteration to anyone, including staff. Consenting to this command does not remove your ability to revoke consent later (whether in this round or after it) for any reason."
 	var/current_command
 	var/power_in_use = FALSE
 	var/overlay_time = 5 SECONDS
@@ -33,6 +33,11 @@
 	to_chat(owner, span_warning("You attempt to command [target] to do your bidding."))
 
 	log_admin("[owner] attempted to use Dominate [level] on [target]. Alteration: '[current_command]'")
+	owner.dir = get_dir(owner, target)
+
+	if(get_dir(target, owner) != target.dir)
+		to_chat(owner, span_warning("[target] must be facing you!"))
+
 	if(!SSroll.opposed_roll(
 		owner,
 		target,

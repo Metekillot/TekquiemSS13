@@ -1,5 +1,5 @@
 /datum/dominate_act/command/get_down
-	phrase = "Fall!"
+	phrase = "Fall."
 	activate_verb = "fall to the floor"
 	linked_trait = TRAIT_COMMAND_FALL
 	duration = 2 SECONDS

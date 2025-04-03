@@ -1,5 +1,5 @@
 /datum/dominate_act/compel/say_my_name
-	phrase = "Say My Name!"
+	phrase = "Say my name."
 	activate_verb = "awaken"
 	no_remove = TRUE
 

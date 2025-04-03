@@ -1,5 +1,5 @@
 /datum/dominate_act/compel/break_it_down
-	phrase = "Break it down!"
+	phrase = "Break it down."
 	activate_verb = "bust a move"
 	no_remove = TRUE
 
