@@ -1,3 +1,7 @@
+///called in /mob/living/proc/setDir (mob, dir, newdir)
+#define COMSIG_LIVING_DIR_CHANGE "living_dir_change"
+	#define COMPONENT_LIVING_DIR_CHANGE_BLOCK (1<<0)
+
 ///called in /datum/mind/proc/transfer_to (brain, new_mob)
 #define COMSIG_MIND_TRANSFERRED "mind_transferred"
 
@@ -32,3 +36,5 @@
 
 
 #define COMSIG_DOMINATE_ACT_END_EARLY "dominate_act_end_early"
+
+#define COMSIG_COMPONENT_ENRAPTURE_REMOVE "component_enrapture_remove"

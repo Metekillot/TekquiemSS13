@@ -16,6 +16,8 @@
 
 #define DOMINATE_ACT_TRAIT "dominate_act"
 
+#define MAJESTY_1_TRAIT "majesty_1_trait"
+
 //Discipline related traits
 #define TRAIT_EYES_VIOLATING_MASQUERADE "eyes_violating_masquerade"
 #define TRAIT_GECKO_GRIP "gecko_grip"
@@ -31,3 +33,5 @@
 #define TRAIT_COMMAND_FALL "command_fall"
 #define TRAIT_COMMAND_BE_QUIET "command_be_quiet"
 #define TRAIT_COMMAND_SIT_DOWN "command_sit_down"
+
+#define TRAIT_ENRAPTURED "enraptured"
