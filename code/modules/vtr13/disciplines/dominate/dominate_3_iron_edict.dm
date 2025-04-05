@@ -40,8 +40,9 @@
 	owner.say(current_command)
 	owner.dir = get_dir(owner, target)
 
-	if(get_dir(target, owner) != target.dir)
+	if(get_dir(target, owner) != target.dir && owner != target)
 		to_chat(owner, span_warning("[target] must be facing you!"))
+		return FALSE
 
 	if(!SSroll.opposed_roll(
 		owner,
