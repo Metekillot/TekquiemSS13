@@ -471,7 +471,7 @@
 				output += "</ul>"
 
 	if(window)
-		recipient << browse(output,"window=memory")
+		recipient << browse(HTML_SKELETON(output),"window=memory")
 	else if(all_objectives.len || memory)
 		to_chat(recipient, "<i>[output]</i>")
 
@@ -726,7 +726,7 @@
 		if(istype(S, spell))
 			spell_list -= S
 			qdel(S)
-	current?.client << output(null, "statbrowser:check_spells")
+	current?.client.stat_panel.send_message("check_spells")
 
 /datum/mind/proc/RemoveAllSpells()
 	for(var/obj/effect/proc_holder/S in spell_list)
@@ -819,6 +819,7 @@
 /mob/living/carbon/mind_initialize()
 	..()
 	last_mind = mind
+	mind.refresh_memory()
 
 //HUMAN
 /mob/living/carbon/human/mind_initialize()
