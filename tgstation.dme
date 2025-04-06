@@ -3545,7 +3545,7 @@
 #include "code\modules\vtr13\disciplines\majesty\majesty.dm"
 #include "code\modules\vtr13\disciplines\majesty\majesty_1_awe.dm"
 #include "code\modules\vtr13\disciplines\majesty\majesty_2_placeholder.dm"
-#include "code\modules\vtr13\disciplines\majesty\majesty_3_placeholder.dm"
+#include "code\modules\vtr13\disciplines\majesty\majesty_3_entrancement.dm"
 #include "code\modules\vtr13\disciplines\majesty\majesty_4_placeholder.dm"
 #include "code\modules\vtr13\disciplines\majesty\majesty_5_placeholder.dm"
 #include "code\modules\vtr13\disciplines\majesty\components\enraptured.dm"
