@@ -1,4 +1,56 @@
-interface ByondType {
+/**
+ * @file
+ * @copyright 2021 Aleksej Komarov
+ * @license MIT
+ */
+
+// Webpack asset modules.
+// Should match extensions used in webpack config.
+declare module '*.png' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.jpg' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.svg' {
+  const content: string;
+  export default content;
+}
+
+namespace JSX {
+  interface IntrinsicElements {
+    marquee: any;
+    blink: any;
+  }
+}
+
+type TguiMessage = {
+  type: string;
+  payload?: any;
+  [key: string]: any;
+};
+
+type ByondType = {
+  /**
+   * ID of the Byond window this script is running on.
+   * Can be used as a parameter to winget/winset.
+   */
+  windowId: string;
+
+  /**
+   * True if javascript is running in BYOND.
+   */
+  IS_BYOND: boolean;
+
+  /**
+   * Version of Blink engine of WebView2. Null if N/A.
+   */
+  BLINK: number | null;
+
   /**
    * If `true`, unhandled errors and common mistakes result in a blue screen
    * of death, which stops this window from handling incoming messages and

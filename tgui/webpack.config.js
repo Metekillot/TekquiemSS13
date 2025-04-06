@@ -28,11 +28,11 @@ module.exports = (env = {}, argv) => {
   const config = {
     mode,
     context: path.resolve(__dirname),
-    target: ['web', 'es5', 'browserslist:ie 11'],
+    target: ['web', 'browserslist:edge >= 123'],
     entry: {
-      tgui: ['./packages/tgui-polyfill', './packages/tgui'],
-      'tgui-panel': ['./packages/tgui-polyfill', './packages/tgui-panel'],
-      'tgui-say': ['./packages/tgui-polyfill', './packages/tgui-say'],
+      tgui: './packages/tgui',
+      'tgui-panel': './packages/tgui-panel',
+      'tgui-say': './packages/tgui-say',
     },
     output: {
       path: argv.useTmpFolder
@@ -51,7 +51,7 @@ module.exports = (env = {}, argv) => {
       rules: [
         {
           test: /\.([tj]s(x)?|cjs)$/,
-          exclude: /node_modules[\\/]core-js/,
+          exclude: /node_modules/,
           use: [
             {
               loader: require.resolve('swc-loader'),
@@ -115,13 +115,10 @@ module.exports = (env = {}, argv) => {
     ],
   };
 
-  // Add a bundle analyzer to the plugins array
-  if (argv.analyze) {
-    const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-    config.plugins = [
-      ...config.plugins,
-      new BundleAnalyzerPlugin(),
-    ];
+  if (bench) {
+    config.entry = {
+      'tgui-bench': './packages/tgui-bench/entrypoint',
+    };
   }
 
   // Production build specific options
@@ -129,7 +126,6 @@ module.exports = (env = {}, argv) => {
     const { EsbuildPlugin } = require('esbuild-loader');
     config.optimization.minimizer = [
       new EsbuildPlugin({
-        target: 'ie11',
         css: true,
       }),
     ];
