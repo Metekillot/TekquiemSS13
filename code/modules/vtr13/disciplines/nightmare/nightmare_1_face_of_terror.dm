@@ -37,13 +37,8 @@
 
 /datum/discipline_power/vtr/nightmare/face_of_terror/activate(mob/living/carbon/human/target)
 	. = ..()
-	target.remove_overlay(MUTATIONS_LAYER)
-	var/mutable_appearance/dementation_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "dementation", -MUTATIONS_LAYER)
-	dementation_overlay.pixel_z = 1
-	
-	
-	target.overlays_standing[MUTATIONS_LAYER] = dementation_overlay
-	target.apply_overlay(MUTATIONS_LAYER)
+
+	apply_discipline_affliction_overlay(target, "dementation", 1)
 
 	target.Stun(1 SECONDS, TRUE)
 	target.Jitter(20)
@@ -53,4 +48,4 @@
 
 /datum/discipline_power/vtr/nightmare/face_of_terror/deactivate(mob/living/carbon/human/target)
 	. = ..()
-	target.remove_overlay(MUTATIONS_LAYER)
+	overlay_end(target)

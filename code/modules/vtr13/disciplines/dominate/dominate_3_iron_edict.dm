@@ -15,7 +15,6 @@
 	var/player_consent = "If you consent to the command below, your character will be compelled to obey it until they are injured or the command is complete. You decide how to interpret the command and when it is complete. Please only consent to this command if you are comfortable doing so and believe it would make for a more engaging roleplaying experience. If you do not consent to this command, it will appear as though it were a failed roll. You do not have to justify rejecting this command to anyone, including staff. Consenting to this command does not remove your ability to revoke consent later for any reason."
 	var/current_command
 	var/power_in_use = FALSE
-	var/overlay_time = 5 SECONDS
 	var/char_limit_multiplier = 50
 
 /datum/discipline_power/vtr/dominate/iron_edict/pre_activation_check_no_spend(atom/target)
@@ -62,7 +61,9 @@
 
 /datum/discipline_power/vtr/dominate/iron_edict/activate(mob/living/carbon/human/target)
 	. = ..()
-	playsound(target, 'code/modules/wod13/sounds/general_good.ogg', 100, FALSE)
+
+	
+	consent_ping(target)
 
 	var/the_command = current_command
 	current_command = null
@@ -74,16 +75,7 @@
 	log_admin("[target] was affected by Dominate [level] from [owner]. Command: '[the_command]'")
 
 	playsound(target, 'code/modules/wod13/sounds/dominate.ogg', 100, FALSE)
-	target.remove_overlay(MUTATIONS_LAYER)
-	var/mutable_appearance/dominate_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "dominate", -MUTATIONS_LAYER)
-	dominate_overlay.pixel_z = 2
-	target.overlays_standing[MUTATIONS_LAYER] = dominate_overlay
-	target.apply_overlay(MUTATIONS_LAYER)
+	
 	to_chat(target, span_userdanger("You are compelled to obey the following command: [the_command]"))
-	addtimer(CALLBACK(src, PROC_REF(overlay_end_early),target),overlay_time)
-
-
-/datum/discipline_power/vtr/dominate/iron_edict/proc/overlay_end_early(mob/living/carbon/human/target)
-	if(!target)
-		return
-	target.remove_overlay(MUTATIONS_LAYER)
+	
+	apply_discipline_affliction_overlay(target, "dominate", 2, 5 SECONDS)

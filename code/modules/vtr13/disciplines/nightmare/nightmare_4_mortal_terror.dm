@@ -39,15 +39,10 @@
 	
 	victims += target
 
-	var/mutable_appearance/dementation_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "dementation", -MUTATIONS_LAYER)
-	dementation_overlay.pixel_z = 1
-	target.overlays_standing[MUTATIONS_LAYER] = dementation_overlay
-	target.apply_overlay(MUTATIONS_LAYER)
+	apply_discipline_affliction_overlay(target, "dementation", 1, 5 SECONDS)
 
 	target.emote("scream")
 	target.Jitter(60)
-
-	addtimer(CALLBACK(src, PROC_REF(end_mutation_overlay), target), effect_time)
 
 	if(success_count >= 2)
 		ADD_TRAIT(target, TRAIT_DEAF, NIGHTMARE_5_TRAIT)
@@ -63,9 +58,6 @@
 
 	to_chat(target, span_userdanger("A horrifying, traumatic fear grips you. Elge write a better description im weak"))
 	target.adjustOrganLoss(ORGAN_SLOT_BRAIN, success_count * base_damage, 90)
-
-/datum/discipline_power/vtr/nightmare/mortal_terror/proc/end_mutation_overlay(mob/living/carbon/human/target)
-	target.remove_overlay(MUTATIONS_LAYER)
 
 /datum/discipline_power/vtr/nightmare/mortal_terror/proc/end_blindness(mob/living/carbon/human/target)
 	REMOVE_TRAIT(target, TRAIT_BLIND, NIGHTMARE_5_TRAIT)

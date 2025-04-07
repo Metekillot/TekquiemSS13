@@ -8,8 +8,7 @@
 
 /datum/discipline_power/vtr/majesty/awe/activate()
 	. = ..()
-	for(var/mob/living/target in oviewers(7,owner))
-		to_chat(target, "[owner] begins to look more magnificent, in whatever they are doing.")
+	for(var/mob/living/target in viewers(7,owner))
 		if(!SSroll.opposed_roll(
 			owner,
 			target,
@@ -18,14 +17,18 @@
 			alert_atom = target,
 			show_player_a = TRUE,
 			show_player_b = FALSE))
+			to_chat(target, "You resist the urge to stare at [owner]'s magnificence.")
 			continue
-		
+
+		to_chat(target, "[owner] begins to look more magnificent, it's hard to turn your eyes away.")
 		target.playsound_local(owner, activate_sound, 50, FALSE)
+		apply_discipline_affliction_overlay(target, "presence", 1, 5 SECONDS)
 
 		if(target.mind)
 			target.mind.AddComponent(/datum/component/enraptured, owner, src)
 		else
 			target.AddComponent(/datum/component/enraptured_npc, owner, src)
+
 
 /datum/discipline_power/vtr/majesty/awe/deactivate()
 	. = ..()

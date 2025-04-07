@@ -30,13 +30,7 @@
 
 /datum/discipline_power/vtr/nightmare/hysterical_blindness/activate(mob/living/carbon/human/target)
 	. = ..()
-	target.remove_overlay(MUTATIONS_LAYER)
-	var/mutable_appearance/dementation_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "dementation", -MUTATIONS_LAYER)
-	dementation_overlay.pixel_z = 1
-	
-	
-	target.overlays_standing[MUTATIONS_LAYER] = dementation_overlay
-	target.apply_overlay(MUTATIONS_LAYER)
+	apply_discipline_affliction_overlay(target, "dementation", 1)
 
 	ADD_TRAIT(target, TRAIT_BLIND, NIGHTMARE_3_TRAIT)
 	ADD_TRAIT(target, TRAIT_DEAF, NIGHTMARE_3_TRAIT)
@@ -47,8 +41,10 @@
 
 /datum/discipline_power/vtr/nightmare/hysterical_blindness/deactivate(mob/living/carbon/human/target)
 	. = ..()
+	overlay_end(target)
+
 	to_chat(target, span_warning("Your sight returns to you."))
-	target.remove_overlay(MUTATIONS_LAYER)
 	REMOVE_TRAIT(target, TRAIT_BLIND, NIGHTMARE_3_TRAIT)
 	REMOVE_TRAIT(target, TRAIT_DEAF, NIGHTMARE_3_TRAIT)
+
 	target.update_blindness()

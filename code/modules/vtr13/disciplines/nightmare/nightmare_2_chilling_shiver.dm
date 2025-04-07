@@ -29,12 +29,7 @@
 /datum/discipline_power/vtr/nightmare/phantom_trauma/activate(mob/living/carbon/human/target)
 	. = ..()
 
-	target.remove_overlay(MUTATIONS_LAYER)
-	var/mutable_appearance/dementation_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "dementation", -MUTATIONS_LAYER)
-	dementation_overlay.pixel_z = 1
-
-	target.overlays_standing[MUTATIONS_LAYER] = dementation_overlay
-	target.apply_overlay(MUTATIONS_LAYER)
+	apply_discipline_affliction_overlay(target, "dementation", 1)
 
 	target.Jitter(15)
 	ADD_TRAIT(target, TRAIT_NO_QUICK_EQUIP, NIGHTMARE_2_TRAIT)
@@ -49,7 +44,7 @@
 
 /datum/discipline_power/vtr/nightmare/phantom_trauma/deactivate(mob/living/carbon/human/target)
 	. = ..()
-	target.remove_overlay(MUTATIONS_LAYER)
+	overlay_end(target)
 
 	REMOVE_TRAIT(target, TRAIT_NO_QUICK_EQUIP, NIGHTMARE_2_TRAIT)
 	to_chat(target, span_warning("You regain control of your senses."))

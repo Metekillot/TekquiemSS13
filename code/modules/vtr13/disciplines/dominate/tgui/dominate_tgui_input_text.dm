@@ -15,7 +15,7 @@
  * * multiline -  Bool that determines if the input box is much larger. Good for large messages, laws, etc.
  * * encode - Toggling this determines if input is filtered via html_encode. Setting this to FALSE gives raw input.
  */
-/proc/dominate_tgui_input_text(mob/user, guidelines = "", message = "", title = "Text Input", default, max_length = MAX_MESSAGE_LEN, multiline = FALSE, encode = TRUE, word_count = 0)
+/datum/discipline_power/vtr/proc/dominate_tgui_input_text(mob/user, guidelines = "", message = "", title = "Text Input", default, max_length = MAX_MESSAGE_LEN, multiline = FALSE, encode = TRUE, word_count = 0)
 	if (!user)
 		user = usr
 	if (!istype(user))

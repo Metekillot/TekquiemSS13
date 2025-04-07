@@ -40,14 +40,7 @@
 	if(!target.mind)
 		return
 	
-	target.remove_overlay(MUTATIONS_LAYER)
-	var/mutable_appearance/dementation_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "dementation", -MUTATIONS_LAYER)
-	dementation_overlay.pixel_z = 1
-	
-	
-	target.overlays_standing[MUTATIONS_LAYER] = dementation_overlay
-	target.apply_overlay(MUTATIONS_LAYER)
-	addtimer(CALLBACK(src, PROC_REF(overlay_end_early),target),overlay_time)
+	apply_discipline_affliction_overlay(target, "dementation", 1, 5 SECONDS)
 	target.emote("scream")
 	target.Jitter(60)
 	if(!target.mind)
@@ -64,10 +57,11 @@
 	to_chat(target, span_userdanger("The world has gone mad!"))
 	target.playsound_local(get_turf(target), 'sound/magic/ethereal_enter.ogg', 100, FALSE)
 
-/datum/discipline_power/vtr/nightmare/waking_nightmare/proc/overlay_end_early(mob/living/carbon/human/target)
-	if(!target)
+/datum/discipline_power/vtr/nightmare/waking_nightmare/overlay_end(mob/living/carbon/human/target)
+	. = ..()
+	if(!.)
 		return
-	target.remove_overlay(MUTATIONS_LAYER)
+
 	SEND_SOUND(target, sound('code/modules/wod13/sounds/nosferatu.ogg'))
 
 
