@@ -86,9 +86,6 @@
 	//Adds the component only once. We do it here & not in Initialize() because there are tons of windows & we don't want to add to their init times
 	LoadComponent(/datum/component/leanable, dropping)
 
-/obj/structure/vampdoor/proc/proc_unlock(method) //I am here so that dwelling doors can call me to properly process their alarms.
-	return
-
 /obj/structure/vampdoor/attack_hand(mob/user)
 	. = ..()
 	var/mob/living/N = user
@@ -133,7 +130,6 @@
 	if(istype(W, /obj/item/vamp/keys/hack))
 		if(locked)
 			hacking = TRUE
-			proc_unlock(5)
 			playsound(src, 'code/modules/wod13/sounds/hack.ogg', 100, TRUE)
 			for(var/mob/living/carbon/human/npc/police/P in oviewers(7, src))
 				if(P)
@@ -180,7 +176,6 @@
 					else
 						playsound(src, lock_sound, 75, TRUE)
 						to_chat(user, "[src] is now unlocked.")
-						proc_unlock("key")
 						locked = FALSE
 
 /obj/structure/vampdoor/proc/door_return_initial_state()

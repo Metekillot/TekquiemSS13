@@ -521,23 +521,6 @@
 		for(var/i=0, i<len, ++i)
 			L.Swap(fromIndex++, toIndex++)
 
-//replaces reverseList ~Carnie
-/proc/reverseRange(list/L, start=1, end=0)
-	if(L.len)
-		start = start % L.len
-		end = end % (L.len+1)
-		if(start <= 0)
-			start += L.len
-		if(end <= 0)
-			end += L.len + 1
-
-		--end
-		while(start < end)
-			L.Swap(start++,end--)
-
-	return L
-
-
 //return first thing in L which has var/varname == value
 //this is typecaste as list/L, but you could actually feed it an atom instead.
 //completely safe to use

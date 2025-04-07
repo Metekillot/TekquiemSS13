@@ -640,8 +640,6 @@
 	var/open = TRUE
 	/// if it can be seen through when closed
 	var/opaque_closed = FALSE
-	//Checks if the user is in the same area before toggling, for 'interior' curtains wihtout graphic bugs.
-	var/check_area = FALSE
 
 /obj/structure/curtain/proc/toggle()
 	open = !open
@@ -691,8 +689,6 @@
 	. = ..()
 	if(.)
 		return
-	if(check_area == TRUE)
-		if(get_area(user) != get_area(src)) return
 	playsound(loc, 'sound/effects/curtain.ogg', 50, TRUE)
 	toggle()
 

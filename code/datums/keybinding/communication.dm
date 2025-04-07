@@ -28,7 +28,7 @@
 	return TRUE
 
 /datum/keybinding/client/communication/ooc
-	hotkey_keys = list("P")
+	hotkey_keys = list("O")
 	name = OOC_CHANNEL
 	full_name = "Out Of Character Say (OOC)"
 	keybind_signal = COMSIG_KB_CLIENT_OOC_DOWN
@@ -55,7 +55,7 @@
 
 // TFN EDIT START
 /datum/keybinding/client/communication/looc
-	hotkey_keys = list("O")
+	hotkey_keys = list("L")
 	name = LOOC_CHANNEL
 	full_name = "Local OOC (LOOC)"
 	keybind_signal = COMSIG_KB_CLIENT_LOOC_DOWN

@@ -45,16 +45,87 @@
 	)
 	/// List with a fake-networks(not a fax actually), for request manager.
 	var/list/special_networks = list(
-		list(fax_name = "Central Command", fax_id = "central_command", color = "teal", emag_needed = FALSE),
-		list(fax_name = "Sabotage Department", fax_id = "syndicate", color = "red", emag_needed = TRUE),
+		list(fax_name = "High Council", fax_id = "camarillaadmin", color = "teal", emag_needed = FALSE),
+		list(fax_name = "Free State Movement", fax_id = "anarchsadmin", color = "red", emag_needed = FALSE),
+		list(fax_name = "Federal Government", fax_id = "policeadmin", color = "blue", emag_needed = FALSE),
+		list(fax_name = "Pentex Corporate", fax_id = "endronadmin", color = "green", emag_needed = FALSE),
+		list(fax_name = "Element Relay", fax_id = "aasimitesadmin", color = "purple", emag_needed = FALSE),
+		list(fax_name = "Nightwolf Corporate", fax_id = "glasswalkeradmin", color = "grey", emag_needed = FALSE),
 	)
+
+/obj/machinery/fax/admin
+	fax_name = "Admin Fax Machine"
+	fax_id = "admin"
+	visible_to_network = FALSE
+
+/obj/machinery/fax/admin/camarilla
+	fax_name = "High Council"
+	fax_id = "camarillaadmin"
+
+/obj/machinery/fax/admin/anarch
+	fax_name = "Free State Movement"
+	fax_id = "anarchsadmin"
+
+/obj/machinery/fax/admin/police
+	fax_name = "Federal Government"
+	fax_id = "policeadmin"
+
+/obj/machinery/fax/admin/endron
+	fax_name = "Pentex Corporate"
+	fax_id = "endronadmin"
+
+/obj/machinery/fax/admin/aasimites
+	fax_name = "Element Relay"
+	fax_id = "aasimitesadmin"
+
+//The tremere dont get a fax machine because of what happened in Vienna
+
+/obj/machinery/fax/admin/glasswalker
+	fax_name = "Nightwolf Corporate"
+	fax_id = "glasswalkeradmin"
+
+/////////////////////////////////////////////
+
+/obj/machinery/fax/camarilla
+	fax_name = "Millenium Tower"
+	fax_id = "camarilla"
+	special_networks = list(list(fax_name = "High Council", fax_id = "camarillaadmin", color = "teal", emag_needed = FALSE))
+
+/obj/machinery/fax/anarch
+	fax_name = "Anarchy Rose Bar"
+	fax_id = "anarchs"
+	special_networks = list(list(fax_name = "Free State Movement", fax_id = "anarchsadmin", color = "red", emag_needed = FALSE))
+
+/obj/machinery/fax/police
+	fax_name = "San Francisco Police Department"
+	fax_id = "police"
+	special_networks = list(list(fax_name = "Federal Government", fax_id = "policeadmin", color = "blue", emag_needed = FALSE))
+
+/obj/machinery/fax/endron
+	fax_name = "Endron International HQ"
+	fax_id = "endron"
+	special_networks = list(list(fax_name = "Pentex Corporate", fax_id = "endronadmin", color = "green", emag_needed = FALSE))
+
+/obj/machinery/fax/aasimites
+	fax_name = "Chubby Lion Coffee Shop"
+	fax_id = "aasimites"
+	special_networks = list(list(fax_name = "Element Relay", fax_id = "aasimitesadmin", color = "purple", emag_needed = FALSE))
+
+/obj/machinery/fax/tremere
+	fax_name = "Library"
+	fax_id = "library"
+	special_networks = list()
+
+/obj/machinery/fax/glasswalker
+	fax_name = "Nightwolf Tech Shop"
+	fax_id = "glasswalkers"
+	special_networks = list(list(fax_name = "Nightwolf Corporate", fax_id = "glasswalkeradmin", color = "grey", emag_needed = FALSE))
 
 /obj/machinery/fax/Initialize(mapload)
 	. = ..()
-	if (!fax_id)
-		fax_id = SSnetworks.assign_random_name()
-	if (!fax_name)
-		fax_name = "Unregistered fax " + fax_id
+	if(!fax_name)
+		fax_name = "ERROR: REPORT TO CODERBUS"
+	name = "[fax_name] Fax Machine"
 	wires = new /datum/wires/fax(src)
 
 /obj/machinery/fax/Destroy()
@@ -320,7 +391,7 @@
 			return FALSE
 		FAX.receive(loaded, fax_name)
 		history_add("Send", FAX.fax_name)
-		INVOKE_ASYNC(src, .proc/animate_object_travel, loaded, "fax_receive", find_overlay_state(loaded, "send"))
+		INVOKE_ASYNC(src, PROC_REF(animate_object_travel), loaded, "fax_receive", find_overlay_state(loaded, "send"))
 		playsound(src, 'sound/machines/high_tech_confirm.ogg', 50, FALSE)
 		return TRUE
 	return FALSE
@@ -335,10 +406,10 @@
  */
 /obj/machinery/fax/proc/receive(obj/item/loaded, sender_name)
 	playsound(src, 'sound/machines/printer.ogg', 50, FALSE)
-	INVOKE_ASYNC(src, .proc/animate_object_travel, loaded, "fax_receive", find_overlay_state(loaded, "receive"))
-	say("Received correspondence from [sender_name].")
+	INVOKE_ASYNC(src, PROC_REF(animate_object_travel), loaded, "fax_receive", find_overlay_state(loaded, "receive"))
+	say("Received correspondence.")
 	history_add("Receive", sender_name)
-	addtimer(CALLBACK(src, .proc/vend_item, loaded), 1.9 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(vend_item), loaded), 1.9 SECONDS)
 
 /**
  * Procedure for animating an object entering or leaving the fax machine.
@@ -351,7 +422,7 @@
 	icon_state = animation_state
 	var/mutable_appearance/overlay = mutable_appearance(icon, overlay_state)
 	overlays += overlay
-	addtimer(CALLBACK(src, .proc/travel_animation_complete, overlay), 2 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(travel_animation_complete), overlay), 2 SECONDS)
 
 /**
  * Called when the travel animation should end. Reset animation and overlay states.
