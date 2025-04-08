@@ -2,6 +2,10 @@
 #define COMSIG_LIVING_DIR_CHANGE "living_dir_change"
 	#define COMPONENT_LIVING_DIR_CHANGE_BLOCK (1<<0)
 
+
+#define COMSIG_HUMAN_EXAMINE_OVERRIDE "human_examine_override"
+	#define COMPONENT_EXAMINE_CHANGE_RESPONSE (1<<0)
+
 ///called in /datum/mind/proc/transfer_to (brain, new_mob)
 #define COMSIG_MIND_TRANSFERRED "mind_transferred"
 

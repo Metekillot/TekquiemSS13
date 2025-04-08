@@ -16,7 +16,6 @@
 	return TRUE
 
 /datum/component/base_memory/UnregisterFromParent()
-
 	memory_button.Remove(owner)
 	
 

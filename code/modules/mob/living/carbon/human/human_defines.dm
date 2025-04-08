@@ -142,6 +142,5 @@
 
 
 	//VTR EDIT BEGIN
-	var/disguise_description = null
-	var/using_auspex = FALSE
+	var/datum/examine_panel_fake/examine_panel_fake = new()
 	//VTR EDIT END

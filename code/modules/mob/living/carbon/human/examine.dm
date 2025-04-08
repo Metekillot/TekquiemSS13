@@ -1,3 +1,4 @@
+/* rewritten in VTR files
 /mob/living/carbon/human/examine(mob/user, for_disguise = FALSE)
 
 	//VTR EDIT BEGIN
@@ -570,4 +571,4 @@
 			dat += "[new_text]\n" //dat.Join("\n") doesn't work here, for some reason
 	if(dat.len)
 		return dat.Join()
-
+*/

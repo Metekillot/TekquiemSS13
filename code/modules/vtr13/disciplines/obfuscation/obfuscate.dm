@@ -25,7 +25,6 @@
 		COMSIG_PROJECTILE_PREHIT
 	)
 
-
 /datum/discipline_power/vtr/obfuscate/proc/get_obfuscate_level()
 	switch(discipline.level)
 		if(2)

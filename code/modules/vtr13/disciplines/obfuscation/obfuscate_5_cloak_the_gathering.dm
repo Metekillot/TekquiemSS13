@@ -43,7 +43,6 @@
 	. = ..()
 	RegisterSignal(target, aggressive_signals, PROC_REF(gathering_on_combat_signal), override = TRUE)
 	RegisterSignal(target, COMSIG_MOVABLE_MOVED, PROC_REF(handle_move))
-	RegisterSignal(owner, COMSIG_POWER_TRY_ACTIVATE, PROC_REF(prevent_other_powers))
 
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
 		if (NPC.danger_source == target)

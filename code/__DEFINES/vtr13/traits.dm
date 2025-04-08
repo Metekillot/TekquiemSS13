@@ -1,4 +1,6 @@
 //Discipline Trait sources
+#define AUSPEX_1_TRAIT "protean_1"
+
 #define PROTEAN_1_TRAIT "protean_1"
 #define PROTEAN_2_TRAIT "protean_2"
 #define PROTEAN_3_TRAIT "protean_3"
@@ -20,6 +22,8 @@
 #define MAJESTY_2_TRAIT "majesty_2_trait"
 
 //Discipline related traits
+#define TRAIT_USING_AUSPEX "using_auspex"
+
 #define TRAIT_EYES_VIOLATING_MASQUERADE "eyes_violating_masquerade"
 #define TRAIT_GECKO_GRIP "gecko_grip"
 #define TRAIT_QUICK_JUMP "quick_jump"
