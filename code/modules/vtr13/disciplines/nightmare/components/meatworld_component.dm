@@ -5,7 +5,7 @@
 	var/list/tracked_meat = list()
 	var/client/ourclient
 
-/datum/component/meatworld_component/Initialize()
+/datum/component/meatworld_component/Initialize(datum/source)
 	if(!isliving(parent))
 		return COMPONENT_INCOMPATIBLE
 	var/mob/living/parent_living = parent
@@ -15,7 +15,7 @@
 	
 	RegisterSignal(parent_living, COMSIG_MOVABLE_MOVED, PROC_REF(update_meatworld))
 	RegisterSignal(parent_living, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(stop_abilities))
-	RegisterSignal(parent_living, COMSIG_MEATWORLD_REMOVE_COMPONENT, PROC_REF(destroy_meatworld))
+	RegisterSignal(source, COMSIG_POWER_DEACTIVATE, PROC_REF(destroy_meatworld))
 	
 	update_meatworld(parent_living)
 

@@ -14,8 +14,6 @@
 	var/overlay_time = 5 SECONDS
 	var/hallucination_refresh = 10 SECONDS
 
-	var/datum/component/meatworld_component/tracked_meatworld
-
 /datum/discipline_power/vtr/nightmare/waking_nightmare/pre_activation_checks(mob/living/target)
 	if(HAS_TRAIT(target, TRAIT_ATTENDING_CARNIVAL))
 		to_chat(owner, span_warning("You have already sent [target] to the Carnival!"))
@@ -50,7 +48,7 @@
 	
 	mounting_hallucinations(target)
 
-	tracked_meatworld = target.AddComponent(/datum/component/meatworld_component)
+	target.AddComponent(/datum/component/meatworld_component, src)
 	target.AddElement(/datum/element/ui_button_shake_inventory_group, 1)
 	target.AddElement(/datum/element/ui_button_shake_wide_button_group, 1)
 	
@@ -81,7 +79,6 @@
 	
 	REMOVE_TRAIT(target, TRAIT_ATTENDING_CARNIVAL, NIGHTMARE_4_TRAIT)
 	to_chat(target, span_warning("At long last, the horrors begin to fade."))
-	SEND_SIGNAL(target, COMSIG_MEATWORLD_REMOVE_COMPONENT)
 	target.RemoveElement(/datum/element/ui_button_shake_inventory_group)
 	target.RemoveElement(/datum/element/ui_button_shake_wide_button_group)
 	target.remove_client_colour(/datum/client_colour/glass_colour/darkred)

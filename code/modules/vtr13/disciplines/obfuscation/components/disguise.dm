@@ -38,22 +38,29 @@
 	var/image/obfuscate_image = image('icons/effects/effects.dmi', parent_human, "nothing", ABOVE_MOB_LAYER)
 	obfuscate_image.appearance = new /mutable_appearance(disguise_mob)
 	obfuscate_image.override = 1
-	parent_human.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/everyone, "obfuscate", obfuscate_image)
+	parent_human.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic, "obfuscate", obfuscate_image)
 	parent_human.update_body()
 	
 	handle_examine_cache(disguise_mob)
 	
 
 
-/datum/component/disguise/proc/remove_disguise(datum/source)
+/datum/component/disguise/proc/remove_disguise()
 	SIGNAL_HANDLER
+	Destroy()
+
+/datum/component/disguise/Destroy()
+	if(!parent)
+		return
+
 	UnregisterSignal(parent, COMSIG_HUMAN_EXAMINE_OVERRIDE)
 	UnregisterSignal(source_power, COMSIG_POWER_DEACTIVATE)
 	var/mob/living/carbon/human/parent_human = parent
-	parent_human.remove_alt_appearance("obfuscate")
+	if(parent_human.alternate_appearances)
+		parent_human.remove_alt_appearance("obfuscate")
 	parent_human.real_name = original_name
 	parent_human.update_body()
-	Destroy()
+	. = ..()
 
 /datum/component/disguise/proc/handle_examine_cache()
 	if(!ishuman(disguise_mob))
