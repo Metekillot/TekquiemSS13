@@ -20,6 +20,7 @@
 
 #define MAJESTY_1_TRAIT "majesty_1_trait"
 #define MAJESTY_2_TRAIT "majesty_2_trait"
+#define MAJESTY_5_TRAIT "majesty_2_trait"
 
 //Discipline related traits
 #define TRAIT_USING_AUSPEX "using_auspex"
