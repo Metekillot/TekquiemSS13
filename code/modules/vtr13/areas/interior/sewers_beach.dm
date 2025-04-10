@@ -1,6 +1,6 @@
 /area/vtm/vtr/masquerade/interior/southeast/sewers_beach
 	name = "Beach Sewers"
-	icon_state = "sewers"
+	icon_state = "sewer"
 	ambience_index = AMBIENCE_SEWER
 	music = /datum/vampiremusic/sewer
 
