@@ -7,3 +7,9 @@
 #define AREA_SECTOR_PARK "Park"
 #define AREA_SECTOR_RESERVE "Nature Reserve"
 #define AREA_SECTOR_RIVER "LA River"
+
+
+#define AREA_LEVEL_BASEMENT 1
+#define AREA_LEVEL_GROUND_FLOOR 2
+#define AREA_LEVEL_FLOOR_TWO 3
+#define AREA_LEVEL_FLOOR_THREE 4

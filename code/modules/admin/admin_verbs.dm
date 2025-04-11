@@ -19,6 +19,12 @@ GLOBAL_PROTECT(admin_verbs_default)
 	/client/proc/stop_sounds,
 	/client/proc/mark_datum_mapview,
 	/client/proc/debugstatpanel,
+	#ifdef AREA_GROUPER_DEBUGGING
+	/client/proc/grouper_set_start,
+	/client/proc/grouper_set_end,
+	/client/proc/report_location,
+	/client/proc/grouper_get_path,
+	#endif
 	/client/proc/fix_air				/*resets air in designated radius to its default atmos composition*/
 	)
 GLOBAL_LIST_INIT(admin_verbs_admin, world.AVerbsAdmin())
@@ -1082,3 +1088,35 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	set category = "Debug"
 
 	src.stat_panel.send_message("create_debug")
+
+#ifdef  AREA_GROUPER_DEBUGGING
+/client/proc/grouper_set_start()
+	set category = "Debug"
+	set name = "ZZ Set pathfinder start"
+	set desc = "Set pathfinder start."
+	SSarea_grouper.start_preset = get_turf(usr)
+
+/client/proc/grouper_set_end()
+	set category = "Debug"
+	set name = "ZZ Set pathfinder end"
+	set desc = "Set pathfinder end."
+	SSarea_grouper.end_preset = get_turf(usr)
+
+/client/proc/report_location()
+	set category = "Debug"
+	set name = "ZZ Output Location"
+	set desc = "Output your current location."
+	var/turf/our_turf = get_turf(usr)
+	to_chat(usr, "Your location: [our_turf]([our_turf.x], [our_turf.y], [our_turf.z])")
+
+/client/proc/grouper_get_path()
+	set category = "Debug"
+	set name = "ZZ Get Area Group Path"
+	set desc = "Get the path to where you want to go."
+	var/list/turf_list = SSarea_grouper.get_path_debug()
+	if(!turf_list)
+		return
+	to_chat(usr, "In order to get from [SSarea_grouper.start_preset.loc] at [SSarea_grouper.start_preset]([SSarea_grouper.start_preset.x], [SSarea_grouper.start_preset.y], [SSarea_grouper.start_preset.z]) to [SSarea_grouper.end_preset.loc] at [SSarea_grouper.end_preset]([SSarea_grouper.end_preset.x], [SSarea_grouper.end_preset.y], [SSarea_grouper.end_preset.z]) I must go to the following points:")
+	for(var/turf/go_turf in turf_list)
+		to_chat(usr, "I need to go to the [go_turf]([go_turf.x], [go_turf.y], [go_turf.z]) in [go_turf.loc]")
+#endif

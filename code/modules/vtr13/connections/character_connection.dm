@@ -9,9 +9,8 @@
 	var/round_id_established
 	var/date_established
 	var/date_ended
-	var/hidden
 
-/datum/character_connection/New(id, group_id, group_type, member_type, player_ckey, character_name, connection_desc, round_id_established, date_established, date_ended, hidden = 0)
+/datum/character_connection/New(id, group_id, group_type, member_type, player_ckey, character_name, connection_desc, round_id_established, date_established, date_ended)
 	src.id = id
 	src.group_id = group_id
 	src.group_type = group_type
@@ -22,4 +21,3 @@
 	src.round_id_established = round_id_established
 	src.date_established = date_established
 	src.date_ended = date_ended
-	src.hidden = hidden

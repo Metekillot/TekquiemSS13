@@ -1,4 +1,4 @@
-/area/vtm/vtr/masquerade/interior/central/library_basement
+/area/vtm/vtr/masquerade/interior/basement/central/library_basement
 	name = "Library Basement"
 	icon_state = "anarch"
 	music = /datum/vampiremusic/penumbra
