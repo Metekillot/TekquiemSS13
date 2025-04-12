@@ -55,7 +55,7 @@
 	var/number_of_lamps
 	pixel_w = -32
 	anchored = TRUE
-	density = FALSE
+	density = TRUE
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF | FREEZE_PROOF
 
 /obj/effect/decal/lamplight
@@ -1559,9 +1559,6 @@
 						user.visible_message("<span class='warning'>[user] digs a hole in [src].</span>", "<span class='warning'>You dig a hole in [src].</span>")
 						if(dead_amongst)
 							call_dharma("respect", user)
-					if(!dead_amongst)
-						user.visible_message("<span class='warning'>[user] refills [src].</span>", "<span class='warning'>You refill [src].</span>")
-						qdel(src)
 				else
 					var/dead_amongst = FALSE
 					for(var/mob/living/L in src)

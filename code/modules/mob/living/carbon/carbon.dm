@@ -241,16 +241,33 @@
 		adjusted_target = locate(loc.x + round(dx * scale), loc.y + round(dy * scale), loc.z)
 	playsound(loc, 'code/modules/wod13/sounds/jump_neutral.ogg', 50, TRUE)
 
-	SEND_SIGNAL(src, COMSIG_MOB_LIVING_JUMP, adjusted_target, distance)
+	var/atom/movable/thrown_thing = src
 
-	var/turf/start_T = get_turf(loc) //Get the start and target tile for the descriptors
-	var/turf/end_T = get_turf(adjusted_target)
-	if(start_T && end_T)
-		log_combat(src, adjusted_target, "jumped", addition="from tile in [AREACOORD(start_T)] towards tile at [AREACOORD(end_T)]")
-	newtonian_move(get_dir(adjusted_target, src))
-	src.safe_throw_at(adjusted_target, src.throw_range, src.throw_speed, src, null, null, null, move_force, spin = FALSE)
-	visible_message("<span class='danger'>[src] jumps towards [adjusted_target].</span>")
-	last_jump_time = current_time
+	if(thrown_thing)
+		var/turf/start_T = get_turf(loc) //Get the start and target tile for the descriptors
+		var/turf/end_T = get_turf(target)
+		if(start_T && end_T)
+			log_combat(src, thrown_thing, "jumped", addition="from tile in [AREACOORD(start_T)] towards tile at [AREACOORD(end_T)]")
+		var/power_throw = 0
+		//Move the player towards the target
+
+		newtonian_move(get_dir(adjusted_target, src))
+		thrown_thing.safe_throw_at(adjusted_target, thrown_thing.throw_range, thrown_thing.throw_speed + power_throw, src, null, null, null, move_force, spin = FALSE)
+		visible_message("<span class='danger'>[src] jumps towards [adjusted_target].</span>")
+
+
+
+		var/travel_time = distance * 0.5
+		spawn(travel_time)
+			if(get_dist(loc, adjusted_target) <= 1 && H.potential > 0)
+				H.epic_fall(FALSE, FALSE)
+
+
+//		newtonian_move(get_dir(target, src))
+//		thrown_thing.safe_throw_at(target, thrown_thing.throw_range, thrown_thing.throw_speed + power_throw, src, null, null, null, move_force)
+//		visible_message("<span class='danger'>[src] jumps towards [target].</span>")
+
+		last_jump_time = current_time
 
 /mob/living/carbon/proc/canBeHandcuffed()
 	return FALSE
@@ -269,7 +286,7 @@
 	dat += "<tr><td>&nbsp;</td></tr>"
 
 	dat += "<tr><td><B>Back:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_BACK]'>[(back && !(back.item_flags & ABSTRACT)) ? back : "<font color=grey>Empty</font>"]</A>"
-	if(has_breathable_mask && istype(back, /obj/item/tank))
+	if(has_breathable_mask && istype(back, /obj/item))
 		dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_BACK]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 
 	dat += "</td></tr><tr><td>&nbsp;</td></tr>"
@@ -302,7 +319,7 @@
 	if(href_list["internal"] && usr.canUseTopic(src, BE_CLOSE, NO_DEXTERITY))
 		var/slot = text2num(href_list["internal"])
 		var/obj/item/ITEM = get_item_by_slot(slot)
-		if(ITEM && istype(ITEM, /obj/item/tank) && wear_mask && (wear_mask.clothing_flags & MASKINTERNALS))
+		if(ITEM && istype(ITEM, /obj/item) && wear_mask && (wear_mask.clothing_flags & MASKINTERNALS))
 			visible_message("<span class='danger'>[usr] tries to [internal ? "close" : "open"] the valve on [src]'s [ITEM.name].</span>", \
 							"<span class='userdanger'>[usr] tries to [internal ? "close" : "open"] the valve on your [ITEM.name].</span>", null, null, usr)
 			to_chat(usr, "<span class='notice'>You try to [internal ? "close" : "open"] the valve on [src]'s [ITEM.name]...</span>")
@@ -310,7 +327,7 @@
 				if(internal)
 					internal = null
 					update_internals_hud_icon(0)
-				else if(ITEM && istype(ITEM, /obj/item/tank))
+				else if(ITEM && istype(ITEM, /obj/item))
 					if((wear_mask && (wear_mask.clothing_flags & MASKINTERNALS)) || getorganslot(ORGAN_SLOT_BREATHING_TUBE))
 						internal = ITEM
 						update_internals_hud_icon(1)
@@ -331,8 +348,7 @@
 
 /mob/living/carbon/on_fall()
 	. = ..()
-	if(loc)
-		loc.handle_fall(src)//it's loc so it doesn't call the mob's handle_fall which does nothing
+	loc.handle_fall(src)//it's loc so it doesn't call the mob's handle_fall which does nothing
 
 /mob/living/carbon/is_muzzled()
 	return(istype(src.wear_mask, /obj/item/clothing/mask/muzzle))

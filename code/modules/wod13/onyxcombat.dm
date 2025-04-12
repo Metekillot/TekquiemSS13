@@ -377,7 +377,7 @@
 						if(HV.stakeimmune)
 							to_chat(BD, "<span class='warning'>There is no <b>HEART</b> in this creature.</span>")
 							return
-					BD.drinksomeblood(LV, TRUE)
+					BD.drinksomeblood(LV)
 
 /atom/movable/screen/bloodpower
 	name = "Bloodpower"
@@ -637,7 +637,7 @@
 	. = ..()
 	update_blood_hud()
 	update_rage_hud()
-	//update_auspex_hud_vtr()
+	update_auspex_hud()
 
 /mob/living/carbon/human/Life()
 	if(!iskindred(src) && !iscathayan(src))
@@ -648,7 +648,7 @@
 	update_rage_hud()
 	update_shadow()
 	handle_vampire_music()
-	//update_auspex_hud_vtr()
+	update_auspex_hud()
 	if(warrant)
 		last_nonraid = world.time
 		if(key)

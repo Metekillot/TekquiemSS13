@@ -387,7 +387,7 @@ SUBSYSTEM_DEF(ticker)
 		var/mob/dead/new_player/N = i
 		var/mob/living/carbon/human/player = N.new_character
 		if(istype(player) && player.mind && player.mind.assigned_role)
-			if(player.mind.assigned_role == "Prince")
+			if(player.mind.assigned_role == "Captain")
 				captainless=0
 			if(player.mind.assigned_role != player.mind.special_role)
 				SSjob.EquipRank(N, player.mind.assigned_role, 0)
@@ -398,7 +398,7 @@ SUBSYSTEM_DEF(ticker)
 		for(var/i in GLOB.new_player_list)
 			var/mob/dead/new_player/N = i
 			if(N.new_character)
-				to_chat(N, "<span class='notice'>The Prince is not currently present.</span>")
+				to_chat(N, "<span class='notice'>Captainship not forced on anyone.</span>")
 			CHECK_TICK
 
 /datum/controller/subsystem/ticker/proc/transfer_characters()

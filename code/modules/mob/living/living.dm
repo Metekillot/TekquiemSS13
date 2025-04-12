@@ -384,9 +384,6 @@
 	if(!..())
 		return FALSE
 	visible_message("<span class='name'>[src]</span> points at [A].", "<span class='notice'>You point at [A].</span>")
-
-	SEND_SIGNAL(A, COMSIG_MOB_LIVING_POINTED, src)
-
 	return TRUE
 
 /mob/living/verb/succumb(whispered as null)
@@ -1634,7 +1631,7 @@
 
 ///Checks if the user is incapacitated or on cooldown.
 /mob/living/proc/can_look_up()
-	return !(incapacitated(ignore_restraints = TRUE) || HAS_TRAIT(src, TRAIT_ENRAPTURED))
+	return !(incapacitated(ignore_restraints = TRUE))
 
 /**
  * look_up Changes the perspective of the mob to any openspace turf above the mob
@@ -2006,6 +2003,9 @@
 	return dexterity + additional_dexterity
 
 /mob/living/proc/get_total_social()
+	if(iscathayan(src))
+		if(mind?.dharma?.animated == "Yin")
+			return max(0, social + additional_social - 2)
 	return social + additional_social
 
 /mob/living/proc/get_total_mentality()

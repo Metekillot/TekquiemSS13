@@ -76,11 +76,7 @@
 /datum/config_entry/flag/log_attack	// log attack messages
 
 /datum/config_entry/flag/log_emote	// log emotes
-// TFN EDIT ADDITION START
-/datum/config_entry/flag/log_subtle  // TFN EDIT: log subtle emotes
 
-/datum/config_entry/flag/log_subtler  // TFN EDIT: log subtler emotes
-// TFN EDIT ADDITION END
 /datum/config_entry/flag/log_econ	// log economy actions
 
 /datum/config_entry/flag/log_adminchat	// log admin chat messages
@@ -216,13 +212,13 @@
 	config_entry_value = ""
 
 /datum/config_entry/string/discordurl
-	config_entry_value = "https://discord.gg/KCGR6Xfhdb"
+	config_entry_value = "https://discord.com/invite/WU92NG2Me8"
 
 /datum/config_entry/string/rulesurl
 	config_entry_value = ""
 
 /datum/config_entry/string/githuburl
-	config_entry_value = "https://github.com/RequiemSS13/RequiemSS13"
+	config_entry_value = "https://github.com/WorldOfDarknessXIII/World-of-Darkness-13"
 /datum/config_entry/string/discordbotcommandprefix
 	config_entry_value = "?"
 

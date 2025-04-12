@@ -48,16 +48,6 @@ const dependencies = fs.readFileSync('dependencies.sh', 'utf8')
     return acc
   }, {})
 
-// Canonical path for the cutter exe at this moment
-const getCutterPath = () => {
-  const ver = dependencies.CUTTER_VERSION;
-  const suffix = process.platform === 'win32' ? '.exe' : '';
-  const file_ver = ver.split('.').join('-');
-  return `tools/icon_cutter/cache/hypnagogic${file_ver}${suffix}`;
-};
-
-const cutter_path = getCutterPath();
-
 export const DefineParameter = new Juke.Parameter({
   type: 'string[]',
   alias: 'D',
@@ -79,11 +69,6 @@ export const ForceRecutParameter = new Juke.Parameter({
   name: "force-recut",
 });
 
-export const SkipIconCutter = new Juke.Parameter({
-  type: 'boolean',
-  name: "skip-icon-cutter",
-});
-
 export const WarningParameter = new Juke.Parameter({
   type: 'string[]',
   alias: 'W',
@@ -92,26 +77,6 @@ export const WarningParameter = new Juke.Parameter({
 export const NoWarningParameter = new Juke.Parameter({
   type: 'string[]',
   alias: 'I',
-});
-
-export const CutterTarget = new Juke.Target({
-  onlyWhen: () => {
-    const files = Juke.glob(cutter_path);
-    return files.length == 0;
-  },
-  executes: async () => {
-    const repo = dependencies.CUTTER_REPO;
-    const ver = dependencies.CUTTER_VERSION;
-    const suffix = process.platform === 'win32' ? '.exe' : '';
-    const download_from = `https://github.com/${repo}/releases/download/${ver}/hypnagogic${suffix}`
-    await download_file(download_from, cutter_path);
-    if(process.platform !== 'win32') {
-      await Juke.exec("chmod", [
-        '+x',
-        cutter_path,
-      ]);
-    }
-  },
 });
 
 async function download_file(url, file) {
@@ -147,50 +112,6 @@ async function download_file(url, file) {
   });
 }
 
-export const IconCutterTarget = new Juke.Target({
-  parameters: [ForceRecutParameter],
-  dependsOn: () => [
-    CutterTarget,
-  ],
-  inputs: ({ get }) => {
-    const standard_inputs = [
-      `icons/**/*.png.toml`,
-      `icons/**/*.dmi.toml`,
-      `cutter_templates/**/*.toml`,
-      cutter_path,
-    ]
-    // Alright we're gonna search out any existing toml files and convert
-    // them to their matching .dmi or .png file
-    const existing_configs = [
-      ...Juke.glob(`icons/**/*.png.toml`),
-      ...Juke.glob(`icons/**/*.dmi.toml`),
-    ];
-    return [
-      ...standard_inputs,
-      ...existing_configs.map((file) => file.replace('.toml', '')),
-    ]
-  },
-  outputs: ({ get }) => {
-    if(get(ForceRecutParameter))
-      return [];
-    const folders = [
-      ...Juke.glob(`icons/**/*.png.toml`),
-      ...Juke.glob(`icons/**/*.dmi.toml`),
-    ];
-    return folders
-      .map((file) => file.replace(`.png.toml`, '.dmi'))
-      .map((file) => file.replace(`.dmi.toml`, '.png'));
-  },
-  executes: async () => {
-    await Juke.exec(cutter_path, [
-      '--dont-wait',
-      '--templates',
-      'cutter_templates',
-      'icons',
-    ]);
-  },
-});
-
 export const DmMapsIncludeTarget = new Juke.Target({
   executes: async () => {
     const folders = [
@@ -209,10 +130,9 @@ export const DmMapsIncludeTarget = new Juke.Target({
 });
 
 export const DmTarget = new Juke.Target({
-  parameters: [DefineParameter, DmVersionParameter, WarningParameter, NoWarningParameter, SkipIconCutter],
+  parameters: [DefineParameter, DmVersionParameter, WarningParameter, NoWarningParameter],
   dependsOn: ({ get }) => [
     get(DefineParameter).includes('ALL_MAPS') && DmMapsIncludeTarget,
-    !get(SkipIconCutter) && IconCutterTarget, TguiTarget,
   ],
   inputs: [
     '_maps/map_files/generic/**',
@@ -248,7 +168,6 @@ export const DmTestTarget = new Juke.Target({
   parameters: [DefineParameter, DmVersionParameter, WarningParameter, NoWarningParameter],
   dependsOn: ({ get }) => [
     get(DefineParameter).includes('ALL_MAPS') && DmMapsIncludeTarget,
-    IconCutterTarget,
   ],
   executes: async ({ get }) => {
     fs.copyFileSync(`${DME_NAME}.dme`, `${DME_NAME}.test.dme`);
@@ -284,7 +203,6 @@ export const AutowikiTarget = new Juke.Target({
   parameters: [DefineParameter, DmVersionParameter, WarningParameter, NoWarningParameter],
   dependsOn: ({ get }) => [
     get(DefineParameter).includes('ALL_MAPS') && DmMapsIncludeTarget,
-    IconCutterTarget,
   ],
   outputs: [
     'data/autowiki_edits.txt',

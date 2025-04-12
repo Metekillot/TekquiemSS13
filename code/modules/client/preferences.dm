@@ -1,5 +1,5 @@
 GLOBAL_LIST_EMPTY(preferences_datums)
-//HEX MODDED FOR VTR13, BEHOLD AND DESPAIR CLEANING UP THE MERGE CONFLICTS FROM THIS
+
 /datum/preferences
 	var/client/parent
 	//doohickeys for savefiles
@@ -38,7 +38,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	///Whether emotes will be displayed on runechat. Requires chat_on_map to have effect. Boolean.
 	var/see_rc_emotes = TRUE
 	//Клан вампиров
-	var/datum/vampireclane/clane = new /datum/vampireclane/vtr/daeva()
+	var/datum/vampireclane/clane = new /datum/vampireclane/brujah()
 	// Custom Keybindings
 	var/list/key_bindings = list()
 
@@ -68,8 +68,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/slot_randomized					//keeps track of round-to-round randomization of the character slot, prevents overwriting
 	var/slotlocked = 0
 	var/real_name						//our character's name
-	var/headshot_link
-	var/ooc_notes
 	var/gender = MALE					//gender of character (well duh)
 	var/age = 30						//age of character
 	var/total_age = 30
@@ -83,32 +81,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/hair_color = "000"				//Hair color
 	var/facial_hairstyle = "Shaved"	//Face hair type
 	var/facial_hair_color = "000"		//Facial hair color
-	var/skin_tone = LATINO		//Skin color
-	var/list/skin_tone_presets = list(
-				"Alabaster" = ALBINO,
-				"Caucasian 1" = CAUCASIAN_1,
-				"Caucasian 2" = CAUCASIAN_2,
-				"Caucasian 3" = CAUCASIAN_3,
-				"Latino" = LATINO,
-				"Mediterranean" = MEDITERRANEAN,
-				"Asian 1" = ASIAN_1,
-				"Asian 2" = ASIAN_2,
-				"Arabian" = ARAB,
-				"Hindi" = INDIAN,
-				"African 1" = AFRICAN_1,
-				"African 2" = AFRICAN_2,
-				"Orange" = ORANGE,
-				"Vampiric 1" = VAMP_1,
-				"Vampiric 2" = VAMP_2,
-				"Vampiric 3" = VAMP_3,
-				"Vampiric 4" = VAMP_4,
-				"Vampiric 5" = VAMP_5,
-				"Vampiric 6" = VAMP_6,
-				"Vampiric 7" = VAMP_7,
-				"Vampiric 8" = VAMP_8,
-				"Vampiric 9" = VAMP_9,
-				"Vampiric 10" = VAMP_10,
-				"Vampiric 11" = VAMP_11)
+	var/skin_tone = "caucasian1"		//Skin color
 	var/eye_color = "000"				//Eye color
 	var/datum/species/pref_species = new /datum/species/human()	//Mutant race
 	var/list/features = list("mcolor" = "FFF", "ethcolor" = "9c3030", "tail_lizard" = "Smooth", "tail_human" = "None", "snout" = "Round", "horns" = "None", "ears" = "None", "wings" = "None", "frills" = "None", "spines" = "None", "body_markings" = "None", "legs" = "Normal Legs", "moth_wings" = "Plain", "moth_antennae" = "Plain", "moth_markings" = "None")
@@ -118,8 +91,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/list/custom_names = list()
 	var/preferred_ai_core_display = "Blue"
 	var/prefered_security_department = SEC_DEPT_RANDOM
-
-	var/list/alt_titles_preferences = list() // TFN EDIT: alt job titles
 
 	//Quirk list
 	var/list/all_quirks = list()
@@ -227,6 +198,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/lover = FALSE
 
 	var/flavor_text
+	var/ooc_notes
 
 	var/friend_text
 	var/enemy_text
@@ -298,7 +270,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	lockpicking = A.start_lockpicking
 	athletics = A.start_athletics
 	qdel(clane)
-	clane = new /datum/vampireclane/vtr/daeva()
+	clane = new /datum/vampireclane/brujah()
 	discipline_types = list()
 	discipline_levels = list()
 	for (var/i in 1 to clane.clane_disciplines.len)
@@ -311,8 +283,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	body_model = rand(1, 3)
 	true_experience = 50
 	real_name = random_unique_name(gender)
-	headshot_link = null // TFN EDIT
 	save_character()
+
+/proc/reset_shit(mob/M)
+	if(M.key)
+		var/datum/preferences/P = GLOB.preferences_datums[ckey(M.key)]
+		if(P)
+			P.reset_character()
 
 /datum/preferences/New(client/C)
 	parent = C
@@ -334,6 +311,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	//we couldn't load character data so just randomize the character appearance + name
 	random_species()
 	random_character()		//let's create a random character then - rather than a fat, bald and naked man.
+	reset_shit()
 	key_bindings = deepCopyList(GLOB.hotkey_keybinding_list_by_key) // give them default keybinds and update their movement keys
 	C?.set_macros()
 //	pref_species = new /datum/species/kindred()
@@ -483,24 +461,24 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			dat += "<table width='100%'><tr><td width='24%' valign='top'>"
 
 			dat += "<b>Species:</b><BR><a href='byond://?_src_=prefs;preference=species;task=input'>[pref_species.name]</a><BR>"
-
 			switch(pref_species.name)
 				if("Vampire")
+					dat += "<b>Masquerade:</b> [masquerade]/5<BR>"
+					dat += "<b>Generation:</b> [generation]<BR>"
 					dat += "<b>Path of [enlightenment ? "Enlightenment" : "Humanity"]:</b> [humanity]/10"
+					//if(SSwhitelists.is_whitelisted(parent.ckey, "enlightenment") && !slotlocked)
 					if ((true_experience >= (humanity * 2)) && (humanity < 10))
-						dat += " <a href='byond://?_src_=prefs;preference=path;task=input'>Increase [enlightenment ? "Enlightenment" : "Humanity"] ([humanity * 2])</a>"
+						dat += "<a href='byond://?_src_=prefs;preference=path;task=input'>Increase [enlightenment ? "Enlightenment" : "Humanity"] ([humanity * 2])</a>"
 					dat += "<br>"
 					if(!slotlocked)
 						dat += "<a href='byond://?_src_=prefs;preference=pathof;task=input'>Switch Path</a><BR>"
-					dat += "<b>Masquerade:</b> [masquerade]/5<BR>"
-					dat += "<b>Generation:</b> [generation]"
 					var/generation_allowed = TRUE
-					if(clane?.name == CLAN_NONE)
+					if(clane?.name == "Caitiff")
 						generation_allowed = FALSE
 					if(generation_allowed)
 						if(generation_bonus)
-							dat += " (+[generation_bonus]/[min(MAX_PUBLIC_GENERATION-1, generation-MAX_PUBLIC_GENERATION)])"
-						if(true_experience >= 20 && generation_bonus < max(0, generation-MAX_PUBLIC_GENERATION))
+							dat += " (+[generation_bonus]/[min(6, generation-7)])"
+						if(true_experience >= 20 && generation_bonus < max(0, generation-7))
 							dat += " <a href='byond://?_src_=prefs;preference=generation;task=input'>Claim generation bonus (20)</a><BR>"
 						else
 							dat += "<BR>"
@@ -512,7 +490,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					dat += "[D.desc]<BR>"
 					if(true_experience >= min((dharma_level * 5), 20) && (dharma_level < 6))
 						var/dharma_cost = min((dharma_level * 5), 20)
-						dat += " <a href='byond://?_src_=prefs;preference=dharmarise;task=input'>Learn ([dharma_cost])</a><BR>"
+						dat += " <a href='byond://?_src_=prefs;preference=dharmarise;task=input'>Raise Dharmic Enlightenment ([dharma_cost])</a><BR>"
 					dat += "<b>P'o Personality</b>: [po_type] <a href='byond://?_src_=prefs;preference=potype;task=input'>Switch</a><BR>"
 					dat += "<b>Awareness:</b> [masquerade]/5<BR>"
 					dat += "<b>Yin/Yang</b>: [yin]/[yang] <a href='byond://?_src_=prefs;preference=chibalance;task=input'>Adjust</a><BR>"
@@ -521,6 +499,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					dat += "<b>Veil:</b> [masquerade]/5<BR>"
 				if("Ghoul")
 					dat += "<b>Masquerade:</b> [masquerade]/5<BR>"
+
 			dat += "<h2>[make_font_cool("ATTRIBUTES")]</h2>"
 
 			dat += "<b>Archetype</b><BR>"
@@ -584,27 +563,27 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				DAWOF.sprite_color = werewolf_color
 				DAWOF2.sprite_color = werewolf_color
 
-				var/obj/overlay/eyes_crinos = new(DAWOF)
+				var/obj/effect/overlay/eyes_crinos = new(DAWOF)
 				eyes_crinos.icon = 'code/modules/wod13/werewolf.dmi'
 				eyes_crinos.icon_state = "eyes"
 				eyes_crinos.layer = ABOVE_HUD_LAYER
 				eyes_crinos.color = werewolf_eye_color
 				DAWOF.overlays |= eyes_crinos
 
-				var/obj/overlay/scar_crinos = new(DAWOF)
+				var/obj/effect/overlay/scar_crinos = new(DAWOF)
 				scar_crinos.icon = 'code/modules/wod13/werewolf.dmi'
 				scar_crinos.icon_state = "scar[werewolf_scar]"
 				scar_crinos.layer = ABOVE_HUD_LAYER
 				DAWOF.overlays |= scar_crinos
 
-				var/obj/overlay/hair_crinos = new(DAWOF)
+				var/obj/effect/overlay/hair_crinos = new(DAWOF)
 				hair_crinos.icon = 'code/modules/wod13/werewolf.dmi'
 				hair_crinos.icon_state = "hair[werewolf_hair]"
 				hair_crinos.layer = ABOVE_HUD_LAYER
 				hair_crinos.color = werewolf_hair_color
 				DAWOF.overlays |= hair_crinos
 
-				var/obj/overlay/eyes_lupus = new(DAWOF2)
+				var/obj/effect/overlay/eyes_lupus = new(DAWOF2)
 				eyes_lupus.icon = 'code/modules/wod13/werewolf_lupus.dmi'
 				eyes_lupus.icon_state = "eyes"
 				eyes_lupus.layer = ABOVE_HUD_LAYER
@@ -738,18 +717,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				dat += "<a href='byond://?_src_=prefs;preference=change_appearance;task=input'>Change Appearance (3)</a><BR>"
 			if(generation_bonus)
 				dat += "<a href='byond://?_src_=prefs;preference=reset_with_bonus;task=input'>Create new character with generation bonus ([generation]-[generation_bonus])</a><BR>"
-			// TFN EDIT ADDITION START
 			if(length(flavor_text) <= 110)
 				dat += "<BR><b>Flavor Text:</b> [flavor_text] <a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a><BR>"
 			else
 				dat += "<BR><b>Flavor Text:</b> [copytext_char(flavor_text, 1, 110)]... <a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a>"
 				dat += "<a href='byond://?_src_=prefs;preference=view_flavortext;task=input'>Show More</a><BR>"
-			dat += "<BR><b>OOC Notes:</b> [ooc_notes] <a href='byond://?_src_=prefs;preference=ooc_notes;task=input'>Change</a><BR>"
 
-			dat += "<br><b>Headshot(1:1):</b> <a href='byond://?_src_=prefs;preference=headshot;task=input'>Change</a>"
-			if(headshot_link != null)
-				dat += "<a href='byond://?_src_=prefs;preference=view_headshot;task=input'>View</a>"
-			// TFN EDIT ADDITION END
+			dat += "<BR><b>OOC Notes:</b> [ooc_notes] <a href='byond://?_src_=prefs;preference=ooc_notes;task=input'>Change</a><BR>"
 
 			dat += "<h2>[make_font_cool("EQUIP")]</h2>"
 
@@ -800,8 +774,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 				dat += "<h3>[make_font_cool("SKIN")]</h3>"
 
-				dat += "<span style='border: 1px solid #161616; background-color: #[skin_tone];'>&nbsp;&nbsp;&nbsp;</span> <a href='byond://?_src_=prefs;preference=s_tone;task=input'>Change</a>"
-				dat += "&nbsp;<a href='byond://?_src_=prefs;preference=s_tone_preset;task=input'>Use Preset</a>"
+				dat += "<a href='byond://?_src_=prefs;preference=s_tone;task=input'>[skin_tone]</a>"
 //				dat += "<a href='byond://?_src_=prefs;preference=toggle_random;random_type=[RANDOM_SKIN_TONE]'>[(randomise[RANDOM_SKIN_TONE]) ? "Lock" : "Unlock"]</A>"
 				dat += "<br>"
 
@@ -1115,7 +1088,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 			dat += "<b>FPS:</b> <a href='byond://?_src_=prefs;preference=clientfps;task=input'>[clientfps]</a><br>"
 
-			dat += "<b>Parallax (Fancy Space):</b> <a href='byond://?_src_=prefs;preference=parallaxdown' oncontextmenu='window.location.href=\"byond://?_src_=prefs;preference=parallaxup\";return false;'>"
+			dat += "<b>Parallax (Fancy Space):</b> <a href='byond://?_src_=prefs;preference=parallaxdown' oncontextmenu='window.location.href=\"?_src_=prefs;preference=parallaxup\";return false;'>"
 			switch (parallax)
 				if (PARALLAX_LOW)
 					dat += "Low"
@@ -1365,7 +1338,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		HTML += "<b>Choose occupation chances</b><br>"
 		HTML += "<div align='center'>Left-click to raise an occupation preference, right-click to lower it.<br></div>"
 		HTML += "<center><a href='byond://?_src_=prefs;preference=job;task=close'>Done</a></center><br>" // Easier to press up here.
-		HTML += "<script type='text/javascript'>function setJobPrefRedirect(level, rank) { window.location.href='byond://?_src_=prefs;preference=job;task=setJobLevel;level=' + level + ';text=' + encodeURIComponent(rank); return false; }</script>"
+		HTML += "<script type='text/javascript'>function setJobPrefRedirect(level, rank) { window.location.href='?_src_=prefs;preference=job;task=setJobLevel;level=' + level + ';text=' + encodeURIComponent(rank); return false; }</script>"
 		HTML += "<table width='100%' cellpadding='1' cellspacing='0'><tr><td width='20%'>" // Table within a table for alignment, also allows you to easily add more colomns.
 		HTML += "<table width='100%' cellpadding='1' cellspacing='0'>"
 		var/index = -1
@@ -1392,11 +1365,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 			HTML += "<tr bgcolor='[job.selection_color]'><td width='60%' align='right'>"
 			var/rank = job.title
-			// TFN EDIT START: alt job titles
-			var/displayed_rank = rank
-			if(length(job.alt_titles) && (rank in alt_titles_preferences))
-				displayed_rank = alt_titles_preferences[rank]
-			// TFN EDIT END
 			lastJob = job
 			if(is_banned_from(user.ckey, rank))
 				HTML += "<font color=red>[rank]</font></td><td><a href='byond://?_src_=prefs;bancheck=[rank]'> BANNED</a></td></tr>"
@@ -1431,16 +1399,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			if((job_preferences[SSjob.overflow_role] == JP_LOW) && (rank != SSjob.overflow_role) && !is_banned_from(user.ckey, SSjob.overflow_role))
 				HTML += "<font color=orange>[rank]</font></td><td></td></tr>"
 				continue
-			// TFN EDIT START: alt job titles
-			var/rank_title_line = "[displayed_rank]"
-			if(length(job.alt_titles) && (rank in GLOB.leader_positions))//Bold head jobs
-				rank_title_line = "<b><a href='byond://?_src_=prefs;preference=job;task=alt_title;job_title=[job.title]'>[rank_title_line]</a></b>"
-			else if(length(job.alt_titles))
-				rank_title_line = "<a href='byond://?_src_=prefs;preference=job;task=alt_title;job_title=[job.title]'>[rank_title_line]</a>"
-			else
-				rank_title_line = "<span class='dark'>[rank]</span>"
-			HTML += rank_title_line
-			// TFN EDIT END
 
 			HTML += "</td><td width='40%'>"
 
@@ -1471,7 +1429,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					prefUpperLevel = 3
 					prefLowerLevel = 1
 
-			HTML += "<a class='white' href='byond://?_src_=prefs;preference=job;task=setJobLevel;level=[prefUpperLevel];text=[rank]' oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[rank]\");'>"
+			HTML += "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[prefUpperLevel];text=[rank]' oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[rank]\");'>"
 
 			if(rank == SSjob.overflow_role)//Overflow is special
 				if(job_preferences[SSjob.overflow_role] == JP_LOW)
@@ -1694,23 +1652,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(BERANDOMJOB)
 						joblessrole = RETURNTOLOBBY
 				SetChoices(user)
-			// TFN EDIT START: alt job titles
-			if("alt_title")
-				var/job_title = href_list["job_title"]
-				var/titles_list = list(job_title)
-				var/datum/job/J = SSjob.GetJob(job_title)
-				for(var/alternative_titles in J.alt_titles)
-					titles_list += alternative_titles
-				var/chosen_title
-				chosen_title = tgui_input_list(user, "Choose your job's title:", "Job Preference", sortList(titles_list))
-				if(chosen_title)
-					if(chosen_title == job_title)
-						if(alt_titles_preferences[job_title])
-							alt_titles_preferences.Remove(job_title)
-					else
-						alt_titles_preferences[job_title] = chosen_title
-				SetChoices(user)
-			// TFN EDIT END
 			if("setJobLevel")
 				UpdateJobPreference(user, href_list["text"], text2num(href_list["level"]))
 			else
@@ -1865,9 +1806,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(slotlocked)
 						return
 
-					if(real_name && alert(user, "WARNING: Changing your name will dissociate any existing character connections from this slot!", "WARNING", "Okay", "Cancel") == "Cancel")
-						return
-
 					var/new_name = tgui_input_text(user, "Choose your character's name:", "Character Preference", max_length = MAX_NAME_LEN)
 					if(new_name)
 						new_name = reject_bad_name(new_name)
@@ -1882,7 +1820,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 					var/new_age = tgui_input_number(user, "Choose your character's biological age:\n([AGE_MIN]-[AGE_MAX])", "Character Preference", age, AGE_MAX, AGE_MIN, round_value = TRUE)
 					if(new_age)
-						age = max(min( round(text2num(new_age)), AGE_MAX),AGE_MIN)
+						age = clamp(new_age, AGE_MIN, AGE_MAX)
 						if (age > total_age)
 							total_age = age
 						update_preview_icon()
@@ -1899,7 +1837,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						update_preview_icon()
 
 				if("info_choose")
-					var/new_info_known = tgui_input_list(user, "Choose who knows your character:", "Fame", list(INFO_KNOWN_UNKNOWN, INFO_KNOWN_FACTION, INFO_KNOWN_PUBLIC))
+					var/new_info_known = tgui_input_list(user, "Choose who knows your character:", "Fame", list(INFO_KNOWN_UNKNOWN, INFO_KNOWN_CLAN_ONLY, INFO_KNOWN_FACTION, INFO_KNOWN_PUBLIC))
 					if(new_info_known)
 						info_known = new_info_known
 
@@ -2040,6 +1978,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						new_undershirt = tgui_input_list(user, "Choose your character's undershirt:", "Character Preference", GLOB.undershirt_f)
 					else
 						new_undershirt = tgui_input_list(user, "Choose your character's undershirt:", "Character Preference", GLOB.undershirt_list)
+
 					if(new_undershirt)
 						undershirt = new_undershirt
 
@@ -2061,7 +2000,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if((true_experience < 10) || !(pref_species.id == "kindred") || !(clane.name == "Caitiff"))
 						return
 
-					var/list/possible_new_disciplines = subtypesof(/datum/discipline/vtr) - discipline_types
+					var/list/possible_new_disciplines = subtypesof(/datum/discipline) - discipline_types - /datum/discipline/bloodheal
 					for (var/discipline_type in possible_new_disciplines)
 						var/datum/discipline/discipline = new discipline_type
 						if (discipline.clan_restricted)
@@ -2199,7 +2138,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(slotlocked || !(pref_species.id == "kindred"))
 						return
 
-					if (alert("Are you sure you want to change your Clan? This will reset your Disciplines.", "Confirmation", "Yes", "No") != "Yes")
+					if (tgui_alert(user, "Are you sure you want to change your Clan? This will reset your Disciplines.", "Confirmation", list("Yes", "No")) != "Yes")
 						return
 
 					var/list/available_clans = list()
@@ -2439,7 +2378,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						return
 
 					true_experience -= 20
-					generation_bonus = min(generation_bonus + 1, max(0, generation-MAX_PUBLIC_GENERATION))
+					generation_bonus = min(generation_bonus + 1, max(0, generation-7))
 
 				if("friend_text")
 					var/new_text = tgui_input_text(user, "What a Friend knows about me:", "Character Preference", max_length = 512)
@@ -2453,55 +2392,29 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					var/new_text = tgui_input_text(user, "What a Lover knows about me:", "Character Preference", max_length = 512)
 					if(new_text)
 						lover_text = new_text
-
-				// TFN EDIT ADDITION START: character headshots & flavortext
 				if("ooc_notes")
 					var/new_ooc_notes = tgui_input_text(user, "Choose your character's OOC notes:", "Character Preference", ooc_notes, MAX_MESSAGE_LEN, TRUE, FALSE)
 					if(!length(new_ooc_notes))
 						return
 					ooc_notes = new_ooc_notes
+
 				if("flavor_text")
 					var/new_flavor = tgui_input_text(user, "Choose your character's flavor text:", "Character Preference", flavor_text, MAX_MESSAGE_LEN, TRUE, FALSE)
-					if(new_flavor)
-						flavor_text = new_flavor
+					if(!length(new_flavor))
+						return
+					flavor_text = new_flavor
 
 				if("view_flavortext")
 					var/datum/browser/popup = new(user, "[real_name]_flavortext", real_name, 500, 200)
 					popup.set_content(replacetext(flavor_text, "\n", "<BR>"))
 					popup.open(FALSE)
 					return
-				if("view_headshot")
-					var/list/dat = list("<table width='100%' height='100%'><td align='center' valign='middle'><img src='[headshot_link]' width='250px' height='250px'></td></table>")
-					var/datum/browser/popup = new(user, "[real_name]_headshot", "<div align='center'>Headshot</div>", 310, 330)
-					popup.set_content(dat.Join())
-					popup.open(FALSE)
-					return
 
-				if("headshot")
-					to_chat(user, span_notice("Please use a relatively SFW image of the head and shoulder area to maintain immersion level. Lastly, ["<b>do not use a real life photo or use any image that is less than serious.</b>"]"))
-					to_chat(user, span_notice("If the photo doesn't show up properly in-game, ensure that it's a direct image link that opens properly in a browser."))
-					to_chat(user, span_notice("Resolution: 250x250 pixels."))
-					var/new_headshot_link = tgui_input_text(user, "Input the headshot link (https, hosts: gyazo, discord, lensdump, imgbox, catbox):", "Headshot", headshot_link, encode = FALSE)
-					if(isnull(new_headshot_link))
-						return
-					if(!length(new_headshot_link))
-						headshot_link = null
-						ShowChoices(user)
-						return
-					if(!valid_headshot_link(user, new_headshot_link))
-						headshot_link = null
-						ShowChoices(user)
-						return
-					headshot_link = new_headshot_link
-					to_chat(user, span_notice("Successfully updated headshot picture!"))
-					log_game("[user] has set their Headshot image to '[headshot_link]'.")
-				// TFN EDIT ADDITION END
 				if("change_appearance")
-					if((true_experience < 3) || !slotlocked)
+					if(!slotlocked)
 						return
 
 					slotlocked = FALSE
-					true_experience -= 3
 
 				if("reset_with_bonus")
 					if((clane?.name == "Caitiff") || !generation_bonus)
@@ -2511,7 +2424,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					slotlocked = 0
 					torpor_count = 0
 					masquerade = initial(masquerade)
-					generation = clamp(bonus, LOWEST_GENERATION_LIMIT, HIGHEST_GENERATION_LIMIT)
+					generation = bonus
 					generation_bonus = 0
 					save_character()
 
@@ -2523,7 +2436,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						return
 
 					var/list/choose_species = list()
-					for (var/key in get_selectable_species())
+					for (var/key in GLOB.selectable_races)
 						var/newtype = GLOB.species_list[key]
 						var/datum/species/selecting_species = new newtype
 						if (!selecting_species.selectable)
@@ -2548,7 +2461,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 								discipline_levels.Cut()
 							if("kindred")
 								qdel(clane)
-								clane = new /datum/vampireclane/vtr/daeva()
+								clane = new /datum/vampireclane/brujah()
 								discipline_types.Cut()
 								discipline_levels.Cut()
 								for (var/i in 1 to clane.clane_disciplines.len)
@@ -2663,17 +2576,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(slotlocked)
 						return
 
-					var/new_s_tone = input(user, "Choose your character's skin-tone:", "Character Preference","#"+skin_tone) as color|null
+					var/new_s_tone = tgui_input_list(user, "Choose your character's skin-tone:", "Character Preference", GLOB.skin_tones)
 					if(new_s_tone)
-						skin_tone = sanitize_hexcolor(new_s_tone)
-
-				if("s_tone_preset")
-					if(slotlocked)
-						return
-					var/s_tone_choice = tgui_input_list(user, "Choose your character's skin-tone:", "Character Preference", skin_tone_presets)
-					var/new_s_tone_preset = skin_tone_presets[s_tone_choice]
-					if(s_tone_choice)
-						skin_tone = sanitize_hexcolor(new_s_tone_preset)
+						skin_tone = new_s_tone
 
 				if("ooccolor")
 					var/new_ooccolor = input(user, "Choose your OOC colour:", "Game Preference",ooccolor) as color|null
@@ -3149,7 +3054,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.true_real_name = real_name
 	character.name = character.real_name
 	character.diablerist = diablerist
-	character.headshot_link = headshot_link // TFN EDIT
 	character.physique = physique
 	character.dexterity = dexterity
 	character.social = social
@@ -3197,7 +3101,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	if(pref_species.name == "Werewolf")
 		character.maxHealth = round((initial(character.maxHealth)+(initial(character.maxHealth)/4)*(character.physique + character.additional_physique)))
-		character.health = character.maxHealth
+		character.health = round((initial(character.maxHealth)+(initial(character.maxHealth)/4)*(character.physique + character.additional_physique )))
 		switch(tribe)
 			if("Wendigo")
 				character.yin_chi = 1
@@ -3257,7 +3161,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.hair_color = hair_color
 	character.facial_hair_color = facial_hair_color
 
-	character.skin_tone = skin_tone
+	if(pref_species.name == "Vampire")
+		if(clane.alt_sprite && !clane.alt_sprite_greyscale)
+			character.skin_tone = "albino"
+		else
+			character.skin_tone = get_vamp_skin_color(skin_tone)
+	else
+		character.skin_tone = skin_tone
 
 	character.hairstyle = hairstyle
 	if(character.age < 16)
@@ -3352,6 +3262,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			if(!character.ischildren)
 				character.ischildren = TRUE
 				character.AddElement(/datum/element/children, COMSIG_PARENT_PREQDELETED, src)
+
 		parent << browse(null, "window=preferences_window")
 		parent << browse(null, "window=preferences_browser")
 

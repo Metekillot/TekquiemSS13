@@ -24,8 +24,8 @@ GLOBAL_LIST_EMPTY(p25_tranceivers)
 	var/list/dat = list()
 	dat += "<div class='statusDisplay'>"
 	dat += "Status: [active ? "<span class='good'>ONLINE</span>" : "<span class='bad'>OFFLINE</span>"]<BR>"
-	dat += "<A href='byond://?src=[REF(src)];toggle=1'>[active ? "Turn Off" : "Turn On"]</A><BR><BR>"
-	dat += "<A href='byond://?src=[REF(src)];view_callsigns=1'>View Registered Callsigns</A>"
+	dat += "<A href='byond:?src=[REF(src)];toggle=1'>[active ? "Turn Off" : "Turn On"]</A><BR><BR>"
+	dat += "<A href='byond:?src=[REF(src)];view_callsigns=1'>View Registered Callsigns</A>"
 	dat += "</div>"
 
 	var/datum/browser/popup = new(user, "p25_transceiver", "[src.name]", 300, 220)
@@ -386,8 +386,6 @@ GLOBAL_LIST_EMPTY(p25_tranceivers)
 	if(!A)
 		return
 
-	if(!isMasqueradeEnforced(A))
-		return
 	var/coords = "[location.x]:[location.y]"
 	var/message = ""
 	var/should_announce = FALSE

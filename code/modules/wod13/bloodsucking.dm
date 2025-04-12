@@ -15,7 +15,7 @@
 	else
 		return 1
 
-/mob/living/carbon/human/proc/drinksomeblood(var/mob/living/mob, first_drink = FALSE)
+/mob/living/carbon/human/proc/drinksomeblood(var/mob/living/mob)
 	last_drinkblood_use = world.time
 	if(client)
 		client.images -= suckbar
@@ -46,7 +46,30 @@
 			message_admins("[ADMIN_LOOKUPFLW(src)] is attempting to Diablerize [ADMIN_LOOKUPFLW(mob)]")
 			log_attack("[key_name(src)] is attempting to Diablerize [key_name(mob)].")
 			if(mob.key)
-				var/vse_taki = TRUE
+				var/vse_taki = FALSE
+				if(clane)
+					var/salubri_allowed = FALSE
+					var/mob/living/carbon/human/H = mob
+					if(H.clane)
+						if(H.clane.name == "Salubri")
+							salubri_allowed = TRUE
+					if(clane.name != "Banu Haqim" && clane.name != "Caitiff")
+						if(!salubri_allowed)
+							if(!mind.special_role)
+								to_chat(src, "<span class='warning'>You find the idea of drinking your own <b>KIND's</b> blood disgusting!</span>")
+								last_drinkblood_use = 0
+								if(client)
+									client.images -= suckbar
+								qdel(suckbar)
+								stop_sound_channel(CHANNEL_BLOOD)
+								return
+							else
+								vse_taki = TRUE
+						else
+							vse_taki = TRUE
+					else
+						vse_taki = TRUE
+
 				if(!GLOB.canon_event)
 					to_chat(src, "<span class='warning'>It's not a canon event!</span>")
 					return
@@ -107,8 +130,6 @@
 			to_chat(src, "<span class='userlove'>[mob]'s blood tastes HEAVENLY...</span>")
 			adjustBruteLoss(-25, TRUE)
 			adjustFireLoss(-25, TRUE)
-			if(first_drink)
-				src.create_blood_bond_to(mob)
 		else
 			to_chat(src, "<span class='warning'>You sip some <b>BLOOD</b> from your victim. It feels good.</span>")
 		bloodpool = min(maxbloodpool, bloodpool+1*max(1, mob.bloodquality-1))

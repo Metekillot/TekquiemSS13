@@ -462,7 +462,7 @@
 	if(prob(50))
 		icon_state = "asphalt[rand(1, 3)]"
 		update_icon()
-	if(prob(5))
+	if(prob(25))
 		new /obj/effect/decal/asphalt(src)
 	set_light(1, 0.5, "#a4b7ff")
 

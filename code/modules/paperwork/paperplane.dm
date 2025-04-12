@@ -55,8 +55,9 @@
 
 /obj/item/paperplane/update_overlays()
 	. = ..()
-	if(internalPaper?.stamped)
-		for(var/S in internalPaper.stamped)
+	var/list/stamped = internalPaper.stamped
+	if(stamped)
+		for(var/S in stamped)
 			. += "paperplane_[S]"
 
 /obj/item/paperplane/attack_self(mob/user)

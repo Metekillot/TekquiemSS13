@@ -6,7 +6,7 @@
 /datum/chemical_reaction/lube
 	results = list(/datum/reagent/lube = 4)
 	required_reagents = list(/datum/reagent/water = 1, /datum/reagent/silicon = 1, /datum/reagent/oxygen = 1)
-/*
+
 /datum/chemical_reaction/spraytan
 	results = list(/datum/reagent/spraytan = 2)
 	required_reagents = list(/datum/reagent/consumable/orangejuice = 1, /datum/reagent/fuel/oil = 1)
@@ -14,7 +14,7 @@
 /datum/chemical_reaction/spraytan2
 	results = list(/datum/reagent/spraytan = 2)
 	required_reagents = list(/datum/reagent/consumable/orangejuice = 1, /datum/reagent/consumable/cornoil = 1)
-*/
+
 /datum/chemical_reaction/impedrezene
 	results = list(/datum/reagent/impedrezene = 2)
 	required_reagents = list(/datum/reagent/mercury = 1, /datum/reagent/oxygen = 1, /datum/reagent/consumable/sugar = 1)
@@ -463,7 +463,7 @@
 	required_temp = 374
 
 /datum/chemical_reaction/scream/on_reaction(datum/reagents/holder, created_volume)
-	playsound(holder.my_atom, pick(list( 'sound/mobs/humanoids/human/scream/malescream_1.ogg', 'sound/mobs/humanoids/human/scream/malescream_2.ogg', 'sound/mobs/humanoids/human/scream/malescream_3.ogg', 'sound/mobs/humanoids/human/scream/malescream_4.ogg', 'sound/mobs/humanoids/human/scream/malescream_5.ogg', 'sound/mobs/humanoids/human/scream/malescream_6.ogg', 'sound/mobs/humanoids/human/scream/femalescream_1.ogg', 'sound/mobs/humanoids/human/scream/femalescream_2.ogg', 'sound/mobs/humanoids/human/scream/femalescream_3.ogg', 'sound/mobs/humanoids/human/scream/femalescream_4.ogg', 'sound/mobs/humanoids/human/scream/femalescream_5.ogg', 'sound/mobs/humanoids/human/scream/wilhelm_scream.ogg')), created_volume*5,TRUE)
+	playsound(holder.my_atom, pick(list( 'sound/voice/human/malescream_1.ogg', 'sound/voice/human/malescream_2.ogg', 'sound/voice/human/malescream_3.ogg', 'sound/voice/human/malescream_4.ogg', 'sound/voice/human/malescream_5.ogg', 'sound/voice/human/malescream_6.ogg', 'sound/voice/human/femalescream_1.ogg', 'sound/voice/human/femalescream_2.ogg', 'sound/voice/human/femalescream_3.ogg', 'sound/voice/human/femalescream_4.ogg', 'sound/voice/human/femalescream_5.ogg', 'sound/voice/human/wilhelm_scream.ogg')), created_volume*5,TRUE)
 
 /datum/chemical_reaction/hair_dye
 	results = list(/datum/reagent/hair_dye = 5)

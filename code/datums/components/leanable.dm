@@ -67,20 +67,17 @@
  * * leaning_offset - pixel offset to apply on the mob when leaning
  */
 /mob/living/proc/start_leaning(atom/lean_target, leaning_offset)
-	if(leaned_object == lean_target)
-		return
 	var/new_x = lean_target.pixel_x + base_pixel_x + body_position_pixel_x_offset
 	var/new_y = lean_target.pixel_y + base_pixel_y + body_position_pixel_y_offset
-	var/dir_to_target = get_dir(src, lean_target)
-	switch(dir_to_target)
+	switch(get_dir(src, lean_target))
 		if(NORTH)
 			new_y += leaning_offset
 		if(WEST)
 			new_x -= leaning_offset
 		if(EAST)
 			new_x += leaning_offset
-	
-	animate(src, 0.2 SECONDS, pixel_x = new_x, pixel_y = new_y, dir=turn(dir_to_target, 180))
+
+	animate(src, 0.2 SECONDS, pixel_x = new_x, pixel_y = new_y)
 	ADD_TRAIT(src, TRAIT_UNDENSE, TRAIT_LEANING)
 	visible_message(
 		span_notice("[src] leans against [lean_target]."),

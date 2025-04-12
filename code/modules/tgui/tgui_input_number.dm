@@ -24,6 +24,7 @@
 			user = client.mob
 		else
 			return null
+
 	if (isnull(user.client))
 		return null
 
@@ -67,7 +68,6 @@
 	var/title
 	/// The TGUI UI state that will be returned in ui_state(). Default: always_state
 	var/datum/ui_state/state
-
 
 /datum/tgui_input_number/New(mob/user, message, title, default, max_value, min_value, timeout, round_value, ui_state)
 	src.default = default
@@ -154,7 +154,6 @@
 			SStgui.close_uis(src)
 			return TRUE
 		if("cancel")
-			set_entry(null)
 			closed = TRUE
 			SStgui.close_uis(src)
 			return TRUE

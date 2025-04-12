@@ -66,14 +66,6 @@
 	. = ..()
 	. += "Intent: [a_intent]"
 	. += "Move Mode: [m_intent]"
-	if (internal)
-		if (!internal.air_contents)
-			qdel(internal)
-		else
-			. += ""
-			. += "Internal Atmosphere Info: [internal.name]"
-			. += "Tank Pressure: [internal.air_contents.return_pressure()]"
-			. += "Distribution Pressure: [internal.distribute_pressure]"
 	if(istype(wear_suit, /obj/item/clothing/suit/space))
 		var/obj/item/clothing/suit/space/S = wear_suit
 		. += "Thermal Regulator: [S.thermal_on ? "on" : "off"]"
@@ -98,7 +90,7 @@
 	dat += "<tr><td>&nbsp;</td></tr>"
 
 	dat += "<tr><td><B>Back:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_BACK]'>[(back && !(back.item_flags & ABSTRACT)) ? back : "<font color=grey>Empty</font>"]</A>"
-	if(has_breathable_mask && istype(back, /obj/item/tank))
+	if(has_breathable_mask && istype(back, /obj/item))
 		dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_BACK]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 
 	dat += "</td></tr><tr><td>&nbsp;</td></tr>"
@@ -133,7 +125,7 @@
 			dat += "<tr><td><font color=grey>&nbsp;&#8627;<B>Suit Storage:</B></font></td></tr>"
 		else
 			dat += "<tr><td>&nbsp;&#8627;<B>Suit Storage:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_SUITSTORE]'>[(s_store && !(s_store.item_flags & ABSTRACT)) ? s_store : "<font color=grey>Empty</font>"]</A>"
-			if(has_breathable_mask && istype(s_store, /obj/item/tank))
+			if(has_breathable_mask && istype(s_store, /obj/item))
 				dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_SUITSTORE]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 			dat += "</td></tr>"
 	else
@@ -169,7 +161,7 @@
 		dat += "<tr><td><font color=grey>&nbsp;&#8627;<B>Belt:</B></font></td></tr>"
 	else
 		dat += "<tr><td>&nbsp;&#8627;<B>Belt:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_BELT]'>[(belt && !(belt.item_flags & ABSTRACT)) ? belt : "<font color=grey>Empty</font>"]</A>"
-		if(has_breathable_mask && istype(belt, /obj/item/tank))
+		if(has_breathable_mask && istype(belt, /obj/item))
 			dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_BELT]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 		dat += "</td></tr>"
 		dat += "<tr><td>&nbsp;&#8627;<B>Pockets:</B></td><td><A href='byond://?src=[REF(src)];pockets=left'>[(l_store && !(l_store.item_flags & ABSTRACT)) ? "Left (Full)" : "<font color=grey>Left (Empty)</font>"]</A>"
@@ -556,31 +548,9 @@
 				R.fields[text("com_[]", counter)] = text("Made by [] on [] [], []<BR>[]", allowed_access, station_time_timestamp(), time2text(world.realtime, "MMM DD"), GLOB.year_integer+540, t1)
 				to_chat(usr, "<span class='notice'>Successfully added comment.</span>")
 				return
-	// TFN EDIT ADDITION START: view character headshot & big flavortext via examine
-	if(href_list["view_headshot"])
-		if(!ismob(usr))
-			return
-		if(!valid_headshot_link(null, headshot_link, TRUE))
-			return
-		var/list/dat = list("<table width='100%' height='100%'><td align='center' valign='middle'><img src='[headshot_link]' width='250px' height='250px'></td></table>")
-		var/datum/browser/popup = new(user, "[name]'s Headshot", "<div align='center'>[name]</div>", 310, 330)
-		popup.set_content(dat.Join())
-		popup.open(FALSE)
-		return
-
-
 	if(href_list["view_flavortext"])
 		tgui.holder = src
 		tgui.ui_interact(usr) //datum has a tgui component, here we open the window
-	// TFN EDIT ADDITION END
-
-	//VTR EDIT ADDITON START
-	if(href_list["view_flavortext_fake"])
-		examine_panel_fake.holder = src
-		examine_panel_fake.disguise = href_list["view_flavortext_fake"]
-		examine_panel_fake.ui_interact(usr) //datum has a tgui component, here we open the window
-	//VTR EDIT ADDITON END
-
 	..() //end of this massive fucking chain. TODO: make the hud chain not spooky. - Yeah, great job doing that.
 
 
@@ -690,15 +660,6 @@
 	underwear = "Nude"
 	update_body()
 	update_hair()
-
-/mob/living/carbon/human/singularity_pull(S, current_size)
-	..()
-	if(current_size >= STAGE_THREE)
-		for(var/obj/item/hand in held_items)
-			if(prob(current_size * 5) && hand.w_class >= ((11-current_size)/2)  && dropItemToGround(hand))
-				step_towards(hand, src)
-				to_chat(src, "<span class='warning'>\The [S] pulls \the [hand] from your grip!</span>")
-	rad_act(current_size * 3)
 
 #define CPR_PANIC_SPEED (0.8 SECONDS)
 
@@ -1182,7 +1143,79 @@
 
 	return buckle_mob(target, TRUE, TRUE, RIDER_NEEDS_ARMS)
 
+/mob/living/carbon/human/proc/climb_wall(turf/above_turf)
+	if(body_position != STANDING_UP)
+		return
+	if(above_turf && istype(above_turf, /turf/open/openspace))
+		var/total_dexterity = get_total_dexterity()
+		var/total_athletics = get_total_athletics()
+		to_chat(src, "<span class='notice'>You start climbing up...</span>")
 
+		var/result = do_after(src, 50 - (total_dexterity + total_athletics * 5), src)
+		if(!result || HAS_TRAIT(src, TRAIT_LEANING))
+			to_chat(src, "<span class='warning'>You were interrupted and failed to climb up.</span>")
+			return
+
+		var/initial_x = x
+		var/initial_y = y
+		var/initial_z = z
+
+		// Adjust pixel_x and pixel_y based on the direction
+		// spawn(20)
+		if(x != initial_x || y != initial_y || z != initial_z)
+			to_chat(src, "<span class='warning'>You moved and failed to climb up.</span>")
+			// Reset pixel offsets
+			return
+
+		//(< 5, slip and take damage), (5-14, fail to climb), (>= 15, climb up successfully)
+		var/roll = rand(1, 20)
+		// var/physique = physique
+		if((roll + total_dexterity + (total_athletics * 2)) >= 15)
+			loc = above_turf
+			var/turf/forward_turf = get_step(loc, dir)
+			if(forward_turf && !forward_turf.density)
+				forceMove(forward_turf)
+				to_chat(src, "<span class='notice'>You climb up successfully.</span>")
+				// Reset pixel offsets after climbing up
+		else if((roll + total_dexterity + (total_athletics * 2)) < 5)
+			ZImpactDamage(loc, 1)
+			to_chat(src, "<span class='warning'>You slip while climbing!</span>")
+			// Reset pixel offsets if failed
+		else
+			to_chat(src, "<span class='warning'>You fail to climb up.</span>")
+
+	return
+
+/mob/living/carbon/human/proc/climb_down(turf/open/openspace/target_turf)
+	if(body_position != STANDING_UP)
+		return
+	to_chat(src, "<span class='notice'>You start climbing down...</span>")
+
+	var/result = do_after(src, 10, 0)
+	if(!result)
+		to_chat(src, "<span class='warning'>You were interrupted and failed to climb down.</span>")
+		return
+
+	var/initial_x = x
+	var/initial_y = y
+	var/initial_z = z
+
+	// Ensure the player hasn't moved during the action
+	if(x != initial_x || y != initial_y || z != initial_z)
+		to_chat(src, "<span class='warning'>You moved and failed to climb down.</span>")
+		return
+
+	if(target_turf && istype(target_turf, /turf/open/openspace))
+		var/turf/final_turf = locate(target_turf.x, target_turf.y, z - 1) // Find the turf directly below the open space
+		if(final_turf && final_turf.density == FALSE)
+			loc = final_turf // Move the player to the new turf one z-level down
+			to_chat(src, "<span class='notice'>You climb down successfully.</span>")
+		else
+			to_chat(src, "<span class='warning'>You fail to find a safe spot to climb down.</span>")
+	else
+		to_chat(src, "<span class='warning'>You fail to find a valid open space to climb down.</span>")
+
+	return
 
 /mob/living/carbon/human/buckle_mob(mob/living/target, force = FALSE, check_loc = TRUE, buckle_mob_flags= NONE)
 	if(!is_type_in_typecache(target, can_ride_typecache))
