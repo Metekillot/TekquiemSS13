@@ -102,7 +102,7 @@
 			if(owner_human.bank_id == account.bank_id)
 				dat += "<b>My bank account code is: [account.code]</b>"
 				break
-	if(is_own_memories && owner.mind.character_connections)
+	if(is_own_memories && owner.mind.character_connections && owner.mind.character_connections.len)
 		dat += " "
 		dat += "<b>I've made some connections in the city:</b>"
 		for(var/datum/character_connection/connection in owner.mind.character_connections)
