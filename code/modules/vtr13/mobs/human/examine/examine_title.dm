@@ -22,7 +22,7 @@
 				my_gender = "woman"
 	
 	var/social_descriptor = "godlike"
-	if(is_face_visible())
+	if(!is_face_visible())
 		social_descriptor = "shrouded"
 	else
 		switch(get_total_social())
