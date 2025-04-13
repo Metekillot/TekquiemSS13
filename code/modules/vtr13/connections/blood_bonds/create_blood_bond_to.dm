@@ -1,5 +1,4 @@
 /mob/living/proc/create_blood_bond_to(mob/living/carbon/human/domitor, artificial = FALSE)
-	
 	if(!can_be_blood_bonded_by(domitor))
 		return 0
 	
@@ -48,8 +47,6 @@
 	if(!isghoul(src))
 		ghoul_response_domitor = tgui_alert(domitor, "Do you wish to turn [src] into a ghoul?.", "Confirmation", list("Yes", "No")) == "Yes"
 		ghoul_response_thrall = handle_ghouling(domitor, artificial, ghoul_response_domitor)
-
-
 
 	if(!artificial)
 		handle_insert_blood_bond_db(domitor, bond_type, thrall_description, domitor_description, existing_connection, purge_other_blood_bonds, ghoul_response_domitor, ghoul_response_thrall)
