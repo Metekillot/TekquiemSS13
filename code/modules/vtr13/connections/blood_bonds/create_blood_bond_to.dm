@@ -43,8 +43,12 @@
 		artificial = tgui_alert(src, "Do you wish to permanently enter into a third stage blood bond? This will remove all lower level blood bonds.", "Confirmation", list("Yes", "No")) == "Yes"
 
 	//Handle Ghouling
-	var/ghoul_response_domitor = tgui_alert(domitor, "Do you wish to turn [src] into a ghoul?.", "Confirmation", list("Yes", "No")) == "Yes"
-	var/ghoul_response_thrall = handle_ghouling(domitor, artificial, ghoul_response_domitor)
+	var/ghoul_response_domitor = FALSE
+	var/ghoul_response_thrall = FALSE
+	if(!isghoul(src))
+		ghoul_response_domitor = tgui_alert(domitor, "Do you wish to turn [src] into a ghoul?.", "Confirmation", list("Yes", "No")) == "Yes"
+		ghoul_response_thrall = handle_ghouling(domitor, artificial, ghoul_response_domitor)
+
 
 
 	if(!artificial)
