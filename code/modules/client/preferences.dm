@@ -309,7 +309,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	random_species()
 	random_character()
 	body_model = rand(1, 3)
-	true_experience = 500
+	true_experience = 50
 	real_name = random_unique_name(gender)
 	headshot_link = null // TFN EDIT
 	save_character()
