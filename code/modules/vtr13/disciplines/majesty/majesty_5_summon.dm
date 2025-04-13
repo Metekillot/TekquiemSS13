@@ -30,12 +30,13 @@
 	var/mob/living/victim
 
 	for(var/mob/living/player in GLOB.player_list)
-		if(player.true_real_name && player.true_real_name == current_name)
+		if(player.true_real_name && lowertext(player.true_real_name) == lowertext(current_name))
 			victim = player
 			break
 
 	if(!victim)
 		to_chat(owner, span_warning("Your leash does not find its collar; either the name is incorrect, or they are not in the area."))
+		return
 
 	if(!SSroll.opposed_roll(
 		owner,

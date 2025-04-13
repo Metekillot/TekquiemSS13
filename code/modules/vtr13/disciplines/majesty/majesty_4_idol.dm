@@ -13,14 +13,14 @@
 
 
 /datum/discipline_power/vtr/majesty/idol/post_gain()
-	the_glow = image('icons/effects/genetics.dmi', owner, "servitude", -MUTATIONS_LAYER)
+	the_glow = image('icons/effects/genetics.dmi', owner, "servitude", LUZHA_LAYER)
 	the_glow.appearance_flags = RESET_ALPHA
 	if(discipline.level >= 5)
 		idol_range = 6
 
 /datum/discipline_power/vtr/majesty/idol/activate()
 	. = ..()
-	for(var/mob/living/victim in viewers(charmed_status_debuff, owner))
+	for(var/mob/living/victim in viewers(charmed_status_debuff, owner) - owner)
 		if(!SSroll.opposed_roll(
 			owner,
 			victim,
@@ -33,6 +33,9 @@
 				to_chat(victim, span_notice("An obsession for [owner] briefly sparks but you manage to suppress it."))
 			continue
 		affect_target(victim)
+	
+	if(owner.client)
+		owner.client.images += the_glow
 
 /datum/discipline_power/vtr/majesty/idol/deactivate(atom/target, direct)
 	. = ..()
@@ -58,6 +61,8 @@
 		target.client.images |= the_glow
 		clients_affected += target.client
 
+	if(owner.client)
+		owner.client.images -= the_glow
 
 
 /datum/discipline_power/vtr/majesty/idol/proc/check_bullet_act(mob/living/target, obj/projectile/bullet, def_zone)

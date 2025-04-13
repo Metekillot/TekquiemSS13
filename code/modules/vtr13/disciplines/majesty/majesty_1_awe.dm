@@ -8,7 +8,7 @@
 	var/charmed_status_debuff = 3
 /datum/discipline_power/vtr/majesty/awe/activate()
 	. = ..()
-	for(var/mob/living/target in viewers(7,owner))
+	for(var/mob/living/target in viewers(7,owner) - owner)
 		if(!SSroll.opposed_roll(
 			owner,
 			target,

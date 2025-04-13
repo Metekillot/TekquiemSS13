@@ -1,5 +1,5 @@
 /datum/discipline_power/vtr/vigor/five
-	name = "Potence 5"
+	name = "Vigor 5"
 	desc = "The people could worship you as a god if you showed them this."
 
 	level = 5

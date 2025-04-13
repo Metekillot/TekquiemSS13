@@ -17,7 +17,7 @@
 
 /datum/discipline_power/vtr/majesty/entrancement/activate()
 	. = ..()
-	for(var/mob/living/target in viewers(entrancement_range,owner))
+	for(var/mob/living/target in viewers(entrancement_range,owner) - owner)
 		if(LAZYFIND(players_affected, target))
 			continue
 
