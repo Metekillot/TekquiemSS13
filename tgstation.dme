@@ -3511,6 +3511,7 @@
 #include "code\modules\vtr13\disciplines\auspex\auspex_3_spirits_touch.dm"
 #include "code\modules\vtr13\disciplines\auspex\auspex_4_lay_open_the_mind.dm"
 #include "code\modules\vtr13\disciplines\auspex\auspex_5_twilight_projection.dm"
+#include "code\modules\vtr13\disciplines\auspex\atom_procs\spirit_touch_description.dm"
 #include "code\modules\vtr13\disciplines\auspex\huds\update_auspex_hud_vtr.dm"
 #include "code\modules\vtr13\disciplines\celerity\celerity.dm"
 #include "code\modules\vtr13\disciplines\celerity\celerity_1.dm"
