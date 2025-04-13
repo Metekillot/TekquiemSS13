@@ -109,7 +109,7 @@
 	to_chat(parent_mob, span_userdanger("The urge to go to [final_destination.loc] fades."))
 	REMOVE_TRAIT(parent_mob, TRAIT_MUTE, MAJESTY_5_TRAIT)
 	REMOVE_TRAIT(parent_mob, TRAIT_DEAF, MAJESTY_5_TRAIT)
-	UnregisterSignal(parent, list(COMSIG_MOVABLE_MOVED, COMSIG_MOB_PRE_EMOTED, COMSIG_MOVABLE_Z_CHANGED))
+	UnregisterSignal(parent, list(COMSIG_MOVABLE_MOVED, COMSIG_MOB_PRE_EMOTED, COMSIG_MOVABLE_Z_CHANGED, COMSIG_ATOM_MOVABLE_TRANSFER_POINT_USE))
 	UnregisterSignal(source_power, COMSIG_MAJESTY_5_END)
 	if(parent_mob.client)
 		parent_mob.client.screen -= dial
