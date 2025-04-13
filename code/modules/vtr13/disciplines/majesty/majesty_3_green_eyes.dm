@@ -40,7 +40,7 @@
 
 	var/the_emotion = current_emotion
 	current_emotion = null
-	for(var/mob/living/victim in viewers(green_eyes_range, owner) - owner)
+	for(var/mob/living/victim in viewers(green_eyes_range, owner) - list(owner, target))
 		
 		if(!SSroll.opposed_roll(
 			owner,
