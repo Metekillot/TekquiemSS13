@@ -13,8 +13,8 @@
 
 
 /datum/discipline_power/vtr/majesty/idol/post_gain()
-	the_glow = image('icons/effects/genetics.dmi', owner, "servitude", LUZHA_LAYER)
-	the_glow.appearance_flags = RESET_ALPHA
+	the_glow = image('icons/effects/genetics.dmi', owner, "servitude", BELOW_MOB_LAYER)
+
 	if(discipline.level >= 5)
 		idol_range = 6
 
@@ -47,6 +47,9 @@
 	
 	for(var/mob/living/affected_target in mobs_affected)
 		remove_idol_regular(affected_target)
+	
+	if(owner.client)
+		owner.client.images -= the_glow
 
 
 /datum/discipline_power/vtr/majesty/idol/proc/affect_target(mob/living/target)
@@ -60,9 +63,6 @@
 	if(target.client)
 		target.client.images |= the_glow
 		clients_affected += target.client
-
-	if(owner.client)
-		owner.client.images -= the_glow
 
 
 /datum/discipline_power/vtr/majesty/idol/proc/check_bullet_act(mob/living/target, obj/projectile/bullet, def_zone)
