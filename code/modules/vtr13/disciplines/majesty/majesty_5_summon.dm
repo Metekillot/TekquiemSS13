@@ -14,7 +14,7 @@
 		return FALSE
 
 	power_in_use = TRUE
-	var/spoken_name = tgui_input_text(owner, "Speak a true name (must be exact)", "Majesty 5")
+	spoken_name = tgui_input_text(owner, "Speak a true name (must be exact)", "Majesty 5")
 	power_in_use = FALSE
 
 	if(!spoken_name)
