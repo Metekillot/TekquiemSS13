@@ -201,7 +201,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/discipline4type
 
 	//Character sheet stats
-	var/true_experience = 500
+	var/true_experience = 50
 	var/torpor_count = 0
 
 	//linked lists determining known Disciplines and their known ranks
