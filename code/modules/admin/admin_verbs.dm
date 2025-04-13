@@ -24,6 +24,7 @@ GLOBAL_PROTECT(admin_verbs_default)
 	/client/proc/grouper_set_end,
 	/client/proc/report_location,
 	/client/proc/grouper_get_path,
+	/client/proc/grouper_setup_path_dial,
 	#endif
 	/client/proc/fix_air				/*resets air in designated radius to its default atmos composition*/
 	)
@@ -1089,7 +1090,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 	src.stat_panel.send_message("create_debug")
 
-#ifdef  AREA_GROUPER_DEBUGGING
+#ifdef AREA_GROUPER_DEBUGGING
 /client/proc/grouper_set_start()
 	set category = "Debug"
 	set name = "ZZ Set pathfinder start"
@@ -1119,4 +1120,12 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	to_chat(usr, "In order to get from [SSarea_grouper.start_preset.loc] at [SSarea_grouper.start_preset]([SSarea_grouper.start_preset.x], [SSarea_grouper.start_preset.y], [SSarea_grouper.start_preset.z]) to [SSarea_grouper.end_preset.loc] at [SSarea_grouper.end_preset]([SSarea_grouper.end_preset.x], [SSarea_grouper.end_preset.y], [SSarea_grouper.end_preset.z]) I must go to the following points:")
 	for(var/turf/go_turf in turf_list)
 		to_chat(usr, "I need to go to the [go_turf]([go_turf.x], [go_turf.y], [go_turf.z]) in [go_turf.loc]")
+
+/client/proc/grouper_setup_path_dial()
+	set category = "Debug"
+	set name = "ZZ Summon Dial for path"
+	set desc = "Subject yourself to the Majesty 5 summon proc."
+	if(SSarea_grouper.end_preset)
+		to_chat(usr, "End preset not set!")
+	usr.AddComponent(/datum/component/summon_dial, SSarea_grouper.end_preset, usr)
 #endif
