@@ -9,9 +9,7 @@
 /datum/element/compulsion/Attach(datum/target, mob/living/aggressor, datum/dominate_act/act, custom_signals = null)
 	..()
 
-	if(!act || !istype(act, /datum/dominate_act))
-		return COMPONENT_INCOMPATIBLE
-	if(!isliving(target))
+	if(!act || !istype(act, /datum/dominate_act) || !isliving(target))
 		return COMPONENT_INCOMPATIBLE
 
 	act.apply(target, aggressor, src)

@@ -34,7 +34,7 @@
 	else
 		y_start_offset = screen_loc_params[1]
 
-	RegisterSignal(owner, COMSIG_UI_SHAKE_REMOVE, PROC_REF(remove_shake))
+	RegisterSignal(owner, COMSIG_ELEMENT_DETACH, PROC_REF(remove_shake))
 
 	START_PROCESSING(SSfastprocess, src)
 

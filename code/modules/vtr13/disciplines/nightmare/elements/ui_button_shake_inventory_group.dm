@@ -17,7 +17,3 @@
 	for( var/atom/movable/screen/inventory/inv_screen in p_human.hud_used.static_inventory)
 		inv_screen.AddComponent(/datum/component/ui_button_shake, p_human, intensity)
 
-/datum/element/ui_button_shake_inventory_group/Detach(datum/source, force)
-	SEND_SIGNAL(source, COMSIG_UI_SHAKE_REMOVE)
-	. = ..()
-

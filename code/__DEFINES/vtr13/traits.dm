@@ -23,15 +23,23 @@
 #define MAJESTY_5_TRAIT "majesty_5_trait"
 
 //Discipline related traits
+//auspex trait
 #define TRAIT_USING_AUSPEX "using_auspex"
 
+//protean traits
 #define TRAIT_EYES_VIOLATING_MASQUERADE "eyes_violating_masquerade"
 #define TRAIT_GECKO_GRIP "gecko_grip"
+
+//celerity traits
 #define TRAIT_QUICK_JUMP "quick_jump"
 
+//nightmare traits
 #define TRAIT_NO_QUICK_EQUIP "no_quick_equip"
-
 #define TRAIT_ATTENDING_CARNIVAL "attending_carnival"
+
+//Majesty traits
+#define TRAIT_ENRAPTURED "dominate_enraptured"
+#define TRAIT_CHARMED "majesty_charmed"
 
 //A bunch of dominate compel/command traits
 //hex: Think about adding these to the master list
@@ -39,7 +47,3 @@
 #define TRAIT_COMMAND_FALL "command_fall"
 #define TRAIT_COMMAND_BE_QUIET "command_be_quiet"
 #define TRAIT_COMMAND_SIT_DOWN "command_sit_down"
-
-#define TRAIT_ENRAPTURED "dominate_enraptured"
-
-#define TRAIT_CHARMED "majesty_charmed"

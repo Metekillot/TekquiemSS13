@@ -34,11 +34,11 @@
 //from base of mob/jump(): (atom/target, distance)
 #define COMSIG_MOB_LIVING_JUMP "mob_living_jump"
 
-
-#define COMSIG_UI_SHAKE_REMOVE "ui_shake_remove"
-
+//called in /datum/dominate_act/proc/request_early_removal
 #define COMSIG_DOMINATE_ACT_END_EARLY "dominate_act_end_early"
 
+//called in /datum/discipline_power/vtr/majesty/awe/deactivate
 #define COMSIG_COMPONENT_ENRAPTURE_REMOVE "component_enrapture_remove"
 
+//called in /datum/discipline_power/vtr/majesty/summon/proc/trigger_summon_end
 #define COMSIG_MAJESTY_5_END "majesty_5_end"

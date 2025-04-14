@@ -37,7 +37,3 @@
 		else if(istype(screen, /atom/movable/screen/resist))
 			screen.AddComponent(/datum/component/ui_button_shake, p_human, intensity)
 
-/datum/element/ui_button_shake_wide_button_group/Detach(datum/source, force)
-	SEND_SIGNAL(source, COMSIG_UI_SHAKE_REMOVE)
-	. = ..()
-

@@ -572,11 +572,15 @@
 	if(href_list["view_flavortext"])
 		tgui.holder = src
 		tgui.ui_interact(usr) //datum has a tgui component, here we open the window
+	// TFN EDIT ADDITION END
+
+	//VTR EDIT ADDITON START
 	if(href_list["view_flavortext_fake"])
 		examine_panel_fake.holder = src
 		examine_panel_fake.disguise = href_list["view_flavortext_fake"]
 		examine_panel_fake.ui_interact(usr) //datum has a tgui component, here we open the window
-	// TFN EDIT ADDITION END
+	//VTR EDIT ADDITON END
+
 	..() //end of this massive fucking chain. TODO: make the hud chain not spooky. - Yeah, great job doing that.
 
 
