@@ -734,14 +734,22 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				if (possible_new_disciplines.len && (true_experience >= 10))
 					dat += "<a href='byond://?_src_=prefs;preference=newchidiscipline;task=input'>Learn a new Discipline (10)</a><BR>"
 
-			if(true_experience >= 3 && slotlocked)
-				dat += "<a href='?_src_=prefs;preference=change_appearance;task=input'>Change Appearance (3)</a><BR>"
-			if(clane)
-				if(clane.name != "Caitiff")
-					if(generation_bonus)
-						dat += "<a href='?_src_=prefs;preference=reset_with_bonus;task=input'>Create new character with generation bonus ([generation]-[generation_bonus])</a><BR>"
+			dat += "<a href='byond://?_src_=prefs;preference=change_appearance;task=input'>Change Appearance</a><BR>"
+			if(generation_bonus)
+				dat += "<a href='byond://?_src_=prefs;preference=reset_with_bonus;task=input'>Create new character with generation bonus ([generation]-[generation_bonus])</a><BR>"
+			
+			// TFN EDIT ADDITION START
+			if(length(flavor_text) <= 110)
+				dat += "<BR><b>Flavor Text:</b> [flavor_text] <a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a><BR>"
+			else
+				dat += "<BR><b>Flavor Text:</b> [copytext_char(flavor_text, 1, 110)]... <a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a>"
+				dat += "<a href='byond://?_src_=prefs;preference=view_flavortext;task=input'>Show More</a><BR>"
+			dat += "<BR><b>OOC Notes:</b> [ooc_notes] <a href='byond://?_src_=prefs;preference=ooc_notes;task=input'>Change</a><BR>"
 
-			dat += "<BR><b>Flavor Text:</b> [flavor_text] <a href='?_src_=prefs;preference=flavor_text;task=input'>Change</a><BR>"
+			dat += "<br><b>Headshot(1:1):</b> <a href='byond://?_src_=prefs;preference=headshot;task=input'>Change</a>"
+			if(headshot_link != null)
+				dat += "<a href='byond://?_src_=prefs;preference=view_headshot;task=input'>View</a>"
+			// TFN EDIT ADDITION END
 
 			dat += "<h2>[make_font_cool("EQUIP")]</h2>"
 
@@ -792,7 +800,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 				dat += "<h3>[make_font_cool("SKIN")]</h3>"
 
-				dat += "<a href='?_src_=prefs;preference=s_tone;task=input'>[skin_tone]</a>"
+				dat += "<span style='border: 1px solid #161616; background-color: #[skin_tone];'>&nbsp;&nbsp;&nbsp;</span> <a href='byond://?_src_=prefs;preference=s_tone;task=input'>Change</a>"
+				dat += "&nbsp;<a href='byond://?_src_=prefs;preference=s_tone_preset;task=input'>Use Preset</a>"
 //				dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_SKIN_TONE]'>[(randomise[RANDOM_SKIN_TONE]) ? "Lock" : "Unlock"]</A>"
 				dat += "<br>"
 
@@ -1383,6 +1392,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 			HTML += "<tr bgcolor='[job.selection_color]'><td width='60%' align='right'>"
 			var/rank = job.title
+			// TFN EDIT START: alt job titles
+			var/displayed_rank = rank
+			if(length(job.alt_titles) && (rank in alt_titles_preferences))
+				displayed_rank = alt_titles_preferences[rank]
+			// TFN EDIT END
 			lastJob = job
 			if(is_banned_from(user.ckey, rank))
 				HTML += "<font color=red>[rank]</font></td><td><a href='byond://?_src_=prefs;bancheck=[rank]'> BANNED</a></td></tr>"
@@ -1417,10 +1431,17 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			if((job_preferences[SSjob.overflow_role] == JP_LOW) && (rank != SSjob.overflow_role) && !is_banned_from(user.ckey, SSjob.overflow_role))
 				HTML += "<font color=orange>[rank]</font></td><td></td></tr>"
 				continue
-			if((rank in GLOB.leader_positions) || (rank == "AI"))//Bold head jobs
-				HTML += "<b><span class='dark'>[rank]</span></b>"
+			
+			// TFN EDIT START: alt job titles
+			var/rank_title_line = "[displayed_rank]"
+			if(length(job.alt_titles) && (rank in GLOB.leader_positions))//Bold head jobs
+				rank_title_line = "<b><a href='byond://?_src_=prefs;preference=job;task=alt_title;job_title=[job.title]'>[rank_title_line]</a></b>"
+			else if(length(job.alt_titles))
+				rank_title_line = "<a href='byond://?_src_=prefs;preference=job;task=alt_title;job_title=[job.title]'>[rank_title_line]</a>"
 			else
-				HTML += "<span class='dark'>[rank]</span>"
+				rank_title_line = "<span class='dark'>[rank]</span>"
+			HTML += rank_title_line
+			// TFN EDIT END
 
 			HTML += "</td><td width='40%'>"
 
@@ -1845,7 +1866,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(slotlocked)
 						return
 
-					var/new_name = input(user, "Choose your character's name:", "Character Preference")  as text|null
+					if(real_name && alert(user, "WARNING: Changing your name will dissociate any existing character connections from this slot!", "WARNING", "Okay", "Cancel") == "Cancel")
+						return
+
+					var/new_name = tgui_input_text(user, "Choose your character's name:", "Character Preference", max_length = MAX_NAME_LEN)
 					if(new_name)
 						new_name = reject_bad_name(new_name)
 						if(new_name)
@@ -1859,7 +1883,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 					var/new_age = tgui_input_number(user, "Choose your character's biological age:\n([AGE_MIN]-[AGE_MAX])", "Character Preference", age, AGE_MAX, AGE_MIN, round_value = TRUE)
 					if(new_age)
-						age = clamp(new_age, AGE_MIN, AGE_MAX)
+						age = max(min( round(text2num(new_age)), AGE_MAX),AGE_MIN)
 						if (age > total_age)
 							total_age = age
 						update_preview_icon()
@@ -1876,7 +1900,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						update_preview_icon()
 
 				if("info_choose")
-					var/new_info_known = input(user, "Choose who knows your character:", "Fame")  as null|anything in list(INFO_KNOWN_UNKNOWN,INFO_KNOWN_CLAN_ONLY,INFO_KNOWN_FACTION,INFO_KNOWN_PUBLIC)
+					var/new_info_known = tgui_input_list(user, "Choose who knows your character:", "Fame", list(INFO_KNOWN_UNKNOWN, INFO_KNOWN_FACTION, INFO_KNOWN_PUBLIC))
 					if(new_info_known)
 						info_known = new_info_known
 
@@ -2016,7 +2040,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					else if(gender == FEMALE)
 						new_undershirt = tgui_input_list(user, "Choose your character's undershirt:", "Character Preference", GLOB.undershirt_f)
 					else
-						new_undershirt = input(user, "Choose your character's undershirt:", "Character Preference") as null|anything in GLOB.undershirt_list
+						new_undershirt = tgui_input_list(user, "Choose your character's undershirt:", "Character Preference", GLOB.undershirt_list)
 					if(new_undershirt)
 						undershirt = new_undershirt
 
@@ -2430,16 +2454,47 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					var/new_text = tgui_input_text(user, "What a Lover knows about me:", "Character Preference", max_length = 512)
 					if(new_text)
 						lover_text = trim(copytext_char(sanitize(new_text), 1, 512))
-
-				if("flavor_text")
-					var/new_flavor = input(user, "Choose your character's flavor text:", "Character Preference") as text|null
-					if(new_flavor)
-						flavor_text = trim(copytext_char(sanitize(new_flavor), 1, 512))
-
-				if("change_appearance")
-					if(!slotlocked)
+				if("ooc_notes")
+					var/new_ooc_notes = tgui_input_text(user, "Choose your character's OOC notes:", "Character Preference", ooc_notes, MAX_MESSAGE_LEN, TRUE, FALSE)
+					if(!length(new_ooc_notes))
 						return
+					ooc_notes = new_ooc_notes
+				if("flavor_text")
+					var/new_flavor = tgui_input_text(user, "Choose your character's flavor text:", "Character Preference", flavor_text, MAX_MESSAGE_LEN, TRUE, FALSE)
+					if(new_flavor)
+						flavor_text = new_flavor
+				if("view_flavortext")
+					var/datum/browser/popup = new(user, "[real_name]_flavortext", real_name, 500, 200)
+					popup.set_content(replacetext(flavor_text, "\n", "<BR>"))
+					popup.open(FALSE)
+					return
+				if("view_headshot")
+					var/list/dat = list("<table width='100%' height='100%'><td align='center' valign='middle'><img src='[headshot_link]' width='250px' height='250px'></td></table>")
+					var/datum/browser/popup = new(user, "[real_name]_headshot", "<div align='center'>Headshot</div>", 310, 330)
+					popup.set_content(dat.Join())
+					popup.open(FALSE)
+					return
 
+				if("headshot")
+					to_chat(user, span_notice("Please use a relatively SFW image of the head and shoulder area to maintain immersion level. Lastly, ["<b>do not use a real life photo or use any image that is less than serious.</b>"]"))
+					to_chat(user, span_notice("If the photo doesn't show up properly in-game, ensure that it's a direct image link that opens properly in a browser."))
+					to_chat(user, span_notice("Resolution: 250x250 pixels."))
+					var/new_headshot_link = tgui_input_text(user, "Input the headshot link (https, hosts: gyazo, discord, lensdump, imgbox, catbox):", "Headshot", headshot_link, encode = FALSE)
+					if(isnull(new_headshot_link))
+						return
+					if(!length(new_headshot_link))
+						headshot_link = null
+						ShowChoices(user)
+						return
+					if(!valid_headshot_link(user, new_headshot_link))
+						headshot_link = null
+						ShowChoices(user)
+						return
+					headshot_link = new_headshot_link
+					to_chat(user, span_notice("Successfully updated headshot picture!"))
+					log_game("[user] has set their Headshot image to '[headshot_link]'.")
+				// TFN EDIT ADDITION END
+				if("change_appearance")
 					slotlocked = FALSE
 
 				if("reset_with_bonus")
@@ -2481,17 +2536,18 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						SetQuirks(user)
 						var/newtype = GLOB.species_list[result]
 						pref_species = new newtype()
-						if(pref_species.id == "ghoul" || pref_species.id == "human" || pref_species.id == "kuei-jin")
-							discipline_types = list()
-							discipline_levels = list()
-						if(pref_species.id == "kindred")
-							qdel(clane)
-							clane = new /datum/vampireclane/brujah()
-							discipline_types = list()
-							discipline_levels = list()
-							for (var/i in 1 to clane.clane_disciplines.len)
-								discipline_types += clane.clane_disciplines[i]
-								discipline_levels += 1
+						switch(pref_species.id)
+							if("ghoul","human","kuei-jin")
+								discipline_types.Cut()
+								discipline_levels.Cut()
+							if("kindred")
+								qdel(clane)
+								clane = new /datum/vampireclane/vtr/daeva()
+								discipline_types.Cut()
+								discipline_levels.Cut()
+								for (var/i in 1 to clane.clane_disciplines.len)
+									discipline_types += clane.clane_disciplines[i]
+									discipline_levels += 1
 						//Now that we changed our species, we must verify that the mutant colour is still allowed.
 						var/temp_hsv = RGBtoHSV(features["mcolor"])
 						if(features["mcolor"] == "#000" || (!(MUTCOLORS_PARTSONLY in pref_species.species_traits) && ReadHSV(temp_hsv)[3] < ReadHSV("#7F7F7F")[3]))
@@ -2601,7 +2657,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(slotlocked)
 						return
 
-					var/new_s_tone = input(user, "Choose your character's skin-tone:", "Character Preference")  as null|anything in GLOB.skin_tones
+					var/new_s_tone = input(user, "Choose your character's skin-tone:", "Character Preference","#"+skin_tone) as color|null
 					if(new_s_tone)
 						skin_tone = sanitize_hexcolor(new_s_tone)
 
@@ -3087,7 +3143,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.true_real_name = real_name
 	character.name = character.real_name
 	character.diablerist = diablerist
-
+	character.headshot_link = headshot_link // TFN EDIT
 	character.physique = physique
 	character.dexterity = dexterity
 	character.social = social
