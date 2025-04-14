@@ -27,14 +27,14 @@ SUBSYSTEM_DEF(overwatch)
 
 	var/datum/discord_embed/embed = new()
 	embed.title = "OVERWATCH"
-	embed.description = "OVERWATCH"
+	embed.description = message
 	embed.author = key_name(source)
 
 	var/client/client = CLIENT_FROM_VAR(source)
 	if(client.holder)
-		embed.description += " - Admin Action"
+		embed.title += " - Admin Action"
 	else
-		embed.description += " - Player Action"
+		embed.title += " - Player Action"
 
 	var/list/admin_counts = get_admin_counts(R_BAN)
 	var/list/allmins = admin_counts["total"]
@@ -45,19 +45,24 @@ SUBSYSTEM_DEF(overwatch)
 	var/admin_text = ""
 	var/player_count = "**Total Clients**: [length(GLOB.clients)], **Player Mobs**: [length(GLOB.player_list)]"
 
-	admin_text += "**Total**: [length(allmins)], "
-	admin_text += "**Active**: [english_list(active_admins, "N/A")], "
-	admin_text += "**Stealthed**: [english_list(stealth_admins, "N/A")], "
-	admin_text += "**AFK**: [english_list(afk_admins, "N/A")], "
-	admin_text += "**Lacks +BAN**: [english_list(other_admins, "N/A")]."
+	if(length(allmins))
+		admin_text += "**Total**: [length(allmins)], "
+	if(length(active_admins))
+		admin_text += "**Active**: [english_list(active_admins, "N/A")], "
+	if(length(stealth_admins))
+		admin_text += "**Stealthed**: [english_list(stealth_admins, "N/A")], "
+	if(length(afk_admins))
+		admin_text += "**AFK**: [english_list(afk_admins, "N/A")], "
+	if(length(other_admins))
+		admin_text += "**Lacks +BAN**: [english_list(other_admins, "N/A")]."
 
 	embed.fields = list(
 		"CKEY" = key_name(source, include_link = FALSE),
 		"PLAYERS" = player_count,
-		"ROUND ID" = GLOB.round_id,
-		"ROUND TIME" = ROUND_TIME(),
-		"ADMINS" = admin_text,
-		"MESSAGE" = message,
+		"ROUND ID & TIME" = "[GLOB.round_id], [ROUND_TIME()]"
 	)
+
+	if(length(admin_text))
+		embed.fields["ADMINS"] = admin_text
 
 	return embed
