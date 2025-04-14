@@ -2459,10 +2459,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(!length(new_ooc_notes))
 						return
 					ooc_notes = new_ooc_notes
+					SSoverwatch.record_action(user, "**OOC NOTES**: [html_decode(ooc_notes)]")
 				if("flavor_text")
 					var/new_flavor = tgui_input_text(user, "Choose your character's flavor text:", "Character Preference", flavor_text, MAX_FLAVOR_LEN, multiline = TRUE)
 					if(new_flavor)
 						flavor_text = new_flavor
+					SSoverwatch.record_action(user, "**FLAVORTEXT**: [html_decode(flavor_text)]")
+
 				if("view_flavortext")
 					var/datum/browser/popup = new(user, "[real_name]_flavortext", real_name, 500, 200)
 					popup.set_content(replacetext(flavor_text, "\n", "<BR>"))
@@ -2492,7 +2495,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						return
 					headshot_link = new_headshot_link
 					to_chat(user, span_notice("Successfully updated headshot picture!"))
-					log_game("[user] has set their Headshot image to '[headshot_link]'.")
+					log_game("[key_name(user)] has set their Headshot image to '[headshot_link]'.")
+					SSoverwatch.record_action(user, "[key_name(user)] has set their Headshot image to [headshot_link]")
+
 				// TFN EDIT ADDITION END
 				if("change_appearance")
 					slotlocked = FALSE
