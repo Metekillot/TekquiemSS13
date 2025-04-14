@@ -570,6 +570,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		return
 
 	//If we aren't an admin, and the flag is set
+	/*
 	if(CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey])
 		var/living_recs = CONFIG_GET(number/panic_bunker_living)
 		//Relies on pref existing, but this proc is only called after that occurs, so we're fine.
@@ -581,6 +582,25 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			var/message = CONFIG_GET(string/panic_bunker_message)
 			message = replacetext(message, "%minutes%", living_recs)
 			to_chat(src, message)
+			var/list/connectiontopic_a = params2list(connectiontopic)
+			var/list/panic_addr = CONFIG_GET(string/panic_server_address)
+			if(panic_addr && !connectiontopic_a["redirect"])
+				var/panic_name = CONFIG_GET(string/panic_server_name)
+				to_chat(src, "<span class='notice'>Sending you to [panic_name ? panic_name : panic_addr].</span>")
+				winset(src, null, "command=.options")
+				src << link("[panic_addr]?redirect=1")
+			qdel(query_client_in_db)
+			qdel(src)
+			return
+	*/
+	var/client_is_in_db = query_client_in_db.NextRow()
+	// TFN EDIT ADDITION START: code borrowed from bubberstation & skyrat
+	if(!client_is_in_db)
+		if (CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey] && !(ckey in GLOB.bunker_passthrough))
+			log_access("Failed Login: [key] - [address] - New account attempting to connect during panic bunker")
+			message_admins("<span class='adminnotice'>Failed Login: [key] - [address] - New account attempting to connect during panic bunker</span>")
+			var/forumurl = CONFIG_GET(string/forumurl)
+			to_chat_immediate(src, {"<span class='notice'>Hi! This server is whitelist-enabled. <br> <br> To join our community, apply through the Discord: <a href=' [forumurl] '>[forumurl]</a></span>"})
 			var/list/connectiontopic_a = params2list(connectiontopic)
 			var/list/panic_addr = CONFIG_GET(string/panic_server_address)
 			if(panic_addr && !connectiontopic_a["redirect"])
@@ -607,6 +627,10 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		if(!account_join_date)
 			account_join_date = "Error"
 			account_age = -1
+		// TFN EDIT ADDITION START: code borrowed from bubberstation & skyrat
+		else if(ckey in GLOB.bunker_passthrough)
+			GLOB.bunker_passthrough -= ckey
+		// TFN EDIT ADDITION END
 	qdel(query_client_in_db)
 	var/datum/db_query/query_get_client_age = SSdbcore.NewQuery(
 		"SELECT firstseen, DATEDIFF(Now(),firstseen), accountjoindate, DATEDIFF(Now(),accountjoindate) FROM [format_table_name("player")] WHERE ckey = :ckey",

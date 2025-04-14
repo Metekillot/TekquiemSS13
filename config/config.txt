@@ -553,3 +553,7 @@ TGUI_MAX_CHUNK_COUNT 32
 
 ## Sets the webhook URL for the Overwatch System
 #DISCORD_OVERWATCH_WEBHOOK https://discord.com/api/webhooks/XXX/XXX
+
+
+## Sets the potential server url for the discord tgs commands
+#DISCORD_SERVER_TARGET 127.0.0.1:1000

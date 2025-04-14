@@ -523,3 +523,6 @@
 
 /datum/config_entry/string/discord_overwatch_webhook
 	protection = CONFIG_ENTRY_LOCKED | CONFIG_ENTRY_HIDDEN
+
+/datum/config_entry/string/discord_server_target
+	protection = CONFIG_ENTRY_LOCKED | CONFIG_ENTRY_HIDDEN
