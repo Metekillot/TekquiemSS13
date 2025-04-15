@@ -1779,6 +1779,7 @@
 /area/vtm/vtr/elysium/interior/floor_three/central/castle_elysium)
 "bNI" = (
 /obj/effect/decal/wallpaper/stone/low,
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/sidewalk,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northeast/graveyard)
 "bOe" = (
@@ -4007,6 +4008,7 @@
 	pixel_y = 5
 	},
 /obj/effect/decal/trash,
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/concrete,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "dMD" = (
@@ -5573,12 +5575,9 @@
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/masquerade/exterior/floor_two/northeast/northeast_long_beach/inaccessible)
 "fgS" = (
-/obj/structure/railing{
-	pixel_x = 0;
-	pixel_y = 4
-	},
-/turf/open/floor/plating/sidewalk/rich,
-/area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
+/obj/effect/landmark/npcwall,
+/turf/open/floor/sepia,
+/area/vtm/vtr/masquerade/interior/ground_floor/northeast/hotel)
 "fhe" = (
 /obj/machinery/light/prince{
 	dir = 4
@@ -8254,6 +8253,10 @@
 /obj/item/pen,
 /turf/open/floor/plating/parquetry,
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/police_station)
+"hKY" = (
+/obj/effect/landmark/npcwall,
+/turf/open/floor/plating/asphalt,
+/area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "hLa" = (
 /obj/structure/fluff/hedge{
 	layer = 4.1
@@ -8863,6 +8866,7 @@
 "iqx" = (
 /obj/structure/vampdoor/wood,
 /obj/effect/turf_decal/siding/wideplating/dark,
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northeast/graveyard)
 "iqG" = (
@@ -9910,6 +9914,10 @@
 /obj/machinery/light/floor,
 /turf/open/floor/mineral/plastitanium/red,
 /area/vtm/vtr/elysium/interior/floor_two/central/nightclub_elysium)
+"jpj" = (
+/obj/effect/landmark/npcwall,
+/turf/open/floor/mineral/plastitanium,
+/area/vtm/vtr/masquerade/exterior/ground_floor/central/central_long_beach)
 "jpK" = (
 /obj/structure/flora/ausbushes/ywflowers{
 	layer = 4.9;
@@ -10578,6 +10586,7 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/old_house)
 "kcP" = (
 /obj/effect/turf_decal/siding/wood,
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plasteel/stairs/medium,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "kdb" = (
@@ -11175,6 +11184,7 @@
 /obj/effect/turf_decal/siding/white{
 	dir = 1
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "kLE" = (
@@ -13296,6 +13306,7 @@
 /obj/structure/railing{
 	dir = 4
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plasteel/stairs/medium,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "mMf" = (
@@ -13833,6 +13844,7 @@
 /obj/structure/stairs/north{
 	dir = 8
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/concrete,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "nkU" = (
@@ -15993,6 +16005,7 @@
 /obj/effect/turf_decal/siding/white{
 	dir = 1
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "pdw" = (
@@ -16545,6 +16558,10 @@
 	},
 /turf/closed/wall/vampwall/city/low,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northeast/graveyard)
+"pGX" = (
+/obj/effect/landmark/npcwall,
+/turf/open/floor/plating/sidewalk,
+/area/vtm/vtr/masquerade/exterior/ground_floor/northeast/northeast_long_beach)
 "pHd" = (
 /obj/structure/chair/plastic{
 	dir = 4
@@ -18221,6 +18238,10 @@
 	},
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/police_station)
+"rkg" = (
+/obj/effect/landmark/npcwall,
+/turf/open/floor/plating/sidewalk,
+/area/vtm/vtr/masquerade/exterior/ground_floor/northeast/graveyard)
 "rkx" = (
 /obj/effect/decal/bordur{
 	dir = 8
@@ -19159,6 +19180,7 @@
 /obj/effect/turf_decal/siding/white{
 	dir = 1
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "rYa" = (
@@ -20425,12 +20447,11 @@
 /turf/open/floor/plating/vampgrass,
 /area/vtm/vtr/masquerade/interior/basement/southeast/queen_lilith)
 "tdh" = (
-/obj/effect/turf_decal/siding/wideplating{
-	dir = 1;
-	pixel_x = 0;
-	pixel_y = 3
+/obj/machinery/light/small{
+	pixel_y = 32
 	},
-/turf/open/openspace,
+/obj/effect/landmark/npcwall,
+/turf/open/floor/plating/concrete,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "tdX" = (
 /obj/structure/chair/sofa/corp/corner{
@@ -21785,6 +21806,10 @@
 	},
 /turf/open/floor/plating/parquetry,
 /area/vtm/vtr/masquerade/interior/floor_two/southwest/clinic)
+"ujT" = (
+/obj/effect/landmark/npcwall,
+/turf/open/floor/plasteel/stairs/medium,
+/area/vtm/vtr/masquerade/exterior/ground_floor/central/central_long_beach)
 "ujY" = (
 /obj/vampire_car/retro/rand{
 	access = "giovanni";
@@ -23033,6 +23058,7 @@
 /obj/structure/railing{
 	dir = 4
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "vqX" = (
@@ -23211,6 +23237,7 @@
 	pixel_x = 0;
 	pixel_y = 9
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/hotel)
 "vyF" = (
@@ -23299,6 +23326,7 @@
 /obj/structure/railing{
 	dir = 8
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "vCN" = (
@@ -24094,6 +24122,7 @@
 /obj/structure/railing{
 	dir = 8
 	},
+/obj/effect/landmark/npcwall,
 /turf/open/floor/plasteel/stairs/medium,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "wuu" = (
@@ -120049,7 +120078,7 @@ dnP
 vJp
 qYV
 vis
-vgN
+tdh
 kvC
 mNy
 mNy
@@ -121557,9 +121586,9 @@ mqM
 wyn
 lHP
 esw
-uEw
-uEw
-nbT
+jpj
+jpj
+ujT
 cpj
 hcV
 hcV
@@ -121814,9 +121843,9 @@ nYe
 uqz
 guV
 esw
-uEw
-uEw
-nbT
+jpj
+jpj
+ujT
 cpj
 hcV
 hcV
@@ -122071,8 +122100,8 @@ nYe
 ieW
 lTf
 qUJ
-uEw
-uEw
+jpj
+jpj
 eNM
 dRn
 hcV
@@ -122328,9 +122357,9 @@ nYe
 gVz
 lHP
 esw
-uEw
-uEw
-nbT
+jpj
+jpj
+ujT
 cpj
 hcV
 hcV
@@ -122585,9 +122614,9 @@ xzQ
 cnx
 guV
 esw
-uEw
-uEw
-nbT
+jpj
+jpj
+ujT
 cpj
 hcV
 hcV
@@ -128229,7 +128258,7 @@ iSK
 thT
 bAz
 cVr
-cpX
+fgS
 vyy
 cpX
 cpX
@@ -130285,7 +130314,7 @@ oMt
 thT
 bAz
 upv
-cpX
+fgS
 vyy
 cpX
 cpX
@@ -131163,7 +131192,7 @@ caz
 qAJ
 lZe
 pcR
-vur
+hKY
 kcP
 rhb
 rhb
@@ -133099,9 +133128,9 @@ gkm
 ure
 nQr
 lDa
-lDa
-lDa
-lDa
+pGX
+pGX
+pGX
 dZG
 xUY
 xUY
@@ -142882,7 +142911,7 @@ uSr
 uSr
 jRo
 iqx
-pBr
+rkg
 pBr
 pBr
 pBr
@@ -151899,7 +151928,7 @@ vur
 vrE
 tsr
 dEv
-tdh
+fQR
 mXc
 mXc
 mXc
@@ -152156,7 +152185,7 @@ vur
 vrE
 tsr
 tsr
-fgS
+gVB
 mXc
 mXc
 mXc
@@ -152413,7 +152442,7 @@ ppz
 vrE
 tsr
 tsr
-fgS
+gVB
 mXc
 mXc
 mXc
@@ -152670,7 +152699,7 @@ vur
 vrE
 tsr
 tsr
-fgS
+gVB
 mXc
 mXc
 mXc
@@ -152927,7 +152956,7 @@ vur
 cty
 wfv
 mnk
-tdh
+fQR
 mXc
 mXc
 mXc
