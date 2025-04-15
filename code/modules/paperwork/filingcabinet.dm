@@ -1,13 +1,9 @@
 /* Filing cabinets!
  * Contains:
- *		Filing Cabinets
- *		Security Record Cabinets
- *		Medical Record Cabinets
- *		Employment Contract Cabinets
- *		Filing Cabinets
- *		Security Record Cabinets
- *		Medical Record Cabinets
- *		Employment Contract Cabinets
+ * Filing Cabinets
+ * Security Record Cabinets
+ * Medical Record Cabinets
+ * Employment Contract Cabinets
  */
 
 
@@ -33,7 +29,6 @@
 
 /obj/structure/filingcabinet/filingcabinet //not changing the path to avoid unnecessary map issues, but please don't name stuff like this in the future -Pete
 	icon_state = "tallcabinet"
-
 
 /obj/structure/filingcabinet/Initialize(mapload)
 	. = ..()
@@ -85,6 +80,7 @@
 	for(var/obj/item/content in src)
 		data["contents"] += "[content]"
 		data["contents_ref"] += "[REF(content)]"
+
 	return data
 
 /obj/structure/filingcabinet/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
@@ -106,7 +102,6 @@
 	if(anchored)
 		return attack_self_tk(user)
 	return ..()
-
 
 /obj/structure/filingcabinet/attack_self_tk(mob/user)
 	if(contents.len)
@@ -225,4 +220,3 @@ GLOBAL_LIST_EMPTY(employmentCabinets)
 		fillCurrent()
 		virgin = FALSE
 	return ..()
-
