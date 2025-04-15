@@ -487,7 +487,7 @@
 	icon_state = "painting3"
 
 /obj/structure/jesuscross
-	name = "Jesus Christ on a cross"
+	name = "crucifix"
 	desc = "Jesus said, “Father, forgive them, for they do not know what they are doing.” And they divided up his clothes by casting lots (Luke 23:34)."
 	icon = 'code/modules/wod13/64x64.dmi'
 	icon_state = "cross"
