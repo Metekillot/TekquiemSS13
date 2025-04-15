@@ -17,11 +17,6 @@
 	protected_zone_id = "theatre_backdoor"
 
 /obj/effect/vip_barrier/elysium/check_entry_permission_custom(var/mob/living/carbon/human/entering_mob)
-	if(iskindred(entering_mob))
-		return TRUE
-	return FALSE
-
-/obj/effect/vip_barrier/elysium_2/check_entry_permission_custom(mob/living/carbon/human/entering_mob)
 	if(iskindred(entering_mob) || isghoul(entering_mob))
 		return TRUE
 	return FALSE

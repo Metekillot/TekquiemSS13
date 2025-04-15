@@ -19,13 +19,6 @@ GLOBAL_PROTECT(admin_verbs_default)
 	/client/proc/stop_sounds,
 	/client/proc/mark_datum_mapview,
 	/client/proc/debugstatpanel,
-	#ifdef AREA_GROUPER_DEBUGGING
-	/client/proc/grouper_set_start,
-	/client/proc/grouper_set_end,
-	/client/proc/report_location,
-	/client/proc/grouper_get_path,
-	/client/proc/grouper_setup_path_dial,
-	#endif
 	/client/proc/fix_air				/*resets air in designated radius to its default atmos composition*/
 	)
 GLOBAL_LIST_INIT(admin_verbs_admin, world.AVerbsAdmin())
@@ -97,7 +90,8 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/client/proc/resetasaycolor,
 	/client/proc/toggleadminhelpsound,
 	/client/proc/respawn_character,
-	/datum/admins/proc/open_borgopanel
+	/datum/admins/proc/open_borgopanel,
+	/client/proc/cmd_admin_set_dwelling_ratios, /*Home invastion house ratios */
 	)
 GLOBAL_LIST_INIT(admin_verbs_ban, list(/client/proc/unban_panel, /client/proc/ban_panel, /client/proc/stickybanpanel))
 GLOBAL_PROTECT(admin_verbs_ban)
@@ -124,7 +118,6 @@ GLOBAL_LIST_INIT(admin_verbs_fun, list(
 	/client/proc/mass_zombie_cure,
 	/client/proc/polymorph_all,
 	/client/proc/show_tip,
-	/client/proc/roll_dice_vtm,
 	/client/proc/smite,
 	/client/proc/admin_away,
 	/client/proc/toggle_RMB
@@ -498,7 +491,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 	var/msg = "<span class='adminnotice'><b>Global Masquerade Adjustment: [key_name_admin(usr)] has adjusted Global masquerade from [last_global_mask] to [changed_mask] with the value of : [value]. Real Masquerade Value with the other possible variables : [SSmasquerade.total_level]</b></span>"
 	log_admin("Global MasqAdjust: [key_name(usr)] has adjusted Global masquerade from [last_global_mask] to [changed_mask] with the value of : [value]. Real Masquerade Value with the other possible variables : [SSmasquerade.total_level]")
-	SSoverwatch.record_action(usr, "Global MasqAdjust: [key_name(usr)] has adjusted Global masquerade from [last_global_mask] to [changed_mask] with the value of : [value]. Real Masquerade Value with the other possible variables : [SSmasquerade.total_level]")
 	message_admins(msg)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Global Adjust Masquerade")
 
@@ -526,7 +518,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	log_admin("MasqAdjust: [key_name(usr)] has adjusted [key_name(M)]'s masquerade by [value] to [M.masquerade]")
 	message_admins(msg)
 	admin_ticket_log(M, msg)
-	SSoverwatch.record_action(usr, "MasqAdjust: [key_name(usr)] has adjusted [key_name(M)]'s masquerade by [value] to [M.masquerade]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Adjust Masquerade")
 
 /client/proc/cmd_admin_adjust_humanity(mob/living/carbon/human/M in GLOB.player_list)
@@ -556,7 +547,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	log_admin("HumanityAdjust: [key_name_admin(usr)] has adjusted [key_name(M)]'s [is_enlightenment ? "Enlightenment" : "Humanity"] by [is_enlightenment ? -value : value] to [M.humanity]")
 	message_admins(msg)
 	admin_ticket_log(M, msg)
-	SSoverwatch.record_action(usr, "HumanityAdjust: [key_name_admin(usr)] has adjusted [key_name(M)]'s Humanity by [value] to [M.humanity]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Adjust Humanity")
 
 /client/proc/reward_exp()
@@ -583,7 +573,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 						message_admins("[ADMIN_LOOKUPFLW(usr)] rewarded [ADMIN_LOOKUPFLW(exper)] with [amount] experience points. Reason: [reason]")
 						log_admin("[key_name(usr)] rewarded [key_name(exper)] with [amount] experience points. Reason: [reason]")
-						SSoverwatch.record_action(usr, "[key_name(usr)] rewarded [key_name(exper)] with [amount] experience points. Reason: [reason]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Reward Experience") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/grant_whitelist()
@@ -612,7 +601,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 					SSwhitelists.add_whitelist(whitelistee, whitelist, usr.ckey, ticket_link, approval_reason)
 					message_admins("[key_name_admin(usr)] gave [whitelistee] the [whitelist] whitelist. Reason: [approval_reason]")
 					log_admin("[key_name(usr)] gave [whitelistee] the [whitelist] whitelist. Reason: [approval_reason]")
-					SSoverwatch.record_action(usr, "[key_name(usr)] gave [whitelistee] the [whitelist] whitelist. Reason: [approval_reason]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Grant Whitelist") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/grant_discipline()
@@ -647,7 +635,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 					message_admins("[ADMIN_LOOKUPFLW(usr)] gave [ADMIN_LOOKUPFLW(player)] the Discipline [discipline.name] at rank [discipline.level]. Reason: [reason]")
 					log_admin("[key_name(usr)] gave [key_name(player)] the Discipline [discipline.name] at rank [discipline.level]. Reason: [reason]")
-					SSoverwatch.record_action(usr, "[key_name(usr)] gave [key_name(player)] the Discipline [discipline.name] at rank [discipline.level]. Reason: [reason]")
 
 					if ((giving_discipline_level > 0) && player.mob)
 						if (ishuman(player.mob))
@@ -688,7 +675,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 				message_admins("[ADMIN_LOOKUPFLW(usr)] removed the Discipline [discipline.name] from [ADMIN_LOOKUPFLW(player)]. Reason: [reason]")
 				log_admin("[key_name(usr)] removed the Discipline [discipline.name] from [key_name(player)]. Reason: [reason]")
-				SSoverwatch.record_action(usr, "[key_name(usr)] removed the Discipline [discipline.name] from [key_name(player)]. Reason: [reason]")
 
 				qdel(discipline)
 
@@ -802,7 +788,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	message_admins("[ADMIN_LOOKUPFLW(usr)] creating an admin explosion at [epicenter.loc].")
 	log_admin("[key_name(usr)] created an admin explosion at [epicenter.loc].")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Drop Bomb") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-	SSoverwatch.record_action(usr, "[key_name(usr)] created an admin explosion at [epicenter.loc].")
 
 /client/proc/drop_dynex_bomb()
 	set category = "Admin.Fun"
@@ -815,7 +800,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		dyn_explosion(epicenter, ex_power)
 		message_admins("[ADMIN_LOOKUPFLW(usr)] creating an admin explosion at [epicenter.loc].")
 		log_admin("[key_name(usr)] created an admin explosion at [epicenter.loc].")
-		SSoverwatch.record_action(usr, "[key_name(usr)] created an admin explosion at [epicenter.loc].")
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Drop Dynamic Bomb") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/get_dynex_range()
@@ -916,7 +900,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Give Spell") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	log_admin("[key_name(usr)] gave [key_name(T)] the spell [S].")
-	SSoverwatch.record_action(usr, "[key_name(usr)] gave [key_name(T)] the spell [S].")
 	message_admins("<span class='adminnotice'>[key_name_admin(usr)] gave [key_name_admin(T)] the spell [S].</span>")
 
 	S = spell_list[S]
@@ -936,7 +919,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		if(S)
 			T.mind.RemoveSpell(S)
 			log_admin("[key_name(usr)] removed the spell [S] from [key_name(T)].")
-			SSoverwatch.record_action(usr, "[key_name(usr)] removed the spell [S] from [key_name(T)].")
 			message_admins("<span class='adminnotice'>[key_name_admin(usr)] removed the spell [S] from [key_name_admin(T)].</span>")
 			SSblackbox.record_feedback("tally", "admin_verb", 1, "Remove Spell") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -953,7 +935,6 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	T.ForceContractDisease(new D, FALSE, TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Give Disease") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	log_admin("[key_name(usr)] gave [key_name(T)] the disease [D].")
-	SSoverwatch.record_action(usr, "[key_name(usr)] gave [key_name(T)] the disease [D].")
 	message_admins("<span class='adminnotice'>[key_name_admin(usr)] gave [key_name_admin(T)] the disease [D].</span>")
 
 /client/proc/object_say(obj/O in world)
@@ -1101,43 +1082,3 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	set category = "Debug"
 
 	src.stat_panel.send_message("create_debug")
-
-#ifdef AREA_GROUPER_DEBUGGING
-/client/proc/grouper_set_start()
-	set category = "Debug"
-	set name = "ZZ Set pathfinder start"
-	set desc = "Set pathfinder start."
-	SSarea_grouper.start_preset = get_turf(usr)
-
-/client/proc/grouper_set_end()
-	set category = "Debug"
-	set name = "ZZ Set pathfinder end"
-	set desc = "Set pathfinder end."
-	SSarea_grouper.end_preset = get_turf(usr)
-
-/client/proc/report_location()
-	set category = "Debug"
-	set name = "ZZ Output Location"
-	set desc = "Output your current location."
-	var/turf/our_turf = get_turf(usr)
-	to_chat(usr, "Your location: [our_turf]([our_turf.x], [our_turf.y], [our_turf.z])")
-
-/client/proc/grouper_get_path()
-	set category = "Debug"
-	set name = "ZZ Get Area Group Path"
-	set desc = "Get the path to where you want to go."
-	var/list/turf_list = SSarea_grouper.get_path_debug()
-	if(!turf_list)
-		return
-	to_chat(usr, "In order to get from [SSarea_grouper.start_preset.loc] at [SSarea_grouper.start_preset]([SSarea_grouper.start_preset.x], [SSarea_grouper.start_preset.y], [SSarea_grouper.start_preset.z]) to [SSarea_grouper.end_preset.loc] at [SSarea_grouper.end_preset]([SSarea_grouper.end_preset.x], [SSarea_grouper.end_preset.y], [SSarea_grouper.end_preset.z]) I must go to the following points:")
-	for(var/turf/go_turf in turf_list)
-		to_chat(usr, "I need to go to the [go_turf]([go_turf.x], [go_turf.y], [go_turf.z]) in [go_turf.loc]")
-
-/client/proc/grouper_setup_path_dial()
-	set category = "Debug"
-	set name = "ZZ Summon Dial for path"
-	set desc = "Subject yourself to the Majesty 5 summon proc."
-	if(SSarea_grouper.end_preset)
-		to_chat(usr, "End preset not set!")
-	usr.AddComponent(/datum/component/summon_dial, SSarea_grouper.end_preset, usr)
-#endif

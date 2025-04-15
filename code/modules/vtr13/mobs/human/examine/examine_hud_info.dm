@@ -1,1 +1,0 @@
-/mob/living/carbon/human/proc/examine_hud_info(mob/user)

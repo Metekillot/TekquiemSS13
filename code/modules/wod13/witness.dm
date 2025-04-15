@@ -39,8 +39,7 @@
 	var/area/crime_location = get_area(location)
 	var/direction = get_cardinal_direction(location.x, location.y)
 	var/message = ""
-	if(!isMasqueradeEnforced(crime_location))
-		return
+
 	switch(crime)
 		if("shooting")
 			if(last_shooting + 15 SECONDS < world.time)
@@ -52,6 +51,8 @@
 				message = "Active firefight in progress at [crime_location.name], wounded civilians, the [direction], [location.x]:[location.y]..."
 		if("murder")
 			message = "Murder at [crime_location.name], to the [direction], [location.x]:[location.y]..."
+		if("burglary")
+			message = "Burglary reported by automated security device at [crime_location.name], the [direction], [location.x]:[location.y]..."
 
 	if(message != "")
 		for(var/obj/item/police_radio/radio in GLOB.police_radios)
@@ -72,7 +73,6 @@
 	. = ..()
 	var/datum/atom_hud/abductor/hud = GLOB.huds[DATA_HUD_ABDUCTOR]
 	hud.add_to_hud(src)
-	update_auspex_hud_vtr()
 
 /mob/living/carbon/proc/update_auspex_hud()
 	var/image/holder = hud_list[GLAND_HUD]

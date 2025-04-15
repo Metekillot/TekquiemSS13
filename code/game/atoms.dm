@@ -1397,12 +1397,6 @@
 			log_whisper(log_text)
 		if(LOG_EMOTE)
 			log_emote(log_text)
-		// TFN EDIT ADDITION START
-		if(LOG_SUBTLE)
-			log_subtle(log_text)
-		if(LOG_SUBTLER)
-			log_subtler(log_text)
-		// TFN EDIT ADDITION END
 		if(LOG_DSAY)
 			log_dsay(log_text)
 		if(LOG_PDA)
@@ -1431,8 +1425,6 @@
 			log_mecha(log_text)
 		if(LOG_SHUTTLE)
 			log_shuttle(log_text)
-		if(LOG_SPEECH_INDICATORS)
-			log_speech_indicators(log_text)
 		else
 			stack_trace("Invalid individual logging type: [message_type]. Defaulting to [LOG_GAME] (LOG_GAME).")
 			log_game(log_text)

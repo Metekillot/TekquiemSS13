@@ -168,7 +168,6 @@
 			var/msg = "[key_name_admin(usr)] teleported [ADMIN_LOOKUPFLW(M)] to [AREACOORD(M)]"
 			message_admins(msg)
 			admin_ticket_log(M, msg)
-			SSoverwatch.record_action(usr, msg)
 		else
 			to_chat(src, "Failed to move mob to a valid location.", confidential = TRUE)
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Send Mob") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!

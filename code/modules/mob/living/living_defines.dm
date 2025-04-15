@@ -289,6 +289,3 @@
 
 	//If we are currently leaning on something, and what that object is
 	var/atom/leaned_object
-
-	//Target is under the effects of dominate
-	var/is_dominated = FALSE
