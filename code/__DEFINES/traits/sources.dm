@@ -132,6 +132,9 @@
 
 //trait from /mob/living/carbon/human/npc
 #define NPC_ITEM_TRAIT "npc_item"
+
+/// Trait when something was labelled by the /datum/element/tool_renaming element.
+#define RENAMING_TOOL_LABEL_TRAIT "renaming_tool_label"
 // END TRAIT DEFINES
 
 /// Apply this to make a mob not dense, and remove it when you want it to no longer make them undense, other sorces of undesity will still apply. Always define a unique source when adding a new instance of this!

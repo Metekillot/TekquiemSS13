@@ -36,3 +36,6 @@
 #define span_userdanger(str) ("<span class='userdanger'>" + str + "</span>")
 #define span_danger(str) ("<span class='danger'>" + str + "</span>")
 #define span_alert(str) ("<span class='alert'>" + str + "</span>")
+#define span_linkify(str) ("<span class='linkify'>" + str + "</span>")
+#define span_suicide(str) ("<span class='suicide'>" + str + "</span>")
+#define span_info(str) ("<span class='info'>" + str + "</span>")
