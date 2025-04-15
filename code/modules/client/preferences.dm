@@ -3167,6 +3167,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.additional_lockpicking = A.archetype_additional_lockpicking
 	character.additional_athletics = A.archetype_additional_athletics
 	A.special_skill(character)
+	character.maxHealth = round((initial(character.maxHealth)+(initial(character.maxHealth)/4)*(character.physique + character.additional_physique)))
+	character.health = character.maxHealth
 
 	if(pref_species.name == "Vampire")
 		var/datum/vampireclane/CLN = new clane.type()
@@ -3175,52 +3177,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		character.maxbloodpool = 10 + ((13 - generation) * 3)
 		character.bloodpool = rand(2, character.maxbloodpool)
 		character.generation = generation
-		character.max_yin_chi = character.maxbloodpool
-		character.yin_chi = character.max_yin_chi
 		character.clane.enlightenment = enlightenment
+		character.humanity = humanity
 	else
 		character.clane = null
 		character.generation = 13
 		character.bloodpool = character.maxbloodpool
-		if(pref_species.name == "Kuei-Jin")
-			character.yang_chi = yang
-			character.max_yang_chi = yang
-			character.yin_chi = yin
-			character.max_yin_chi = yin
-			character.max_demon_chi = po
-		else
-			character.yang_chi = 3
-			character.max_yang_chi = 3
-			character.yin_chi = 2
-			character.max_yin_chi = 2
 
-	if(pref_species.name == "Werewolf")
-		character.maxHealth = round((initial(character.maxHealth)+(initial(character.maxHealth)/4)*(character.physique + character.additional_physique)))
-		character.health = character.maxHealth
-		switch(tribe)
-			if("Wendigo")
-				character.yin_chi = 1
-				character.max_yin_chi = 1
-				character.yang_chi = 5 + (auspice_level * 2)
-				character.max_yang_chi = 5 + (auspice_level * 2)
-			if("Glasswalkers")
-				character.yin_chi = 1 + auspice_level
-				character.max_yin_chi = 1 + auspice_level
-				character.yang_chi = 5 + auspice_level
-				character.max_yang_chi = 5 + auspice_level
-			if("Black Spiral Dancers")
-				character.yin_chi = 1 + auspice_level * 2
-				character.max_yin_chi = 1 + auspice_level * 2
-				character.yang_chi = 5
-				character.max_yang_chi = 5
-	else
-		var/dharma_bonus = 0
-		if(pref_species.name == "Kuei-Jin")
-			dharma_bonus = dharma_level
-		character.maxHealth = round((initial(character.maxHealth)-initial(character.maxHealth)/4)+(initial(character.maxHealth)/4)*((character.physique+character.additional_physique)+dharma_bonus))
-		character.health = character.maxHealth
-	if(pref_species.name == "Vampire")
-		character.humanity = humanity
 	character.masquerade = masquerade
 	if(!character_setup)
 		if(character in GLOB.masquerade_breakers_list)
@@ -3334,8 +3297,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				character.transformator.lupus_form.health = character.transformator.lupus_form.maxHealth
 				character.transformator.crinos_form.maxHealth = round((initial(character.transformator.crinos_form.maxHealth)+(initial(character.maxHealth)/4)*(character.physique + character.additional_physique )))+(character.auspice.level-1)*50
 				character.transformator.crinos_form.health = character.transformator.crinos_form.maxHealth
-//		character.transformator.crinos_form.update_icons()
-//		character.transformator.lupus_form.update_icons()
+
 	if(pref_species.mutant_bodyparts["tail_lizard"])
 		character.dna.species.mutant_bodyparts["tail_lizard"] = pref_species.mutant_bodyparts["tail_lizard"]
 	if(pref_species.mutant_bodyparts["spines"])
