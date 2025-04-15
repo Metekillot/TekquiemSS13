@@ -52,7 +52,11 @@ SUBSYSTEM_DEF(library)
 		printable_posters[initial(poster_type.name)] = poster_type
 
 /datum/controller/subsystem/library/proc/prepare_library_areas()
-	library_areas = typesof(/area/vtm/financialdistrict/library)
+	library_areas = list(
+		/area/vtm/vtr/masquerade/interior/ground_floor/central/library,
+		/area/vtm/vtr/masquerade/interior/floor_two/central/library,
+		/area/vtm/vtr/masquerade/interior/basement/central/library_basement
+	)
 	var/list/additional_areas = SSmapping.config.library_areas
 	if(additional_areas)
 		library_areas += additional_areas
