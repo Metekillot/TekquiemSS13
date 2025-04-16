@@ -119,6 +119,7 @@
 
 	var/last_showed = 0
 	var/last_raid = 0
+	var/next_raid = 900 //time between SWAT raids, varies a bit randomly
 	var/killed_count = 0
 
 	var/base_body_mod = ""

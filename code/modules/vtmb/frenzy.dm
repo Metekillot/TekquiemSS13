@@ -238,14 +238,7 @@
 									H.last_loot_check = world.time
 									H.last_nonraid = world.time
 									H.killed_count = H.killed_count+1
-									if(!H.warrant && !H.ignores_warrant)
-										if(H.killed_count >= 5)
-											H.warrant = TRUE
-											SEND_SOUND(H, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
-											to_chat(H, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
-										else
-											SEND_SOUND(H, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
-											to_chat(H, "<span class='userdanger'><b>SUSPICIOUS ACTION (corpse)</b></span>")
+									H.set_warrant(H.killed_count >= 5, "SUSPICIOUS ACTION (corpse)")
 			for(var/obj/item/I in H.contents)
 				if(I)
 					if(I.masquerade_violating)
