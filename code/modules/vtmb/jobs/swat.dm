@@ -25,11 +25,9 @@
 		H.remove_overlay(H.clane.accessories_layers[H.clane.current_accessory])
 		qdel(H.clane)
 	H.set_species(/datum/species/human)
-	H.physique = 3
-	H.wits = 4
-	H.resolve = 4
-	H.charisma = 2
-	H.composure = 2
+	H.generation = 13
+	H.lockpicking = 5
+	H.physique = 4
 	H.ignores_warrant = TRUE
 	H.maxHealth = round((initial(H.maxHealth)-initial(H.maxHealth)/4)+(initial(H.maxHealth)/4)*(H.physique+13-H.generation))
 	H.health = round((initial(H.health)-initial(H.health)/4)+(initial(H.health)/4)*(H.physique+13-H.generation))

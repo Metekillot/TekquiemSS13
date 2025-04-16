@@ -309,7 +309,7 @@
 		if(istype(I, /obj/item/paper))
 			X = I
 			itemname = X.name
-			info = X.default_raw_text
+			info = X.info
 		else
 			P = I
 			itemname = P.name

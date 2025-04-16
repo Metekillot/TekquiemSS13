@@ -51,9 +51,9 @@
 /obj/item/photo/suicide_act(mob/living/carbon/user)
 	user.visible_message("<span class='suicide'>[user] is taking one last look at \the [src]! It looks like [user.p_theyre()] giving in to death!</span>")//when you wanna look at photo of waifu one last time before you die...
 	if (user.gender == MALE)
-		playsound(user, 'sound/mobs/humanoids/human/laugh/manlaugh1.ogg', 50, TRUE)//EVERY TIME I DO IT MAKES ME LAUGH
+		playsound(user, 'sound/voice/human/manlaugh1.ogg', 50, TRUE)//EVERY TIME I DO IT MAKES ME LAUGH
 	else if (user.gender == FEMALE)
-		playsound(user, 'sound/mobs/humanoids/human/laugh/womanlaugh.ogg', 50, TRUE)
+		playsound(user, 'sound/voice/human/womanlaugh.ogg', 50, TRUE)
 	return OXYLOSS
 
 /obj/item/photo/attack_self(mob/user)
@@ -62,12 +62,12 @@
 /obj/item/photo/attackby(obj/item/P, mob/user, params)
 	if(burn_paper_product_attackby_check(P, user))
 		return
-	if(IS_WRITING_UTENSIL(P))
-		if(!user.can_write(P))
+	if(istype(P, /obj/item/pen) || istype(P, /obj/item/toy/crayon))
+		if(!user.is_literate())
+			to_chat(user, "<span class='notice'>You scribble illegibly on [src]!</span>")
 			return
-		var/txt = tgui_input_text(user, "What would you like to write on the back?", "Photo Writing", max_length = 128)
+		var/txt = stripped_input(user, "What would you like to write on the back?", "Photo Writing", "", 128)
 		if(txt && user.canUseTopic(src, BE_CLOSE))
-			playsound(src, SFX_WRITING_PEN, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE, SOUND_FALLOFF_EXPONENT + 3, ignore_walls = FALSE)
 			scribble = txt
 	else
 		return ..()

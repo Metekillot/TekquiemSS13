@@ -164,10 +164,6 @@
 /datum/client_colour/glass_colour/lightblue
 	colour = "#ccccff"
 
-/datum/client_colour/glass_colour/darkblue
-	colour = "#3e3e7a"
-
-
 /datum/client_colour/glass_colour/yellow
 	colour = "#ffff66"
 

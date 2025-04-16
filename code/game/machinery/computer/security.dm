@@ -374,42 +374,42 @@ What a mess.*/
 					playsound(loc, 'sound/items/poster_being_created.ogg', 100, TRUE)
 					sleep(30)
 					var/obj/item/paper/P = new /obj/item/paper( loc )
-					P.add_raw_text("<CENTER><B>Security Record - (SR-[GLOB.data_core.securityPrintCount])</B></CENTER><BR>")
+					P.info = "<CENTER><B>Security Record - (SR-[GLOB.data_core.securityPrintCount])</B></CENTER><BR>"
 					if((istype(active1, /datum/data/record) && GLOB.data_core.general.Find(active1)))
-						P.add_raw_text(text("Name: [] ID: []<BR>\nGender: []<BR>\nAge: []<BR>", active1.fields["name"], active1.fields["id"], active1.fields["gender"], active1.fields["age"]))
-						P.add_raw_text("\nSpecies: [active1.fields["species"]]<BR>")
-						P.add_raw_text(text("\nFingerprint: []<BR>\nPhysical Status: []<BR>\nMental Status: []<BR>", active1.fields["fingerprint"], active1.fields["p_stat"], active1.fields["m_stat"]))
+						P.info += text("Name: [] ID: []<BR>\nGender: []<BR>\nAge: []<BR>", active1.fields["name"], active1.fields["id"], active1.fields["gender"], active1.fields["age"])
+						P.info += "\nSpecies: [active1.fields["species"]]<BR>"
+						P.info += text("\nFingerprint: []<BR>\nPhysical Status: []<BR>\nMental Status: []<BR>", active1.fields["fingerprint"], active1.fields["p_stat"], active1.fields["m_stat"])
 					else
-						P.add_raw_text("<B>General Record Lost!</B><BR>")
+						P.info += "<B>General Record Lost!</B><BR>"
 					if((istype(active2, /datum/data/record) && GLOB.data_core.security.Find(active2)))
-						P.add_raw_text(text("<BR>\n<CENTER><B>Security Data</B></CENTER><BR>\nCriminal Status: []", active2.fields["criminal"]))
+						P.info += text("<BR>\n<CENTER><B>Security Data</B></CENTER><BR>\nCriminal Status: []", active2.fields["criminal"])
 
-						P.add_raw_text("<BR>\n<BR>\nCrimes:<BR>\n")
-						P.add_raw_text({"<table style="text-align:center;" border="1" cellspacing="0" width="100%">
+						P.info += "<BR>\n<BR>\nCrimes:<BR>\n"
+						P.info +={"<table style="text-align:center;" border="1" cellspacing="0" width="100%">
 <tr>
 <th>Crime</th>
 <th>Details</th>
 <th>Author</th>
 <th>Time Added</th>
-</tr>"})
+</tr>"}
 						for(var/datum/data/crime/c in active2.fields["crim"])
-							P.add_raw_text("<tr><td>[c.crimeName]</td>")
-							P.add_raw_text("<td>[c.crimeDetails]</td>")
-							P.add_raw_text("<td>[c.author]</td>")
-							P.add_raw_text("<td>[c.time]</td>")
-							P.add_raw_text("</tr>")
-						P.add_raw_text("</table>")
+							P.info += "<tr><td>[c.crimeName]</td>"
+							P.info += "<td>[c.crimeDetails]</td>"
+							P.info += "<td>[c.author]</td>"
+							P.info += "<td>[c.time]</td>"
+							P.info += "</tr>"
+						P.info += "</table>"
 
-						P.add_raw_text(text("<BR>\nImportant Notes:<BR>\n\t[]<BR>\n<BR>\n<CENTER><B>Comments/Log</B></CENTER><BR>", active2.fields["notes"]))
+						P.info += text("<BR>\nImportant Notes:<BR>\n\t[]<BR>\n<BR>\n<CENTER><B>Comments/Log</B></CENTER><BR>", active2.fields["notes"])
 						var/counter = 1
 						while(active2.fields[text("com_[]", counter)])
-							P.add_raw_text(text("[]<BR>", active2.fields[text("com_[]", counter)]))
+							P.info += text("[]<BR>", active2.fields[text("com_[]", counter)])
 							counter++
 						P.name = text("SR-[] '[]'", GLOB.data_core.securityPrintCount, active1.fields["name"])
 					else
-						P.add_raw_text("<B>Security Record Lost!</B><BR>")
+						P.info += "<B>Security Record Lost!</B><BR>"
 						P.name = text("SR-[] '[]'", GLOB.data_core.securityPrintCount, "Record Lost")
-					P.add_raw_text("</TT>")
+					P.info += "</TT>"
 					P.update_icon()
 					printing = null
 			if("Print Poster")
@@ -605,7 +605,7 @@ What a mess.*/
 							active1.fields["age"] = t1
 					if("species")
 						if(istype(active1, /datum/data/record))
-							var/t1 = input("Select a species", "Species Selection") as null|anything in get_selectable_species()
+							var/t1 = input("Select a species", "Species Selection") as null|anything in GLOB.selectable_races
 							if(!canUseSecurityRecordsConsole(usr, t1, a1))
 								return
 							active1.fields["species"] = t1
@@ -844,7 +844,7 @@ What a mess.*/
 				if(6)
 					R.fields["m_stat"] = pick("*Insane*", "*Unstable*", "*Watch*", "Stable")
 				if(7)
-					R.fields["species"] = pick(get_roundstart_species())
+					R.fields["species"] = pick(GLOB.roundstart_races)
 				if(8)
 					var/datum/data/record/G = pick(GLOB.data_core.general)
 					R.fields["photo_front"] = G.fields["photo_front"]

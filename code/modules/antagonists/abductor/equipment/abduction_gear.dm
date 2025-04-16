@@ -404,7 +404,7 @@
 	name = "Dissection Guide"
 	icon_state = "alienpaper_words"
 	show_written_words = FALSE
-	default_raw_text = {"<b>Dissection for Dummies</b><br>
+	info = {"<b>Dissection for Dummies</b><br>
 
 <br>
 1.Acquire fresh specimen.<br>

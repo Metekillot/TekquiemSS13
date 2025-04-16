@@ -33,7 +33,7 @@
 		return pick(List)
 
 
-/proc/sanitize_discipline(value, list/List, default = null)
+/proc/sanitize_discipline(value, list/List, default)
 	if(value in List)
 		return value
 	if(default)

@@ -12,7 +12,7 @@
 
 /obj/item/bot_assembly/attackby(obj/item/I, mob/user, params)
 	..()
-	if(IS_WRITING_UTENSIL(I))
+	if(istype(I, /obj/item/pen))
 		rename_bot()
 		return
 

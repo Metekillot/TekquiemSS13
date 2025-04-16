@@ -27,7 +27,7 @@
  * Datum for generating a message overlay on the map
  */
 /datum/chatmessage
-	/// The visual element of the chat message
+	/// The visual element of the chat messsage
 	var/image/message
 	/// The location in which the message is appearing
 	var/atom/message_loc
@@ -160,12 +160,12 @@
 	var/tgt_color = extra_classes.Find("italics") ? target.chat_color_darkened : target.chat_color
 
 	// Approximate text height
-	var/complete_text = "<span class='center [extra_classes.Join(" ")]' style='color: [tgt_color]'>[owner.say_emphasis(text)]</span>"
+	var/complete_text = "<span class='center [extra_classes.Join(" ")]' style='color: [tgt_color]'>[text]</span>"
 	var/mheight = WXH_TO_HEIGHT(owned_by.MeasureText(complete_text, null, CHAT_MESSAGE_WIDTH))
 	approx_lines = max(1, mheight / CHAT_MESSAGE_APPROX_LHEIGHT)
 
 	// Translate any existing messages upwards, apply exponential decay factors to timers
-	message_loc = isturf(target) ? target : get_atom_on_turf(target)
+	message_loc = get_atom_on_turf(target)
 	if (owned_by.seen_messages)
 		var/idx = 1
 		var/combined_height = approx_lines
@@ -191,14 +191,16 @@
 	message.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA | KEEP_APART
 	message.alpha = 0
 	message.pixel_y = owner.bound_height * 0.95
+	animate(message, alpha = 0, pixel_y = owner.bound_height * 0.95,  time = 1)
+	sleep(1)
 	message.maptext_width = CHAT_MESSAGE_WIDTH
 	message.maptext_height = mheight
 	message.maptext_x = (CHAT_MESSAGE_WIDTH - owner.bound_width) * -0.5
 	message.maptext = MAPTEXT(complete_text)
 
 	// View the message
-	LAZYADDASSOCLIST(owned_by.seen_messages, message_loc, src)
-	owned_by.images |= message
+	LAZYADDASSOC(owned_by.seen_messages, message_loc, src)
+	owned_by.images += message// Temp fix for chat flickering issue
 	animate(message, alpha = 255, time = CHAT_MESSAGE_SPAWN_TIME)
 
 	// Register with the runechat SS to handle EOL and destruction
@@ -310,3 +312,4 @@
 #undef CHAT_LAYER_Z_STEP
 #undef CHAT_LAYER_MAX_Z
 #undef CHAT_MESSAGE_ICON_SIZE
+#undef WXH_TO_HEIGHT
