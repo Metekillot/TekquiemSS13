@@ -31,7 +31,7 @@
 	//Eye colour
 	var/eye_color = "000"
 
-	var/skin_tone = "caucasian1"	//Skin tone
+	var/skin_tone = LATINO	//Skin tone
 
 	var/lip_style = null	//no lipstick by default- arguably misleading, as it could be used for general makeup
 	var/lip_color = "white"
@@ -135,7 +135,12 @@
 	yin_chi = 2
 	max_yin_chi = 2
 
-	var/ooc_notes
-
 	///The Examine Panel TGUI.
 	var/datum/examine_panel/tgui = new() //create the datum
+	var/headshot_link = null
+	var/ooc_notes
+
+
+	//VTR EDIT BEGIN
+	var/datum/examine_panel_fake/examine_panel_fake = new()
+	//VTR EDIT END

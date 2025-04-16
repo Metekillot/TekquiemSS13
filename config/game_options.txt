@@ -464,7 +464,7 @@ ROUNDSTART_RACES ethereal
 #JOIN_WITH_MUTANT_HUMANS
 
 ##Overflow job. Default is assistant
-OVERFLOW_JOB Citizen
+OVERFLOW_JOB Pedestrian
 
 ## Overflow slot cap. Set to -1 for unlimited. If limited, it will still open up if every other job is full.
 OVERFLOW_CAP -1
@@ -545,6 +545,9 @@ ROUNDSTART_TRAITS
 
 ## Uncomment to disable human moods.
 DISABLE_HUMAN_MOOD
+
+## Uncomment to disable area ambiance text.
+#DISABLE_AREA_AMBIANCE
 
 ## Enable night shifts ##
 #ENABLE_NIGHT_SHIFTS

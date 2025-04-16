@@ -76,7 +76,11 @@
 /datum/config_entry/flag/log_attack	// log attack messages
 
 /datum/config_entry/flag/log_emote	// log emotes
+// TFN EDIT ADDITION START
+/datum/config_entry/flag/log_subtle  // TFN EDIT: log subtle emotes
 
+/datum/config_entry/flag/log_subtler  // TFN EDIT: log subtler emotes
+// TFN EDIT ADDITION END
 /datum/config_entry/flag/log_econ	// log economy actions
 
 /datum/config_entry/flag/log_adminchat	// log admin chat messages
@@ -86,7 +90,11 @@
 
 /datum/config_entry/flag/log_uplink	// log uplink/spellbook/codex ciatrix purchases and refunds
 
-/datum/config_entry/flag/log_telecomms	// log telecomms messages
+/// log telecomms messages
+/datum/config_entry/flag/log_telecomms
+
+/// log speech indicators(started/stopped speaking)
+/datum/config_entry/flag/log_speech_indicators
 
 /datum/config_entry/flag/log_twitter	// log certain expliotable parrots and other such fun things in a JSON file of twitter valid phrases.
 
@@ -212,13 +220,13 @@
 	config_entry_value = ""
 
 /datum/config_entry/string/discordurl
-	config_entry_value = "https://discord.com/invite/WU92NG2Me8"
+	config_entry_value = "https://discord.gg/KCGR6Xfhdb"
 
 /datum/config_entry/string/rulesurl
 	config_entry_value = ""
 
 /datum/config_entry/string/githuburl
-	config_entry_value = "https://github.com/WorldOfDarknessXIII/World-of-Darkness-13"
+	config_entry_value = "https://github.com/RequiemSS13/RequiemSS13"
 /datum/config_entry/string/discordbotcommandprefix
 	config_entry_value = "?"
 
@@ -502,3 +510,19 @@
 /datum/config_entry/string/centcom_ban_db	// URL for the CentCom Galactic Ban DB API
 
 /datum/config_entry/string/centcom_source_whitelist
+
+/**
+ * Tgui ui_act payloads larger than 2kb are split into chunks a maximum of 1kb in size.
+ * This flag represents the maximum chunk count the server is willing to receive.
+ */
+/datum/config_entry/number/tgui_max_chunk_count
+	default = 32
+
+/// Enables sending certain actions to a Discord webhook for review
+/datum/config_entry/flag/discord_overwatch
+
+/datum/config_entry/string/discord_overwatch_webhook
+	protection = CONFIG_ENTRY_LOCKED | CONFIG_ENTRY_HIDDEN
+
+/datum/config_entry/string/discord_server_target
+	protection = CONFIG_ENTRY_LOCKED | CONFIG_ENTRY_HIDDEN

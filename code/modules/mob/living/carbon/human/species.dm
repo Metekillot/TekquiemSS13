@@ -232,6 +232,18 @@ GLOBAL_LIST_EMPTY(selectable_races)
 		GLOB.roundstart_races += "kindred"
 	*/
 
+/proc/get_roundstart_species()
+	RETURN_TYPE(/list)
+	if(!length(GLOB.roundstart_races))
+		generate_selectable_species()
+	return GLOB.roundstart_races
+
+/proc/get_selectable_species()
+	RETURN_TYPE(/list)
+	if(!length(GLOB.selectable_races))
+		generate_selectable_species()
+	return GLOB.selectable_races
+
 /**
  * Checks if a species is eligible to be picked at roundstart.
  *
@@ -1430,10 +1442,6 @@ GLOBAL_LIST_EMPTY(selectable_races)
 						"<span class='userdanger'>You're [atk_verb]ed by [user]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>", COMBAT_MESSAGE_RANGE, user)
 		to_chat(user, "<span class='danger'>You [atk_verb] [target]!</span>")
 
-		if(user.potential >= 5)
-			var/atom/throw_target = get_edge_target_turf(target, user.dir)
-			target.throw_at(throw_target, rand(5, 7), 4, user, gentle = TRUE) //No stun nor impact damage from throwing people around
-
 		target.lastattacker = user.real_name
 		target.lastattackerckey = user.ckey
 		user.lastattacked = target
@@ -1444,19 +1452,24 @@ GLOBAL_LIST_EMPTY(selectable_races)
 
 		if(atk_verb == ATTACK_EFFECT_KICK)//kicks deal 1.5x raw damage
 			target.apply_damage(damage*1.5, user.dna.species.attack_type, affecting, armor_block)
+			if((damage * 1.5) >= 9)
+				target.force_say()
 			log_combat(user, target, "kicked")
 		else//other attacks deal full raw damage + 1.5x in stamina damage
 			target.apply_damage(damage, user.dna.species.attack_type, affecting, armor_block)
-			target.apply_damage(damage*1.5, STAMINA, affecting, armor_block)
+			if(damage >= 9)
+				target.force_say()
 			log_combat(user, target, "punched")
 		//Punches have a chance (by default 10%, up to 30%) to knock down a target for about 2 seconds depending on physique and dexterity.
 		//Checks if the target is already knocked down to prevent stunlocking.
 		if((target.stat != DEAD) && (!target.IsKnockdown()))
 			//Compare puncher's physique to the greater between the target's physique (robust enough to tank it) or dexterity (rolls with the punches)
-			if(
-			target.storyteller_roll(
-			dice = target.get_total_physique() + round(min(target.get_total_athletics(), target.get_total_dexterity()) / 2),
-			difficulty = clamp(user.get_total_physique(), 1, 4) + (user.melee_professional ? rand(1,4) : 0) == ROLL_FAILURE))
+			if(SSroll.opposed_roll(
+				user,
+				target,
+				dice_a = user.get_total_athletics() + user.get_total_physique(),
+				dice_b = target.get_total_physique() + target.get_total_dexterity(),
+				alert_atom = target))
 				target.visible_message("<span class='danger'>[user] knocks [target] down!</span>", "<span class='userdanger'>You're knocked down by [user]!</span>", "<span class='hear'>You hear aggressive shuffling followed by a loud thud!</span>", COMBAT_MESSAGE_RANGE, user)
 				to_chat(user, "<span class='danger'>You knock [target] down!</span>")
 				target.apply_effect(2 SECONDS, EFFECT_KNOCKDOWN, armor_block)
@@ -1625,6 +1638,10 @@ GLOBAL_LIST_EMPTY(selectable_races)
 					if(H.w_uniform)
 						H.w_uniform.add_mob_blood(H)
 						H.update_inv_w_uniform()
+
+		/// Triggers force say events
+		if(I.force > 10 || I.force >= 5 && prob(33))
+			H.force_say(user)
 
 	return TRUE
 
@@ -2131,10 +2148,17 @@ GLOBAL_LIST_EMPTY(selectable_races)
 		H.dna.features["wings"] = wings_icon
 		H.update_body()
 	var/datum/action/fly_upper/A = locate() in H.actions
-	if(A)
-		return
-	var/datum/action/fly_upper/DA = new()
-	DA.Grant(H)
+
+	//VTR EDIT BEGIN
+	if(!A)
+		var/datum/action/fly_upper/DA = new()
+		DA.Grant(H)
+	
+	var/datum/action/fly_downer/fly_down_existing = locate() in H.actions
+	if(!fly_down_existing)
+		var/datum/action/fly_downer/fly_down = new()
+		fly_down.Grant(H)
+	//VTR EDIT END
 
 /datum/species/proc/RemoveSpeciesFlight(mob/living/carbon/human/H)
 	if(flying_species)
@@ -2146,6 +2170,13 @@ GLOBAL_LIST_EMPTY(selectable_races)
 		var/datum/action/fly_upper/A = locate() in H.actions
 		if(A)
 			qdel(A)
+
+		//VTR EDIT BEGIN
+		var/datum/action/fly_downer/B = locate() in H.actions
+		if(B)
+			qdel(B)
+		//VTR EDIT END
+
 		if(H.dna && H.dna.species && (H.dna.features["wings"] == wings_icon))
 			H.dna.species.mutant_bodyparts -= "wings"
 			H.dna.features["wings"] = "None"
@@ -2284,3 +2315,95 @@ GLOBAL_LIST_EMPTY(selectable_races)
 			continue
 
 		current_part.change_bodypart(species_part)
+
+/datum/species/proc/get_scream_sound(mob/living/carbon/human/human)
+	if(human.gender == MALE)
+		if(prob(1))
+			return 'sound/mobs/humanoids/human/scream/wilhelm_scream.ogg'
+		return pick(
+			'sound/mobs/humanoids/human/scream/malescream_1.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_2.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_3.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_4.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_5.ogg',
+			'sound/mobs/humanoids/human/scream/malescream_6.ogg',
+		)
+
+	return pick(
+		'sound/mobs/humanoids/human/scream/femalescream_1.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_2.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_3.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_4.ogg',
+		'sound/mobs/humanoids/human/scream/femalescream_5.ogg',
+	)
+
+/datum/species/proc/get_cough_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return pick(
+			'sound/mobs/humanoids/human/cough/female_cough1.ogg',
+			'sound/mobs/humanoids/human/cough/female_cough2.ogg',
+			'sound/mobs/humanoids/human/cough/female_cough3.ogg',
+			'sound/mobs/humanoids/human/cough/female_cough4.ogg',
+			'sound/mobs/humanoids/human/cough/female_cough5.ogg',
+			'sound/mobs/humanoids/human/cough/female_cough6.ogg',
+		)
+	return pick(
+		'sound/mobs/humanoids/human/cough/male_cough1.ogg',
+		'sound/mobs/humanoids/human/cough/male_cough2.ogg',
+		'sound/mobs/humanoids/human/cough/male_cough3.ogg',
+		'sound/mobs/humanoids/human/cough/male_cough4.ogg',
+		'sound/mobs/humanoids/human/cough/male_cough5.ogg',
+		'sound/mobs/humanoids/human/cough/male_cough6.ogg',
+	)
+
+/datum/species/proc/get_cry_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return pick(
+			'sound/mobs/humanoids/human/cry/female_cry1.ogg',
+			'sound/mobs/humanoids/human/cry/female_cry2.ogg',
+		)
+	return pick(
+		'sound/mobs/humanoids/human/cry/male_cry1.ogg',
+		'sound/mobs/humanoids/human/cry/male_cry2.ogg',
+		'sound/mobs/humanoids/human/cry/male_cry3.ogg',
+	)
+
+
+/datum/species/proc/get_sneeze_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return 'sound/mobs/humanoids/human/sneeze/female_sneeze1.ogg'
+	return 'sound/mobs/humanoids/human/sneeze/male_sneeze1.ogg'
+
+/datum/species/proc/get_laugh_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return 'sound/mobs/humanoids/human/laugh/womanlaugh.ogg'
+	return pick(
+		'sound/mobs/humanoids/human/laugh/manlaugh1.ogg',
+		'sound/mobs/humanoids/human/laugh/manlaugh2.ogg',
+	)
+
+/datum/species/proc/get_sigh_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return pick(
+				'sound/mobs/humanoids/human/sigh/female_sigh1.ogg',
+				'sound/mobs/humanoids/human/sigh/female_sigh2.ogg',
+				'sound/mobs/humanoids/human/sigh/female_sigh3.ogg',
+			)
+	return pick(
+				'sound/mobs/humanoids/human/sigh/male_sigh1.ogg',
+				'sound/mobs/humanoids/human/sigh/male_sigh2.ogg',
+				'sound/mobs/humanoids/human/sigh/male_sigh3.ogg',
+			)
+
+/datum/species/proc/get_sniff_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return 'sound/mobs/humanoids/human/sniff/female_sniff.ogg'
+	return 'sound/mobs/humanoids/human/sniff/male_sniff.ogg'
+
+/datum/species/proc/get_snore_sound(mob/living/carbon/human/human)
+	if(human.gender == FEMALE)
+		return "snore_female"
+	return "snore_male"
+
+/datum/species/proc/get_hiss_sound(mob/living/carbon/human/human)
+	return 'sound/mobs/humanoids/human/hiss/human_hiss.ogg'

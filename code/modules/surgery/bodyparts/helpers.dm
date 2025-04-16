@@ -188,7 +188,7 @@
 			L.change_bodypart_status(BODYPART_ROBOTIC)
 	. = L
 
-
+/*
 /proc/skintone2hex(skin_tone)
 	. = 0
 	switch(skin_tone)
@@ -240,7 +240,7 @@
 			. = "4c4136"
 		if("vamp11")
 			. = "2b2722"
-
+*/
 /mob/living/carbon/proc/Digitigrade_Leg_Swap(swap_back)
 	var/body_plan_changed = FALSE
 	for(var/X in bodyparts)

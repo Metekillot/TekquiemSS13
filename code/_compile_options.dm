@@ -12,6 +12,12 @@
 #define DATUMVAR_DEBUGGING_MODE
 
 /*
+	Enables tools for the AreaGrouper's pathfinding
+*/
+#define AREA_GROUPER_DEBUGGING
+
+
+/*
 * Enables extools-powered reference tracking system, letting you see what is referencing objects that refuse to hard delete.
 *
 * * Requires TESTING to be defined to work.

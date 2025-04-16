@@ -74,6 +74,8 @@
 
 	var/list/drop_on_death_list = null
 
+	var/tolerates_ugly = FALSE
+
 /mob/living/carbon/human/npc/LateInitialize()
 	. = ..()
 	if(role_weapons_chances.Find(type))
@@ -115,6 +117,45 @@
 				REMOVE_TRAIT(dropping_item, TRAIT_NODROP, NPC_ITEM_TRAIT)
 			dropItemToGround(dropping_item, TRUE)
 
+	GLOB.alive_npc_list -= src
+	GLOB.boring_npc_list -= src
+	SShumannpcpool.npclost()
+	walk(src,0)
+	if(last_attacker && !key && !hostile)
+		if(get_dist(src, last_attacker) < 10)
+			if(istype(last_attacker, /mob/living/simple_animal/hostile))
+				var/mob/living/simple_animal/hostile/HS = last_attacker
+				if(HS.my_creator)
+					HS.my_creator.AdjustHumanity(-1, 0)
+					HS.my_creator.last_nonraid = world.time
+					HS.my_creator.killed_count = HS.my_creator.killed_count+1
+					if(!HS.my_creator.warrant && !HS.my_creator.ignores_warrant)
+						if(HS.my_creator.killed_count >= 5)
+//							GLOB.fuckers |= HS.my_creator
+							HS.my_creator.warrant = TRUE
+							SEND_SOUND(HS.my_creator, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
+							to_chat(HS.my_creator, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
+						else
+							SEND_SOUND(HS.my_creator, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
+							to_chat(HS.my_creator, "<span class='userdanger'><b>SUSPICIOUS ACTION (murder)</b></span>")
+			else
+				if(ishuman(last_attacker))
+					var/mob/living/carbon/human/HM = last_attacker
+					HM.AdjustHumanity(-1, 0)
+					HM.last_nonraid = world.time
+					HM.killed_count = HM.killed_count+1
+					if(!HM.warrant && !HM.ignores_warrant)
+						if(HM.killed_count >= 5)
+//							GLOB.fuckers |= HM
+							HM.warrant = TRUE
+							SEND_SOUND(HM, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
+							to_chat(HM, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
+						else
+							SEND_SOUND(HM, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
+							to_chat(HM, "<span class='userdanger'><b>SUSPICIOUS ACTION (murder)</b></span>")
+	remove_overlay(FIGHT_LAYER)
+	..()
+
 //If an npc's item has TRAIT_NODROP, we NEVER drop it, even if it is forced.
 /mob/living/carbon/human/npc/doUnEquip(obj/item/I, force, newloc, no_move, invdrop = TRUE, silent = FALSE)
 	if(I && HAS_TRAIT(I, TRAIT_NODROP))
@@ -127,7 +168,9 @@
 	multiplicative_slowdown = 2
 
 /datum/socialrole
-	//For randomizing
+	//For randomizing 
+	//I turned this off, -hex
+	var/s_tones_force = null
 	var/list/s_tones = list("albino",
 		"caucasian1",
 		"caucasian2",
@@ -384,7 +427,10 @@
 		else
 			s_names = GLOB.last_names
 		age = rand(socialrole.min_age, socialrole.max_age)
-		skin_tone = pick(socialrole.s_tones)
+		if(socialrole.s_tones_force)
+			skin_tone = socialrole.s_tones_force
+		else
+			skin_tone = pick(GLOB.skin_tones)
 		if(age >= 55)
 			hair_color = "a2a2a2"
 			facial_hair_color = hair_color
