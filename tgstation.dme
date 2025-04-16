@@ -3674,6 +3674,8 @@
 #include "code\modules\vtr13\mobs\human\climb.dm"
 #include "code\modules\vtr13\mobs\human\dounequip.dm"
 #include "code\modules\vtr13\mobs\human\jump.dm"
+#include "code\modules\vtr13\mobs\human\set_warrant.dm"
+#include "code\modules\vtr13\mobs\human\handle_police_raid.dm"
 #include "code\modules\vtr13\mobs\human\components\ambiance.dm"
 #include "code\modules\vtr13\mobs\human\examine\examine.dm"
 #include "code\modules\vtr13\mobs\human\examine\examine_beast.dm"

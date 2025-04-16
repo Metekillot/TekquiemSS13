@@ -499,7 +499,6 @@
 	update_shadow()
 	handle_vampire_music()
 	//update_auspex_hud_vtr()
-	handle_police_raid()
 	..()
 
 /mob/living/Initialize()
@@ -552,82 +551,7 @@
 				if(HAS_TRAIT(src, TRAIT_ELYSIUM))
 					REMOVE_TRAIT(src, TRAIT_ELYSIUM, "elysium")
 
-/mob/living/carbon/human
-	var/current_police_raid = FALSE //lock to prevent multiple handle_police_raid() procs from going at the same time
 
-/mob/living/carbon/human/proc/handle_police_raid() //hooo boy
-	if(warrant)
-		if(key) //are we a player?
-			if(stat != DEAD) //are we Not Dead?
-				if(istype(get_area(src), /area/vtm))
-					var/area/vtm/V = get_area(src)
-					if(V.upper && !current_police_raid && last_raid+next_raid < world.time)
-						current_police_raid = TRUE
-						var/warning_msg = pick("You see them searching above...", "The rumble of helicopter blades draws closer...")
-						to_chat(src, "<span class='warning'>[warning_msg]</span>")
-						playsound(loc, 'code/modules/wod13/sounds/helicopter_far.ogg', 50, FALSE)
-						sleep(60)
-						warning_msg = pick("You really need to get out of sight now.", "They'll spot you any moment now.")
-						to_chat(src, "<span class='warning'>[warning_msg]</span>")
-						sleep(40)
-						V = get_area(src)
-						if(!istype(get_area(src), /area/vtm) || !V.upper) //did the player hide in time?
-							to_chat(src, "<span class='warning'>You slip back into the shadows before they notice.</span>")
-							playsound(loc, 'code/modules/wod13/sounds/helicopter_leaving.ogg', 45, FALSE)
-							last_nonraid = world.time
-						else
-							if(stat != DEAD)
-								last_showed = world.time
-								var/loclist = view(3,src) - view(2, src) //spawn enemies in a ring with dist = 3 from player in visible tile
 
-								sleep(20)
-								playsound(loc, 'code/modules/wod13/sounds/helicopter_close.ogg', 50, TRUE)
-								to_chat(src, "<span class='warning'><b>They've seen you!</b></span>")
-								sleep(30)
-								to_chat(src, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 
-								last_raid = world.time
-								next_raid = (roll("6d30")) * 10 //set the minimum time before the next raid can spawn, median ~90 seconds
-
-								var/turfcount = 0
-								for(var/turf/open/O in loclist) //count up the number of valid turfs
-									turfcount += 1
-								var/spawnprob = 200/(turfcount) //cumulative spawn probability of 200%, e.g. spawn 2 cops on average
-
-								var/cop_spawned = FALSE
-								while(!cop_spawned) //make sure at least 1 cop spawns
-									for(var/turf/open/O in loclist)
-										if(prob(spawnprob))
-											cop_spawned = TRUE
-											new /obj/effect/temp_visual/desant(O)
-						current_police_raid = FALSE
-					else
-						last_nonraid = world.time
-
-				if(last_showed+9000 < world.time) //15 minute search time
-					to_chat(src, "<b>POLICE STOPPED SEARCHING</b>")
-					SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_gain.ogg', 0, 0, 75))
-					killed_count = 0
-					warrant = FALSE
-					last_nonraid = world.time
-			else
-				last_nonraid = world.time
-				warrant = FALSE
-		else
-			last_nonraid = world.time
-			warrant = FALSE
-	else
-		if(last_nonraid+1800 < world.time)
-			last_nonraid = world.time
-			killed_count = max(0, killed_count-1)
-
-/mob/living/carbon/human/proc/set_warrant(fail_check = TRUE, fail_text, sound = 'code/modules/wod13/sounds/suspect.ogg')
-	if(!src.warrant && !src.ignores_warrant && fail_check)
-		SEND_SOUND(src, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
-		to_chat(src, "<span class='userdanger'><b>WARRANT ISSUED</b></span>")
-		src.warrant = TRUE
-	else
-		if (!fail_check && fail_text)
-			SEND_SOUND(src, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
-			to_chat(src, "<span class='userdanger'><b>[fail_text]</b></span>")
 
