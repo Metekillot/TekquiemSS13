@@ -499,6 +499,7 @@
 	update_shadow()
 	handle_vampire_music()
 	//update_auspex_hud_vtr()
+	check_police_raid()
 	..()
 
 /mob/living/Initialize()

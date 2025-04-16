@@ -1,7 +1,3 @@
-/mob/living/carbon/human/Life()
-	. = ..()
-	check_police_raid()
-
 /mob/living/carbon/human/proc/check_police_raid()
 	if(!warrant)
 		if(last_nonraid+1800 < world.time)
