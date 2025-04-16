@@ -561,42 +561,45 @@
 			if(stat != DEAD) //are we Not Dead?
 				if(istype(get_area(src), /area/vtm))
 					var/area/vtm/V = get_area(src)
-					if(V.upper && !current_police_raid)
+					if(V.upper && !current_police_raid && last_raid+next_raid < world.time)
 						current_police_raid = TRUE
-
-						to_chat(src, "<span class='warning'>You see them searching above...</span>")
+						var/warning_msg = pick("You see them searching above...", "The rumble of helicopter blades draws closer...")
+						to_chat(src, "<span class='warning'>[warning_msg]</span>")
 						playsound(loc, 'code/modules/wod13/sounds/helicopter_far.ogg', 50, FALSE)
-						sleep(80)
+						sleep(60)
+						warning_msg = pick("You really need to get out of sight now.", "They'll spot you any moment now.")
+						to_chat(src, "<span class='warning'>[warning_msg]</span>")
+						sleep(40)
 						V = get_area(src)
 						if(!istype(get_area(src), /area/vtm) || !V.upper) //did the player hide in time?
 							to_chat(src, "<span class='warning'>You slip back into the shadows before they notice.</span>")
-							playsound(loc, 'code/modules/wod13/sounds/helicopter_leaving.ogg', 50, FALSE)
+							playsound(loc, 'code/modules/wod13/sounds/helicopter_leaving.ogg', 45, FALSE)
 							last_nonraid = world.time
 						else
 							if(stat != DEAD)
 								last_showed = world.time
-								if(last_raid+next_raid < world.time)
-									var/loclist = view(3,src) - view(2, src) //spawn enemies in a ring with dist = 3 from player in visible tile
+								var/loclist = view(3,src) - view(2, src) //spawn enemies in a ring with dist = 3 from player in visible tile
 
-									sleep(20)
-									playsound(loc, 'code/modules/wod13/sounds/helicopter_close.ogg', 50, TRUE)
-									to_chat(src, "<span class='warning'><b>They've seen you!</b></span>")
-									sleep(30)
-									to_chat(src, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
-									last_raid = world.time
-									next_raid = (roll("6d30")) * 10 //set the minimum time before the next raid, median ~90 seconds
+								sleep(20)
+								playsound(loc, 'code/modules/wod13/sounds/helicopter_close.ogg', 50, TRUE)
+								to_chat(src, "<span class='warning'><b>They've seen you!</b></span>")
+								sleep(30)
+								to_chat(src, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 
-									var/turfcount = 0
-									for(var/turf/open/O in loclist) //count up the number of valid turfs
-										turfcount += 1
-									var/spawnprob = 200/(turfcount) //cumulative spawn probability of 200%, e.g. spawn 2 cops on average
+								last_raid = world.time
+								next_raid = (roll("6d30")) * 10 //set the minimum time before the next raid can spawn, median ~90 seconds
 
-									var/cop_spawned = FALSE
-									while(!cop_spawned) //make sure at least 1 cop spawns
-										for(var/turf/open/O in loclist)
-											if(prob(spawnprob))
-												cop_spawned = TRUE
-												new /obj/effect/temp_visual/desant(O)
+								var/turfcount = 0
+								for(var/turf/open/O in loclist) //count up the number of valid turfs
+									turfcount += 1
+								var/spawnprob = 200/(turfcount) //cumulative spawn probability of 200%, e.g. spawn 2 cops on average
+
+								var/cop_spawned = FALSE
+								while(!cop_spawned) //make sure at least 1 cop spawns
+									for(var/turf/open/O in loclist)
+										if(prob(spawnprob))
+											cop_spawned = TRUE
+											new /obj/effect/temp_visual/desant(O)
 						current_police_raid = FALSE
 					else
 						last_nonraid = world.time
