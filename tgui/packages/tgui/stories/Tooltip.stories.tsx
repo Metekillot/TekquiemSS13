@@ -4,22 +4,26 @@
  * @license MIT
  */
 
-import { Box, Button, Section, Tooltip } from 'tgui-core/components';
+import { ComponentProps } from 'react';
+import { Box, Button, Floating, Section, Tooltip } from 'tgui-core/components';
 
 export const meta = {
   title: 'Tooltip',
   render: () => <Story />,
 };
 
-const Story = props => {
-  const positions = [
-    'top',
-    'left',
-    'right',
-    'bottom',
-    'bottom-left',
-    'bottom-right',
-  ];
+type Placement = ComponentProps<typeof Floating>['placement'];
+
+const positions = [
+  'top',
+  'left',
+  'right',
+  'bottom',
+  'bottom-start',
+  'bottom-end',
+] as Placement[];
+
+function Story() {
   return (
     <Section>
       <Box>
@@ -28,7 +32,7 @@ const Story = props => {
             Box (hover me).
           </Box>
         </Tooltip>
-        <Button tooltip="Tooltip text." content="Button" />
+        <Button tooltip="Tooltip text.">Button</Button>
       </Box>
       <Box mt={1}>
         {positions.map((position) => (
@@ -37,10 +41,11 @@ const Story = props => {
             color="transparent"
             tooltip="Tooltip text."
             tooltipPosition={position}
-            content={position}
-          />
+          >
+            {position}
+          </Button>
         ))}
       </Box>
     </Section>
   );
-};
+}
