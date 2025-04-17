@@ -7,22 +7,27 @@
 		last_nonraid = world.time
 		warrant = FALSE
 	else
-		INVOKE_ASYNC(src, PROC_REF(handle_police_raid()))
+		INVOKE_ASYNC(src, PROC_REF(handle_police_raid))
 
 /mob/living/carbon/human/proc/handle_police_raid()
 	if(istype(get_area(src), /area/vtm))
 		var/area/vtm/V = get_area(src)
 		if(V.upper && !current_police_raid && last_raid+next_raid < world.time)
 			current_police_raid = TRUE
+			sleep(10)
 			var/warning_msg = pick("You see them searching above...", "The rumble of helicopter blades draws closer...")
-			to_chat(src, "<span class='warning'>[warning_msg]</span>")
-			playsound(loc, 'code/modules/wod13/sounds/helicopter_far.ogg', 50, FALSE)
-			sleep(60)
-			warning_msg = pick("You really need to get out of sight now.", "You can't afford to hang around any longer.")
-			to_chat(src, "<span class='warning'>[warning_msg]</span>")
-			sleep(40)
-
 			V = get_area(src) //recheck the area player is in
+			if(istype(get_area(src), /area/vtm) && V.upper)
+				to_chat(src, "<span class='warning'>[warning_msg]</span>")
+				playsound(loc, 'code/modules/wod13/sounds/helicopter_far.ogg', 50, FALSE)
+			sleep(40)
+			V = get_area(src) //recheck the area player is in again
+			if(istype(get_area(src), /area/vtm) && V.upper)
+				warning_msg = pick("You really need to get out of sight now.", "You can't afford to hang around any longer.")
+				to_chat(src, "<span class='warning'>[warning_msg]</span>")
+			sleep(30)
+
+			V = get_area(src) //recheck one last time
 			if(!istype(get_area(src), /area/vtm) || !V.upper) //did the player hide in time?
 				to_chat(src, "<span class='warning'>You slip back into the shadows before they notice.</span>")
 				playsound(loc, 'code/modules/wod13/sounds/helicopter_leaving.ogg', 45, FALSE)
@@ -42,15 +47,15 @@
 					to_chat(src, "<span class='warning'><b>The helicopter above hovers in place.</b></span>")
 					return
 
-				sleep(20)
+				sleep(10)
 				playsound(loc, 'code/modules/wod13/sounds/helicopter_close.ogg', 50, TRUE)
 				warning_msg = pick("They've seen you!", "You've been spotted!")
 				to_chat(src, "<span class='warning'><b>[warning_msg]</b></span>")
-				sleep(30)
+				sleep(20)
 				to_chat(src, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
 
 				last_raid = world.time
-				next_raid = (roll("6d30")) * 10 //set the minimum time before the next raid can spawn, median ~90 seconds
+				next_raid = (roll("6d20")) * 10 //set the minimum time before the next raid can spawn, median ~90 seconds
 
 				var/spawnprob = 200/(turfcount) //cumulative spawn probability of 200%, e.g. spawn 2 cops on average
 
@@ -64,8 +69,8 @@
 		else
 			last_nonraid = world.time
 	if(last_showed+9000 < world.time) //15 minute search time
-			to_chat(src, "<b>POLICE STOPPED SEARCHING</b>")
-			SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_gain.ogg', 0, 0, 75))
-			killed_count = 0
-			warrant = FALSE
-			last_nonraid = world.time
+		to_chat(src, "<b>POLICE STOPPED SEARCHING</b>")
+		SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_gain.ogg', 0, 0, 75))
+		killed_count = 0
+		warrant = FALSE
+		last_nonraid = world.time
