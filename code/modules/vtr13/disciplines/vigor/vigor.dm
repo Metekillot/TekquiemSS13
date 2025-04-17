@@ -82,11 +82,13 @@
 			broke_door.icon_state = door_thing.baseicon
 			var/atom/throw_target = get_edge_target_turf(door_thing, attacker.dir)
 			broke_door.throw_at(throw_target, rand(2, 4), 4, attacker)
+			door_thing.proc_unlock(50)
 			qdel(door_thing)
 			violate_masquerade(attacker, attacker)
 		else
 			door_thing.pixel_z = door_thing.pixel_z+rand(-1, 1)
 			door_thing.pixel_w = door_thing.pixel_w+rand(-1, 1)
+			door_thing.proc_unlock(5)
 			playsound(get_turf(door_thing), 'code/modules/wod13/sounds/get_bent.ogg', 50, TRUE)
 			to_chat(attacker, span_warning("[door_thing] is locked, and you aren't strong enough to break it down!"))
 			door_thing.door_reset_callback()
