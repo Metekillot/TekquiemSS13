@@ -263,7 +263,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 		for(var/mob/living/carbon/human/H in GLOB.human_list)
 			if(!H || H.stat == DEAD || !H.key)
 				continue
-			var/datum/preferences/P = GLOB.preferences_datums[ckey(H.key)]
+			var/datum/preferences/prefs = GLOB.preferences_datums[ckey(H.key)]
 			if(!prefs)
 				continue
 			prefs.save_preferences()
