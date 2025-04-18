@@ -33,12 +33,13 @@
 	RegisterSignal(parent, COMSIG_HUMAN_EXAMINE_OVERRIDE, PROC_REF(disguise_override))
 	RegisterSignal(source_power, COMSIG_POWER_DEACTIVATE, PROC_REF(remove_disguise))
 
+	parent_human.real_name = disguise_mob.real_name
 	original_name = parent_human.real_name
 
-	var/image/obfuscate_image = image('icons/effects/effects.dmi', parent_human, "nothing", ABOVE_MOB_LAYER)
-	obfuscate_image.appearance = new /mutable_appearance(disguise_mob)
-	obfuscate_image.override = 1
-	parent_human.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic, "obfuscate", obfuscate_image)
+	var/image/obfuscate_overlay = image(disguise_mob, loc=parent_human, layer = ABOVE_MOB_LAYER)
+	obfuscate_overlay.setDir(null)
+	obfuscate_overlay.override = TRUE
+	parent_human.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/everyone, "obfuscate", obfuscate_overlay)
 	parent_human.update_body()
 	
 	handle_examine_cache(disguise_mob)
