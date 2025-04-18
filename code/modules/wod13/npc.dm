@@ -66,6 +66,8 @@
 
 	var/lifespan = 0	//How many cycles. He'll be deleted if over than a ten thousand
 	var/old_movement = FALSE
+	var/cur_waypoint = null
+	var/last_waypoint = null //to prevent NPCs going between two waypoints forever we store the last two waypoints and try not to visit last_waypoint
 	var/max_stat = 2
 
 	var/list/spotted_bodies = list()

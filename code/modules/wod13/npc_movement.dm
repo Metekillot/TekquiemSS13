@@ -100,24 +100,57 @@
 				var/turf/T = get_step(N, turn(get_dir(src, N), 180))
 				var/obj/effect/landmark/npcability/A = locate() in T
 				if(A)
-					if(N.x > x-3 && N.x < x+3)
+					if(N.x > x-3 && N.x < x+3 && N != last_waypoint)
 						possible_list += N
-					if(N.y > y-3 && N.y < y+3)
+					if(N.y > y-3 && N.y < y+3 && N != last_waypoint)
 						possible_list += N
-		if(!length(possible_list))
-			var/atom/shitshit //fuck off
+
+		if(!length(possible_list)) //if we can't find any valid waypoints then repeat the above process but allow last_waypoint
+			possible_list = list()
+			for(var/obj/effect/landmark/npcactivity/N in GLOB.npc_activities)
+				if(get_dist(src, N) < 64)
+					var/turf/T = get_step(N, turn(get_dir(src, N), 180))
+					var/obj/effect/landmark/npcability/A = locate() in T
+					if(A)
+						if(N.x > x-3 && N.x < x+3)
+							possible_list += N
+						if(N.y > y-3 && N.y < y+3)
+							possible_list += N
+
+		if(!length(possible_list)) //if we still can't find any valid waypoints then we do 'panic mode' (find the closest waypoint of any kind) but exclude last_waypoint
+			var/atom/panic_waypoint
+			for(var/obj/effect/landmark/npcactivity/N in GLOB.npc_activities)
+				if(N && N != last_waypoint)
+					if(!panic_waypoint)
+						panic_waypoint = N
+					if(get_dist(src, N) > 1 && get_dist(src, N) < get_dist(src, panic_waypoint))
+						panic_waypoint = N
+			if(panic_waypoint)
+				last_waypoint = cur_waypoint
+				cur_waypoint = panic_waypoint
+				return panic_waypoint
+
+			//if we STILL can't find a waypoint then we do panic mode again, allowing last_waypoint
+			panic_waypoint = null
 			for(var/obj/effect/landmark/npcactivity/N in GLOB.npc_activities)
 				if(N)
-					if(!shitshit)
-						shitshit = N
-					if(get_dist(src, N) > 1 && get_dist(src, N) < get_dist(src, shitshit))
-						shitshit = N
-			if(shitshit)
-				return shitshit
-			else
+					if(!panic_waypoint)
+						panic_waypoint = N
+					if(get_dist(src, N) > 1 && get_dist(src, N) < get_dist(src, panic_waypoint))
+						panic_waypoint = N
+			if(panic_waypoint)
+				last_waypoint = cur_waypoint
+				cur_waypoint = panic_waypoint
+				return panic_waypoint
+
+			else //finally, if we can't find any landmark/npcactivity waypoints period, then we just randomly pick from npc_activities in general
+				last_waypoint = cur_waypoint
+				cur_waypoint = panic_waypoint
 				return pick(GLOB.npc_activities)
 
-		return pick(possible_list)
+		last_waypoint = cur_waypoint
+		cur_waypoint = pick(possible_list)
+		return cur_waypoint
 	else
 		var/turf/north_steps = CreateWay(NORTH)
 		var/turf/south_steps = CreateWay(SOUTH)
