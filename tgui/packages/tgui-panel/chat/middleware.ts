@@ -4,6 +4,7 @@
  * @license MIT
  */
 
+import { Store } from 'common/redux';
 import { storage } from 'common/storage';
 import DOMPurify from 'dompurify';
 
@@ -34,7 +35,7 @@ import { selectChat, selectCurrentChatPage } from './selectors';
 // List of blacklisted tags
 const FORBID_TAGS = ['a', 'iframe', 'link', 'video'];
 
-const saveChatToStorage = async (store) => {
+const saveChatToStorage = async (store: Store) => {
   const state = selectChat(store.getState());
   const fromIndex = Math.max(
     0,
@@ -47,7 +48,7 @@ const saveChatToStorage = async (store) => {
   storage.set('chat-messages', messages);
 };
 
-const loadChatFromStorage = async (store) => {
+const loadChatFromStorage = async (store: Store) => {
   const [state, messages] = await Promise.all([
     storage.get('chat-state'),
     storage.get('chat-messages'),
@@ -78,9 +79,11 @@ const loadChatFromStorage = async (store) => {
   store.dispatch(loadChat(state));
 };
 
-export const chatMiddleware = (store) => {
+export const chatMiddleware = (store: Store) => {
   let initialized = false;
   let loaded = false;
+  const sequences: number[] = [];
+  const sequences_requested: number[] = [];
   chatRenderer.events.on('batchProcessed', (countByType) => {
     // Use this flag to workaround unread messages caused by
     // loading them from storage. Side effect of that, is that
@@ -109,7 +112,7 @@ export const chatMiddleware = (store) => {
         return;
       }
 
-      const sequence = payload_obj.sequence;
+      const sequence: number = payload_obj.sequence;
       if (sequences.includes(sequence)) {
         return;
       }
