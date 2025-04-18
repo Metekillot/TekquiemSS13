@@ -28,11 +28,11 @@
 	SIGNAL_HANDLER
 	if(!invader.mind)
 		return
-	get_memory_data(FALSE)
+	get_memory_data(src, FALSE)
 	invader << browse(dat.Join("<br>"), "window=vampire;size=500x450;border=1;can_resize=1;can_minimize=0")
 	
 
-/datum/component/base_memory/proc/get_memory_data(var/is_own_memories = TRUE)
+/datum/component/base_memory/proc/get_memory_data(datum/source, var/is_own_memories = TRUE)
 	dat = list()
 	dat += {"
 		<style type="text/css">
@@ -107,7 +107,7 @@
 		dat += " "
 		dat += "<b>I've made some connections in the city:</b>"
 		for(var/datum/character_connection/connection in owner.mind.character_connections)
-			dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(src)];delete_connection=[connection.group_id]'>Delete</a>"
+			dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(source)];delete_connection=[connection.group_id]'>Delete</a>"
 		dat += " "
 	
 	return dat
@@ -126,11 +126,11 @@
 	src.parent_component = parent_component
 
 /datum/action/memory_button/Trigger()
-	var/list/memory_data = parent_component.get_memory_data(TRUE)
+	var/list/memory_data = parent_component.get_memory_data(src, TRUE)
 	owner << browse(memory_data.Join("<br>"), "window=vampire;size=500x450;border=1;can_resize=1;can_minimize=0")
 
 /datum/action/memory_button/Topic(href, href_list)
 	if(href_list["delete_connection"])
-		var/mob/living/owner_human
+		var/mob/living/owner_human = owner
 		owner_human.retire_connection(text2num(href_list["delete_connection"]))
 		Trigger()
