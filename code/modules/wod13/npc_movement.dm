@@ -105,7 +105,7 @@
 					if(N.y > y-3 && N.y < y+3)
 						possible_list += N
 		if(!length(possible_list))
-			var/atom/shitshit
+			var/atom/shitshit //fuck off
 			for(var/obj/effect/landmark/npcactivity/N in GLOB.npc_activities)
 				if(N)
 					if(!shitshit)
