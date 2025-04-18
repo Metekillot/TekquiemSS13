@@ -44,7 +44,7 @@
 	//Handle Ghouling
 	var/ghoul_response_domitor = FALSE
 	var/ghoul_response_thrall = FALSE
-	if(!isghoul(src))
+	if(!isghoul(src) && !iskindred(src))
 		ghoul_response_domitor = tgui_alert(domitor, "Do you wish to turn [src] into a ghoul?.", "Confirmation", list("Yes", "No")) == "Yes"
 		ghoul_response_thrall = handle_ghouling(domitor, artificial, ghoul_response_domitor)
 
