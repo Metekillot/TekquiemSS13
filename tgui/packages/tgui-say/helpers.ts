@@ -5,11 +5,8 @@ import { RADIO_PREFIXES, WindowSize } from './constants';
  * Once byond signals this via keystroke, it
  * ensures window size, visibility, and focus.
  */
-export function windowOpen(channel: Channel): void {
-  setWindowVisibility(true);
-  Byond.winset('tgui_say.browser', {
-    focus: true,
-  });
+export function windowOpen(channel: Channel, scale: boolean): void {
+  setWindowVisibility(true, scale);
   Byond.sendMessage('open', { channel });
 }
 

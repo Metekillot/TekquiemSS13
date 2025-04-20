@@ -7,11 +7,27 @@
 	full_name = "IC Say"
 	keybind_signal = COMSIG_KB_CLIENT_SAY_DOWN
 
+/datum/keybinding/client/communication/say/down(client/user)
+	. = ..()
+	if(.)
+		return
+	winset(user, null, "command=[user.tgui_say_create_open_command(SAY_CHANNEL)];")
+	winset(user, "tgui_say.browser", "focus=true")
+	return TRUE
+
 /datum/keybinding/client/communication/radio
 	hotkey_keys = list("Y")
 	name = RADIO_CHANNEL
 	full_name = "IC Radio (;)"
 	keybind_signal = COMSIG_KB_CLIENT_RADIO_DOWN
+
+/datum/keybinding/client/communication/radio/down(client/user)
+	. = ..()
+	if(.)
+		return
+	winset(user, null, "command=[user.tgui_say_create_open_command(RADIO_CHANNEL)]")
+	winset(user, "tgui_say.browser", "focus=true")
+	return TRUE
 
 /datum/keybinding/client/communication/ooc
 	hotkey_keys = list("O")
@@ -24,6 +40,7 @@
 	if(.)
 		return
 	winset(user, null, "command=[user.tgui_say_create_open_command(OOC_CHANNEL)]")
+	winset(user, "tgui_say.browser", "focus=true")
 	return TRUE
 
 /datum/keybinding/client/communication/me
@@ -37,6 +54,7 @@
 	if(.)
 		return
 	winset(user, null, "command=[user.tgui_say_create_open_command(ME_CHANNEL)]")
+	winset(user, "tgui_say.browser", "focus=true")
 	return TRUE
 
 // TFN EDIT START
