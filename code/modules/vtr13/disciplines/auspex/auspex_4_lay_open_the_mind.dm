@@ -20,8 +20,8 @@
 	)
 
 /datum/discipline_power/vtr/auspex/lay_open_the_mind/pre_activation_checks(mob/living/carbon/human/target)
-	var/mypower = owner.get_total_mentality() + discipline.level
-	var/theirpower = target.get_total_mentality() + target.get_total_blood() //TODO HEX: Tie to blood_potency
+	var/mypower = owner.get_total_wits() + discipline.level
+	var/theirpower = target.get_total_resolve() + target.blood_potency
 
 	to_chat(owner, span_danger("You probe [target]'s mind..."))
 

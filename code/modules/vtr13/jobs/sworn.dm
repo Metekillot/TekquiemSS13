@@ -22,8 +22,6 @@
 
 	duty = "You are a ghoul bound to one of the Ordo Dracul, or to the Ordo as a whole. Assist them in their research. Keep their secrets secure. Try not to become a test subject."
 	v_duty = "You are one of the Sworn of the Mysteries, a member of the Ordo Dracul. Help your Voivode conduct their research into the occult and paranormal. Observe and catalogue everything of note in the city. Master the coils and transcend the limitations of the vampiric condition."
-	minimal_masquerade = 0
-	experience_addition = 10
 
 
 /datum/outfit/job/sworn

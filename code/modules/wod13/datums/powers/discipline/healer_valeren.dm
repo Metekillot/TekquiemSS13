@@ -134,7 +134,7 @@
 			to_chat(owner, span_warning("[target] does not have a soul to cleanse!"))
 		return FALSE
 
-	if (target.humanity >= 10 && !target.client?.prefs?.enlightenment)
+	if (target.humanity >= 10)
 		if (alert)
 			to_chat(owner, span_warning("[target]'s soul is already completely pure."))
 		return FALSE

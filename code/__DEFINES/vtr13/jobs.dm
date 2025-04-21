@@ -4,6 +4,16 @@
 #define EXP_TYPE_INVICTUS		"Invictus"
 #define EXP_TYPE_ORDO			"Ordo Dracul"
 
+
+GLOBAL_LIST_INIT(vampire_factions_list, list(
+	EXP_TYPE_CRONE,
+	EXP_TYPE_LANCEA,
+	EXP_TYPE_CARTHIAN,
+	EXP_TYPE_INVICTUS,
+	EXP_TYPE_ORDO
+))
+
+
 #define JOB_DISPLAY_ORDER_CITIZEN_VTR 1
 GLOBAL_LIST_INIT(citizen_positions, list(
 	"Pedestrian",

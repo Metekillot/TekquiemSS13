@@ -12,7 +12,7 @@
 	minimal_player_age = 10
 	exp_requirements = 180
 	exp_type = EXP_TYPE_CREW
-	exp_type_department = EXP_TYPE_NEUTRALS
+	exp_type_department = EXP_TYPE_INVICTUS
 
 	outfit = /datum/outfit/job/page
 
@@ -24,16 +24,12 @@
 
 	display_order = JOB_DISPLAY_ORDER_PAGE
 
-//	minimal_generation = 12	//Uncomment when players get exp enough
-	minimal_masquerade = 5
-
 	my_contact_is_important = TRUE
 	allowed_species = list("Vampire")
 	known_contacts = list("Seneschal","Keeper of Elysium", "Carthian Representative", "Bishop", "Hierophant", "Voivode")
 
 	v_duty = "You're a page for the Invictus leadership; a prestigious and important but also basically powerless position. Field phone calls for the Seneschal and the Sherrif. Try and parlay your access into actual political clout."
 
-	experience_addition = 15
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 
 /datum/outfit/job/page

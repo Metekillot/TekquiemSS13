@@ -13,13 +13,11 @@
 	paycheck_department = ACCOUNT_SRV
 	display_order = JOB_DISPLAY_ORDER_LIBRARIAN_VTR
 
-	exp_type_department = EXP_TYPE_ORDO
+	exp_type_department = EXP_TYPE_SERVICES
 
 	allowed_species = list("Human")
 	known_contacts = list("Hierophant")
 	duty = "You're a librarian at the local 24/7 research library. Help patrons with their queries. Keep the library tidy. Don't ask too many of your own questions."
-	minimal_masquerade = 0
-	experience_addition = 10
 
 
 /datum/outfit/job/librarian_vtr

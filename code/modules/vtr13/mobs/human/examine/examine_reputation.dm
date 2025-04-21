@@ -7,4 +7,4 @@
 				return "<b>You know [t_him] as \a [job] of the [clane] clan.</b>"
 			if(INFO_KNOWN_FACTION)
 				//TODO: HEX - Same faction nonsense inclusion.
-				return "<b>You know [t_him] as \a [job] of the All-Night Society.</b>"
+				return "<b>You know [t_him] as \a [job] of the [vtr_faction.name].</b>"

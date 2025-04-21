@@ -18,7 +18,6 @@
 	species_slots = list("Ghoul" = 1)
 
 	duty = "Enforce the Law."
-	minimal_masquerade = 0
 	my_contact_is_important = FALSE
 	known_contacts = list("Police Chief")
 	alt_titles = list(

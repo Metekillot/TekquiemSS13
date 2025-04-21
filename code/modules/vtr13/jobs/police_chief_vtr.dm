@@ -18,7 +18,6 @@
 	allowed_species = list("Human")
 
 	duty = "Underpaid, overworked, and understrength. Do your best to keep the order in San Francisco. Keep the officers in line."
-	minimal_masquerade = 0
 	my_contact_is_important = FALSE
 
 /datum/outfit/job/police_chief_vtr

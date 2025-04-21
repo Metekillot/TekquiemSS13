@@ -2002,20 +2002,17 @@
 /mob/living/proc/get_total_physique()
 	return physique + additional_physique
 
-/mob/living/proc/get_total_dexterity()
-	return dexterity + additional_dexterity
+/mob/living/proc/get_total_stamina()
+	return stamina + additional_stamina
 
-/mob/living/proc/get_total_social()
-	return social + additional_social
+/mob/living/proc/get_total_charisma()
+	return charisma + additional_charisma
 
-/mob/living/proc/get_total_mentality()
-	return mentality + additional_mentality
+/mob/living/proc/get_total_composure()
+	return composure + additional_composure
 
-/mob/living/proc/get_total_blood()
-	return blood + additional_blood
+/mob/living/proc/get_total_wits()
+	return wits + additional_wits
 
-/mob/living/proc/get_total_lockpicking()
-	return lockpicking + additional_lockpicking
-
-/mob/living/proc/get_total_athletics()
-	return athletics + additional_athletics
+/mob/living/proc/get_total_resolve()
+	return resolve + additional_resolve
