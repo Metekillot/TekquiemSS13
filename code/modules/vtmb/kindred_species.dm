@@ -182,7 +182,7 @@
 				BLOODBONDED.drunked_of |= "[H.dna.real_name]"
 
 				if(BLOODBONDED.stat == DEAD && !iskindred(BLOODBONDED))
-					if (!BLOODBONDED.can_be_embraced || (BLOODBONDED.timeofdeath + 5 MINUTES) < world.time)
+					if (!BLOODBONDED.can_be_embraced || (BLOODBONDED.timeofdeath + 5 MINUTES) < world.time || H?.clane?.name == "Revenant")
 						to_chat(H, "<span class='notice'>[BLOODBONDED.name] doesn't respond to your Vitae.</span>")
 						return
 					log_game("[key_name(H)] has Embraced [key_name(BLOODBONDED)].")
@@ -243,8 +243,12 @@
 						giving = FALSE
 						return
 				else
+					if(H?.clane?.name == "Revenant")
+						to_chat(owner, "<span class='notice'>[BLOODBONDED] does not respond to your vitae.</span>")
+						return
 					to_chat(owner, "<span class='notice'>You successfuly fed [BLOODBONDED] with vitae.</span>")
 					to_chat(BLOODBONDED, "<span class='userlove'>You feel good when you drink this <b>BLOOD</b>...</span>")
+
 
 					if(H.reagents)
 						if(length(H.reagents.reagent_list))

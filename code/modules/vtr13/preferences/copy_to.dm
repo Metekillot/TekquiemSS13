@@ -60,7 +60,10 @@
 		character.regent_clan = null
 		character.clane.current_accessory = clane_accessory
 		character.maxbloodpool = 9 + character.blood_potency
-		character.bloodpool = rand(character.composure, character.maxbloodpool)
+		if(character.clane.name == "Revenant")
+			character.bloodpool = character.composure
+		else
+			character.bloodpool = rand(character.composure, character.maxbloodpool)
 		character.humanity = humanity
 		character.vtr_faction = vamp_faction
 	else if(pref_species.name == "Ghoul")
