@@ -42,13 +42,13 @@ GLOBAL_LIST_INIT(vampire_rank_desc_list, list(
 	VAMP_RANK_ANCILLAE = "Elge write a description for an Ancillae's place in vampire society",
 	VAMP_RANK_ELDER = "Elge write a description for an Elder's place in vampire society"))
 
-#define CHARACTER_DOTS_DEFAULT 15
-#define CHARACTER_DOTS_GHOUL 15
-#define CHARACTER_DOTS_FLEDGLING 15
-#define CHARACTER_DOTS_HALF_DAMNED 15
-#define CHARACTER_DOTS_NEONATE 15
-#define CHARACTER_DOTS_ANCILLAE 15
-#define CHARACTER_DOTS_ELDER 15
+#define CHARACTER_DOTS_DEFAULT 12
+#define CHARACTER_DOTS_GHOUL 12
+#define CHARACTER_DOTS_FLEDGLING 12
+#define CHARACTER_DOTS_HALF_DAMNED 12
+#define CHARACTER_DOTS_NEONATE 12
+#define CHARACTER_DOTS_ANCILLAE 12
+#define CHARACTER_DOTS_ELDER 12
 
 #define DISCIPLINE_DOTS_DEFAULT 0
 #define DISCIPLINE_DOTS_GHOUL 3
