@@ -44,7 +44,7 @@
 
 /mob/living/carbon/human/ZImpactDamage(turf/T, levels)
 	if(SSroll.storyteller_roll(
-		dice = get_total_resolve(),
+		dice = get_total_composure(),
 		numerical = TRUE,
 		mobs_to_show_output = list(src),
 		alert_atom = src) < levels)
