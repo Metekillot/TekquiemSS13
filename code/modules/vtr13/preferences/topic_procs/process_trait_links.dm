@@ -31,10 +31,6 @@
 					to_chat(user, "<span class='warning'>You don't have enough balance to gain this quirk!</span>")
 					return
 				all_quirks += quirk
-			SetQuirks(user)
 		if("reset")
 			all_quirks = list()
-			SetQuirks(user)
-		else
-			SetQuirks(user)
 	return TRUE

@@ -43,19 +43,19 @@ GLOBAL_LIST_INIT(police_positions, list(
 ))
 
 #define JOB_DISPLAY_ORDER_SENESCHAL_VTR 9
-#define JOB_DISPLAY_ORDER_PAGE 10
-#define JOB_DISPLAY_ORDER_KEEPER 11
-#define JOB_DISPLAY_ORDER_BARTENDER_VTR 12
-#define JOB_DISPLAY_ORDER_SHERIFF_VTR 13
-#define JOB_DISPLAY_ORDER_HOUND_VTR 14
+#define JOB_DISPLAY_ORDER_KEEPER 10
+#define JOB_DISPLAY_ORDER_SHERIFF_VTR 11
+#define JOB_DISPLAY_ORDER_PAGE 12
+#define JOB_DISPLAY_ORDER_HOUND_VTR 13
+#define JOB_DISPLAY_ORDER_BARTENDER_VTR 14
 #define JOB_DISPLAY_ORDER_COURTIER 15
 GLOBAL_LIST_INIT(command_positions, list(
 	"Seneschal",
-	"Page",
 	"Keeper of Elysium",
-	"Bartender",
 	"Sheriff",
+	"Page",
 	"Hound",
+	"Bartender",
 	"Courtier"
 ))
 

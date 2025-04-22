@@ -481,7 +481,6 @@
 			var/result = tgui_input_list(user, "Select a species", "Species Selection", sortList(choose_species))
 			if(result)
 				all_quirks.Cut()
-				SetQuirks(user)
 				auspice_level = 0
 				qdel(clane)
 				qdel(regent_clan)

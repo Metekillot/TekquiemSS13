@@ -16,20 +16,21 @@
 			to_chat(user, "<span class='danger'>You, or another user of this computer or connection ([ban_details["key"]]) is banned from playing [href_list["bancheck"]].<br>The ban reason is: [ban_details["reason"]]<br>This ban (BanID #[ban_details["id"]]) was applied by [ban_details["admin_key"]] on [ban_details["bantime"]] during round ID [ban_details["round_id"]].<br>[expires]</span>")
 			return
 
-	if(href_list["preference"] == "job")
-		return process_job_links(user, href_list)
-		
-	else if(href_list["preference"] == "trait")
-		return process_trait_links(user, href_list)
-		
 	var/task_result_save = FALSE
-	switch(href_list["task"])
-		if("random")
-			task_result_save = process_random_task_links(user, href_list)
-		if("input")
-			task_result_save = process_input_task_links(user, href_list)
-		else
-			task_result_save = process_misc_task_links(user, href_list)
+	switch(href_list["preference"])
+		if("trait")
+			task_result_save = process_trait_links(user, href_list)
+		if("job")
+			task_result_save = process_job_links(user, href_list)
+
+	if(!task_result_save)	
+		switch(href_list["task"])
+			if("random")
+				task_result_save = process_random_task_links(user, href_list)
+			if("input")
+				task_result_save = process_input_task_links(user, href_list)
+			else
+				task_result_save = process_misc_task_links(user, href_list)
 
 	if(task_result_save)
 		save_preferences()

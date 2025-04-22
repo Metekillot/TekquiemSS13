@@ -16,7 +16,7 @@
 
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_INVICTUS
-
+	minimum_vamp_rank = VAMP_RANK_NEONATE
 	mind_traits = list(TRAIT_DONUT_LOVER)
 
 	display_order = JOB_DISPLAY_ORDER_HOUND_VTR

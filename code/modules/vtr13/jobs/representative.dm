@@ -16,7 +16,7 @@
 
 	display_order = JOB_DISPLAY_ORDER_REPRESENTATIVE
 	bounty_types = CIV_JOB_RANDOM
-
+	
 	my_contact_is_important = TRUE
 	minimum_vamp_rank = VAMP_RANK_NEONATE
 

@@ -21,7 +21,7 @@
 
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_INVICTUS
-
+	minimum_vamp_rank = VAMP_RANK_NEONATE
 	display_order = JOB_DISPLAY_ORDER_PAGE
 
 	my_contact_is_important = TRUE

@@ -21,19 +21,7 @@
 	if(reason_of_death != "None")
 		dat += "<center><b>Last death</b>: [reason_of_death]</center>"
 
-//Occupation Popup
-	dat += "<center><h2>[make_font_cool("OCCUPATION CHOICES")]</h2>"
-	dat += "<a href='byond://?_src_=prefs;preference=job;task=menu'>Set Occupation Preferences</a><br></center>"
-
-
-//Quirks Popup
-	if(CONFIG_GET(flag/roundstart_traits))
-		dat += "<center><h2>[make_font_cool("QUIRK SETUP")]</h2>"
-		dat += "<a href='byond://?_src_=prefs;preference=trait;task=menu'>Configure Quirks</a><br></center>"
-		dat += "<center><b>Current Quirks:</b> [all_quirks.len ? all_quirks.Join(", ") : "None"]</center>"
-
 	dat += "<h2>[make_font_cool("IDENTITY")]</h2>"
-	dat += "<table width='100%'><tr><td width='75%' valign='top'>"
 
 	if(is_banned_from(user.ckey, "Appearance"))
 		dat += "<b>You are banned from using custom names and appearances. Why we did this is beyond the reckoning of this writer - I would've just banned you from the server. Anyways, you can continue to adjust your characters, but you will be randomised once you join the game.</b><br>"
@@ -54,13 +42,10 @@
 	else
 		dat += "<br><b>Age:</b> <a href='byond://?_src_=prefs;preference=age;task=input'>[age]</a>"
 
-	dat += "</tr></table>"
-
 	dat += "<h2>[make_font_cool("BODY")]</h2>"
 
-	dat += "<a href='byond://?_src_=prefs;preference=all;task=random'>Random Body</A> "
+	dat += "<a href='byond://?_src_=prefs;preference=all;task=random'>Random Body</A><BR>"
 
-	dat += "<table width='100%'><tr><td width='24%' valign='top'>"
 	dat += "<b>Species:</b><BR><a href='?_src_=prefs;preference=species;task=input'>[pref_species.name]</a><BR>"
 	if(pref_species.name == "Vampire")
 		dat += "<b>Humanity:</b> [humanity]/10"
@@ -77,27 +62,6 @@
 	if(pref_species.name == "Ghoul" || pref_species.name == "Vampire")
 		dat += "<br>"
 		dat += "<b>Description:</b>[GLOB.vampire_rank_desc_list[vamp_rank]]<BR>"
-
-	dat += "<h2>[make_font_cool("ATTRIBUTES")]</h2>"
-
-	calculate_character_dots()
-	dat += "<br><center><b>Character Dots Remaining:</b> [character_dots]</center><BR>"
-	
-	
-	dat += "<b>Wits:</b> [build_attribute_score(wits, 0, 1, "wits")]"
-	dat += "<i>[WITS_DESCRIPTION]</i><br><br>"
-	dat += "<b>Resolve:</b> [build_attribute_score(resolve, 0, 1, "resolve")]"
-	dat += "<i>[RESOLVE_DESCRIPTION]</i><br><br>"
-	dat += "<b>Physique:</b> [build_attribute_score(physique, 0, 1, "physique")]"
-	dat += "<i>[PHYSIQUE_DESCRIPTION]</i><br><br>"
-	dat += "<b>Stamina:</b> [build_attribute_score(stamina, 0, 1, "stamina")]"
-	dat += "<i>[STAMINA_DESCRIPTION]</i><br><br>"
-	dat += "<b>Charisma:</b> [build_attribute_score(charisma, 0, 1, "charisma")]"
-	dat += "<i>[CHARISMA_DESCRIPTION]</i><br><br>"
-	dat += "<b>Composure:</b> [build_attribute_score(composure, 0, 1, "composure")]"
-	dat += "<i>[COMPOSURE_DESCRIPTION]</i><br><br>"
-
-	
 	if(pref_species.name == "Werewolf")
 		dat += "<h2>[make_font_cool("TRIBE")]</h2>"
 		dat += "<br><b>Werewolf Name:</b> "
@@ -178,6 +142,8 @@
 		dat += "Eyes: <a href='byond://?_src_=prefs;preference=werewolf_eye_color;task=input'>[werewolf_eye_color]</a><BR>"
 
 	if(pref_species.name == "Vampire")
+		dat += "<br>"
+		dat += "<table width='100%'><tr><td width='50%' valign='top'>"
 		dat += "<h2>[make_font_cool("CLAN")]</h2>"
 		dat += "<b>Clan/Bloodline:</b> <a href='byond://?_src_=prefs;preference=clane;task=input'>[clane.name]</a><BR>"
 		dat += "<b>Description:</b> [clane.desc]<BR>"
@@ -193,40 +159,48 @@
 				dat += "<b>Marks:</b> <a href='byond://?_src_=prefs;preference=clane_acc;task=input'>[clane_accessory]</a><BR>"
 		else
 			clane_accessory = null
+		dat += "</td>"
+		dat += "<td width ='50%' valign='top'>"
 		dat += "<h2>[make_font_cool("INFAMY")]</h2>"
-		dat += "<BR><b>Fame:</b><BR> <a href ='byond://?_src_=prefs;preference=info_choose;task=input'>[info_known]</a>"
-		
+		dat += "<b>Fame: </b><a href ='byond://?_src_=prefs;preference=info_choose;task=input'>[info_known]</a><BR>"
 		if(clane?.name == "Revenant")
-			dat += "<BR><BR><b>Covenant:</b><BR> <u>[vamp_faction.name]</u><BR>"
+			dat += "<b>Covenant: </b><u>[vamp_faction.name]</u><BR>"
 			dat += "<b>Description:</b> [vamp_faction.desc]<BR>"
 		else
-			dat += "<BR><BR><b>Covenant:</b><BR> <a href='byond://?_src_=prefs;preference=vamp_faction;task=input'>[vamp_faction.name]</A><BR>"
+			dat += "<b>Covenant: </b><a href='byond://?_src_=prefs;preference=vamp_faction;task=input'>[vamp_faction.name]</A><BR>"
 			dat += "<b>Description:</b> [vamp_faction.desc]<BR>"
-		generate_discipline_menu(user, dat)
+		dat += "</td></tr></table>"
 		
-	if(pref_species.name == "Ghoul")
+	else if(pref_species.name == "Ghoul")
+		dat += "<table width='100%'><tr><td width='50%' valign='top'>"
 		dat += "<h2>[make_font_cool("CLAN")]</h2>"
 		dat += "<b>Original Regent's Clan:</b> <a href='byond://?_src_=prefs;preference=regent_clan;task=input'>[regent_clan.name]</a><BR>"
 		dat += "<b>Description:</b> [clane.desc]<BR>"
+		dat += "</td>"
+		dat += "<td width ='50%' valign='top'>"
 		dat += "<h2>[make_font_cool("INFAMY")]</h2>"
-		dat += "<BR><b>Fame:</b><BR> <a href ='byond://?_src_=prefs;preference=info_choose;task=input'>[info_known]</a>"
+		dat += "<b>Fame:</b><BR> <a href ='byond://?_src_=prefs;preference=info_choose;task=input'>[info_known]</a>"
 		dat += "<BR><BR><b>Covenant:</b><BR> <a href='byond://?_src_=prefs;preference=vamp_faction;task=input'>The [vamp_faction.name]</A><BR>"
 		dat += "<b>Description:</b> [vamp_faction.desc]<BR>"
-		generate_discipline_menu(user, dat)
+		dat += "</td></tr></table>"
 
-
+	dat += "<table width='100%'><tr><td width='30%' valign='top'>"
+	dat += "<h2>[make_font_cool("DESCRIPTION")]</h2>"
+	dat += "<b>Flavor Text: </b><a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a><BR>"
 	if(length(flavor_text) <= 110)
-		dat += "<BR><b>Flavor Text:</b> [flavor_text] <a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a><BR>"
+		dat += "<i>[flavor_text]</i><br>"
 	else
-		dat += "<BR><b>Flavor Text:</b> [copytext_char(flavor_text, 1, 110)]... <a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a>"
-		dat += "<a href='byond://?_src_=prefs;preference=view_flavortext;task=input'>Show More</a><BR>"
-	dat += "<BR><b>OOC Notes:</b> [ooc_notes] <a href='byond://?_src_=prefs;preference=ooc_notes;task=input'>Change</a><BR>"
+		dat += "<i>[copytext_char(flavor_text, 1, 110)]...</i> <a href='byond://?_src_=prefs;preference=view_flavortext;task=input'>Show More</a><br>"
+	dat += "<b>OOC Notes:</b> <a href='byond://?_src_=prefs;preference=ooc_notes;task=input'>Change</a><BR>"
+	
+	dat += "<i>[ooc_notes]</i><br>"
 
-	dat += "<br><b>Headshot(1:1):</b> <a href='byond://?_src_=prefs;preference=headshot;task=input'>Change</a>"
+	dat += "<b>Headshot(1:1):</b> <a href='byond://?_src_=prefs;preference=headshot;task=input'>Change</a>"
 	if(headshot_link != null)
-		dat += "<a href='byond://?_src_=prefs;preference=view_headshot;task=input'>View</a>"
-
-
+		dat += " <a href='byond://?_src_=prefs;preference=view_headshot;task=input'>View</a>"
+	dat += "</td>"
+	dat += "<td width ='20%' valign='top'>"
+	
 	dat += "<h2>[make_font_cool("EQUIP")]</h2>"
 
 	dat += "<b>Underwear:</b><BR><a href ='byond://?_src_=prefs;preference=underwear;task=input'>[underwear]</a>"
@@ -252,7 +226,7 @@
 
 	dat += "<h3>[make_font_cool("EYES")]</h3>"
 	dat += "<span style='border: 1px solid #161616; background-color: #[eye_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='byond://?_src_=prefs;preference=eyes;task=input'>Change</a>"
-	dat += "<br></td>"
+	dat += "</td><br>"
 
 	dat += APPEARANCE_CATEGORY_COLUMN
 	dat += "<h3>[make_font_cool("HAIR")]</h3>"
@@ -260,9 +234,11 @@
 	dat += "<a href='byond://?_src_=prefs;preference=previous_hairstyle;task=input'>&lt;</a> <a href='byond://?_src_=prefs;preference=next_hairstyle;task=input'>&gt;</a>"
 	dat += "<br><span style='border:1px solid #161616; background-color: #[hair_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='byond://?_src_=prefs;preference=hair;task=input'>Change</a>"
 	dat += "<br>"
+
 	dat += "<h3>[make_font_cool("FACIAL")]</h3>"
 	dat += "<a href='byond://?_src_=prefs;preference=facial_hairstyle;task=input'>[facial_hairstyle]</a>"
 	dat += "<a href='byond://?_src_=prefs;preference=previous_facehairstyle;task=input'>&lt;</a> <a href='byond://?_src_=prefs;preference=next_facehairstyle;task=input'>&gt;</a>"
 	dat += "<br><span style='border: 1px solid #161616; background-color: #[facial_hair_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='byond://?_src_=prefs;preference=facial;task=input'>Change</a>"
-	dat += "<br></td>"
-	dat += "</tr></table>"
+	dat += "</td><br>"
+
+	dat += "</td></tr></table>"

@@ -8,7 +8,7 @@
 #define SAVEFILE_VERSION_MAX	39
 
 
-#define APPEARANCE_CATEGORY_COLUMN "<td valign='top' width='14%'>"
+#define APPEARANCE_CATEGORY_COLUMN "<td valign='top' width='25%' border='1px solid white'>"
 #define MAX_MUTANT_ROWS 4
 #define ATTRIBUTE_BASE_LIMIT 5 //Highest level that a base attribute can be upgraded to. Bonus attributes can increase the actual amount past the limit.
 
@@ -71,4 +71,4 @@ GLOBAL_LIST_INIT(vampire_faction_list, list(
 	"Ordo Dracul",
 	"Circle of the Crone",
 	"Carthian Movement",
-	"Unaligned Undead"))
+	"Unaligned"))

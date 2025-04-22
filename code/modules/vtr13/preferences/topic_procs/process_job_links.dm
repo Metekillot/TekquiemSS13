@@ -4,12 +4,8 @@
 		CRASH("process_job_links called when preferences href not set to job!")
 
 	switch(href_list["task"])
-		if("close")
-			user << browse(null, "window=mob_occupation")
-			ShowChoices(user)
 		if("reset")
 			ResetJobs()
-			SetChoices(user)
 		if("random")
 			switch(joblessrole)
 				if(RETURNTOLOBBY)
@@ -21,8 +17,6 @@
 					joblessrole = BERANDOMJOB
 				if(BERANDOMJOB)
 					joblessrole = RETURNTOLOBBY
-			SetChoices(user)
-		// TFN EDIT START: alt job titles
 		if("alt_title")
 			var/job_title = href_list["job_title"]
 			var/titles_list = list(job_title)
@@ -37,10 +31,6 @@
 						alt_titles_preferences.Remove(job_title)
 				else
 					alt_titles_preferences[job_title] = chosen_title
-			SetChoices(user)
-		// TFN EDIT END
 		if("setJobLevel")
-			UpdateJobPreference(user, href_list["text"], text2num(href_list["level"]))
-		else
-			SetChoices(user)
+			return update_job_preference(user, href_list["text"], text2num(href_list["level"]))
 	return TRUE

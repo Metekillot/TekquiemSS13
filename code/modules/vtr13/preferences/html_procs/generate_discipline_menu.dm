@@ -1,20 +1,17 @@
 /datum/preferences/proc/generate_discipline_menu(mob/user, list/dat)
 	var/discipline_count = 0
-	dat += "<h2>[make_font_cool("DISCIPLINES")]</h2>"
+	dat += "<h2><center>[make_font_cool("DISCIPLINES")]</center></h2>"
 	calculate_discipline_dots()
 	dat += "<br><center><b>Discipline Dots Remaining:</b> [discipline_dots]</center><BR>"
-
 	for (var/i in 1 to discipline_types.len)
 		var/discipline_type = discipline_types[i]
 		var/datum/discipline/discipline = new discipline_type
 		var/discipline_level = discipline_levels[i]
-
 		var/is_clan_discipline = FALSE
 		if(clane.clane_disciplines)
 			is_clan_discipline = clane.clane_disciplines.Find(discipline.type)
 		if(!is_clan_discipline && regent_clan.clane_disciplines)
 			is_clan_discipline = regent_clan.clane_disciplines.Find(discipline.type)
-
 		discipline_count += 1
 
 		dat += "<b>[discipline.name]</b>: [discipline_level > 0 ? "●" : "○"][discipline_level > 1 ? "●" : "○"][discipline_level > 2 ? "●" : "○"][discipline_level > 3 ? "●" : "○"][discipline_level > 4 ? "●" : "○"]([discipline_level])"

@@ -1,21 +1,17 @@
-/datum/preferences/proc/UpdateJobPreference(mob/user, role, desiredLvl)
+/datum/preferences/proc/update_job_preference(mob/user, role, desiredLvl)
 	if(!SSjob || SSjob.occupations.len <= 0)
 		return
 	var/datum/job/job = SSjob.GetJob(role)
 
-	if(GLOB.vampire_factions_list.Find(job.exp_type_department) && job.exp_type_department != vamp_faction.name)
-		to_chat(user, "<span class='danger'>UpdateJobPreference - character is not part of the job's faction.</span>")
-		ShowChoices(user)
+	if(!job)
 		return
 
-	if(!job)
-		user << browse(null, "window=mob_occupation")
-		ShowChoices(user)
+	if(GLOB.vampire_factions_list.Find(job.exp_type_department) && job.exp_type_department != vamp_faction.name)
+		to_chat(user, "<span class='danger'>update_job_preference - character is not part of the job's faction.</span>")
 		return
 
 	if (!isnum(desiredLvl))
-		to_chat(user, "<span class='danger'>UpdateJobPreference - desired level was not a number. Please notify coders!</span>")
-		ShowChoices(user)
+		to_chat(user, "<span class='danger'>update_job_preference - desired level was not a number. Please notify coders!</span>")
 		return
 
 	var/jpval = null
@@ -34,6 +30,4 @@
 			jpval = JP_LOW
 
 	SetJobPreferenceLevel(job, jpval)
-	SetChoices(user)
-
 	return TRUE
