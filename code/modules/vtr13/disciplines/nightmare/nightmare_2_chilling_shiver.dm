@@ -38,7 +38,7 @@
 	if(target.mind)
 		target.AddElement(/datum/element/ui_button_shake_inventory_group, 16)
 		target.AddElement(/datum/element/ui_button_shake_wide_button_group, 1)
-		target.RemoveElement(/datum/element/ui_button_shake_wide_button_group)
+		
 	do_cooldown(TRUE)
 	owner.update_action_buttons()
 
@@ -49,3 +49,4 @@
 	REMOVE_TRAIT(target, TRAIT_NO_QUICK_EQUIP, NIGHTMARE_2_TRAIT)
 	to_chat(target, span_warning("You regain control of your senses."))
 	target.RemoveElement(/datum/element/ui_button_shake_inventory_group)
+	target.RemoveElement(/datum/element/ui_button_shake_wide_button_group)
