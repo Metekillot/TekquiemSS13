@@ -21,8 +21,10 @@
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 
-	v_duty = "You are the Sanctified Bishop, leader of the local chapter of the Lancea et Sanctum. Bear up the Lance and keep the Chapel. Direct your Sanctified to scour the wicked and protect the good. Ensure the Kindred do not fall into monstrosity."
+	minimal_generation = 13
 
+	v_duty = "You are the Sanctified Bishop, leader of the local chapter of the Lancea et Sanctum. Bear up the Lance and keep the Chapel. Direct your Sanctified to scour the wicked and protect the good. Ensure the Kindred do not fall into monstrosity."
+	minimal_masquerade = 0
 	known_contacts = list("Seneschal", "Keeper of Elysium", "Sheriff")
 	my_contact_is_important = TRUE
 

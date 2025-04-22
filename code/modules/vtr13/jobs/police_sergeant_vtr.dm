@@ -18,6 +18,7 @@
 	allowed_species = list("Human")
 
 	duty = "Enforce the law. Keep the officers in line. Follow what the Chief says."
+	minimal_masquerade = 0
 	my_contact_is_important = FALSE
 	known_contacts = list("Police Chief")
 

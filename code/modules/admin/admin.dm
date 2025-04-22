@@ -494,7 +494,6 @@
 
 	log_admin("[key_name(usr)] spawned [amount] x [chosen] at [AREACOORD(usr)]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Spawn Atom") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-	SSoverwatch.record_action(usr, "[key_name(usr)] spawned [amount] x [chosen] at [AREACOORD(usr)]")
 
 /datum/admins/proc/podspawn_atom(object as text)
 	set category = "Debug"
@@ -519,7 +518,6 @@
 
 	log_admin("[key_name(usr)] pod-spawned [chosen] at [AREACOORD(usr)]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Podspawn Atom") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-	SSoverwatch.record_action(usr, "[key_name(usr)] pod-spawned [chosen] at [AREACOORD(usr)]]")
 
 /datum/admins/proc/spawn_cargo(object as text)
 	set category = "Debug"
@@ -538,7 +536,6 @@
 
 	log_admin("[key_name(usr)] spawned cargo pack [chosen] at [AREACOORD(usr)]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Spawn Cargo") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-	SSoverwatch.record_action(usr, "[key_name(usr)] spawned cargo pack [chosen] at [AREACOORD(usr)]")
 
 /datum/admins/proc/show_traitor_panel(mob/target_mob in GLOB.mob_list)
 	set category = "Admin.Game"

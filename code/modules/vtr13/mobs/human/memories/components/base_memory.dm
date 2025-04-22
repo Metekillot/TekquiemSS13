@@ -53,11 +53,12 @@
 	SEND_SIGNAL(src, COMSIG_MEMORY_SPLAT_TEXT, owner, is_own_memories)
 	
 	dat += "<b>Physique</b>: [owner.physique] + [owner.additional_physique]"
-	dat += "<b>Stamina</b>: [owner.stamina] + [owner.additional_stamina]"
-	dat += "<b>Charisma</b>: [owner.charisma] + [owner.additional_charisma]"
-	dat += "<b>Composure</b>: [owner.composure] + [owner.additional_composure]"
-	dat += "<b>Wits</b>: [owner.wits] + [owner.additional_wits]"
-	dat += "<b>Resolve</b>: [owner.resolve] + [owner.additional_resolve]"
+	dat += "<b>Dexterity</b>: [owner.dexterity] + [owner.additional_dexterity]"
+	dat += "<b>Social</b>: [owner.social] + [owner.additional_social]"
+	dat += "<b>Mentality</b>: [owner.mentality] + [owner.additional_mentality]"
+	dat += "<b>Cruelty</b>: [owner.blood] + [owner.additional_blood]"
+	dat += "<b>Lockpicking</b>: [owner.lockpicking] + [owner.additional_lockpicking]"
+	dat += "<b>Athletics</b>: [owner.athletics] + [owner.additional_athletics]"
 	dat += ""
 	SEND_SIGNAL(src, COMSIG_MEMORY_DISCIPLINE_TEXT, owner, is_own_memories)
 

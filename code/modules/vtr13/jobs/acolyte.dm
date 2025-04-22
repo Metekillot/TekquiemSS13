@@ -11,7 +11,7 @@
 
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	
+
 	exp_type = EXP_TYPE_CRONE
 	exp_type_department = EXP_TYPE_CRONE
 
@@ -19,10 +19,11 @@
 
 	duty = "You're a ghoul sworn to one of the Crones, or to the Circle itself. Help them with their rituals. Manage the Queen Lilith. Try not to get eaten."
 	v_duty = "You're a member of the Circle of the Crone. Assist the Hierophant in carrying out any rituals. Manage the Queen Lilith. Spread wonder and terror at the monster you have become."
-
+	minimal_masquerade = 3
 	allowed_species = list("Vampire", "Ghoul")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 	known_contacts = list("Hierophant")
+	experience_addition = 15
 
 /datum/outfit/job/acolyte
 	name = "Acolyte"

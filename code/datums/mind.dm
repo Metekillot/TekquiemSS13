@@ -372,8 +372,8 @@
 		P = locate() in all_contents
 
 	var/obj/item/uplink_loc
-	var/implant = TRUE
-/*
+	var/implant = FALSE
+
 	if(traitor_mob.client && traitor_mob.client.prefs)
 		switch(traitor_mob.client.prefs.uplink_spawn_loc)
 			if(UPLINK_PDA)
@@ -395,7 +395,7 @@
 
 	if(!uplink_loc) // We've looked everywhere, let's just implant you
 		implant = TRUE
-*/
+
 	if (!implant)
 		. = uplink_loc
 		var/datum/component/uplink/U = uplink_loc.AddComponent(/datum/component/uplink, traitor_mob.key)

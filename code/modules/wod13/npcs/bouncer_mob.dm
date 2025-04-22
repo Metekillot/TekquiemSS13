@@ -15,7 +15,7 @@
 	var/walk_home_timer = 2 MINUTES
 	var/warp_home_timer = 30 SECONDS
 
-	
+
 	var/datum/vip_barrier_perm/linked_perm = null
 
 	var/message_cooldown = 0
@@ -38,7 +38,6 @@
 
 	//Behavior settings
 	fights_anyway=TRUE
-	max_stat = 4
 
 /mob/living/carbon/human/npc/bouncer/Initialize()
 	.=..()

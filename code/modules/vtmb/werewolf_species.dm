@@ -63,11 +63,10 @@
 					dat += "[printobjectives(A.objectives)]<BR>"
 
 		dat += "<b>Physique</b>: [host.physique]<BR>"
-		dat += "<b>Stamina</b>: [host.stamina]<BR>"
-		dat += "<b>Charisma</b>: [host.charisma]<BR>"
-		dat += "<b>Composure</b>: [host.composure]<BR>"
-		dat += "<b>Mentality</b>: [host.wits]<BR>"
-		dat += "<b>Resolve</b>: [host.resolve]<BR>"
+		dat += "<b>Dexterity</b>: [host.dexterity]<BR>"
+		dat += "<b>Social</b>: [host.social]<BR>"
+		dat += "<b>Mentality</b>: [host.mentality]<BR>"
+		dat += "<b>Cruelty</b>: [host.blood]<BR>"
 		if(host.Myself)
 			if(host.Myself.Friend)
 				if(host.Myself.Friend.owner)

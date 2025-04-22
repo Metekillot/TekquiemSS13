@@ -22,8 +22,8 @@
 	if(SSroll.opposed_roll(
 		owner,
 		target,
-		dice_a = owner.get_total_wits() + discipline.level,
-		dice_b = target.get_total_resolve() + target.blood_potency, 
+		dice_a = owner.get_total_mentality() + discipline.level,
+		dice_b = target.get_total_mentality() + target.get_total_blood(), 
 		alert_atom = target)) //TODO HEX: Tie to blood_potency
 		return TRUE	
 	to_chat(owner, span_warning("[target] resists the horror of what they see!"))

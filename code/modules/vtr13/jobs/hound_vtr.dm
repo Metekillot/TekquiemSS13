@@ -9,6 +9,7 @@
 	selection_color = "#00ffff"
 	minimal_player_age = 7
 	exp_requirements = 300
+	exp_type = EXP_TYPE_CREW
 
 	outfit = /datum/outfit/job/hound_vtr
 	paycheck = PAYCHECK_HARD
@@ -16,7 +17,7 @@
 
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_INVICTUS
-	minimum_vamp_rank = VAMP_RANK_NEONATE
+
 	mind_traits = list(TRAIT_DONUT_LOVER)
 
 	display_order = JOB_DISPLAY_ORDER_HOUND_VTR
@@ -25,7 +26,10 @@
 	known_contacts = list("Prince", "Keeper of Elysium", "Sheriff")
 
 	v_duty = "You're a Hound, one of the Sheriff's attack dogs and a member of the Invictus. Help the Sheriff enforce the Seneschal's orders. Ensure that the Traditions are kept. Protect the Invictus and its leadership."
+	minimal_masquerade = 4
+	experience_addition = 10
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
+
 
 /datum/outfit/job/hound_vtr
 	name = "Hound"

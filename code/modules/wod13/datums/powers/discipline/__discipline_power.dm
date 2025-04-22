@@ -366,7 +366,7 @@
  * An overridable proc that allows for custom pre_activation() behaviour.
  *
  * This is meant to be overridden by powers to allow for extra checks
- * on activation (eg. charisma vs. wit for mental disciplines), to
+ * on activation (eg. Social vs. Mentality for mental disciplines), to
  * delay activation with a do_after() (eg. Valeren 5 taking 10 seconds),
  * or possibly to hijack the pre_activation() proc by returning FALSE and
  * using its own logic instead (like activating on several targets in an

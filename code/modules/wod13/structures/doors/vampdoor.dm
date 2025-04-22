@@ -19,7 +19,7 @@
 	var/glass = FALSE
 	var/hacking = FALSE
 	var/lockpick_timer = 17 //[Lucifernix] - Never have the lockpick timer lower than 7. At 7 it will unlock instantly!!
-	var/lockpick_difficulty = LOCKDIFFICULTY_1
+	var/lockpick_difficulty = 2
 
 	var/open_sound = 'code/modules/wod13/sounds/door_open.ogg'
 	var/close_sound = 'code/modules/wod13/sounds/door_close.ogg'
@@ -52,28 +52,39 @@
 	if(!H.is_holding_item_of_type(/obj/item/vamp/keys/hack))
 		return
 	var/message //So the code isn't flooded with . +=, it's just a visual thing
-	var/difference = H.get_total_wits() - lockpick_difficulty
-	switch(difference)
-		if(-INFINITY to -6)
+	var/difference = (H.lockpicking * 2 + H.dexterity) - lockpick_difficulty //Lower number = higher difficulty
+	switch(difference) //Because rand(1,20) always adds a minimum of 1 we take that into consideration for our theoretical roll ranges, which really makes it a random range of 19.
+		if(-INFINITY to -11) //Roll can never go above 10 (-11 + 20 = 9), impossible to lockpick.
+			message = "<span class='warning'>You don't have any chance of lockpicking this with your current skills!</span>"
+		if(-10 to -7)
 			message = "<span class='warning'>This door looks extremely complicated. You figure you will have to be lucky to break it open."
-		if(-5 to -4)
+		if(-6 to -3)
 			message = "<span class='notice'>This door looks very complicated. You might need a few tries to lockpick it."
-		if(-3 to 0) //Only 3 numbers here instead of 4.
+		if(-2 to 0) //Only 3 numbers here instead of 4.
 			message = "<span class='notice'>This door looks mildly complicated. It shouldn't be too hard to lockpick it.</span>"
 		if(1 to 4) //Impossible to break the lockpick from here on because minimum rand(1,20) will always move the value to 2.
 			message = "<span class='nicegreen'>This door is somewhat simple. It should be pretty easy for you to lockpick it.</span>"
 		if(5 to INFINITY) //Becomes guaranteed to lockpick at 9.
 			message = "<span class='nicegreen'>This door is really simple to you. It should be very easy to lockpick it.</span>"
 	. += "[message]"
+	if(H.lockpicking >= 5) //The difference between a 1/19 and a 4/19 is about 4x. An expert in lockpicks is more discerning.
+		//Converting the difference into a number that can be divided by the max value of the rand() used in lockpicking calculations.
+		var/max_rand_value = 20
+		var/minimum_lockpickable_difference = -10 //Minimum value, any lower and lockpicking will always fail.
+		//Add those together then reduce by 1
+		var/number_difference = max_rand_value + minimum_lockpickable_difference - 1
+		//max_rand_value and number_difference will output 11 currently.
+		var/value = difference + max_rand_value - number_difference
+		//I'm sure there has to be a better method for this because it's ugly, but it works.
+		//Putting a condition here to avoid dividing 0.
+		var/odds = value ? clamp((value/max_rand_value), 0, 1) : 0
+		. += "<span class='notice'>As an expert in lockpicking, you estimate that you have a [round(odds*100, 1)]% chance to lockpick this door successfully.</span>"
 
 /obj/structure/vampdoor/MouseDrop_T(atom/dropping, mob/user, params)
 	. = ..()
 
 	//Adds the component only once. We do it here & not in Initialize() because there are tons of windows & we don't want to add to their init times
 	LoadComponent(/datum/component/leanable, dropping)
-
-/obj/structure/vampdoor/proc/proc_unlock(method) //I am here so that dwelling doors can call me to properly process their alarms.
-	return
 
 /obj/structure/vampdoor/attack_hand(mob/user)
 	. = ..()
@@ -119,25 +130,29 @@
 	if(istype(W, /obj/item/vamp/keys/hack))
 		if(locked)
 			hacking = TRUE
-			proc_unlock(5)
 			playsound(src, 'code/modules/wod13/sounds/hack.ogg', 100, TRUE)
 			for(var/mob/living/carbon/human/npc/police/P in oviewers(7, src))
 				if(P)
 					P.Aggro(user)
-			if(do_mob(user, src, max((lockpick_timer - user.get_total_wits() * 3), 2) SECONDS))
-				switch(SSroll.storyteller_roll(user.get_total_wits() * 2, lockpick_difficulty, FALSE, list(user), src))
-					if(ROLL_BOTCH)
-						to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
-						qdel(W)
-					if(ROLL_FAILURE)
-						to_chat(user, "<span class='warning'>You failed to pick the lock.</span>")
-					if(ROLL_SUCCESS)
-						to_chat(user, "<span class='notice'>You pick the lock.</span>")
-						locked = FALSE
-				hacking = FALSE
-				return
+			var/total_lockpicking = user.get_total_lockpicking()
+			if(do_mob(user, src, (lockpick_timer - total_lockpicking * 2) SECONDS))
+				var/roll = rand(1, 20) + (total_lockpicking * 2 + user.get_total_dexterity()) - lockpick_difficulty
+				if(roll <=1)
+					to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
+					qdel(W)
+					hacking = FALSE
+				if(roll >=10)
+					to_chat(user, "<span class='notice'>You pick the lock.</span>")
+					locked = FALSE
+					hacking = FALSE
+					return
+
+				else
+					to_chat(user, "<span class='warning'>You failed to pick the lock.</span>")
+					hacking = FALSE
+					return
 			else
-				to_chat(user, "<span class='warning'>You stopped picking the lock.</span>")
+				to_chat(user, "<span class='warning'>You failed to pick the lock.</span>")
 				hacking = FALSE
 				return
 		else
@@ -161,7 +176,6 @@
 					else
 						playsound(src, lock_sound, 75, TRUE)
 						to_chat(user, "[src] is now unlocked.")
-						proc_unlock("key")
 						locked = FALSE
 
 /obj/structure/vampdoor/proc/door_return_initial_state()

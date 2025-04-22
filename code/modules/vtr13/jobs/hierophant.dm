@@ -14,12 +14,13 @@
 	paycheck_department = ACCOUNT_SRV
 
 	exp_type = EXP_TYPE_CRONE
-	exp_type_department = EXP_TYPE_CRONE
+	exp_type_department = EXP_TYPE_LANCEA
 
 	my_contact_is_important = TRUE
 	display_order = JOB_DISPLAY_ORDER_HIEROPHANT
 	v_duty = "You are the Hierophant, defacto leader of the Circle of the Crone. Carry out blood rituals. Protect your territory, the Queen Lilith. Ensure that the Circle's interests are respected by the Seneschal."
-	minimum_vamp_rank = VAMP_RANK_ANCILLAE
+	minimal_masquerade = 4
+	minimal_generation = 7
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 	experience_addition = 20

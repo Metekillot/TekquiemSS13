@@ -39,6 +39,7 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/datum/verbs/menu/Admin/verb/playerpanel,
 	/client/proc/game_panel,			/*game panel, allows to change game-mode etc*/
 	/client/proc/toggle_canon,
+	/client/proc/reward_exp,
 	/client/proc/grant_discipline,
 	/client/proc/remove_discipline,
 	/client/proc/whitelist_panel,
@@ -540,18 +541,51 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	if(!check_rights(R_ADMIN))
 		return
 
-	var/value = input(usr, "Enter the Humanity adjustment value for [M.key]:", "Humanity Adjustment", 0) as num|null
+	var/is_enlightenment = FALSE
+	if (M.client?.prefs?.enlightenment)
+		is_enlightenment = TRUE
+
+	var/value = input(usr, "Enter the [is_enlightenment ? "Enlightenment" : "Humanity"] adjustment value for [M.key]:", "Humanity Adjustment", 0) as num|null
 	if(value == null)
 		return
+	if (is_enlightenment)
+		value = -value
 
 	M.AdjustHumanity(value, 0, forced = TRUE)
 
-	var/msg = "<span class='adminnotice'><b>Humanity Adjustment: [key_name_admin(usr)] adjusted [key_name(M)]'s Humanity by [value] to [M.humanity]</b></span>"
-	log_admin("HumanityAdjust: [key_name_admin(usr)] has adjusted [key_name(M)]'s Humanity by [value] to [M.humanity]")
+	var/msg = "<span class='adminnotice'><b>Humanity Adjustment: [key_name_admin(usr)] adjusted [key_name(M)]'s [is_enlightenment ? "Enlightenment" : "Humanity"] by [is_enlightenment ? -value : value] to [M.humanity]</b></span>"
+	log_admin("HumanityAdjust: [key_name_admin(usr)] has adjusted [key_name(M)]'s [is_enlightenment ? "Enlightenment" : "Humanity"] by [is_enlightenment ? -value : value] to [M.humanity]")
 	message_admins(msg)
 	admin_ticket_log(M, msg)
 	SSoverwatch.record_action(usr, "HumanityAdjust: [key_name_admin(usr)] has adjusted [key_name(M)]'s Humanity by [value] to [M.humanity]")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Adjust Humanity")
+
+/client/proc/reward_exp()
+	set name = "Reward Experience"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+	var/list/explist = list()
+	for(var/client/C in GLOB.clients)
+		explist |= "[C.ckey]"
+	var/exper = input("Rewarding:") as null|anything in explist
+	if(exper)
+		var/amount = input("Amount:") as null|num
+		if(amount)
+			var/reason = input("Reason:") as null|text
+			if(reason)
+				for(var/client/C in GLOB.clients)
+					if("[C.ckey]" == "[exper]")
+						to_chat(C, "<b>You've been rewarded with [amount] experience points. Reason: \"[reason]\"</b>")
+
+						C.prefs.add_experience(amount)
+						C.prefs.save_character()
+
+						message_admins("[ADMIN_LOOKUPFLW(usr)] rewarded [ADMIN_LOOKUPFLW(exper)] with [amount] experience points. Reason: [reason]")
+						log_admin("[key_name(usr)] rewarded [key_name(exper)] with [amount] experience points. Reason: [reason]")
+						SSoverwatch.record_action(usr, "[key_name(usr)] rewarded [key_name(exper)] with [amount] experience points. Reason: [reason]")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Reward Experience") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/grant_whitelist()
 	set name = "Grant Whitelist"

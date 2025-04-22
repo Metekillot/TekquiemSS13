@@ -11,14 +11,19 @@
 
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
+
 	exp_type_department = EXP_TYPE_INVICTUS
+
 	display_order = JOB_DISPLAY_ORDER_BARTENDER_VTR
 
 	allowed_species = list("Vampire", "Ghoul", "Human")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
+	minimal_generation = 7	//Uncomment when players get exp enough
 
 	v_duty = "You're a bartender at Elysium. Pour drinks for the Kine. Help the Keeper keep the blood flowing. Play something good on the jukebox."
 	duty = "You're a bartender at the local nightclub. Pour drinks for working stiffs. Help out your boss if they ask. Don't go into the VIP area upstairs. Don't ask too many questions. Play something good on the jukebox."
+	experience_addition = 20
+	minimal_masquerade = 5
 	my_contact_is_important = TRUE
 	known_contacts = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 

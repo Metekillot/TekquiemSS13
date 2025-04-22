@@ -4,16 +4,6 @@
 #define EXP_TYPE_INVICTUS		"Invictus"
 #define EXP_TYPE_ORDO			"Ordo Dracul"
 
-
-GLOBAL_LIST_INIT(vampire_factions_list, list(
-	EXP_TYPE_CRONE,
-	EXP_TYPE_LANCEA,
-	EXP_TYPE_CARTHIAN,
-	EXP_TYPE_INVICTUS,
-	EXP_TYPE_ORDO
-))
-
-
 #define JOB_DISPLAY_ORDER_CITIZEN_VTR 1
 GLOBAL_LIST_INIT(citizen_positions, list(
 	"Pedestrian",
@@ -43,19 +33,19 @@ GLOBAL_LIST_INIT(police_positions, list(
 ))
 
 #define JOB_DISPLAY_ORDER_SENESCHAL_VTR 9
-#define JOB_DISPLAY_ORDER_KEEPER 10
-#define JOB_DISPLAY_ORDER_SHERIFF_VTR 11
-#define JOB_DISPLAY_ORDER_PAGE 12
-#define JOB_DISPLAY_ORDER_HOUND_VTR 13
-#define JOB_DISPLAY_ORDER_BARTENDER_VTR 14
+#define JOB_DISPLAY_ORDER_PAGE 10
+#define JOB_DISPLAY_ORDER_KEEPER 11
+#define JOB_DISPLAY_ORDER_BARTENDER_VTR 12
+#define JOB_DISPLAY_ORDER_SHERIFF_VTR 13
+#define JOB_DISPLAY_ORDER_HOUND_VTR 14
 #define JOB_DISPLAY_ORDER_COURTIER 15
 GLOBAL_LIST_INIT(command_positions, list(
 	"Seneschal",
-	"Keeper of Elysium",
-	"Sheriff",
 	"Page",
-	"Hound",
+	"Keeper of Elysium",
 	"Bartender",
+	"Sheriff",
+	"Hound",
 	"Courtier"
 ))
 

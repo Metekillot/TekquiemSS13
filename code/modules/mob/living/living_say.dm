@@ -302,6 +302,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 					EX.last_message = message
 //					var/datum/preferences/P = GLOB.preferences_datums[ckey(EX.key)]
 //					if(P)
+					EX.total_erp += length_char(message)
 //						P.exper = min(calculate_mob_max_exper(EX), P.exper+kal)
 //						P.save_preferences()
 //						P.save_character()

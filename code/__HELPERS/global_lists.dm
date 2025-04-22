@@ -6,8 +6,6 @@ GLOBAL_LIST_EMPTY(clanes_list)	//>:3
 
 GLOBAL_LIST_EMPTY(auspices_list)
 
-GLOBAL_LIST_EMPTY(factions_list)
-
 /proc/make_datum_references_lists()
 	//hair
 	init_sprite_accessory_subtypes(/datum/sprite_accessory/hair, GLOB.hairstyles_list, GLOB.hairstyles_male_list, GLOB.hairstyles_female_list)
@@ -46,11 +44,6 @@ GLOBAL_LIST_EMPTY(factions_list)
 		var/datum/species/S = new spath()
 		GLOB.species_list[S.id] = spath
 	sortList(GLOB.species_list, GLOBAL_PROC_REF(cmp_typepaths_asc))
-
-	for(var/spath in subtypesof(/datum/vtr_faction))
-		var/datum/vtr_faction/faction = new spath()
-		GLOB.factions_list[faction.name] = spath
-	sortList(GLOB.factions_list, GLOBAL_PROC_REF(cmp_typepaths_asc))
 
 	for(var/spath in subtypesof(/datum/vampireclane/vtr))
 		var/datum/vampireclane/vtr/S = new spath()

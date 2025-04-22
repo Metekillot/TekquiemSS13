@@ -18,8 +18,12 @@
 
 	allowed_species = list("Vampire", "Ghoul")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
+
+	minimal_generation = 13
+
 	duty = "You're a ghoul belonging to one of the Sanctified, or to the Lancea et Sanctum itself. Help the Sanctified with their work. Dispose of corpses in the crematorium. Find salvation in the blood."
 	v_duty = "You're one of the Sacntified, the clergy of the Lancea et Sanctum. Bear up the Lance and keep the Chapel. Keep the kine faithful. Advise your fellow Kindred on matters of faith and morality. Discretely dispose of any unfortunate lapses in judgement."
+	minimal_masquerade = 0
 	known_contacts = list("Seneschal", "Keeper of Elysium", "Sheriff")
 	my_contact_is_important = TRUE
 

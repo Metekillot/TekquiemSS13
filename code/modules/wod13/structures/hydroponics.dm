@@ -34,9 +34,9 @@
 	if(growth_stage == 4)
 		growth_stage = 1
 		to_chat(user, "<span class='notice'>You pull the grown weed out of [src].</span>")
-		var/mob/living/carbon/human/user_human = user
+		var/mob/living/carbon/human/H = user
 		var/amount
-		switch(SSroll.storyteller_roll(user_human.get_total_composure(), 6, TRUE))
+		switch(SSroll.storyteller_roll(H.get_total_mentality(), 6, TRUE))
 			if(3 to INFINITY)
 				amount = 4
 			if(2)

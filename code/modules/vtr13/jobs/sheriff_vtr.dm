@@ -11,6 +11,8 @@
 	req_admin_notify = 1
 	minimal_player_age = 14
 	exp_requirements = 300
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_CAMARILLIA
 
 	outfit = /datum/outfit/job/sheriff_vtr
 
@@ -25,7 +27,8 @@
 	display_order = JOB_DISPLAY_ORDER_SHERIFF_VTR
 	bounty_types = CIV_JOB_SEC
 
-	minimum_vamp_rank = VAMP_RANK_ANCILLAE
+	minimal_generation = 12	//Uncomment when players get exp enough
+	minimal_masquerade = 5
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 
@@ -33,6 +36,7 @@
 	known_contacts = list("Seneschal","Keeper of Elysium", "Carthian Representative", "Bishop", "Hierophant", "Voivode")
 
 	v_duty = "Protect the Seneschal and the Masquerade. You are their sword."
+	experience_addition = 20
 
 /datum/outfit/job/sheriff_vtr
 	name = "Sheriff"

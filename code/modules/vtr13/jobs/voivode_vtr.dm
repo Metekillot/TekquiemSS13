@@ -18,11 +18,11 @@
 
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
-
-	minimum_vamp_rank = VAMP_RANK_ANCILLAE
+	minimal_generation = 7
 
 	v_duty = "You are the Voivode, leader of the local Ordo Dracul. Conduct research into the occult and arcane. Manage your research library, its librarian, and your Sworn. Ensure that the Seneschal does not interfere with your work."
-
+	experience_addition = 20
+	minimal_masquerade = 2
 	my_contact_is_important = TRUE
 	known_contacts = list("Seneschal", "Keeper of Elysium", "Sheriff")
 

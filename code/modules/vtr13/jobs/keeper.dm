@@ -18,10 +18,11 @@
 	display_order = JOB_DISPLAY_ORDER_KEEPER
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
-	
-	minimum_vamp_rank = VAMP_RANK_ANCILLAE
+	minimal_generation = 7	//Uncomment when players get exp enough
 
 	v_duty = "An Elysuim is an important location in kindred society. Tonight, you will rule yours like the Devil rules Hell. Keep the peace in this den of secrets, no matter the cost. While in your Elysium, only the Seneschal and the Prince have authority over you."
+	experience_addition = 20
+	minimal_masquerade = 5
 	my_contact_is_important = TRUE
 	known_contacts = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 

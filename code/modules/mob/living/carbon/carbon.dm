@@ -201,6 +201,9 @@
 		return
 
 	var/mob/living/carbon/H = src
+	var/physique = H.get_total_physique()
+	var/dexterity = H.get_total_dexterity()
+	var/athletics = H.get_total_athletics()
 
 	if(HAS_TRAIT(H, TRAIT_IMMOBILIZED) || H.legcuffed)
 		return
@@ -208,33 +211,26 @@
 		return
 
 	var/current_time = world.time
-	
-	var/adjusted_jump_delay = max(JUMP_DELAY - (1.4 * H.get_total_stamina()), 0)
+	var/adjusted_jump_delay = JUMP_DELAY - (0.4 * dexterity) - (1 * athletics)
 	if(current_time - last_jump_time < adjusted_jump_delay)
 		to_chat(src, "<span class='notice'>You can't jump so soon!")
 		return
 
 	var/adjusted_jump_range = MAX_JUMP_DISTANCE
+
+	if(physique < 2)
+		adjusted_jump_range += 0.75 + athletics
+	else
+		adjusted_jump_range += 0.75 + (physique -1) * 0.5 + athletics
+
+	if(adjusted_jump_range > 6)
+		adjusted_jump_range = 6
+	if(adjusted_jump_range <1)
+		adjusted_jump_range = 1
+
+	// very high override for powers like Jade Shintai 2
 	if(HAS_TRAIT(src, TRAIT_SUPERNATURAL_DEXTERITY))
 		adjusted_jump_range = 11
-	else
-		var/success_count = SSroll.storyteller_roll(
-			dice = get_total_wits() + get_total_physique(),
-			numerical = TRUE,
-			mobs_to_show_output = list(src),
-			alert_atom = src)
-
-		if(success_count < 0)
-			visible_message("<span class='danger'>[src] tries to a jump, but stumbles and eats \the [loc] like a chump.</span>", \
-						"<span class='userdanger'>You embarass yourself jumping by falling to the floor.</span>")
-			Knockdown(abs(success_count) * 50)
-			return
-		else if (!success_count)
-			visible_message("<span class='notice'>[src] tries to a jump, but stumbles.</span>", \
-						"<span class='notice'>You stumble while trying to jump.</span>")
-			return
-		else
-			adjusted_jump_range = clamp(success_count * 2, 2, 7)
 
 	var/distance = get_dist(loc, target)
 	var/turf/adjusted_target = target

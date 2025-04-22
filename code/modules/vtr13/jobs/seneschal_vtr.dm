@@ -10,6 +10,8 @@
 	req_admin_notify = 1
 	minimal_player_age = 14
 	exp_requirements = 180
+	exp_type = EXP_TYPE_CREW
+	exp_type_department = EXP_TYPE_CAMARILLIA
 
 	outfit = /datum/outfit/job/seneschal_vtr
 
@@ -23,7 +25,8 @@
 
 	display_order = JOB_DISPLAY_ORDER_SENESCHAL_VTR
 
-	minimum_vamp_rank = VAMP_RANK_ANCILLAE
+	minimal_generation = 10	//Uncomment when players get exp enough
+	minimal_masquerade = 5
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 
@@ -33,11 +36,12 @@
 		"Keeper of Elysium",
 		"Carthian Representative",
 		"Bishop",
-		"Hierophant",
+		"hierophant",
 		"Voivode"
 	)
 
 	v_duty = "You are the Seneschal, the right hand of the Prince. Rule over the Invictus in his name. Work with the Sheriff to keep the Traditions secure. Work with the leaders of the other covenants to keep the masses in line."
+	experience_addition = 25
 
 /datum/outfit/job/seneschal_vtr
 	name = "Seneschal"
