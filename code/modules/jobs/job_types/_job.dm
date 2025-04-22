@@ -166,13 +166,7 @@
 /datum/job/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, client/preference_source)
 	if(!H)
 		return FALSE
-/*
-	if(CONFIG_GET(flag/enforce_human_authority) && (title in GLOB.command_positions))
-		if(H.dna.species.id != "human")
-			H.set_species(/datum/species/human)
-			H.apply_pref_name("human", preference_source)
-*/
-//No need to humanize fucking furries, since there is no fucking furries
+
 	if(!visualsOnly)
 		var/datum/bank_account/bank_account = new(H.real_name, src, H.dna.species.payday_modifier)
 		bank_account.payday(STARTING_PAYCHECKS, TRUE)
@@ -180,7 +174,7 @@
 
 	//Equip the rest of the gear
 	H.dna.species.before_equip_job(src, H, visualsOnly)
-	// TFN EDIT START: alt job titles
+
 	if(outfit && preference_source?.prefs?.alt_titles_preferences[title] && !outfit_override)
 		var/outfitholder = "[outfit]/[ckey(preference_source.prefs.alt_titles_preferences[title])]"
 		if(text2path(outfitholder) || !outfitholder)
@@ -188,7 +182,7 @@
 
 	if(outfit_override || outfit)
 		H.equipOutfit(outfit_override ? outfit_override : outfit, visualsOnly, preference_source)
-	// TFN EDIT END
+
 	H.dna.species.after_equip_job(src, H, visualsOnly)
 
 	if(!visualsOnly && announce)
@@ -346,8 +340,8 @@
 		// TFN EDIT END
 		PDA.update_label()
 
-	if(H.client?.prefs.playtime_reward_cloak)
-		neck = /obj/item/clothing/neck/cloak/skill_reward/playing
+//	if(H.client?.prefs.playtime_reward_cloak)
+//		neck = /obj/item/clothing/neck/cloak/skill_reward/playing
 
 
 /datum/outfit/job/get_chameleon_disguise_info()

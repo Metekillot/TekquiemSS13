@@ -1,7 +1,7 @@
-/mob/living/carbon/human/proc/examine_status(mob/user)
+/mob/living/carbon/human/proc/examine_status(mob/user, temp_gender = null)
 	. = list()
-	var/t_He = p_they(TRUE)
-	var/t_is = p_are()
+	var/t_He = p_they(TRUE, temp_gender)
+	var/t_is = p_are(FALSE, temp_gender)
 	
 	//Status effects
 	var/list/status_examines = status_effect_examines()

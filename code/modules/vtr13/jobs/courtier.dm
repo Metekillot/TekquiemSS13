@@ -17,12 +17,10 @@
 	exp_type_department = EXP_TYPE_INVICTUS
 
 	allowed_species = list("Vampire", "Ghoul")
-	minimal_generation = 13
 
 	duty = "You're a ghoul sworn to a member of the Invictus, or to the covenant as a whole. Help out the Invictus with whatever they need. Make sure your actions reflect well on them. Try not to run out of vitae."
 	v_duty = "You're a minor functionary or hanger-on in the Invictus. Help the covenant to improve your social status. Try and curry favor with your elders. Lick boots until you get to wear them."
 	experience_addition = 10
-	minimal_masquerade = 0
 	my_contact_is_important = FALSE
 
 /datum/outfit/job/courtier/pre_equip(mob/living/carbon/human/H)

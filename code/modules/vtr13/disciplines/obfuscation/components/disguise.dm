@@ -34,11 +34,13 @@
 	RegisterSignal(source_power, COMSIG_POWER_DEACTIVATE, PROC_REF(remove_disguise))
 
 	original_name = parent_human.real_name
+	parent_human.real_name = disguise_mob.real_name
+	
 
-	var/image/obfuscate_image = image('icons/effects/effects.dmi', parent_human, "nothing", ABOVE_MOB_LAYER)
-	obfuscate_image.appearance = new /mutable_appearance(disguise_mob)
-	obfuscate_image.override = 1
-	parent_human.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic, "obfuscate", obfuscate_image)
+	var/image/obfuscate_overlay = image(disguise_mob, loc=parent_human, layer = ABOVE_MOB_LAYER)
+	obfuscate_overlay.setDir(null)
+	obfuscate_overlay.override = TRUE
+	parent_human.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/everyone, "obfuscate", obfuscate_overlay)
 	parent_human.update_body()
 	
 	handle_examine_cache(disguise_mob)
@@ -91,7 +93,7 @@
 
 	//false identity's title, when it was taken
 	var/examine_result = disguise_title_cache
-	examine_result ? return_list.Add(examine_result) : null
+	examine_result ? return_list.Add(examine_result, disguise.gender) : null
 
 	//the real person's Beast
 	examine_result = human_parent.examine_beast(user)
@@ -107,11 +109,11 @@
 	examine_result ? return_list.Add(examine_result) : null
 
 	//Statuses of the real person
-	examine_result = human_parent.examine_status(user)
+	examine_result = human_parent.examine_status(user, disguise.gender)
 	examine_result ? return_list.Add(examine_result) : null
 
 	//Death status of real person
-	examine_result = human_parent.examine_death(user)
+	examine_result = human_parent.examine_death(user, disguise.gender)
 	examine_result ? return_list.Add(examine_result) : null
 
 	//health of the false identity, when it was taken
@@ -119,7 +121,7 @@
 	examine_result ? return_list.Add(examine_result) : null
 
 	//bleeding status of the real person
-	examine_result = human_parent.examine_health_no_disguise(user)
+	examine_result = human_parent.examine_health_no_disguise(user, disguise.gender)
 	examine_result ? return_list.Add(examine_result) : null
 
 	if(!(human_parent.stat == DEAD || (HAS_TRAIT(human_parent, TRAIT_FAKEDEATH))))
@@ -128,7 +130,7 @@
 		examine_result ? return_list.Add(examine_result) : null
 
 		//mood of the real person
-		examine_result = human_parent.examine_mood(user)
+		examine_result = human_parent.examine_mood(user, disguise.gender)
 		examine_result ? return_list.Add(examine_result) : null
 
 	//scars of the false identity, when it was taken
@@ -136,7 +138,7 @@
 	examine_result ? return_list.Add(examine_result) : null
 
 	//flavortext window handling
-	examine_result = human_parent.examine_flavortext_window(user)
+	examine_result = flavortext_window_disguise(user, disguise, examine_result)
 	examine_result ? return_list.Add(examine_result) : null
 	
 	examine_result = human_parent.examine_hud_info(user)

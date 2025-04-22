@@ -85,8 +85,6 @@
 	///Exposure to damaging heat levels increases stacks, stacks clean over time when temperatures are lower. Stack is consumed to add a wound.
 	var/heat_exposure_stacks = 0
 
-	//Shitty VtM vars I'm moving here so they're not strewn around the codebase
-	var/datum/vampireclane/clane
 
 	var/last_repainted_mark
 
@@ -144,5 +142,9 @@
 
 
 	//VTR EDIT BEGIN
+	var/datum/vtr_faction/vtr_faction
+	var/datum/vampireclane/clane
+	var/datum/vampireclane/regent_clan
+	var/vamp_rank = 0
 	var/datum/examine_panel_fake/examine_panel_fake = new()
 	//VTR EDIT END

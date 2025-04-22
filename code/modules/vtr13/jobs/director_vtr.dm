@@ -9,7 +9,6 @@
 	
 	exp_type_department = EXP_TYPE_CLINIC
 
-
 	outfit = /datum/outfit/job/director_vtr
 
 	paycheck = PAYCHECK_COMMAND

@@ -1,3 +1,7 @@
+body {
+  background-image: url('../../tgui/packages/tgui/assets/bg-vtm.svg');
+}
+
 .job {
   display: block;
   width: 173px;

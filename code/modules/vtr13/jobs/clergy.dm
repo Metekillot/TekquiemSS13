@@ -14,14 +14,11 @@
 	display_order = JOB_DISPLAY_ORDER_CLERGY
 
 	exp_type = EXP_TYPE_CREW
-	exp_type_department = EXP_TYPE_LANCEA
+	exp_type_department = EXP_TYPE_SERVICES
 
 	allowed_species = list("Human")
 
-	minimal_generation = 13
-
 	duty = "you are a human priest in a very human house of god, no evil - such as vampires or bad descriptions elge has not gotten to - could ever taint this place"
-	minimal_masquerade = 0
 	known_contacts = list("Seneschal", "Keeper of Elysium", "Sheriff")
 	my_contact_is_important = TRUE
 

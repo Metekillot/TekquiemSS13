@@ -95,15 +95,9 @@
 	var/level = 1
 
 /datum/action/blood_heal/ApplyIcon(atom/movable/screen/movable/action_button/current_button, force = FALSE)
-	if(owner)
-		if(owner.client)
-			if(owner.client.prefs)
-				if(owner.client.prefs.old_discipline)
-					button_icon = 'code/modules/wod13/disciplines.dmi'
-					icon_icon = 'code/modules/wod13/disciplines.dmi'
-				else
-					button_icon = 'code/modules/wod13/UI/actions.dmi'
-					icon_icon = 'code/modules/wod13/UI/actions.dmi'
+	if(owner.mind)
+		button_icon = 'code/modules/wod13/UI/actions.dmi'
+		icon_icon = 'code/modules/wod13/UI/actions.dmi'
 	. = ..()
 
 /datum/action/blood_heal/Trigger()

@@ -43,9 +43,12 @@
 	return ..()
 
 /mob/living/carbon/human/ZImpactDamage(turf/T, levels)
-	if(!HAS_TRAIT(src, TRAIT_FREERUNNING) || levels > 1)
-		if(src.athletics < 5) // falling off one level
-			return ..()
+	if(SSroll.storyteller_roll(
+		dice = get_total_composure(),
+		numerical = TRUE,
+		mobs_to_show_output = list(src),
+		alert_atom = src) < levels)
+		return ..()
 	visible_message("<span class='danger'>[src] makes a hard landing on [T] but remains unharmed from the fall.</span>", \
 					"<span class='userdanger'>You brace for the fall. You make a hard landing on [T] but remain unharmed.</span>")
 	Knockdown(levels * 50)

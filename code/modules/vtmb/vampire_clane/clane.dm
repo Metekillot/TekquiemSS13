@@ -18,8 +18,8 @@ And it also helps for the character set panel
 	var/alt_sprite
 	///If the Clan's unique body sprites need to account for skintone
 	var/alt_sprite_greyscale = FALSE
-	var/no_hair
-	var/no_facial
+	var/no_hair		//unused
+	var/no_facial	//unused
 	var/humanitymod = 1
 	var/frenzymod = 1
 	var/start_humanity = 7

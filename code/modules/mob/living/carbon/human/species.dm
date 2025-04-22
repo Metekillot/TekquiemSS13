@@ -222,15 +222,7 @@ GLOBAL_LIST_EMPTY(selectable_races)
 /proc/generate_selectable_species()
 	//[Lucia] TODO: make this good what the fuck is wrong with the previous thing
 	GLOB.roundstart_races = list("human", "kindred", "ghoul")
-	GLOB.selectable_races = list("human", "kindred", "ghoul", "garou", "kuei-jin")
-	/*
-	for(var/I in subtypesof(/datum/species))
-		var/datum/species/S = new I
-		if(S.selectable)
-			GLOB.roundstart_races += S.id
-	if(!GLOB.roundstart_races.len)
-		GLOB.roundstart_races += "kindred"
-	*/
+	GLOB.selectable_races = list("human", "kindred", "ghoul", "garou")
 
 /proc/get_roundstart_species()
 	RETURN_TYPE(/list)
@@ -1467,8 +1459,8 @@ GLOBAL_LIST_EMPTY(selectable_races)
 			if(SSroll.opposed_roll(
 				user,
 				target,
-				dice_a = user.get_total_athletics() + user.get_total_physique(),
-				dice_b = target.get_total_physique() + target.get_total_dexterity(),
+				dice_a = user.get_total_physique(),
+				dice_b = target.get_total_stamina() + target.get_total_composure(), //better posture keeps u standing :)
 				alert_atom = target))
 				target.visible_message("<span class='danger'>[user] knocks [target] down!</span>", "<span class='userdanger'>You're knocked down by [user]!</span>", "<span class='hear'>You hear aggressive shuffling followed by a loud thud!</span>", COMBAT_MESSAGE_RANGE, user)
 				to_chat(user, "<span class='danger'>You knock [target] down!</span>")

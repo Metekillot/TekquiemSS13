@@ -91,7 +91,7 @@ SUBSYSTEM_DEF(job)
 		var/bypass = FALSE
 		if (check_rights_for(player.client, R_ADMIN))
 			bypass = TRUE
-		var/datum/job/job = GetJob(rank)
+		var/datum/job/vamp/vtr/job = GetJob(rank)
 		if(!job)
 			return FALSE
 		if(is_banned_from(player.ckey, rank) || QDELETED(player))
@@ -100,7 +100,7 @@ SUBSYSTEM_DEF(job)
 			return FALSE
 		if(job.required_playtime_remaining(player.client) && !bypass)
 			return FALSE
-		if((player.client.prefs.generation > job.minimal_generation) && !bypass)
+		if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank) && !bypass)
 			return FALSE
 		if((player.client.prefs.masquerade < job.minimal_masquerade) && !bypass)
 			return FALSE
@@ -122,7 +122,7 @@ SUBSYSTEM_DEF(job)
 	return FALSE
 
 
-/datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/job, level, flag)
+/datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/vamp/vtr/job, level, flag)
 	JobDebug("Running FOC, Job: [job], Level: [level], Flag: [flag]")
 	var/list/candidates = list()
 	for(var/mob/dead/new_player/player in unassigned)
@@ -138,8 +138,8 @@ SUBSYSTEM_DEF(job)
 		if(job.required_playtime_remaining(player.client) && !bypass)
 			JobDebug("FOC player not enough xp, Player: [player]")
 			continue
-		if((player.client.prefs.generation > job.minimal_generation) && !bypass)
-			JobDebug("FOC player not enough generation, Player: [player]")
+		if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank) && !bypass)
+			JobDebug("FOC player not of the correct vampire rank, Player: [player]")
 			continue
 		if((player.client.prefs.masquerade < job.minimal_masquerade) && !bypass)
 			JobDebug("FOC player not enough masquerade, Player: [player]")
@@ -173,7 +173,7 @@ SUBSYSTEM_DEF(job)
 /datum/controller/subsystem/job/proc/GiveRandomJob(mob/dead/new_player/player)
 	JobDebug("GRJ Giving random job, Player: [player]")
 	. = FALSE
-	for(var/datum/job/job in shuffle(occupations))
+	for(var/datum/job/vamp/vtr/job in shuffle(occupations))
 		if(!job)
 			continue
 
@@ -198,8 +198,8 @@ SUBSYSTEM_DEF(job)
 			JobDebug("GRJ player not enough xp, Player: [player]")
 			continue
 
-		if(player.client.prefs.generation > job.minimal_generation)
-			JobDebug("GRJ player not enough generation, Player: [player]")
+		if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank))
+			JobDebug("GRJ player not enough vampire rank, Player: [player]")
 			continue
 
 		if(player.client.prefs.masquerade < job.minimal_masquerade)
@@ -388,7 +388,7 @@ SUBSYSTEM_DEF(job)
 				bypass = TRUE
 
 			// Loop through all jobs
-			for(var/datum/job/job in shuffledoccupations) // SHUFFLE ME BABY
+			for(var/datum/job/vamp/vtr/job in shuffledoccupations) // SHUFFLE ME BABY
 				if(!job)
 					continue
 
@@ -408,8 +408,8 @@ SUBSYSTEM_DEF(job)
 					JobDebug("DO player not enough xp, Player: [player], Job:[job.title]")
 					continue
 
-				if((player.client.prefs.generation > job.minimal_generation) && !bypass)
-					JobDebug("DO player not enough generation, Player: [player]")
+				if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank) && !bypass)
+					JobDebug("DO player not enough vampire rank, Player: [player]")
 					continue
 
 				if((player.client.prefs.masquerade < job.minimal_masquerade) && !bypass)

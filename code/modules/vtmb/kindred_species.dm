@@ -92,15 +92,9 @@
 	vampiric = TRUE
 
 /datum/action/blood_power/ApplyIcon(atom/movable/screen/movable/action_button/current_button, force = FALSE)
-	if(owner)
-		if(owner.client)
-			if(owner.client.prefs)
-				if(owner.client.prefs.old_discipline)
-					button_icon = 'code/modules/wod13/disciplines.dmi'
-					icon_icon = 'code/modules/wod13/disciplines.dmi'
-				else
-					button_icon = 'code/modules/wod13/UI/actions.dmi'
-					icon_icon = 'code/modules/wod13/UI/actions.dmi'
+	if(owner.mind)
+		button_icon = 'code/modules/wod13/UI/actions.dmi'
+		icon_icon = 'code/modules/wod13/UI/actions.dmi'
 	. = ..()
 
 /datum/action/blood_power/Trigger()
@@ -123,9 +117,9 @@
 			BD.dna.species.punchdamagehigh = BD.dna.species.punchdamagehigh+5
 			BD.physiology.armor.melee = BD.physiology.armor.melee+15
 			BD.physiology.armor.bullet = BD.physiology.armor.bullet+15
-			BD.dexterity = BD.dexterity+2
-			BD.athletics = BD.athletics+2
-			BD.lockpicking = BD.lockpicking+2
+			BD.additional_physique += 2
+			BD.additional_stamina += 2
+			
 			if(!HAS_TRAIT(BD, TRAIT_IGNORESLOWDOWN))
 				ADD_TRAIT(BD, TRAIT_IGNORESLOWDOWN, SPECIES_TRAIT)
 			BD.update_blood_hud()
@@ -145,9 +139,8 @@
 			BD.physiology.armor.bullet = BD.physiology.armor.bullet-15
 			if(HAS_TRAIT(BD, TRAIT_IGNORESLOWDOWN))
 				REMOVE_TRAIT(BD, TRAIT_IGNORESLOWDOWN, SPECIES_TRAIT)
-		BD.dexterity = BD.dexterity-2
-		BD.athletics = BD.athletics-2
-		BD.lockpicking = BD.lockpicking-2
+		BD.additional_physique -= 2
+		BD.additional_stamina -= 2
 
 /datum/action/give_vitae
 	name = "Give Vitae"
@@ -171,9 +164,6 @@
 			L.adjustFireLoss(-25)
 		if(istype(H.pulling, /mob/living/carbon/human))
 			var/mob/living/carbon/human/BLOODBONDED = H.pulling
-			if(iscathayan(BLOODBONDED))
-				to_chat(owner, "<span class='warning'>[BLOODBONDED] vomits the vitae back!</span>")
-				return
 			if(!BLOODBONDED.client && !istype(H.pulling, /mob/living/carbon/human/npc))
 				to_chat(owner, "<span class='warning'>You need [BLOODBONDED]'s attention to do that!</span>")
 				return
@@ -192,7 +182,7 @@
 				BLOODBONDED.drunked_of |= "[H.dna.real_name]"
 
 				if(BLOODBONDED.stat == DEAD && !iskindred(BLOODBONDED))
-					if (!BLOODBONDED.can_be_embraced || (BLOODBONDED.timeofdeath + 5 MINUTES) < world.time || owner?.clane?.name == "Revenant")
+					if (!BLOODBONDED.can_be_embraced || (BLOODBONDED.timeofdeath + 5 MINUTES) < world.time || H?.clane?.name == "Revenant")
 						to_chat(H, "<span class='notice'>[BLOODBONDED.name] doesn't respond to your Vitae.</span>")
 						return
 					log_game("[key_name(H)] has Embraced [key_name(BLOODBONDED)].")
@@ -209,71 +199,46 @@
 							save_data_v = FALSE
 					BLOODBONDED.roundstart_vampire = FALSE
 					BLOODBONDED.set_species(/datum/species/kindred)
-					BLOODBONDED.clane = null
-					if(H.generation < 13)
-						BLOODBONDED.generation = 13
+					BLOODBONDED.clane = new H.clane.type()
+					
+					BLOODBONDED.clane.on_gain(BLOODBONDED)
+					BLOODBONDED.clane.post_gain(BLOODBONDED)
+					BLOODBONDED.update_body()
 
-						BLOODBONDED.clane = new H.clane.type()
-
-						BLOODBONDED.clane.on_gain(BLOODBONDED)
-						BLOODBONDED.clane.post_gain(BLOODBONDED)
-						if(BLOODBONDED.clane.alt_sprite && !BLOODBONDED.clane.alt_sprite_greyscale)
-							BLOODBONDED.skin_tone = ALBINO
-						BLOODBONDED.update_body()
-						
-
-						//Gives the Childe the Sire's first three Disciplines
-						var/list/disciplines_to_give = list()
-						for (var/i in 1 to min(3, H.client.prefs.discipline_types.len))
-							disciplines_to_give += H.client.prefs.discipline_types[i]
-						BLOODBONDED.create_disciplines(FALSE, disciplines_to_give)
-
-						BLOODBONDED.maxbloodpool = 10+((13-min(13, BLOODBONDED.generation))*3)
-						BLOODBONDED.clane.enlightenment = H.clane.enlightenment
-					else
-						BLOODBONDED.maxbloodpool = 10+((13-min(13, BLOODBONDED.generation))*3)
-						BLOODBONDED.generation = 14
-						BLOODBONDED.clane = new /datum/vampireclane/caitiff()
+					//Gives the Childe the Sire's first three Disciplines
+					var/list/disciplines_to_give = list()
+					for (var/i in 1 to min(3, H.client.prefs.discipline_types.len))
+						disciplines_to_give += H.client.prefs.discipline_types[i]
+					BLOODBONDED.blood_potency = 1
+					BLOODBONDED.maxbloodpool = 9 + BLOODBONDED.blood_potency
 
 					//Verify if they accepted to save being a vampire
 					if (iskindred(BLOODBONDED) && save_data_v)
 						var/datum/preferences/BLOODBONDED_prefs_v = BLOODBONDED.client.prefs
-
 						BLOODBONDED_prefs_v.pref_species.id = "kindred"
 						BLOODBONDED_prefs_v.pref_species.name = "Vampire"
-						if(H.generation < 13)
+						BLOODBONDED_prefs_v.clane = BLOODBONDED.clane
+						BLOODBONDED_prefs_v.vamp_rank = VAMP_RANK_FLEDGLING
+						BLOODBONDED_prefs_v.skin_tone = get_vamp_skin_color(BLOODBONDED.skin_tone)
+						//Rarely the new mid round vampires get the 3 brujah skil(it is default)
+						//This will remove if it happens
+						// Or if they are a ghoul with abunch of disciplines
+						if(BLOODBONDED_prefs_v.discipline_types.len > 0)
+							for (var/i in 1 to BLOODBONDED_prefs_v.discipline_types.len)
+								var/removing_discipline = BLOODBONDED_prefs_v.discipline_types[1]
+								if (removing_discipline)
+									var/index = BLOODBONDED_prefs_v.discipline_types.Find(removing_discipline)
+									BLOODBONDED_prefs_v.discipline_types.Cut(index, index + 1)
+									BLOODBONDED_prefs_v.discipline_levels.Cut(index, index + 1)
 
-							BLOODBONDED_prefs_v.clane = BLOODBONDED.clane
-							BLOODBONDED_prefs_v.generation = 13
-							BLOODBONDED_prefs_v.skin_tone = get_vamp_skin_color(BLOODBONDED.skin_tone)
-							BLOODBONDED_prefs_v.clane.enlightenment = H.clane.enlightenment
-
-
-							//Rarely the new mid round vampires get the 3 brujah skil(it is default)
-							//This will remove if it happens
-							// Or if they are a ghoul with abunch of disciplines
-							if(BLOODBONDED_prefs_v.discipline_types.len > 0)
-								for (var/i in 1 to BLOODBONDED_prefs_v.discipline_types.len)
-									var/removing_discipline = BLOODBONDED_prefs_v.discipline_types[1]
-									if (removing_discipline)
-										var/index = BLOODBONDED_prefs_v.discipline_types.Find(removing_discipline)
-										BLOODBONDED_prefs_v.discipline_types.Cut(index, index + 1)
-										BLOODBONDED_prefs_v.discipline_levels.Cut(index, index + 1)
-
-							if(BLOODBONDED_prefs_v.discipline_types.len == 0)
-								for (var/i in 1 to 3)
-									BLOODBONDED_prefs_v.discipline_types += BLOODBONDED_prefs_v.clane.clane_disciplines[i]
-									BLOODBONDED_prefs_v.discipline_levels += 1
-							BLOODBONDED_prefs_v.save_character()
-
-						else
-							BLOODBONDED_prefs_v.generation = 13 // Game always set to 13 anyways, 14 is not possible.
-							BLOODBONDED_prefs_v.clane = new /datum/vampireclane/caitiff()
-							BLOODBONDED_prefs_v.save_character()
+						if(BLOODBONDED_prefs_v.discipline_types.len == 0)
+							for (var/i in 1 to 3)
+								BLOODBONDED_prefs_v.discipline_types += BLOODBONDED_prefs_v.clane.clane_disciplines[i]
+								BLOODBONDED_prefs_v.discipline_levels.Add(0)
+						BLOODBONDED_prefs_v.save_character()
 						BLOODBONDED.create_embrace_connection(H)
 						BLOODBONDED.update_auspex_hud_vtr()
 					else
-
 						to_chat(owner, "<span class='notice'>[BLOODBONDED] is totally <b>DEAD</b>!</span>")
 						giving = FALSE
 						return
@@ -287,6 +252,7 @@
 					to_chat(owner, "<span class='notice'>You successfuly fed [BLOODBONDED] with vitae.</span>")
 					to_chat(BLOODBONDED, "<span class='userlove'>You feel good when you drink this <b>BLOOD</b>...</span>")
 
+
 					if(H.reagents)
 						if(length(H.reagents.reagent_list))
 							H.reagents.trans_to(BLOODBONDED, min(10, H.reagents.total_volume), transfered_by = H, methods = VAMPIRE)
@@ -297,7 +263,6 @@
 					BLOODBONDED.adjustFireLoss(-25, TRUE)
 					BLOODBONDED.bloodpool = min(BLOODBONDED.maxbloodpool, BLOODBONDED.bloodpool+2)
 					giving = FALSE
-
 					if (iskindred(BLOODBONDED))
 						var/datum/species/kindred/species = BLOODBONDED.dna.species
 						if (HAS_TRAIT(BLOODBONDED, TRAIT_TORPOR) && COOLDOWN_FINISHED(species, torpor_timer))
@@ -314,6 +279,9 @@
 						blood_bond_result = BLOODBONDED.create_blood_bond_to(H)
 						if(blood_bond_result == 3 && BLOODBONDED.mind.enslaved_to != owner)
 							BLOODBONDED.mind.enslave_mind_to_creator(owner)
+						if(blood_bond_result >= 2 && BLOODBONDED.has_status_effect(STATUS_EFFECT_INLOVE))
+							BLOODBONDED.remove_status_effect(STATUS_EFFECT_INLOVE)
+							BLOODBONDED.apply_status_effect(STATUS_EFFECT_INLOVE, owner)
 					if(isghoul(BLOODBONDED) && blood_bond_result > 1)
 						var/datum/species/ghoul/G = BLOODBONDED.dna.species
 						G.last_vitae = world.time
@@ -335,7 +303,6 @@
  */
 /mob/living/carbon/human/proc/create_disciplines(discipline_pref = TRUE, list/disciplines)	//EMBRACE BASIC
 	if(client)
-		client.prefs.slotlocked = TRUE
 		client.prefs.save_preferences()
 		client.prefs.save_character()
 
@@ -346,6 +313,8 @@
 			for (var/i in 1 to client.prefs.discipline_types.len)
 				var/type_to_create = client.prefs.discipline_types[i]
 				var/level = client.prefs.discipline_levels[i]
+				if(!level)
+					continue
 				var/datum/discipline/discipline = new type_to_create(level)
 
 				//prevent Disciplines from being used if not whitelisted for them
@@ -431,12 +400,6 @@
 	if(H.clane.alt_sprite)
 		H.dna.species.limbs_id = "[H.base_body_mod][H.clane.alt_sprite]"
 
-	if (H.clane.no_hair)
-		H.hairstyle = "Bald"
-
-	if (H.clane.no_facial)
-		H.facial_hairstyle = "Shaved"
-
 	..()
 
 
@@ -496,9 +459,6 @@
 	if (student.stat >= SOFT_CRIT)
 		to_chat(teacher, "<span class='warning'>Your student needs to be conscious!</span>")
 		return
-	if (teacher_prefs.true_experience < 10)
-		to_chat(teacher, "<span class='warning'>You don't have enough experience to teach them this Discipline!</span>")
-		return
 	//checks that the teacher has blood bonded the student, this is something that needs to be reworked when blood bonds are made better
 	if (student.mind.enslaved_to != teacher)
 		to_chat(teacher, "<span class='warning'>You need to have fed your student your blood to teach them Disciplines!</span>")
@@ -551,8 +511,6 @@
 
 		visible_message("<span class='notice'>[teacher] begins mentoring [student] in [giving_discipline].</span>")
 		if (do_after(teacher, 30 SECONDS, student))
-			teacher_prefs.true_experience -= 10
-
 			student_prefs.discipline_types += teaching_discipline
 			student_prefs.discipline_levels += 0
 

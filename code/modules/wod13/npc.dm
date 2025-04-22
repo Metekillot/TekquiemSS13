@@ -373,12 +373,14 @@
 	if(!S)
 		return
 	physique = rand(1, max_stat)
-	social = rand(1, max_stat)
-	mentality = rand(1, max_stat)
-	lockpicking = rand(1, max_stat)
-	blood = rand(1, 2)
-	maxHealth = round(initial(maxHealth)+(initial(maxHealth)/3)*(physique))
-	health = round(initial(health)+(initial(health)/3)*(physique))
+	stamina = rand(1, max_stat)
+	wits = rand(1, max_stat)
+	resolve = rand(1, max_stat)
+	charisma = rand(1, max_stat)
+	composure = rand(1, max_stat)
+
+	recalculate_max_health(TRUE)
+	
 	last_health = health
 	socialrole = new S()
 

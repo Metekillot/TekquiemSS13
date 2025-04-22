@@ -25,7 +25,7 @@
 	if(!is_face_visible())
 		social_descriptor = "shrouded"
 	else
-		switch(get_total_social())
+		switch(get_total_charisma())
 			if(1)
 				social_descriptor = "unappealing"
 			if(2)
@@ -50,10 +50,17 @@
 		if(5)
 			physical_descriptor = "hulking"
 
+
 	var/total_descriptor
 	if(social_descriptor == physical_descriptor)
 		total_descriptor = physical_descriptor
 	else
 		total_descriptor = "[social_descriptor], [physical_descriptor]"
 
-	return "This is <EM>[!obscure_name ? name : "Unknown"]</EM>, \a [total_descriptor] [my_gender]!"
+	var/cleanliness_note = ""
+	if(get_total_composure() == 1)
+		cleanliness_note = " [p_they(TRUE)] seem disheveled."
+	if(get_total_composure() == 5)
+		cleanliness_note = " [p_they(TRUE)] [p_are()] immaculately well put-together."
+
+	return "This is <EM>[!obscure_name ? name : "Unknown"]</EM>, \a [total_descriptor] [my_gender]![cleanliness_note]"

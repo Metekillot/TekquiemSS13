@@ -16,16 +16,13 @@
 
 	display_order = JOB_DISPLAY_ORDER_REPRESENTATIVE
 	bounty_types = CIV_JOB_RANDOM
-
-//	minimal_generation = 12	//Uncomment when players get exp enough
-
+	
 	my_contact_is_important = TRUE
+	minimum_vamp_rank = VAMP_RANK_NEONATE
 
 	v_duty = "You're the (hopefully) duly elected representative of the local Carthian movement. Make sure the Invictus respect your interests and the will of the assembly. Keep the Carthian supply network flowing and money coming in. Push your vision of the future out onto the city."
-	minimal_masquerade = 3
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
-	experience_addition = 20
 	known_contacts = list("Seneschal", "Keeper of Elysium", "Sheriff")
 
 /datum/outfit/job/representative

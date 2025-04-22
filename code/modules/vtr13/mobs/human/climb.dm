@@ -2,14 +2,14 @@
 	if(body_position != STANDING_UP || HAS_TRAIT(src, TRAIT_LEANING))
 		return
 	if(above_turf && istype(above_turf, /turf/open/openspace))
-		var/total_dexterity = get_total_dexterity()
-		var/total_athletics = get_total_athletics()
+		var/total_wits = get_total_wits()
+		var/total_physique = get_total_physique()
 		var/has_gecko_grip = HAS_TRAIT(src, TRAIT_GECKO_GRIP) && !gloves
 		if(has_gecko_grip)
 			to_chat(src, span_notice("You scuttle up the wall unnaturally quick!"))
 		else
 			to_chat(src, span_notice("You start climbing up..."))
-			var/climb_time = 50 - (total_dexterity + total_athletics * 5)
+			var/climb_time = 50 - ((total_wits + total_physique) * 5)
 			animate(src, pixel_y = 32, time = climb_time)
 			var/result = do_after(src, climb_time, src)
 			if(!result)
@@ -23,7 +23,7 @@
 		if(has_gecko_grip)
 			success = ROLL_SUCCESS
 		else
-			success = SSroll.storyteller_roll(total_athletics, 6 , alert_atom=src)
+			success = SSroll.storyteller_roll(total_physique, 6 , alert_atom=src)
 
 		if(success == ROLL_SUCCESS)
 			loc = above_turf

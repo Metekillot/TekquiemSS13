@@ -1,8 +1,8 @@
-/mob/living/carbon/human/proc/examine_health_no_disguise(mob/user)
+/mob/living/carbon/human/proc/examine_health_no_disguise(mob/user, temp_gender=null)
 	. = list()
-	var/t_He = p_they(TRUE)
-	var/t_his = p_their()
-	var/t_is = p_are()
+	var/t_He = p_they(TRUE, temp_gender)
+	var/t_his = p_their(FALSE, temp_gender)
+	var/t_is = p_are(FALSE, temp_gender)
 
 	if(pulledby?.grab_state)
 		. += span_warning("[t_He] [t_is] restrained by [pulledby]'s grip.")

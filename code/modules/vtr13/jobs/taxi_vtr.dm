@@ -19,8 +19,7 @@
 
 	v_duty = "Drive people in the city."
 	duty = "Drive people in the city."
-	minimal_masquerade = 0
-	experience_addition = 10
+
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")
 
 /datum/job/vamp/vtr/taxi_vtr/after_spawn(mob/living/H, mob/M, latejoin = FALSE)

@@ -34,7 +34,7 @@
 
 	//TODO HEX: AGE RANK SHIT, FACTION SHIT
 	base_memory.dat += "I am a member of the All-Night society."
-	base_memory.dat += "I bear the rank of [owner.generation]."
+	base_memory.dat += "I bear the rank of [GLOB.vampire_rank_names[owner.vamp_rank]]."
 	base_memory.dat += ""
 	var/masquerade_level = " followed the Masquerade Tradition perfectly."
 	switch(owner.masquerade)

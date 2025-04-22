@@ -199,23 +199,18 @@ Turf and target are separate in case you want to teleport some distance from a t
 	var/loop = 1
 	var/safety = 0
 
-	var/banned = C ? is_banned_from(C.ckey, "Appearance") : null
-
 	while(loop && safety < 5)
-		if(C?.prefs.custom_names[role] && !safety && !banned)
-			newname = C.prefs.custom_names[role]
-		else
-			switch(role)
-				if("human")
-					newname = random_unique_name(gender)
-				if("clown")
-					newname = pick(GLOB.clown_names)
-				if("mime")
-					newname = pick(GLOB.mime_names)
-				if("ai")
-					newname = pick(GLOB.ai_names)
-				else
-					return FALSE
+		switch(role)
+			if("human")
+				newname = random_unique_name(gender)
+			if("clown")
+				newname = pick(GLOB.clown_names)
+			if("mime")
+				newname = pick(GLOB.mime_names)
+			if("ai")
+				newname = pick(GLOB.ai_names)
+			else
+				return FALSE
 
 		for(var/mob/living/M in GLOB.player_list)
 			if(M == src)

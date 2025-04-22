@@ -1,7 +1,7 @@
-/mob/living/carbon/human/proc/examine_death(mob/user)
+/mob/living/carbon/human/proc/examine_death(mob/user, temp_gender=null)
 	. = list()
-	var/t_He = p_they(TRUE)
-	var/t_his = p_their()
+	var/t_He = p_they(TRUE, temp_gender)
+	var/t_his = p_their(FALSE, temp_gender)
 
 	if((stat == DEAD || (HAS_TRAIT(src, TRAIT_FAKEDEATH))))
 		if(suiciding)
