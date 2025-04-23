@@ -15,18 +15,24 @@ SUBSYSTEM_DEF(tides)
 /datum/controller/subsystem/tides/proc/send_to_shore(atom/movable/flotsam)
 	if(surfers.Find(flotsam))
 		return
+	
 	surfers += flotsam
 	playsound(get_turf(flotsam), 'sound/vtr13/water_splash.ogg', 100, TRUE)
 	if(isliving(flotsam))
 		var/mob/living/soggy_lad = flotsam
 		soggy_lad.Immobilize(130, TRUE)
 		addtimer(CALLBACK(src, PROC_REF(knock_down), flotsam), 90)
+		soggy_lad.extinguish_mob()
+		soggy_lad.adjust_fire_stacks(-3)
 		if(soggy_lad.mind)
 			to_chat(soggy_lad, span_userdanger("You are pulled beneath inky black waves! The current tosses you like a ragdoll!"))
 			soggy_lad.add_client_colour(/datum/client_colour/glass_colour/darkblue)
 			if(ishuman(soggy_lad))
 				soggy_lad.AddElement(/datum/element/ui_button_shake_inventory_group, 16)
 				soggy_lad.AddElement(/datum/element/ui_button_shake_wide_button_group, 1)
+	else if(isobj(flotsam))
+		var/obj/driftwood = flotsam
+		driftwood.extinguish()
 	flotsam.alpha -= 255
 	addtimer(CALLBACK(src, PROC_REF(wash_up), flotsam), 100)
 
