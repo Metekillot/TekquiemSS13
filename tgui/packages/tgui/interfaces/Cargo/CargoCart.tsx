@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import {
   Button,
   Icon,
-  Input,
   NoticeBox,
   RestrictedInput,
   Section,
@@ -62,6 +62,8 @@ function CheckoutItems(props) {
     return <NoticeBox>Nothing in cart</NoticeBox>;
   }
 
+  const [isValid, setIsValid] = useState(true);
+
   return (
     <Table>
       <Table.Row header color="gray">
@@ -102,6 +104,24 @@ function CheckoutItems(props) {
             {!!can_send && !!entry.can_be_cancelled && (
               <>
                 <Button
+                  icon="minus"
+                  onClick={() => act('remove', { order_name: entry.object })}
+                />
+                <RestrictedInput
+                  width={5}
+                  minValue={0}
+                  maxValue={max_order}
+                  value={entry.amount}
+                  onEnter={(value) =>
+                    isValid &&
+                    act('modify', {
+                      order_name: entry.object,
+                      amount: value,
+                    })
+                  }
+                  onValidationChange={setIsValid}
+                />
+                <Button
                   icon="plus"
                   disabled={amount_by_name[entry.object] >= max_order}
                   onClick={() =>
@@ -113,6 +133,8 @@ function CheckoutItems(props) {
                   onClick={() => act('remove', { order_name: entry.object })}
                 />
               </>
+            ) : (
+              <RestrictedInput width="40px" value={entry.amount} disabled />
             )}
           </Table.Cell>
 

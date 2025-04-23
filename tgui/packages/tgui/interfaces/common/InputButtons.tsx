@@ -8,17 +8,38 @@ type InputButtonsData = {
 };
 
 type InputButtonsProps = {
-  input: string | number | string[];
-  message?: string;
-};
+  input: string | number | string[] | [string, number][];
+} & Partial<{
+  on_submit: () => void;
+  on_cancel: () => void;
+  message: string;
+  /** Disables the submit button */
+  disabled: boolean;
+}>;
 
 export const InputButtons = (props: InputButtonsProps) => {
   const { act, data } = useBackend<InputButtonsData>();
   const { large_buttons, swapped_buttons } = data;
-  const { input, message } = props;
+  const { input, message, on_submit, on_cancel, disabled } = props;
+
+  let on_submit_actual = on_submit;
+  if (!on_submit_actual) {
+    on_submit_actual = () => {
+      act('submit', { entry: input });
+    };
+  }
+
+  let on_cancel_actual = on_cancel;
+  if (!on_cancel_actual) {
+    on_cancel_actual = () => {
+      act('cancel');
+    };
+  }
+
   const submitButton = (
     <Button
       color="good"
+      disabled={disabled}
       fluid={!!large_buttons}
       height={!!large_buttons && 2}
       onClick={() => act('submit', { entry: input })}

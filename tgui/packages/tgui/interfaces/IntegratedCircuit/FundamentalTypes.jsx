@@ -17,7 +17,7 @@ export const FUNDAMENTAL_DATA_TYPES = {
         <Input
           placeholder={name}
           value={value}
-          onChange={(e, val) => setValue(val)}
+          onChange={setValue}
           width="96px"
         />
       </BasicInput>
@@ -120,7 +120,7 @@ export const FUNDAMENTAL_DATA_TYPES = {
             <Input
               placeholder={name}
               value={value}
-              onChange={(e, val) => setValue(val)}
+              onChange={setValue}
               width="64px"
             />
           </Stack.Item>

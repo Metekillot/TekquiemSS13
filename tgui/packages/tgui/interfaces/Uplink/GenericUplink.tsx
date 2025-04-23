@@ -38,30 +38,51 @@ export const GenericUplink = (props: GenericUplinkProps) => {
   });
 
   return (
-    <Section
-      title={<Box inline>{currency}</Box>}
-      buttons={
-        <>
-          Search
-          <Input
-            autoFocus
-            value={searchText}
-            onInput={(e, value) => setSearchText(value)}
-            mx={1}
-          />
-          <Button
-            icon={compactMode ? 'list' : 'info'}
-            onClick={() => setCompactMode(!compactMode)}
-          >
-            {compactMode ? 'Compact' : 'Detailed'}
-          </Button>
-        </>
-      }
-    >
-      <Stack>
-        {searchText.length === 0 && (
-          <Stack.Item mr={1}>
-            <Tabs vertical>
+    <Stack fill>
+      <Stack.Item width="160px">
+        <Stack vertical fill>
+          <Stack.Item>
+            <Stack>
+              <Stack.Item grow>
+                <Button
+                  bold
+                  fluid
+                  lineHeight={2}
+                  style={{
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    textAlign: 'center',
+                  }}
+                  onClick={() => act('buy_raw_tc')}
+                >
+                  {currency}
+                </Button>
+              </Stack.Item>
+              <Stack.Item>
+                <Button
+                  fluid
+                  lineHeight={2}
+                  textAlign="center"
+                  icon={compactMode ? 'maximize' : 'minimize'}
+                  tooltip={compactMode ? 'Detailed view' : 'Compact view'}
+                  onClick={() => setCompactMode(!compactMode)}
+                />
+              </Stack.Item>
+            </Stack>
+          </Stack.Item>
+          <Stack.Item>
+            <Input
+              autoFocus
+              value={searchText}
+              placeholder="Search..."
+              onChange={setSearchText}
+              fluid
+              expensive
+            />
+          </Stack.Item>
+          <Stack.Item grow>
+            <Tabs vertical fill>
               {categories.map((category) => (
                 <Tabs.Tab
                   key={category}

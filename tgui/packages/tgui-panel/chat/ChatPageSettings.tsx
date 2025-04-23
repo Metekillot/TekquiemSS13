@@ -18,9 +18,10 @@ import { removeChatPage, toggleAcceptedType, updateChatPage } from './actions';
 import { MESSAGE_TYPES } from './constants';
 import { selectCurrentChatPage } from './selectors';
 
-export const ChatPageSettings = (props) => {
+export function ChatPageSettings(props) {
   const page = useSelector(selectCurrentChatPage);
   const dispatch = useDispatch();
+
   return (
     <Section>
       <Stack align="center">
@@ -43,8 +44,9 @@ export const ChatPageSettings = (props) => {
         <Stack.Item grow ml={0.5}>
           <Input
             fluid
+            expensive
             value={page.name}
-            onChange={(e, value) =>
+            onChange={(value) =>
               dispatch(
                 updateChatPage({
                   pageId: page.id,
@@ -104,7 +106,7 @@ export const ChatPageSettings = (props) => {
         )}
       </Stack>
       <Divider />
-      <Section title="Messages to display" level={2}>
+      <Section title="Messages to display">
         {MESSAGE_TYPES.filter(
           (typeDef) => !typeDef.important && !typeDef.admin,
         ).map((typeDef) => (
@@ -146,4 +148,4 @@ export const ChatPageSettings = (props) => {
       </Section>
     </Section>
   );
-};
+}

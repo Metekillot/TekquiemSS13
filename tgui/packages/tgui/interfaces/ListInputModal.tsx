@@ -21,17 +21,12 @@ type ListInputData = {
   title: string;
 };
 
-export const ListInputModal = (props) => {
-  const { act, data } = useBackend<ListInputData>();
-  const {
-    items = [],
-    message = '',
-    init_value,
-    large_buttons,
-    timeout,
-    title,
-  } = data;
-  const [selected, setSelected] = useState(items.indexOf(init_value));
+export const ListInputModal = (props: ListInputModalProps) => {
+  const { act } = useBackend();
+
+  const { items = [], default_item, message, on_selected, on_cancel } = props;
+
+  const [selected, setSelected] = useState(items.indexOf(default_item));
   const [searchBarVisible, setSearchBarVisible] = useState(items.length > 9);
   const [searchQuery, setSearchQuery] = useState('');
   // User presses up or down on keyboard
@@ -115,64 +110,47 @@ export const ListInputModal = (props) => {
             event.preventDefault();
             onArrowKey(keyCode);
           }
-          if (keyCode === KEY_ENTER) {
-            event.preventDefault();
-            act('submit', { entry: filteredItems[selected] });
-          }
-          if (!searchBarVisible && keyCode >= KEY_A && keyCode <= KEY_Z) {
-            event.preventDefault();
-            onLetterSearch(keyCode);
-          }
-          if (keyCode === KEY_ESCAPE) {
-            event.preventDefault();
-            act('cancel');
-          }
-        }}
-      >
-        <Section
-          buttons={
-            <Button
-              compact
-              icon={searchBarVisible ? 'search' : 'font'}
-              selected
-              tooltip={
-                searchBarVisible
-                  ? 'Search Mode. Type to search or use arrow keys to select manually.'
-                  : 'Hotkey Mode. Type a letter to jump to the first match. Enter to select.'
-              }
-              tooltipPosition="left"
-              onClick={() => onSearchBarToggle()}
-            />
-          }
-          className="ListInput__Section"
-          fill
-          title={message}
-        >
-          <Stack fill vertical>
-            <Stack.Item grow>
-              <ListDisplay
-                filteredItems={filteredItems}
-                onClick={onClick}
-                onFocusSearch={onFocusSearch}
-                searchBarVisible={searchBarVisible}
-                selected={selected}
-              />
-            </Stack.Item>
-            {searchBarVisible && (
-              <SearchBar
-                filteredItems={filteredItems}
-                onSearch={onSearch}
-                searchQuery={searchQuery}
-                selected={selected}
-              />
-            )}
-            <Stack.Item>
-              <InputButtons input={filteredItems[selected]} />
-            </Stack.Item>
-          </Stack>
-        </Section>
-      </Window.Content>
-    </Window>
+          tooltipPosition="left"
+          onClick={() => onSearchBarToggle()}
+        />
+      }
+      className="ListInput__Section"
+      fill
+      title={message}
+    >
+      <Stack fill vertical>
+        <Stack.Item grow>
+          <ListDisplay
+            filteredItems={filteredItems}
+            onClick={onClick}
+            onFocusSearch={onFocusSearch}
+            searchBarVisible={searchBarVisible}
+            selected={selected}
+          />
+        </Stack.Item>
+        {searchBarVisible && (
+          <Input
+            autoFocus
+            autoSelect
+            fluid
+            expensive
+            onEnter={() => {
+              act('submit', { entry: filteredItems[selected] });
+            }}
+            onChange={onSearch}
+            placeholder="Search..."
+            value={searchQuery}
+          />
+        )}
+        <Stack.Item>
+          <InputButtons
+            input={filteredItems[selected]}
+            on_submit={() => on_selected(filteredItems[selected])}
+            on_cancel={on_cancel}
+          />
+        </Stack.Item>
+      </Stack>
+    </Section>
   );
 };
 
@@ -187,58 +165,35 @@ const ListDisplay = (props) => {
 
   return (
     <Section fill scrollable>
-      {filteredItems.map((item, index) => {
-        return (
-          <Button
-            color="transparent"
-            fluid
-            key={index}
-            onClick={() => onClick(index)}
-            onDblClick={(event) => {
+      <Autofocus />
+      {filteredItems.map((item, index) => (
+        <Button
+          className="candystripe"
+          color="transparent"
+          fluid
+          id={index}
+          key={index}
+          onClick={() => onClick(index)}
+          onDoubleClick={(event) => {
+            event.preventDefault();
+            act('submit', { entry: filteredItems[selected] });
+          }}
+          onKeyDown={(event) => {
+            const keyCode = window.event ? event.which : event.keyCode;
+            if (searchBarVisible && keyCode >= KEY_A && keyCode <= KEY_Z) {
               event.preventDefault();
-              act('submit', { entry: filteredItems[selected] });
-            }}
-            onKeyDown={(event) => {
-              const keyCode = window.event ? event.which : event.keyCode;
-              if (searchBarVisible && keyCode >= KEY_A && keyCode <= KEY_Z) {
-                event.preventDefault();
-                onFocusSearch();
-              }
-            }}
-            selected={index === selected}
-            style={{
-              animation: 'none',
-              transition: 'none',
-            }}
-          >
-            {item.replace(/^\w/, (c) => c.toUpperCase())}
-          </Button>
-        );
-      })}
+              onFocusSearch();
+            }
+          }}
+          selected={index === selected}
+          style={{
+            animation: 'none',
+            transition: 'none',
+          }}
+        >
+          {item.replace(/^\w/, (c) => c.toUpperCase())}
+        </Button>
+      ))}
     </Section>
-  );
-};
-
-/**
- * Renders a search bar input.
- * Closing the bar defaults input to an empty string.
- */
-const SearchBar = (props) => {
-  const { act } = useBackend<ListInputData>();
-  const { filteredItems, onSearch, searchQuery, selected } = props;
-
-  return (
-    <Input
-      autoFocus
-      autoSelect
-      fluid
-      onEnter={(event) => {
-        event.preventDefault();
-        act('submit', { entry: filteredItems[selected] });
-      }}
-      onInput={(_, value) => onSearch(value)}
-      placeholder="Search..."
-      value={searchQuery}
-    />
   );
 };

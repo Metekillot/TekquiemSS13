@@ -91,11 +91,7 @@ export const CheckboxInput = (props) => {
               </Tooltip>
             </Stack.Item>
             <Stack.Item grow>
-              <Input
-                fluid
-                value={searchQuery}
-                onInput={(_, value) => setSearchQuery(value)}
-              />
+              <Input fluid value={searchQuery} onChange={setSearchQuery} />
             </Stack.Item>
           </Stack>
           <Stack.Item mt={0.7}>

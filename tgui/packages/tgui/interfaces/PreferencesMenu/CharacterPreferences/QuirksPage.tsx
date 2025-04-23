@@ -421,8 +421,16 @@ export function QuirksPage(props) {
               Available Quirks
             </Box>
           </Stack.Item>
-
-          <Stack.Item grow width="100%">
+          <Stack.Item>
+            <Input
+              placeholder="Search quirks..."
+              width="200px"
+              value={searchQuery}
+              onChange={setSearchQuery}
+              expensive
+            />
+          </Stack.Item>
+          <Stack.Item grow className="PreferencesMenu__Quirks__QuirkList">
             <QuirkList
               selected={false}
               onClick={(quirkName, quirk) => {

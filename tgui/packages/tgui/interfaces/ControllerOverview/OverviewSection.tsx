@@ -19,16 +19,27 @@ export function OverviewSection(props) {
       fill
       title="Master Overview"
       buttons={
-        <Button
-          tooltip="Fast Update"
-          icon={fast_update ? 'check-square-o' : 'square-o'}
-          color={fast_update && 'average'}
-          onClick={() => {
-            act('toggle_fast_update');
-          }}
-        >
-          Fast
-        </Button>
+        <>
+          <Button
+            tooltip="Fast Update"
+            icon={fast_update ? 'check-square-o' : 'square-o'}
+            color={fast_update && 'average'}
+            onClick={() => {
+              act('toggle_fast_update');
+            }}
+          >
+            Fast
+          </Button>
+          <Button.Input
+            buttonText={`Average: ${(rolling_length / 10).toFixed(2)} Second(s)`}
+            value={(rolling_length / 10).toString()}
+            onCommit={(value) => {
+              act('set_rolling_length', {
+                rolling_length: value,
+              });
+            }}
+          />
+        </>
       }
     >
       <Stack fill>

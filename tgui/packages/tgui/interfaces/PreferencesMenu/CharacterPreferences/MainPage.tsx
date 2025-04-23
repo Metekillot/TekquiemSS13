@@ -94,6 +94,7 @@ type ChoicedSelectionProps = {
 
 function ChoicedSelection(props: ChoicedSelectionProps) {
   const { catalog, supplementalFeature, supplementalValue } = props;
+  const [searchText, setSearchText] = useState('');
 
   if (!catalog.icons) {
     return <Box color="red">Provided catalog had no icons!</Box>;
@@ -122,42 +123,24 @@ function ChoicedSelection(props: ChoicedSelectionProps) {
                   shrink
                   value={supplementalValue}
                 />
-              </Stack.Item>
-            )}
-
-            <Stack.Item grow>
-              <Box
-                style={{
-                  borderBottom: '1px solid #888',
-                  fontWeight: 'bold',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                }}
-              >
-                Select {props.name.toLowerCase()}
-              </Box>
-            </Stack.Item>
-
-            <Stack.Item>
-              <Button color="red" onClick={props.onClose}>
-                X
-              </Button>
-            </Stack.Item>
-          </Stack>
+              )
+            }
+          >
+            <Input
+              autoFocus
+              fluid
+              placeholder="Search..."
+              onChange={setSearchText}
+              expensive
+            />
+          </Section>
         </Stack.Item>
-
-        <Stack.Item overflowX="hidden" overflowY="scroll">
-          <Autofocus>
-            <Flex wrap>
-              {Object.entries(catalog.icons).map(([name, image], index) => {
-                return (
-                  <Flex.Item
-                    key={index}
-                    basis={`${CLOTHING_SELECTION_CELL_SIZE}px`}
-                    style={{
-                      padding: '5px',
-                    }}
-                  >
+        <Stack.Item grow>
+          <Section fill scrollable noTopPadding>
+            <Stack wrap>
+              {searchInCatalog(searchText, catalog.icons).map(
+                ([name, image], index) => {
+                  return (
                     <Button
                       onClick={() => {
                         props.onSelect(name);

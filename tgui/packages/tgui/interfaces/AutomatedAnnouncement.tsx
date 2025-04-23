@@ -22,74 +22,95 @@ export const AutomatedAnnouncement = (props) => {
   return (
     <Window title="Automated Announcement System" width={500} height={225}>
       <Window.Content>
-        <Section
-          title="Arrival Announcement"
-          buttons={
-            <Button
-              icon={arrivalToggle ? 'power-off' : 'times'}
-              selected={arrivalToggle}
-              content={arrivalToggle ? 'On' : 'Off'}
-              onClick={() => act('ArrivalToggle')}
-            />
-          }
-        >
-          <LabeledList>
-            <LabeledList.Item
-              label="Message"
-              buttons={
-                <Button
-                  icon="info"
-                  tooltip={TOOLTIP_TEXT}
-                  tooltipPosition="left"
+        <Stack fill vertical>
+          <Stack.Item>
+            <LabeledList>
+              <LabeledList.Item label="Search">
+                <Input
+                  fluid
+                  placeholder="Name/Line/Var"
+                  onChange={setSearch}
+                  expensive
                 />
-              }
-            >
-              <Input
-                fluid
-                value={arrival}
-                onChange={(e, value) =>
-                  act('ArrivalText', {
-                    newText: value,
-                  })
-                }
-              />
-            </LabeledList.Item>
-          </LabeledList>
-        </Section>
-        <Section
-          title="Departmental Head Announcement"
-          buttons={
-            <Button
-              icon={newheadToggle ? 'power-off' : 'times'}
-              selected={newheadToggle}
-              content={newheadToggle ? 'On' : 'Off'}
-              onClick={() => act('NewheadToggle')}
-            />
-          }
-        >
-          <LabeledList>
-            <LabeledList.Item
-              label="Message"
-              buttons={
-                <Button
-                  icon="info"
-                  tooltip={TOOLTIP_TEXT}
-                  tooltipPosition="left"
-                />
-              }
-            >
-              <Input
-                fluid
-                value={newhead}
-                onChange={(e, value) =>
-                  act('NewheadText', {
-                    newText: value,
-                  })
-                }
-              />
-            </LabeledList.Item>
-          </LabeledList>
-        </Section>
+              </LabeledList.Item>
+            </LabeledList>
+          </Stack.Item>
+          <Stack.Item grow>
+            {!sorted.length ? (
+              <NoticeBox>{errorMessage}</NoticeBox>
+            ) : (
+              <Section fill scrollable>
+                {sorted.map((entry, index) => (
+                  <Section
+                    key={entry.entryRef}
+                    title={entry.name}
+                    buttons={
+                      <>
+                        <Button
+                          icon="info"
+                          tooltip={
+                            (entry.generalTooltip
+                              ? entry.generalTooltip + '\n'
+                              : '') +
+                            Object.entries(entry.varsAndTooltipsMap)
+                              .map(
+                                ([varName, tooltip]) =>
+                                  '%' + varName + ' ' + tooltip,
+                              )
+                              .join('\n')
+                          }
+                          tooltipPosition="left"
+                        />
+                        <Button
+                          icon={entry.enabled ? 'power-off' : 'times'}
+                          selected={entry.enabled}
+                          disabled={!entry.modifiable}
+                          tooltip={
+                            !entry.modifiable
+                              ? 'Editing disabled by CentCom!'
+                              : undefined
+                          }
+                          onClick={() =>
+                            act('Toggle', { entryRef: entry.entryRef })
+                          }
+                        >
+                          {entry.enabled ? 'On' : 'Off'}
+                        </Button>
+                      </>
+                    }
+                  >
+                    <Table>
+                      {Object.entries(entry.announcementLinesMap).map(
+                        ([lineKey, announcementLine]) => (
+                          <Table.Row key={lineKey}>
+                            <Table.Cell collapsing color="label">
+                              {lineKey}:
+                            </Table.Cell>
+                            <Table.Cell>
+                              <Input
+                                fluid
+                                expensive
+                                value={announcementLine}
+                                disabled={!entry.modifiable}
+                                onChange={(value) =>
+                                  act('Text', {
+                                    entryRef: entry.entryRef,
+                                    lineKey,
+                                    newText: value,
+                                  })
+                                }
+                              />
+                            </Table.Cell>
+                          </Table.Row>
+                        ),
+                      )}
+                    </Table>
+                  </Section>
+                ))}
+              </Section>
+            )}
+          </Stack.Item>
+        </Stack>
       </Window.Content>
     </Window>
   );

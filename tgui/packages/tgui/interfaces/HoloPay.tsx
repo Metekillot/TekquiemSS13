@@ -188,6 +188,8 @@ const SetupDisplay = (props) => {
   const { available_logos = [], force_fee, max_fee, name, shop_logo } = data;
   const { onClick } = props;
 
+  const [isValid, setIsValid] = useState(true);
+
   return (
     <Section
       buttons={
@@ -225,7 +227,8 @@ const SetupDisplay = (props) => {
             fluid
             height="3rem"
             maxLength={42}
-            onChange={(_, value) => {
+            expensive
+            onChange={(value) => {
               value?.length > 3 && act('rename', { name: value });
             }}
             placeholder={decodeHtmlEntities(name)}
@@ -239,7 +242,8 @@ const SetupDisplay = (props) => {
             <RestrictedInput
               fluid
               maxValue={max_fee}
-              onChange={(_, value) => act('fee', { amount: value })}
+              onEnter={(value) => isValid && act('fee', { amount: value })}
+              onValidationChange={setIsValid}
               value={force_fee}
             />
           </Tooltip>

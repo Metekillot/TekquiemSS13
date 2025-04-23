@@ -4,11 +4,17 @@ import { Button, Input, Modal, Section, Stack } from 'tgui-core/components';
 import { useBackend } from '../../backend';
 import { LuaEditorData, LuaEditorModal } from './types';
 
-export const StateSelectModal = (props) => {
-  const { act, data } = useBackend();
-  const [, setModal] = useLocalState('modal', 'states');
-  const [input, setInput] = useLocalState('newStateName', '');
+type StateSelectModalProps = {
+  setModal: (modal: LuaEditorModal) => void;
+};
+
+export const StateSelectModal = (props: StateSelectModalProps) => {
+  const { act, data } = useBackend<LuaEditorData>();
+  const { setModal } = props;
+
+  const [input, setInput] = useState('');
   const { states } = data;
+
   return (
     <Modal
       height={`${window.innerHeight * 0.5}px`}
@@ -46,9 +52,7 @@ export const StateSelectModal = (props) => {
               fluid
               placeholder="New State"
               value={input}
-              onInput={(_, value) => {
-                setInput(value);
-              }}
+              onChange={setInput}
             />
           </Stack.Item>
           <Stack.Item>

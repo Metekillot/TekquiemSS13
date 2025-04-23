@@ -24,7 +24,32 @@ export function LootPanel(props) {
   const total = contents.length ? contents.length - 1 : 0;
 
   return (
-    <Window height={275} width={190} title={`Contents: ${total}`}>
+    <Window
+      width={300}
+      height={height}
+      buttons={
+        <Stack align="center">
+          <Input
+            onChange={setSearchText}
+            placeholder="Search items..."
+            value={searchText}
+            expensive
+          />
+          <Button
+            m={0}
+            icon={grouping ? 'layer-group' : 'object-ungroup'}
+            selected={grouping}
+            onClick={() => setGrouping(!grouping)}
+            tooltip="Toggle Grouping"
+          />
+          <Button
+            icon="sync"
+            onClick={() => act('refresh')}
+            tooltip="Refresh"
+          />
+        </Stack>
+      }
+    >
       <Window.Content
         onKeyDown={(event) => {
           if (event.key === KEY.Escape) {

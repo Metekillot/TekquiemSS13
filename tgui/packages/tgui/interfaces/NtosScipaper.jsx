@@ -49,12 +49,129 @@ const PaperPublishing = (props) => {
   return (
     <>
       <Section title="Submission Form">
-        <LabeledList grow>
+        {fileList.length === 0 && (
+          <NoticeBox>
+            Use data disk to download files from compressor or doppler array.
+          </NoticeBox>
+        )}
+        <LabeledList>
+          <LabeledList.Item
+            label="File (required)"
+            buttons={
+              <Button
+                tooltip="The selected file containing experimental data for our paper. Must be present in the local file system or a data disk to be accesible."
+                icon="info-circle"
+              />
+            }
+          >
+            <Box position="relative" top="8px">
+              <Dropdown
+                width="100%"
+                options={Object.keys(fileList)}
+                selected={selectedFile}
+                onSelected={(ordfile_name) =>
+                  act('select_file', {
+                    selected_uid: fileList[ordfile_name],
+                  })
+                }
+              />
+            </Box>
+          </LabeledList.Item>
+          <LabeledList.Item
+            label="Experiment (required)"
+            buttons={
+              <Button
+                tooltip="The topic we want to publish our paper on. Different topics unlock different technologies and possible partners."
+                icon="info-circle"
+              />
+            }
+          >
+            <Box position="relative" top="8px">
+              <Dropdown
+                width="100%"
+                options={Object.keys(expList)}
+                selected={selectedExperiment}
+                onSelected={(experiment_name) =>
+                  act('select_experiment', {
+                    selected_expath: expList[experiment_name],
+                  })
+                }
+              />
+            </Box>
+          </LabeledList.Item>
+          <LabeledList.Item
+            label="Tier (required)"
+            buttons={
+              <Button
+                tooltip="The tier we want to publish on. Higher tiers can confer better rewards but means our data will be judged more harshly."
+                icon="info-circle"
+              />
+            }
+          >
+            <Box position="relative" top="8px">
+              <Dropdown
+                width="100%"
+                options={allowedTiers.map((number) => String(number))}
+                selected={String(tier)}
+                onSelected={(new_tier) =>
+                  act('select_tier', {
+                    selected_tier: Number(new_tier),
+                  })
+                }
+              />
+            </Box>
+          </LabeledList.Item>
+          <LabeledList.Item
+            label="Partner (required)"
+            buttons={
+              <Button
+                tooltip="Which organization to partner with. We can obtain research boosts in techs related to the partner's interests."
+                icon="info-circle"
+              />
+            }
+          >
+            <Box position="relative" top="8px">
+              <Dropdown
+                width="100%"
+                options={Object.keys(allowedPartners)}
+                selected={selectedPartner}
+                onSelected={(new_partner) =>
+                  act('select_partner', {
+                    selected_partner: allowedPartners[new_partner],
+                  })
+                }
+              />
+            </Box>
+          </LabeledList.Item>
+          <LabeledList.Item
+            label="Principal Author"
+            buttons={
+              <Button
+                tooltip="Multiple"
+                selected={etAlia}
+                icon="users"
+                onClick={() => act('et_alia')}
+              />
+            }
+          >
+            <Input
+              mt={2}
+              fluid
+              expensive
+              value={author}
+              onChange={(value) =>
+                act('rewrite', {
+                  author: value,
+                })
+              }
+            />
+          </LabeledList.Item>
           <LabeledList.Item label="Title">
             <Input
               fluid
               value={title}
-              onChange={(e, value) =>
+              expensive
+              onChange={(value) =>
                 act('rewrite', {
                   title: value,
                 })
@@ -79,7 +196,8 @@ const PaperPublishing = (props) => {
             <Input
               fluid
               value={abstract}
-              onChange={(e, value) =>
+              expensive
+              onChange={(value) =>
                 act('rewrite', {
                   abstract: value,
                 })

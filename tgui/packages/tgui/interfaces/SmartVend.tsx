@@ -55,20 +55,41 @@ export const SmartVend = (props) => {
           scrollable
           title="Storage"
           buttons={
-            data.isdryer ? (
-              <Button
-                icon={data.drying ? 'stop' : 'tint'}
-                onClick={() => act('Dry')}
-              >
-                {data.drying ? 'Stop drying' : 'Dry'}
-              </Button>
-            ) : (
-              <>
-                <Input
-                  autoFocus
-                  placeholder={'Search...'}
-                  value={searchText}
-                  onInput={(e, value) => setSearchText(value)}
+            <Stack>
+              {data.isdryer ? (
+                <Stack.Item>
+                  <Button
+                    icon={data.drying ? 'stop' : 'tint'}
+                    onClick={() => act('Dry')}
+                  >
+                    {data.drying ? 'Stop drying' : 'Dry'}
+                  </Button>
+                </Stack.Item>
+              ) : (
+                <>
+                  <Stack.Item>
+                    <Input
+                      autoFocus
+                      placeholder="Search..."
+                      value={searchText}
+                      onChange={setSearchText}
+                      expensive
+                    />
+                  </Stack.Item>
+                  <LayoutToggle state={displayMode} setState={setDisplayMode} />
+                </>
+              )}
+              <Stack.Item>
+                <Button
+                  icon="question"
+                  tooltip={
+                    <>
+                      LMB - Vend selected amount
+                      <br />
+                      RMB - Vend all
+                    </>
+                  }
+                  tooltipPosition={'bottom-end'}
                 />
                 <Button
                   icon={displayMode === MODE.tile ? 'list' : 'border-all'}

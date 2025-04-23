@@ -43,7 +43,7 @@ export function SearchBar(props: Props) {
           autoFocus={autoFocus}
           expensive
           fluid
-          onInput={(e, value) => onSearch(value)}
+          onChange={onSearch}
           placeholder={placeholder}
           value={query}
         />
