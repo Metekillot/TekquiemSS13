@@ -3,6 +3,7 @@
 	desc = "Allows to see entities, auras and their health through walls."
 	icon_state = "auspex"
 	power_type = /datum/discipline_power/vtr/auspex
+	clan_restricted = TRUE
 
 /datum/discipline_power/vtr/auspex
 	name = "Auspex power name"

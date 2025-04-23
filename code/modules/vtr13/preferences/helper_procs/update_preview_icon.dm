@@ -28,7 +28,7 @@
 	MAMA.pixel_x = -16
 	mannequin.add_overlay(MAMA)
 	copy_to(mannequin, 1, TRUE, TRUE)
-	if(clane.alt_sprite)
+	if(clane?.alt_sprite)
 		mannequin.dna.species.limbs_id = clane.alt_sprite
 	mannequin.update_body()
 	mannequin.update_body_parts()

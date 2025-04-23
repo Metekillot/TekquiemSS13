@@ -69,7 +69,7 @@
 		character.vtr_faction = vamp_faction
 	else if(pref_species.name == "Ghoul")
 		character.clane = null
-		var/datum/vampireclane/CLN = new clane.type()
+		var/datum/vampireclane/CLN = new regent_clan.type()
 		character.regent_clan = CLN
 		character.maxbloodpool = 5 + character.stamina
 		character.bloodpool = rand(character.composure, character.maxbloodpool)

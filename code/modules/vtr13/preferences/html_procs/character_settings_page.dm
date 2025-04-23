@@ -175,7 +175,7 @@
 		dat += "<table width='100%'><tr><td width='50%' valign='top'>"
 		dat += "<h2>[make_font_cool("CLAN")]</h2>"
 		dat += "<b>Original Regent's Clan:</b> <a href='byond://?_src_=prefs;preference=regent_clan;task=input'>[regent_clan.name]</a><BR>"
-		dat += "<b>Description:</b> [clane.desc]<BR>"
+		dat += "<b>Description:</b> [regent_clan.desc]<BR>"
 		dat += "</td>"
 		dat += "<td width ='50%' valign='top'>"
 		dat += "<h2>[make_font_cool("INFAMY")]</h2>"

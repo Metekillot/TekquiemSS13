@@ -3,6 +3,7 @@
 	desc = "Become fabulous beyond measure. A diva. Ensure that everyone knows."
 	icon_state = "presence"
 	power_type = /datum/discipline_power/vtr/majesty
+	clan_restricted = TRUE
 
 /datum/discipline_power/vtr/majesty
 	name = "Majesty power name"

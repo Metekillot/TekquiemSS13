@@ -5,6 +5,8 @@
 	dat += "<br><center><b>Discipline Dots Remaining:</b> [discipline_dots]</center><BR>"
 	for (var/i in 1 to discipline_types.len)
 		var/discipline_type = discipline_types[i]
+		if(!discipline_type)
+			continue
 		var/datum/discipline/discipline = new discipline_type
 		var/discipline_level = discipline_levels[i]
 		var/is_clan_discipline = FALSE
