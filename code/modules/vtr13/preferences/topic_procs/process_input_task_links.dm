@@ -365,7 +365,7 @@
 
 			var/new_discipline = tgui_input_list(user, "Select your new Discipline", "Discipline Selection", sortList(discipline_input_list))
 			if(new_discipline)
-				discipline_types += new_discipline
+				discipline_types += discipline_input_list[new_discipline]
 				discipline_levels.Add(0)
 
 		if("discipline")

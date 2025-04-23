@@ -93,10 +93,10 @@
 
 	//false identity's title, when it was taken
 	var/examine_result = disguise_title_cache
-	examine_result ? return_list.Add(examine_result, disguise.gender) : null
+	examine_result ? return_list.Add(examine_result) : null
 
 	//the real person's Beast
-	examine_result = human_parent.examine_beast(user)
+	examine_result = human_parent.examine_beast(user, disguise.gender)
 	examine_result ? return_list.Add(examine_result) : null
 	
 

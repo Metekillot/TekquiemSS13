@@ -559,7 +559,7 @@
 	//VTR EDIT ADDITON START
 	if(href_list["view_flavortext_fake"])
 		examine_panel_fake.holder = src
-		examine_panel_fake.disguise = href_list["view_flavortext_fake"]
+		examine_panel_fake.disguise = locate(href_list["view_flavortext_fake"])
 		examine_panel_fake.ui_interact(usr) //datum has a tgui component, here we open the window
 	//VTR EDIT ADDITON END
 
