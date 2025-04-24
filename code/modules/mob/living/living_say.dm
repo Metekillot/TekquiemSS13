@@ -198,6 +198,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 			succumbed = TRUE
 	else
 		log_talk(message, LOG_SAY, forced_by=forced)
+		last_words = message
 
 	message = treat_message(message) // unfortunately we still need this
 	var/sigreturn = SEND_SIGNAL(src, COMSIG_MOB_SAY, args)
@@ -301,7 +302,6 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 					EX.last_message = message
 //					var/datum/preferences/P = GLOB.preferences_datums[ckey(EX.key)]
 //					if(P)
-					EX.total_erp += length_char(message)
 //						P.exper = min(calculate_mob_max_exper(EX), P.exper+kal)
 //						P.save_preferences()
 //						P.save_character()

@@ -161,5 +161,6 @@
 						if(HV.stakeimmune)
 							to_chat(BD, "<span class='warning'>There is no <b>HEART</b> in this creature.</span>")
 							return
-					BD.drinksomeblood(LV)
+					BD.drinksomeblood(LV, TRUE)
+					
 	return TRUE

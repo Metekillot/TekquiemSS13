@@ -141,26 +141,22 @@
 
 /datum/datacore/proc/get_manifest()
 	var/list/manifest_out = list(
- 		"Camarilla",
-		"Primogen Council",
-		"Tremere",
-		"Anarch",
-		"Giovanni",
-		"Old Clan Tzimisce",
+ 		"Invictus",
+		"Lancea et Sanctum",
+		"Ordo Dracul",
+		"Circle of the Crone",
+		"Carthian Movement",
 		"Law Enforcement",
-		"Warehouse",
-		"Triad"
+		"Clinic"
 	)
 	var/list/departments = list(
-		"Camarilla" = GLOB.command_positions,
-		"Primogen Council" = GLOB.camarilla_council_positions,
-		"Tremere" = GLOB.tremere_positions,
-		"Anarch" = GLOB.anarch_positions,
-		"Giovanni" = GLOB.giovanni_positions,
-		"Old Clan Tzimisce" = GLOB.tzimisce_positions,
-		"Law Enforcement" = GLOB.police_positions + GLOB.national_security_positions,
-		"Warehouse" = GLOB.warehouse_positions,
-		"Triad" = GLOB.gang_positions
+		"Invictus" = GLOB.command_positions,
+		"Lancea et Sanctum" = GLOB.lancea_positions,
+		"Ordo Dracul" = GLOB.ordo_positions,
+		"Circle of the Crone" = GLOB.crone_positions,
+		"Carthian Movement" = GLOB.carthian_positions,
+		"Law Enforcement" = GLOB.police_positions,
+		"Clinic" = GLOB.clinic_positions
 	)
 	for(var/datum/data/record/t in GLOB.data_core.general)
 		var/name = t.fields["name"]
@@ -168,7 +164,7 @@
 		var/has_department = FALSE
 		for(var/department in departments)
 			var/list/jobs = departments[department]
-			if(rank in jobs)
+			if(rank in jobs || (t.fields["truerank"] && (t.fields["truerank"] in jobs))) // TFN EDIT: alt job titles
 				if(!manifest_out[department])
 					manifest_out[department] = list()
 				manifest_out[department] += list(list(
@@ -223,12 +219,19 @@
 	var/static/list/show_directions = list(SOUTH, WEST)
 	if(H.mind && (H.mind.assigned_role != H.mind.special_role))
 		var/assignment
+		var/trueassignment // TFN EDIT: alt job titles
 		if(H.mind.assigned_role)
 			assignment = H.mind.assigned_role
 		else if(H.job)
 			assignment = H.job
 		else
 			assignment = "Unassigned"
+
+		// TFN EDIT START: alt job titles
+		if(C?.prefs?.alt_titles_preferences[assignment])
+			trueassignment = assignment
+			assignment = C.prefs.alt_titles_preferences[assignment]
+		// TFN EDIT END
 
 		var/static/record_id_num = 1001
 		var/id = num2hex(record_id_num++,6)
@@ -252,6 +255,7 @@
 		G.fields["id"]			= id
 		G.fields["name"]		= H.real_name
 		G.fields["rank"]		= assignment
+		G.fields["truerank"] = trueassignment // TFN EDIT: alt job titles
 		G.fields["age"]			= H.age
 		G.fields["species"]	= H.dna.species.name
 		G.fields["fingerprint"]	= md5(H.dna.uni_identity)

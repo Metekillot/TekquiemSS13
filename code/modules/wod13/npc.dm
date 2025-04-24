@@ -66,6 +66,8 @@
 
 	var/lifespan = 0	//How many cycles. He'll be deleted if over than a ten thousand
 	var/old_movement = FALSE
+	var/cur_waypoint = null
+	var/last_waypoint = null //to prevent NPCs going between two waypoints forever we store the last two waypoints and try not to visit last_waypoint
 	var/max_stat = 2
 
 	var/list/spotted_bodies = list()
@@ -73,6 +75,8 @@
 	var/is_criminal = FALSE
 
 	var/list/drop_on_death_list = null
+
+	var/tolerates_ugly = FALSE
 
 /mob/living/carbon/human/npc/LateInitialize()
 	. = ..()
@@ -115,6 +119,29 @@
 				REMOVE_TRAIT(dropping_item, TRAIT_NODROP, NPC_ITEM_TRAIT)
 			dropItemToGround(dropping_item, TRUE)
 
+	GLOB.alive_npc_list -= src
+	GLOB.boring_npc_list -= src
+	SShumannpcpool.npclost()
+	walk(src,0)
+	if(last_attacker && !key && !hostile)
+		if(get_dist(src, last_attacker) < 10)
+			if(istype(last_attacker, /mob/living/simple_animal/hostile))
+				var/mob/living/simple_animal/hostile/HS = last_attacker
+				if(HS.my_creator)
+					HS.my_creator.AdjustHumanity(-1, 0)
+					HS.my_creator.last_nonraid = world.time
+					HS.my_creator.killed_count = HS.my_creator.killed_count+1
+					HS.my_creator.set_warrant(HS.my_creator.killed_count >= 5, "SUSPICIOUS ACTION (murder)")
+			else
+				if(ishuman(last_attacker))
+					var/mob/living/carbon/human/HM = last_attacker
+					HM.AdjustHumanity(-1, 0)
+					HM.last_nonraid = world.time
+					HM.killed_count = HM.killed_count+1
+					HM.set_warrant(HM.killed_count >= 5, "SUSPICIOUS ACTION (murder)")
+	remove_overlay(FIGHT_LAYER)
+	..()
+
 //If an npc's item has TRAIT_NODROP, we NEVER drop it, even if it is forced.
 /mob/living/carbon/human/npc/doUnEquip(obj/item/I, force, newloc, no_move, invdrop = TRUE, silent = FALSE)
 	if(I && HAS_TRAIT(I, TRAIT_NODROP))
@@ -128,6 +155,8 @@
 
 /datum/socialrole
 	//For randomizing
+	//I turned this off, -hex
+	var/s_tones_force = null
 	var/list/s_tones = list("albino",
 		"caucasian1",
 		"caucasian2",
@@ -344,12 +373,14 @@
 	if(!S)
 		return
 	physique = rand(1, max_stat)
-	social = rand(1, max_stat)
-	mentality = rand(1, max_stat)
-	lockpicking = rand(1, max_stat)
-	blood = rand(1, 2)
-	maxHealth = round(initial(maxHealth)+(initial(maxHealth)/3)*(physique))
-	health = round(initial(health)+(initial(health)/3)*(physique))
+	stamina = rand(1, max_stat)
+	wits = rand(1, max_stat)
+	resolve = rand(1, max_stat)
+	charisma = rand(1, max_stat)
+	composure = rand(1, max_stat)
+
+	recalculate_max_health(TRUE)
+	
 	last_health = health
 	socialrole = new S()
 
@@ -384,7 +415,10 @@
 		else
 			s_names = GLOB.last_names
 		age = rand(socialrole.min_age, socialrole.max_age)
-		skin_tone = pick(socialrole.s_tones)
+		if(socialrole.s_tones_force)
+			skin_tone = socialrole.s_tones_force
+		else
+			skin_tone = pick(GLOB.skin_tones)
 		if(age >= 55)
 			hair_color = "a2a2a2"
 			facial_hair_color = hair_color

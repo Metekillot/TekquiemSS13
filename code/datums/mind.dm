@@ -86,6 +86,12 @@
 	//Dharma path
 	var/datum/dharma/dharma
 
+	//permanent character connections stored in a database
+	var/list/character_connections
+
+	//round-only connections not stored on the db, don't mix your peas and carrots
+	var/list/fake_character_connections
+
 /datum/mind/New(_key)
 	key = _key
 	martial_art = default_martial_art
@@ -141,6 +147,8 @@
 		LAZYCLEARLIST(new_character.client.recent_examines)
 		new_character.client.init_verbs() // re-initialize character specific verbs
 	current.update_atom_languages()
+
+	SEND_SIGNAL(src, COMSIG_MIND_TRANSFERRED, new_character)
 
 /datum/mind/proc/init_known_skills()
 	for (var/type in GLOB.skill_types)
@@ -364,8 +372,8 @@
 		P = locate() in all_contents
 
 	var/obj/item/uplink_loc
-	var/implant = FALSE
-
+	var/implant = TRUE
+/*
 	if(traitor_mob.client && traitor_mob.client.prefs)
 		switch(traitor_mob.client.prefs.uplink_spawn_loc)
 			if(UPLINK_PDA)
@@ -387,7 +395,7 @@
 
 	if(!uplink_loc) // We've looked everywhere, let's just implant you
 		implant = TRUE
-
+*/
 	if (!implant)
 		. = uplink_loc
 		var/datum/component/uplink/U = uplink_loc.AddComponent(/datum/component/uplink, traitor_mob.key)
@@ -809,10 +817,13 @@
 	if(!mind.name)
 		mind.name = real_name
 	mind.current = src
+	if(!CONFIG_GET(flag/disable_area_ambiance))
+		mind.AddComponent(/datum/component/ambiance_memory)
 
 /mob/living/carbon/mind_initialize()
 	..()
 	last_mind = mind
+	mind.refresh_memory()
 
 //HUMAN
 /mob/living/carbon/human/mind_initialize()

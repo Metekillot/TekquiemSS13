@@ -288,6 +288,11 @@ GLOBAL_LIST_INIT(bamboo_recipes, list ( \
 	merge_type = /obj/item/stack/sheet/mineral/bamboo
 	grind_results = list(/datum/reagent/cellulose = 10)
 	material_type = /datum/material/bamboo
+	drop_sound = null
+	pickup_sound = null
+
+/datum/armor/mineral_bamboo
+	fire = 50
 
 /obj/item/stack/sheet/mineral/bamboo/get_main_recipes()
 	. = ..()
@@ -643,6 +648,8 @@ GLOBAL_LIST_INIT(bronze_recipes, list ( \
 	grind_results = list(/datum/reagent/carbon = 10)
 	merge_type = /obj/item/stack/sheet/bone
 	material_type = /datum/material/bone
+	drop_sound = null
+	pickup_sound = null
 
 GLOBAL_LIST_INIT(plastic_recipes, list(
 	new /datum/stack_recipe("plastic floor tile", /obj/item/stack/tile/plastic, 1, 4, 20), \
@@ -690,6 +697,8 @@ new /datum/stack_recipe("paper frame door", /obj/structure/mineral_door/paperfra
 	resistance_flags = FLAMMABLE
 	grind_results = list(/datum/reagent/cellulose = 20)
 	material_type = /datum/material/paper
+	drop_sound = null
+	pickup_sound = null
 
 /obj/item/stack/sheet/paperframes/get_main_recipes()
 	. = ..()
@@ -711,6 +720,8 @@ new /datum/stack_recipe("paper frame door", /obj/structure/mineral_door/paperfra
 	merge_type = /obj/item/stack/sheet/meat
 	material_type = /datum/material/meat
 	material_modifier = 1 //None of that wussy stuff
+	drop_sound = null
+	pickup_sound = null
 
 /obj/item/stack/sheet/meat/fifty
 	amount = 50
@@ -728,6 +739,8 @@ new /datum/stack_recipe("paper frame door", /obj/structure/mineral_door/paperfra
 	merge_type = /obj/item/stack/sheet/pizza
 	material_type = /datum/material/pizza
 	material_modifier = 1
+	drop_sound = null
+	pickup_sound = null
 
 /obj/item/stack/sheet/pizza/fifty
 	amount = 50

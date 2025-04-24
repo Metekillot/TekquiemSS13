@@ -93,12 +93,12 @@
 
 /obj/projectile/beam/beam_rifle/vampire/vamp12g/on_hit(atom/target, blocked = FALSE)
 	. = ..()
-	if(iscarbon(target))
+	if(iscarbon(target) && . != BULLET_ACT_FORCE_PIERCE)
 		var/mob/living/carbon/hit_person = target
-		if(hit_person.storyteller_roll(
-			dice = hit_person.get_total_physique() + min(hit_person.get_total_dexterity(), hit_person.get_total_athletics()),
-			difficulty = 3 + (!isnull(firer) ? rand(1,2) : 0)
-		) == ROLL_FAILURE)
+		if(SSroll.storyteller_roll(
+			dice = hit_person.get_total_composure() + hit_person.get_total_stamina(),
+			difficulty = 4,
+			mobs_to_show_output = target) <= ROLL_FAILURE)
 			hit_person.Knockdown(20)
 			to_chat(hit_person, "<span class='danger'>The force of a projectile sends you sprawling!</span>")
 

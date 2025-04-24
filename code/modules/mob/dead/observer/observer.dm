@@ -406,18 +406,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		return
 
 	var/mob/living/carbon/human/original_body = mind.current
-	var/turf/current_turf = get_turf(src)
-	var/found_body = FALSE
 
-	for(var/atom/A in current_turf)
-		if(ishuman(A) && A == original_body)
-			found_body = TRUE
-			break
-	if(!found_body && src.auspex_ghosted == TRUE)
-		var/turf/body_turf = get_turf(original_body)
-		to_chat(src, "<span class='warning'>Your body is not here. It is located at coordinates: [body_turf.x], [body_turf.y], [body_turf.z].</span>")
-		to_chat(src, "<span class='warning'>Your current coordinates are: [current_turf.x], [current_turf.y], [current_turf.z].</span>")
-		return
 	if(mind.current.key && mind.current.key[1] != "@")	//makes sure we don't accidentally kick any clients
 		to_chat(usr, "<span class='warning'>Another consciousness is in your body...It is resisting you.</span>")
 		return
@@ -584,7 +573,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set name = "View Range"
 	set desc = "Change your view range."
 
-	var/max_view = client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT
+	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT
 	if(client.view_size.getView() == client.view_size.default)
 		var/list/views = list()
 		for(var/i in 7 to max_view)
@@ -598,7 +587,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/add_view_range(input as num)
 	set name = "Add View Range"
 	set hidden = TRUE
-	var/max_view = client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT
+	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT
 	if(input)
 		client.rescale_view(input, 0, ((max_view*2)+1) - 15)
 
