@@ -199,18 +199,23 @@ Turf and target are separate in case you want to teleport some distance from a t
 	var/loop = 1
 	var/safety = 0
 
+	var/banned = C ? is_banned_from(C.ckey, "Appearance") : null
+
 	while(loop && safety < 5)
-		switch(role)
-			if("human")
-				newname = random_unique_name(gender)
-			if("clown")
-				newname = pick(GLOB.clown_names)
-			if("mime")
-				newname = pick(GLOB.mime_names)
-			if("ai")
-				newname = pick(GLOB.ai_names)
-			else
-				return FALSE
+		if(C?.prefs.custom_names[role] && !safety && !banned)
+			newname = C.prefs.custom_names[role]
+		else
+			switch(role)
+				if("human")
+					newname = random_unique_name(gender)
+				if("clown")
+					newname = pick(GLOB.clown_names)
+				if("mime")
+					newname = pick(GLOB.mime_names)
+				if("ai")
+					newname = pick(GLOB.ai_names)
+				else
+					return FALSE
 
 		for(var/mob/living/M in GLOB.player_list)
 			if(M == src)
@@ -322,6 +327,17 @@ Turf and target are separate in case you want to teleport some distance from a t
 	for(var/mob/M in mobs)
 		if(M.ckey == key)
 			return M
+
+//Returns the atom sitting on the turf.
+//For example, using this on a disk, which is in a bag, on a mob, will return the mob because it's on the turf.
+//Optional arg 'type' to stop once it reaches a specific type instead of a turf.
+/proc/get_atom_on_turf(atom/movable/M, stop_type)
+	var/atom/loc = M
+	while(loc?.loc && !isturf(loc.loc))
+		loc = loc.loc
+		if(stop_type && istype(loc, stop_type))
+			break
+	return loc
 
 // returns the turf located at the map edge in the specified direction relative to A
 // used for mass driver
@@ -630,7 +646,7 @@ GLOBAL_LIST_INIT(WALLITEMS, typecacheof(list(
 	/obj/machinery/computer/security/telescreen, /obj/machinery/embedded_controller/radio/simple_vent_controller,
 	/obj/item/storage/secure/safe, /obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth,
 	/obj/structure/mirror, /obj/structure/fireaxecabinet, /obj/machinery/computer/security/telescreen/entertainment,
-	/obj/structure/sign/picture_frame
+	/obj/structure/sign/picture_frame, /obj/machinery/bounty_board
 	)))
 
 GLOBAL_LIST_INIT(WALLITEMS_EXTERNAL, typecacheof(list(
@@ -670,6 +686,9 @@ GLOBAL_LIST_INIT(WALLITEMS_INVERSE, typecacheof(list(
 			if(O.pixel_x == 0 && O.pixel_y == 0)
 				return TRUE
 	return FALSE
+
+/proc/format_text(text)
+	return replacetext(replacetext(text,"\proper ",""),"\improper ","")
 
 /proc/check_target_facings(mob/living/initator, mob/living/target)
 	/*This can be used to add additional effects on interactions between mobs depending on how the mobs are facing each other, such as adding a crit damage to blows to the back of a guy's head.

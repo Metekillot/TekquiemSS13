@@ -1,3 +1,4 @@
+#define SET_SERIALIZATION_SEMVER(semver_list, semver) semver_list[type] = semver
 /**
  * A savefile implementation that handles all data using json.
  * Also saves it using JSON too, fancy.
@@ -118,3 +119,5 @@ GENERAL_PROTECT_DATUM(/datum/json_savefile)
 		return TRUE
 
 	return FALSE
+
+#undef SET_SERIALIZATION_SEMVER

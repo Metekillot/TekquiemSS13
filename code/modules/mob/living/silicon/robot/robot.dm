@@ -163,6 +163,9 @@
 		changed_name = custom_name
 	if(SSticker.anonymousnames) //only robotic renames will allow for anything other than the anonymous one
 		changed_name = SSticker.anonymousnames.anonymous_ai_name(FALSE)
+	if(!changed_name && C && C.prefs.custom_names["cyborg"] != DEFAULT_CYBORG_NAME)
+		apply_pref_name("cyborg", C)
+		return //built in camera handled in proc
 	if(!changed_name)
 		changed_name = get_standard_name()
 

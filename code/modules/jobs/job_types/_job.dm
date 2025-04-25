@@ -90,7 +90,6 @@
 
 	var/duty
 	var/v_duty
-	var/list/alt_titles = list()
 
 /datum/job/New()
 	. = ..()
@@ -166,7 +165,13 @@
 /datum/job/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, client/preference_source)
 	if(!H)
 		return FALSE
-
+/*
+	if(CONFIG_GET(flag/enforce_human_authority) && (title in GLOB.command_positions))
+		if(H.dna.species.id != "human")
+			H.set_species(/datum/species/human)
+			H.apply_pref_name("human", preference_source)
+*/
+//No need to humanize fucking furries, since there is no fucking furries
 	if(!visualsOnly)
 		var/datum/bank_account/bank_account = new(H.real_name, src, H.dna.species.payday_modifier)
 		bank_account.payday(STARTING_PAYCHECKS, TRUE)
@@ -175,13 +180,8 @@
 	//Equip the rest of the gear
 	H.dna.species.before_equip_job(src, H, visualsOnly)
 
-	if(outfit && preference_source?.prefs?.alt_titles_preferences[title] && !outfit_override)
-		var/outfitholder = "[outfit]/[ckey(preference_source.prefs.alt_titles_preferences[title])]"
-		if(text2path(outfitholder) || !outfitholder)
-			outfit_override = text2path(outfitholder)
-
 	if(outfit_override || outfit)
-		H.equipOutfit(outfit_override ? outfit_override : outfit, visualsOnly, preference_source)
+		H.equipOutfit(outfit_override ? outfit_override : outfit, visualsOnly)
 
 	H.dna.species.after_equip_job(src, H, visualsOnly)
 
@@ -300,7 +300,7 @@
 		holder = "[uniform]"
 	uniform = text2path(holder)
 
-/datum/outfit/job/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source = null) // TFN EDIT: alt job titles
+/datum/outfit/job/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
 	if(visualsOnly)
 		return
 
@@ -314,12 +314,7 @@
 			C.access = J.get_access()
 			shuffle_inplace(C.access) // Shuffle access list to make NTNet passkeys less predictable
 			C.registered_name = H.real_name
-			// TFN EDIT START: alt job titles
-			if(preference_source?.prefs?.alt_titles_preferences[J.title])
-				C.assignment = preference_source.prefs.alt_titles_preferences[J.title]
-			else
-				C.assignment = J.title
-			// TFN EDIT END
+			C.assignment = J.title
 			if(H.age)
 				C.registered_age = H.age
 			C.update_label()
@@ -332,16 +327,11 @@
 	var/obj/item/pda/PDA = H.get_item_by_slot(pda_slot)
 	if(istype(PDA))
 		PDA.owner = H.real_name
-		// TFN EDIT START: alt job titles
-		if(preference_source?.prefs?.alt_titles_preferences[J.title])
-			PDA.ownjob = preference_source.prefs.alt_titles_preferences[J.title]
-		else
-			PDA.ownjob = J.title
-		// TFN EDIT END
+		PDA.ownjob = J.title
 		PDA.update_label()
 
-//	if(H.client?.prefs.playtime_reward_cloak)
-//		neck = /obj/item/clothing/neck/cloak/skill_reward/playing
+	if(H.client?.prefs.playtime_reward_cloak)
+		neck = /obj/item/clothing/neck/cloak/skill_reward/playing
 
 
 /datum/outfit/job/get_chameleon_disguise_info()

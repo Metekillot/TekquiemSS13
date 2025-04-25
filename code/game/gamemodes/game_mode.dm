@@ -381,7 +381,7 @@
 	var/list/valid_positions = list()
 	valid_positions += GLOB.ss13
 	valid_positions += GLOB.ss13
-	valid_positions += GLOB.ss13
+	valid_positions += GLOB.anarch_positions
 	valid_positions += GLOB.ss13
 	valid_positions += GLOB.neutral_positions
 	valid_positions += GLOB.ss13

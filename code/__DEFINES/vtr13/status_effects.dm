@@ -1,1 +1,0 @@
-#define STATUS_EFFECT_REQUEST_CONNECTION /datum/status_effect/request_connection // you are offering up an item to people

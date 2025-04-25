@@ -56,13 +56,13 @@
 	color = "#A17037"
 	density = 1
 	anchored = 1
-	var/area/vtm/vtr/area_reference
+	var/area/vtm/dwelling/area_reference
 	var/search_tries = 0
 	var/search_hits_left = 0 // These should be automated by the system, btu tries typically are double the hits.
 	var/currently_searched = 0 // Terminator for when in use
 
 /obj/structure/vtm/dwelling_container/Initialize()
-	var/area/vtm/vtr/current_area = get_area(src)
+	var/area/vtm/dwelling/current_area = get_area(src)
 	if(current_area)
 		current_area.loot_containers.Add(src)
 		area_reference = current_area
@@ -143,7 +143,7 @@
 
 	baseicon = "wood"
 	icon_state = "wood-1"
-	var/area/vtm/vtr/area_reference
+	var/area/vtm/dwelling/area_reference
 	locked = 1
 
 /obj/structure/vampdoor/dwelling/proc/set_security(sec_type)
@@ -185,7 +185,7 @@
 		start_casing(user)
 
 /obj/structure/vampdoor/dwelling/Initialize()
-	var/area/vtm/vtr/current_area = get_area(src)
+	var/area/vtm/dwelling/current_area = get_area(src)
 	if(current_area)
 		current_area.dwelling_doors.Add(src)
 		area_reference = current_area
@@ -197,8 +197,7 @@
 	area_reference = null
 
 /obj/structure/window/fulltile/dwelling
-	var/area/vtm/vtr/area_reference
-	var/obj/structure/curtain/dwelling/curtain_reference
+	var/area/vtm/dwelling/area_reference
 
 /obj/structure/window/fulltile/dwelling/process_break_in(severity)
 	if(!area_reference) return
@@ -206,22 +205,16 @@
 
 /obj/structure/window/fulltile/dwelling/Initialize(mapload, direct)
 	. = ..()
-	var/area/vtm/vtr/current_area = get_area(src)
+	var/area/vtm/dwelling/current_area = get_area(src)
 	if(current_area)
 		area_reference = current_area
 		area_reference.dwelling_windows.Add(src)
-	var/obj/structure/curtain/dwelling/curtain = new(get_turf(src))
-	curtain_reference = curtain
 
 /obj/structure/window/fulltile/dwelling/Destroy()
 	if(area_reference)
 		area_reference.dwelling_windows.Remove(src)
 		area_reference = null
-	if(curtain_reference)
-		curtain_reference.check_area = FALSE
-		curtain_reference = null
 	. = ..()
-
 
 /turf/closed/wall/vampwall/city/low/window/dwelling
 	window = /obj/structure/window/fulltile/dwelling
@@ -238,8 +231,6 @@
 	alpha = 255
 	base_pixel_y = 12
 	pixel_y = 12
-	check_area = TRUE
-
 
 /obj/item/vtm/dwelling_alarm_card
 	name = "alarm disabler card"
@@ -264,13 +255,13 @@
 	density = 0
 	anchored = 1
 	pixel_y = 32
-	var/area/vtm/vtr/area_reference
+	var/area/vtm/dwelling/area_reference
 	var/alarm_timer = 0
 	var/alarm_active = 0
 	var/alarm_safety = 0
 
 /obj/structure/vtm/dwelling_alarm/Initialize()
-	var/area/vtm/vtr/current_area = get_area(src)
+	var/area/vtm/dwelling/current_area = get_area(src)
 	if(current_area)
 		current_area.alarm_panel = src
 		area_reference = current_area

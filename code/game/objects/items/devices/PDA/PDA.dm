@@ -1070,10 +1070,10 @@ GLOBAL_LIST_EMPTY(PDAs)
 
 	if (!scanmode && istype(A, /obj/item/paper) && owner)
 		var/obj/item/paper/PP = A
-		if (!PP.default_raw_text)
+		if (!PP.info)
 			to_chat(user, "<span class='warning'>Unable to scan! Paper is blank.</span>")
 			return
-		notehtml = PP.default_raw_text
+		notehtml = PP.info
 		note = replacetext(notehtml, "<BR>", "\[br\]")
 		note = replacetext(note, "<li>", "\[*\]")
 		note = replacetext(note, "<ul>", "\[list\]")

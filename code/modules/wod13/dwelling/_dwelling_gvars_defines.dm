@@ -1,4 +1,3 @@
-/*
 GLOBAL_VAR_INIT (dwelling_number_major, 4)
 GLOBAL_VAR_INIT (dwelling_number_moderate, 10)
 GLOBAL_LIST_EMPTY (dwelling_list)
@@ -58,4 +57,3 @@ GLOBAL_LIST_EMPTY (dwelling_area_list)
 	if(msg)
 		log_admin(msg)
 		message_admins(msg)
-*/

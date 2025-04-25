@@ -45,6 +45,17 @@ GLOBAL_LIST_INIT(freqtospan, list(
 		if(get_dist(AM, src) > 7)
 			rendered = "<span class='scream_away'>[rendered]</span>" //! Take an attention, this will NOT overlap client font-size, fix it if you can
 		AM.Hear(rendered, src, message_language, message, , spans, message_mods)
+//	if(ishuman(src))
+//		var/mob/living/carbon/human/H = src
+//		if(!client)
+//			return
+//		if(H.clane)
+//			if(H.clane.name == "Malkavian")
+//				for(var/mob/living/carbon/human/hive in GLOB.player_list)
+//					if(hive.clane && hive.client && hive != src)
+//						if(hive.clane.name == "Malkavian")
+//							if(z != hive.z || get_dist(src, hive) > 7)
+//								to_chat(hive, "[rendered]")
 
 /atom/movable/proc/compose_message(atom/movable/speaker, datum/language/message_language, raw_message, radio_freq, list/spans, list/message_mods = list(), face_name = FALSE)
 	//This proc uses text() because it is faster than appending strings. Thanks BYOND.
@@ -63,7 +74,7 @@ GLOBAL_LIST_INIT(freqtospan, list(
 	var/endspanpart = "</span>"
 
 	//Message
-	var/messagepart = " <span class='message'>[say_emphasis(lang_treat(speaker, message_language, raw_message, spans, message_mods))]</span></span>"
+	var/messagepart = " <span class='message'>[lang_treat(speaker, message_language, raw_message, spans, message_mods)]</span></span>"
 
 	var/languageicon = ""
 	var/datum/language/D = GLOB.language_datum_instances[message_language]
@@ -118,20 +129,6 @@ GLOBAL_LIST_INIT(freqtospan, list(
 			return no_quote ? raw_message : speaker.say_quote(raw_message, spans, message_mods)
 	else
 		return "makes a strange sound."
-
-/// Transforms the speech emphasis mods from [/atom/movable/proc/say_emphasis] into the appropriate HTML tags
-#define ENCODE_HTML_EMPHASIS(input, char, html, varname) \
-	var/static/regex/##varname = regex("[char](.+?)[char]", "g");\
-	input = varname.Replace_char(input, "<[html]>$1</[html]>")
-
-/// Scans the input sentence for speech emphasis modifiers, notably |italics|, +bold+, and _underline_ -mothblocks
-/atom/movable/proc/say_emphasis(input)
-	ENCODE_HTML_EMPHASIS(input, "\\|", "i", italics)
-	ENCODE_HTML_EMPHASIS(input, "\\+", "b", bold)
-	ENCODE_HTML_EMPHASIS(input, "_", "u", underline)
-	return input
-
-#undef ENCODE_HTML_EMPHASIS
 
 /proc/get_radio_span(freq)
 	var/returntext = GLOB.freqtospan["[freq]"]

@@ -84,6 +84,17 @@ SUBSYSTEM_DEF(carpool)
 		playsound(get_turf(H), 'code/modules/wod13/sounds/gas_splat.ogg', 50, TRUE)
 		user.visible_message("<span class='warning'>[user] covers [A] in something flammable!</span>")
 
+
+/obj/vampire_car/attack_hand(mob/user)
+	. = ..()
+	if(ishuman(user))
+		var/mob/living/carbon/human/H = user
+		if(H.a_intent == INTENT_HARM && H.potential >= 4)
+			var/atom/throw_target = get_edge_target_turf(src, user.dir)
+			playsound(get_turf(src), 'code/modules/wod13/sounds/bump.ogg', 100, FALSE)
+			get_damage(10)
+			throw_at(throw_target, rand(4, 6), 4, user)
+
 /obj/vampire_car
 	name = "car"
 	desc = "Take me home, country roads..."
@@ -189,29 +200,31 @@ SUBSYSTEM_DEF(carpool)
 			if(!repairing)
 				repairing = TRUE
 				if(do_mob(user, src, 20 SECONDS))
-					switch(SSroll.storyteller_roll(user.get_total_wits(), 6, FALSE, list(user), src))
-						if (ROLL_SUCCESS)
-							locked = FALSE
-							repairing = FALSE
-							to_chat(user, "<span class='notice'>You've managed to open [src]'s lock.</span>")
-							playsound(src, 'code/modules/wod13/sounds/open.ogg', 50, TRUE)
-						if (ROLL_BOTCH)
-							to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
-							qdel(K)
-							repairing = FALSE
-							return
-						if(ROLL_FAILURE)
-							to_chat(user, "<span class='warning'>You've failed to open [src]'s lock.</span>")
-							playsound(src, 'code/modules/wod13/sounds/signal.ogg', 50, FALSE)
-							for(var/mob/living/carbon/human/npc/police/P in oviewers(7, src))
-								if(P)
-									P.Aggro(user)
-							repairing = FALSE
-							return //Don't penalize vampire humanity if they failed.
+					var/roll = rand(1, 20) + (user.get_total_lockpicking()+user.get_total_dexterity()) - 8
+					//(<= 1, break lockpick) (2-9, trigger car alarm), (>= 10, unlock car)
+					if (roll <= 1)
+						to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
+						qdel(K)
+						repairing = FALSE
+						return
+					else if (roll >= 10)
+						locked = FALSE
+						repairing = FALSE
+						to_chat(user, "<span class='notice'>You've managed to open [src]'s lock.</span>")
+						playsound(src, 'code/modules/wod13/sounds/open.ogg', 50, TRUE)
+					else
+						to_chat(user, "<span class='warning'>You've failed to open [src]'s lock.</span>")
+						playsound(src, 'code/modules/wod13/sounds/signal.ogg', 50, FALSE)
+						for(var/mob/living/carbon/human/npc/police/P in oviewers(7, src))
+							if(P)
+								P.Aggro(user)
+						repairing = FALSE
+						return //Don't penalize vampire humanity if they failed.
 					if(initial(access) == "none") //Stealing a car with no keys assigned to it is basically robbing a random person and not an organization
 						if(ishuman(user))
 							var/mob/living/carbon/human/H = user
 							H.AdjustHumanity(-1, 6)
+							call_dharma("steal", H)
 						return
 				else
 					to_chat(user, "<span class='warning'>You've failed to open [src]'s lock.</span>")

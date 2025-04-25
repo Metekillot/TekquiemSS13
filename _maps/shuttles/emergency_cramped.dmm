@@ -32,6 +32,7 @@
 /obj/structure/window/reinforced,
 /obj/structure/table/reinforced,
 /obj/item/storage/firstaid/regular,
+/obj/item/book/manual/random,
 /obj/structure/extinguisher_cabinet{
 	pixel_x = -30
 	},

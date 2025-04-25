@@ -33,17 +33,52 @@
 	.=..()
 	GLOB.npc_list += src
 	GLOB.alive_npc_list += src
-	if(!istype(src, /mob/living/carbon/human/npc/police) && !istype(src, /mob/living/carbon/human/npc/guard) && !istype(src, /mob/living/carbon/human/npc/bacotell) && !istype(src, /mob/living/carbon/human/npc/bubway) && !istype(src, /mob/living/carbon/human/npc/bouncer))
-		GLOB.boring_npc_list += src
 	add_movespeed_modifier(/datum/movespeed_modifier/npc)
 	return INITIALIZE_HINT_LATELOAD
 
+/mob/living/carbon/human/npc/death()
+	GLOB.alive_npc_list -= src
+	SShumannpcpool.npclost()
+	walk(src,0)
+	if(last_attacker && !key && !hostile)
+		if(get_dist(src, last_attacker) < 10)
+			if(istype(last_attacker, /mob/living/simple_animal/hostile))
+				var/mob/living/simple_animal/hostile/HS = last_attacker
+				if(HS.my_creator)
+					HS.my_creator.AdjustHumanity(-1, 0)
+					HS.my_creator.last_nonraid = world.time
+					HS.my_creator.killed_count = HS.my_creator.killed_count+1
+					if(!HS.my_creator.warrant && !HS.my_creator.ignores_warrant)
+						if(HS.my_creator.killed_count >= 5)
+//							GLOB.fuckers |= HS.my_creator
+							HS.my_creator.warrant = TRUE
+							SEND_SOUND(HS.my_creator, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
+							to_chat(HS.my_creator, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
+						else
+							SEND_SOUND(HS.my_creator, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
+							to_chat(HS.my_creator, "<span class='userdanger'><b>SUSPICIOUS ACTION (murder)</b></span>")
+			else
+				if(ishuman(last_attacker))
+					var/mob/living/carbon/human/HM = last_attacker
+					HM.AdjustHumanity(-1, 0)
+					HM.last_nonraid = world.time
+					HM.killed_count = HM.killed_count+1
+					if(!HM.warrant && !HM.ignores_warrant)
+						if(HM.killed_count >= 5)
+//							GLOB.fuckers |= HM
+							HM.warrant = TRUE
+							SEND_SOUND(HM, sound('code/modules/wod13/sounds/suspect.ogg', 0, 0, 75))
+							to_chat(HM, "<span class='userdanger'><b>POLICE ASSAULT IN PROGRESS</b></span>")
+						else
+							SEND_SOUND(HM, sound('code/modules/wod13/sounds/sus.ogg', 0, 0, 75))
+							to_chat(HM, "<span class='userdanger'><b>SUSPICIOUS ACTION (murder)</b></span>")
+	remove_overlay(FIGHT_LAYER)
+	..()
 
 /mob/living/carbon/human/npc/Destroy()
 	..()
 	GLOB.npc_list -= src
 	GLOB.alive_npc_list -= src
-	GLOB.boring_npc_list -= src
 	SShumannpcpool.npclost()
 
 /mob/living/carbon/human/npc/Life()
@@ -100,57 +135,24 @@
 				var/turf/T = get_step(N, turn(get_dir(src, N), 180))
 				var/obj/effect/landmark/npcability/A = locate() in T
 				if(A)
-					if(N.x > x-3 && N.x < x+3 && N != last_waypoint)
+					if(N.x > x-3 && N.x < x+3)
 						possible_list += N
-					if(N.y > y-3 && N.y < y+3 && N != last_waypoint)
+					if(N.y > y-3 && N.y < y+3)
 						possible_list += N
-
-		if(!length(possible_list)) //if we can't find any valid waypoints then repeat the above process but allow last_waypoint
-			possible_list = list()
-			for(var/obj/effect/landmark/npcactivity/N in GLOB.npc_activities)
-				if(get_dist(src, N) < 64)
-					var/turf/T = get_step(N, turn(get_dir(src, N), 180))
-					var/obj/effect/landmark/npcability/A = locate() in T
-					if(A)
-						if(N.x > x-3 && N.x < x+3)
-							possible_list += N
-						if(N.y > y-3 && N.y < y+3)
-							possible_list += N
-
-		if(!length(possible_list)) //if we still can't find any valid waypoints then we do 'panic mode' (find the closest waypoint of any kind) but exclude last_waypoint
-			var/atom/panic_waypoint
-			for(var/obj/effect/landmark/npcactivity/N in GLOB.npc_activities)
-				if(N && N != last_waypoint)
-					if(!panic_waypoint)
-						panic_waypoint = N
-					if(get_dist(src, N) > 1 && get_dist(src, N) < get_dist(src, panic_waypoint))
-						panic_waypoint = N
-			if(panic_waypoint)
-				last_waypoint = cur_waypoint
-				cur_waypoint = panic_waypoint
-				return panic_waypoint
-
-			//if we STILL can't find a waypoint then we do panic mode again, allowing last_waypoint
-			panic_waypoint = null
+		if(!length(possible_list))
+			var/atom/shitshit
 			for(var/obj/effect/landmark/npcactivity/N in GLOB.npc_activities)
 				if(N)
-					if(!panic_waypoint)
-						panic_waypoint = N
-					if(get_dist(src, N) > 1 && get_dist(src, N) < get_dist(src, panic_waypoint))
-						panic_waypoint = N
-			if(panic_waypoint)
-				last_waypoint = cur_waypoint
-				cur_waypoint = panic_waypoint
-				return panic_waypoint
-
-			else //finally, if we can't find any landmark/npcactivity waypoints period, then we just randomly pick from npc_activities in general
-				last_waypoint = cur_waypoint
-				cur_waypoint = panic_waypoint
+					if(!shitshit)
+						shitshit = N
+					if(get_dist(src, N) > 1 && get_dist(src, N) < get_dist(src, shitshit))
+						shitshit = N
+			if(shitshit)
+				return shitshit
+			else
 				return pick(GLOB.npc_activities)
 
-		last_waypoint = cur_waypoint
-		cur_waypoint = pick(possible_list)
-		return cur_waypoint
+		return pick(possible_list)
 	else
 		var/turf/north_steps = CreateWay(NORTH)
 		var/turf/south_steps = CreateWay(SOUTH)
@@ -221,9 +223,12 @@
 
 
 /mob/living/carbon/human/npc/proc/route_optimisation()
+	var/sosat = FALSE
 	for(var/mob/M in viewers(7, src))
 		if(M.client)
-			return FALSE
+			sosat = TRUE
+	if(sosat)
+		return FALSE
 	return TRUE
 
 /mob/living/carbon/human/npc/proc/handle_automated_movement()

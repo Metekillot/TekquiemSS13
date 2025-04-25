@@ -754,8 +754,7 @@
 		SpinAnimation(5, 1)
 
 	SEND_SIGNAL(src, COMSIG_MOVABLE_POST_THROW, TT, spin)
-	if(thrower)
-		SEND_SIGNAL(thrower, COMSIG_MOB_THREW_MOVABLE, target, TT)
+	SEND_SIGNAL(thrower, COMSIG_MOB_THREW_MOVABLE, target, TT)
 	SSthrowing.processing[src] = TT
 	if (SSthrowing.state == SS_PAUSED && length(SSthrowing.currentrun))
 		SSthrowing.currentrun[src] = TT
