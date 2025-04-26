@@ -560,7 +560,7 @@
 						if(S.tribe == H.auspice.tribe)
 							H.forceMove(get_turf(S))
 				GLOB.fucking_joined |= H.client.prefs.real_name
-				H.mind.character_connections = H.get_character_connections()
+				H.mind.character_connections = SScharacter_connection.get_character_connections(H.ckey, H.true_real_name)
 		new_character = null
 		qdel(src)
 

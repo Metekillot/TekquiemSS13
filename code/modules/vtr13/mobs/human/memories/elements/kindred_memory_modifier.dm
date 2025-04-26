@@ -33,7 +33,10 @@
 	var/datum/component/base_memory/base_memory = source
 
 	//TODO HEX: AGE RANK SHIT, FACTION SHIT
-	base_memory.dat += "I am a member of the All-Night society."
+	if(owner.vtr_faction && owner.vtr_faction.name != "Unaligned")
+		base_memory.dat += "I am a member of \the [owner.vtr_faction.name]."
+	else
+		base_memory.dat += "I am a member of the All-Night society, whether I like it or not."
 	base_memory.dat += "I bear the rank of [GLOB.vampire_rank_names[owner.vamp_rank]]."
 	base_memory.dat += ""
 	var/masquerade_level = " followed the Masquerade Tradition perfectly."

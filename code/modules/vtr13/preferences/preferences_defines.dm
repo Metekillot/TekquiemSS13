@@ -136,63 +136,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	///Someone thought we were nice! We get a little heart in OOC until we join the server past the below time (we can keep it until the end of the round otherwise)
 	var/hearted
 
-//---------CHARACTER PREFERENCES---------
-//===========CHOPPING BLOCK===========
-	/*
-	var/slotlocked = 0
-	var/jumpsuit_style = PREF_SUIT		//suit/skirt
-	
-	var/list/custom_names = list()
-	var/preferred_ai_core_display = "Blue"
-	var/prefered_security_department = SEC_DEPT_RANDOM
-	var/unlock_content = 0
-	var/uplink_spawn_loc = UPLINK_PDA
-	var/playtime_reward_cloak = FALSE ///The playtime_reward_cloak variable can be set to TRUE from the prefs menu only once the user has gained over 5K playtime hours. If true, it allows the user to get a cool looking roundstart cloak.
-	var/body_model = 2
-	//Generation
-	var/generation = 13
-	var/generation_bonus = 0
-	var/torpor_count = 0
-	var/enlightenment = FALSE
-	//Legacy
-	var/exper = 1440
-	var/exper_plus = 0
-	var/friend = FALSE
-	var/enemy = FALSE
-	var/lover = FALSE
-	var/friend_text
-	var/enemy_text
-	var/lover_text
-	//Character sheet stats
-	var/true_experience = 50
-	//linked lists determining known Disciplines and their known ranks
-	var/discipline1type
-	var/discipline1level = 1
-	var/discipline2type
-	var/discipline2level = 1
-	var/discipline3type
-	var/discipline3level = 1
-	var/discipline4type
-	var/discipline4level = 1
-	var/dexterity = 1
-	var/social = 1
-	var/mentality = 1
-	var/blood = 1
-	var/lockpicking = 0
-	var/athletics = 0
-	var/archetype = /datum/archetype/average
-	var/werewolf_apparel
-	var/dharma_type = /datum/dharma
-	var/dharma_level = 1
-	var/po_type = "Rebel"
-	var/po = 5
-	var/hun = 5
-	var/yang = 5
-	var/yin = 5
-	var/list/chi_types = list()
-	var/list/chi_levels = list()
-	*/
-
 //===========GENERAL===========
 	var/datum/species/pref_species = new /datum/species/human()	//Mutant race
 	var/info_known = INFO_KNOWN_UNKNOWN
@@ -232,7 +175,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/composure = 1
 	var/wits = 1
 	var/resolve = 1
-	
 
 //===========GHOUL/VAMPS===========
 	var/datum/vampireclane/clane = new /datum/vampireclane/vtr/daeva()
@@ -264,7 +206,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/werewolf_eye_color = "#FFFFFF"
 	var/werewolf_name
 
-
+//===========Character Connections===========
+	var/list/character_connections = list() //All character connections
+	var/list/endorsement_roles_eligable = list() //head roles that a player qualifies for
 
 /datum/preferences/New(client/C)
 	parent = C

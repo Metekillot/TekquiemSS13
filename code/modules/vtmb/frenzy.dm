@@ -303,11 +303,6 @@
 //				P.save_preferences()
 //				P.save_character()
 //				H.last_experience = world.time
-//			if(H.roundstart_vampire)
-//				if(P.generation != H.generation)
-//					P.generation = H.generation
-//					P.save_preferences()
-//					P.save_character()
 			if(!H.antifrenzy)
 				if(P.humanity < 1)
 					H.enter_frenzymod()

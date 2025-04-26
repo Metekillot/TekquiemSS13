@@ -1,5 +1,4 @@
-
-/mob/living/proc/insert_character_connection(group_type, member_type, connection_desc, group_id = null)
+/datum/controller/subsystem/character_connection/proc/insert_character_connection(mob/living/target, group_type, member_type, connection_desc, group_id = null)
 	var/our_group_id = group_id
 	if(!our_group_id)
 		our_group_id = get_next_character_connection_group_id()
@@ -11,8 +10,8 @@
 			"group_id" = our_group_id, 
 			"group_type" = group_type, 
 			"member_type" = member_type, 
-			"ckey" = ckey, 
-			"char_name" = true_real_name, 
+			"ckey" = target.ckey, 
+			"char_name" = target.true_real_name, 
 			"connection_desc" = connection_desc, 
 			"round_id" = GLOB.round_id)
 	)

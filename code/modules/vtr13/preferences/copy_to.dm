@@ -193,6 +193,5 @@
 		character.update_hair()
 		character.update_body_parts()
 	if(!character_setup)
-		character.roundstart_vampire = TRUE
 		parent << browse(null, "window=preferences_window")
 		parent << browse(null, "window=preferences_browser")

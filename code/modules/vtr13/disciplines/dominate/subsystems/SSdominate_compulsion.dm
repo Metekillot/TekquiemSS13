@@ -4,7 +4,6 @@ SUBSYSTEM_DEF(dominate_compulsion)
 	init_order = INIT_ORDER_ATOMS
 	var/list/compel_list = list()
 	var/list/command_list = list()
-	var/duration = 1 MINUTES
 
 /datum/controller/subsystem/dominate_compulsion/Initialize()
 	for(var/dominate_act_type in subtypesof(/datum/dominate_act/compel))
