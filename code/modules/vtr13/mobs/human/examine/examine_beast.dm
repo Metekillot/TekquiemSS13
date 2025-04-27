@@ -3,7 +3,6 @@
 	var/t_He = p_they(TRUE, temp_gender)
 	var/t_him = p_them(FALSE, temp_gender)
 	var/t_is = p_are(temp_gender)
-	var/notify_beast = FALSE
 	if(iskindred(user))
 		return span_danger("You sense the beast within [t_him] - [t_He] [t_is] Kindred.")
 	else if(isghoul(user))
