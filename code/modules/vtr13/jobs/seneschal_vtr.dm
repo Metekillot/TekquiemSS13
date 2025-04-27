@@ -23,6 +23,8 @@
 
 	display_order = JOB_DISPLAY_ORDER_SENESCHAL_VTR
 
+	endorsement_required = TRUE
+
 	minimum_vamp_rank = VAMP_RANK_ANCILLAE
 	allowed_species = list("Vampire")
 	allowed_bloodlines = list("Ventrue", "Daeva", "Mekhet", "Nosferatu", "Gangrel")

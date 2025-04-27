@@ -15,6 +15,8 @@
 
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_LANCEA
+	
+	endorsement_required = TRUE
 
 	display_order = JOB_DISPLAY_ORDER_BISHOP
 

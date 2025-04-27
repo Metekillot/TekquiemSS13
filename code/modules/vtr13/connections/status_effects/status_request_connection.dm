@@ -31,7 +31,7 @@
 	if(offered && is_taker_elligible(offered))
 		register_candidate(offered)
 	else
-		for(var/mob/living/carbon/possible_taker in orange(1, owner))
+		for(var/mob/living/carbon/possible_taker in view(2, owner) - owner)
 			if(!is_taker_elligible(possible_taker))
 				continue
 			register_candidate(possible_taker)
@@ -75,7 +75,7 @@
 /// One of our possible takers moved, see if they left us hanging
 /datum/status_effect/request_connection/proc/check_taker_in_range(mob/living/carbon/taker)
 	SIGNAL_HANDLER
-	if(owner.CanReach(taker) && !IS_DEAD_OR_INCAP(taker))
+	if(get_dist(get_turf(owner), get_turf(taker)) <= 2 && !IS_DEAD_OR_INCAP(taker))
 		return
 
 	to_chat(taker, span_warning("You moved out of range of [owner]!"))

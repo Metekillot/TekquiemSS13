@@ -14,6 +14,8 @@
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_CARTHIAN
 
+	endorsement_required = TRUE
+
 	display_order = JOB_DISPLAY_ORDER_REPRESENTATIVE
 	bounty_types = CIV_JOB_RANDOM
 	

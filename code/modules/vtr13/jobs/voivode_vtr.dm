@@ -13,6 +13,8 @@
 	paycheck_department = ACCOUNT_SRV
 	display_order = JOB_DISPLAY_ORDER_VOIVODE_VTR
 
+	endorsement_required = TRUE
+
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_ORDO
 

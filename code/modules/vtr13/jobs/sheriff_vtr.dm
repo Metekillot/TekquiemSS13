@@ -19,6 +19,8 @@
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_SEC
 
+	endorsement_required = TRUE
+
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_INVICTUS
 

@@ -15,7 +15,9 @@
 
 	exp_type = EXP_TYPE_CRONE
 	exp_type_department = EXP_TYPE_CRONE
-
+	
+	endorsement_required = TRUE
+	
 	my_contact_is_important = TRUE
 	display_order = JOB_DISPLAY_ORDER_HIEROPHANT
 	v_duty = "You are the Hierophant, defacto leader of the Circle of the Crone. Carry out blood rituals. Protect your territory, the Queen Lilith. Ensure that the Circle's interests are respected by the Seneschal."

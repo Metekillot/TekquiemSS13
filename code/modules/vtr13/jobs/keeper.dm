@@ -14,6 +14,8 @@
 
 	exp_type = EXP_TYPE_CREW
 	exp_type_department = EXP_TYPE_INVICTUS
+
+	endorsement_required = TRUE
 	
 	display_order = JOB_DISPLAY_ORDER_KEEPER
 	allowed_species = list("Vampire")
