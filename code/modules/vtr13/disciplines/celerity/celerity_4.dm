@@ -24,7 +24,6 @@
 	ADD_TRAIT(owner, TRAIT_NONMASQUERADE, CELERITY_TRAIT)
 	ADD_TRAIT(owner, TRAIT_QUICK_JUMP, CELERITY_TRAIT)
 	ADD_TRAIT(owner, TRAIT_SUPERNATURAL_DEXTERITY, CELERITY_TRAIT)
-	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/vtr/celerity4)
 
 /datum/discipline_power/vtr/celerity/four/deactivate()
@@ -34,5 +33,4 @@
 	REMOVE_TRAIT(owner, TRAIT_NONMASQUERADE, CELERITY_TRAIT)
 	REMOVE_TRAIT(owner, TRAIT_QUICK_JUMP, CELERITY_TRAIT)
 	REMOVE_TRAIT(owner, TRAIT_SUPERNATURAL_DEXTERITY, CELERITY_TRAIT)
-	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/vtr/celerity4)

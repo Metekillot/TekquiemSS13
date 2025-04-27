@@ -38,7 +38,7 @@
 	if(target.mind)
 		target.AddElement(/datum/element/ui_button_shake_inventory_group, 16)
 		target.AddElement(/datum/element/ui_button_shake_wide_button_group, 1)
-		
+	
 	do_cooldown(TRUE)
 	owner.update_action_buttons()
 

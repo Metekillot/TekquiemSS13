@@ -5,6 +5,7 @@
 	phrase = "Slow down."
 	activate_verb = "doubt yourself"
 	linked_trait = TRAIT_COMPEL_THINK_TWICE
+	duration = 1 MINUTES
 
 /datum/dominate_act/compel/slow_down/apply(mob/living/target)
 	..()

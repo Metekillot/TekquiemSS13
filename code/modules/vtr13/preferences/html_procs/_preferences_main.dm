@@ -8,22 +8,44 @@
 		load_character(default_slot) // Reloads the character slot. Prevents random features from overwriting the slot if saved.
 		slot_randomized = FALSE
 	update_preview_icon()
-	var/list/dat = list("<center>")
+	var/list/dat = list()
 
-	if(istype(user, /mob/dead/new_player))
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=0' [current_tab == 0 ? "class='linkOn'" : ""]>[make_font_cool("CHARACTER SETTINGS")]</a>"
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=1' [current_tab == 1 ? "class='linkOn'" : ""]>[make_font_cool("MERITS & FLAWS")]</a>"
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=2' [current_tab == 2 ? "class='linkOn'" : ""]>[make_font_cool("ATTRIBUTES")]</a>"
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=3' [current_tab == 3 ? "class='linkOn'" : ""]>[make_font_cool("OCCUPATION")]</a>"
-		dat += "<br>"
-	else if(current_tab < 4)
-		current_tab = 4
-	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=4' [current_tab == 4 ? "class='linkOn'" : ""]>[make_font_cool("GAME PREFERENCES")]</a>"
-	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=5' [current_tab == 5 ? "class='linkOn'" : ""]>[make_font_cool("OOC PREFERENCES")]</a>"
-	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=6' [current_tab == 6 ? "class='linkOn'" : ""]>[make_font_cool("CUSTOM KEYBINDINGS")]</a>"
-
-	if(!path)
+	if(path)
+		var/savefile/S = new /savefile(path)
+		if(S)
+			dat += "<center>"
+			var/name
+			var/unspaced_slots = 0
+			for(var/i=1, i<=max_save_slots, i++)
+				unspaced_slots++
+				if(unspaced_slots > 10)
+					dat += "<br>"
+					unspaced_slots = 0
+				S.cd = "/character[i]"
+				S["real_name"] >> name
+				if(!name)
+					name = "Character[i]"
+				if(istype(user, /mob/dead/new_player))
+					dat += "<a style='white-space:nowrap;' href='byond://?_src_=prefs;preference=changeslot;num=[i];' [i == default_slot ? "class='linkOn'" : ""]>[name]</a> "
+			dat += "</center><hr>"
+	else
 		dat += "<div class='notice'>Please create an account to save your preferences</div>"
+
+	dat += "<center>"
+	if(istype(user, /mob/dead/new_player))
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=0' [current_tab == 0 ? "class='linkOn'" : ""]>[make_font_cool("CHARACTER SETTINGS")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=1' [current_tab == 1 ? "class='linkOn'" : ""]>[make_font_cool("MERITS & FLAWS")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=2' [current_tab == 2 ? "class='linkOn'" : ""]>[make_font_cool("ATTRIBUTES")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=3' [current_tab == 3 ? "class='linkOn'" : ""]>[make_font_cool("CONNECTIONS")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=4' [current_tab == 4 ? "class='linkOn'" : ""]>[make_font_cool("OCCUPATION")]</a>"
+		dat += "<br>"
+	else if(current_tab < 5)
+		current_tab = 5
+	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=5' [current_tab == 5 ? "class='linkOn'" : ""]>[make_font_cool("GAME PREFERENCES")]</a> "
+	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=6' [current_tab == 6 ? "class='linkOn'" : ""]>[make_font_cool("OOC PREFERENCES")]</a> "
+	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=7' [current_tab == 7 ? "class='linkOn'" : ""]>[make_font_cool("CUSTOM KEYBINDINGS")]</a>"
+
+
 
 	dat += "</center>"
 
@@ -37,12 +59,14 @@
 		if (2)
 			attributes_page(user, dat)
 		if (3)
-			occupation_page(user, dat)
+			connections_page(user, dat)
 		if (4)
+			occupation_page(user, dat)
+		if (5)
 			game_preferences_page(user, dat)
-		if(5)
-			ooc_preferences_page(user, dat)
 		if(6)
+			ooc_preferences_page(user, dat)
+		if(7)
 			custom_keybindings_page(user, dat)
 	dat += "<hr><center>"
 

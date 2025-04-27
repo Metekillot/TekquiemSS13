@@ -20,7 +20,7 @@
 			to_chat(target, "You resist the urge to stare at [owner]'s magnificence.")
 			continue
 
-		to_chat(target, "[owner] begins to look more magnificent, it's hard to turn your eyes away.")
+		to_chat(target, "[owner] in this moment is utterly magnificent; it is hard to turn your eyes away.")
 		target.playsound_local(owner, activate_sound, 50, FALSE)
 		apply_discipline_affliction_overlay(target, "presence", 1, 5 SECONDS)
 

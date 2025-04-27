@@ -3,7 +3,7 @@
 	var/required_faction
 	var/desired_position
 	var/endorser_must_be_faction_head = FALSE
-	var/minimum_candidate_rank = VAMP_RANK_NEONATE
+	var/minimum_candidate_rank = VAMP_RANK_ANCILLAE
 	var/minimum_endorser_rank = VAMP_RANK_NEONATE
 	alert_type = /atom/movable/screen/alert/connection/endorsement
 

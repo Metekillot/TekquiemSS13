@@ -31,6 +31,7 @@
 	name = "Feral claws"
 	icon_state = "claws"
 	item_flags = DROPDEL | HAND_ITEM
+	force = 30
 
 /obj/item/melee/vampirearms/knife/protean/feral_claws/afterattack(atom/target, mob/living/carbon/human/user, proximity)
 	return

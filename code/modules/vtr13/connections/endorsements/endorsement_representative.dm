@@ -3,3 +3,4 @@
 	required_faction = EXP_TYPE_CARTHIAN
 	desired_position = "Carthian Representative"
 	minimum_endorser_rank = VAMP_RANK_NEONATE
+	minimum_candidate_rank = VAMP_RANK_NEONATE

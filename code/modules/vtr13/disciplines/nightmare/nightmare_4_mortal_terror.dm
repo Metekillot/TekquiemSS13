@@ -45,7 +45,7 @@
 	target.Jitter(60)
 
 	if(success_count >= 2)
-		ADD_TRAIT(target, TRAIT_DEAF, NIGHTMARE_5_TRAIT)
+		ADD_TRAIT(target, TRAIT_BLIND, NIGHTMARE_5_TRAIT)
 		target.update_blindness()
 		addtimer(CALLBACK(src, PROC_REF(end_blindness), target), effect_time)
 

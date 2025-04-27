@@ -1,8 +1,7 @@
 //AURA PERCEPTION
 /datum/discipline_power/vtr/auspex/uncanny_perception
-	name = "Minor Telepathy"
+	name = "Uncanny Perception"
 	desc = "Allows you to pick out the secrets from a target."
-
 
 	level = 2
 	target_type = TARGET_HUMAN | TARGET_SELF

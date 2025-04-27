@@ -12,7 +12,7 @@
 	cancelable = TRUE
 	toggled = TRUE
 
-	duration_length = 6 SECONDS
+	duration_length = 10 SECONDS
 	cooldown_length = 20 SECONDS
 	var/mob/living/shapeshifted_creature
 

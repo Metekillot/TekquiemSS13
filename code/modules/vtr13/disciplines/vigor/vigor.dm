@@ -24,7 +24,7 @@
 
 /datum/discipline_power/vtr/vigor/proc/handle_jump(mob/living/carbon/human/jumper, turf/target, distance)
 	SIGNAL_HANDLER
-	if(get_dist(jumper.loc, target) <= 2 && level > 3)
+	if(get_dist(jumper.loc, target) <= 2 && level >= 3)
 		addtimer(CALLBACK(src, PROC_REF(vigor_boom), jumper),(distance * 0.5))
 
 /datum/discipline_power/vtr/vigor/proc/vigor_boom(mob/living/carbon/human/jumper)
@@ -53,25 +53,6 @@
 			var/atom/throw_target = get_edge_target_turf(attacked_thing, attacker.dir)
 			living_thing.throw_at(throw_target, rand(5, 7), 4, attacker, gentle = TRUE) //No stun nor impact damage from throwing people around
 		return
-	
-	//punching car
-	if(istype(attacked_thing, /obj/vampire_car))
-		if(level >= 4)
-			var/obj/vampire_car/car_thing = attacked_thing
-			var/atom/throw_target = get_edge_target_turf(car_thing, attacker.dir)
-			playsound(get_turf(attacker), 'code/modules/wod13/sounds/bump.ogg', 100, FALSE)
-			car_thing.get_damage(10)
-			car_thing.throw_at(throw_target, rand(4, 6), 4, attacker)
-			violate_masquerade(owner, owner)
-		return COMPONENT_CANCEL_ATTACK_CHAIN
-
-	if(istype(attacked_thing, /obj/structure/table))
-		if(level >= 3)
-			playsound(get_turf(attacked_thing), 'code/modules/wod13/sounds/get_bent.ogg', 100, FALSE)
-			qdel(attacked_thing)
-			violate_masquerade(attacker, attacker)
-		return COMPONENT_CANCEL_ATTACK_CHAIN
-
 
 	//punching door
 	if(istype(attacked_thing, /obj/structure/vampdoor))
@@ -92,6 +73,24 @@
 			playsound(get_turf(door_thing), 'code/modules/wod13/sounds/get_bent.ogg', 50, TRUE)
 			to_chat(attacker, span_warning("[door_thing] is locked, and you aren't strong enough to break it down!"))
 			door_thing.door_reset_callback()
+		return COMPONENT_CANCEL_ATTACK_CHAIN
+
+	if(istype(attacked_thing, /obj/structure/table))
+		if(level >= 3)
+			playsound(get_turf(attacked_thing), 'code/modules/wod13/sounds/get_bent.ogg', 100, FALSE)
+			qdel(attacked_thing)
+			violate_masquerade(attacker, attacker)
+		return COMPONENT_CANCEL_ATTACK_CHAIN
+
+	//punching car
+	if(istype(attacked_thing, /obj/vampire_car))
+		if(level >= 4)
+			var/obj/vampire_car/car_thing = attacked_thing
+			var/atom/throw_target = get_edge_target_turf(car_thing, attacker.dir)
+			playsound(get_turf(attacker), 'code/modules/wod13/sounds/bump.ogg', 100, FALSE)
+			car_thing.get_damage(10)
+			car_thing.throw_at(throw_target, rand(4, 6), 4, attacker)
+			violate_masquerade(owner, owner)
 		return COMPONENT_CANCEL_ATTACK_CHAIN
 
 	if(istype(attacked_thing, /turf/closed/wall/vampwall))

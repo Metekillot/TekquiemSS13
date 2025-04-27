@@ -13,7 +13,7 @@
 		"Is there anything controlling you?" = PROC_REF(ask_prompt),
 		"What is your deepest desire?" = PROC_REF(ask_prompt),
 		"What is your biggest regret?" = PROC_REF(ask_prompt),
-		"Who did you kill last?" = PROC_REF(ask_prompt),
+		"Who did you last kill?" = PROC_REF(ask_prompt),
 		"Out of everyone, who do you hate the most?" = PROC_REF(ask_prompt),
 		"Out of everyone, who are you closest to?" = PROC_REF(ask_prompt),
 		"What mortal are you closest to?" = PROC_REF(ask_prompt)

@@ -22,6 +22,8 @@
 			task_result_save = process_trait_links(user, href_list)
 		if("job")
 			task_result_save = process_job_links(user, href_list)
+		if("connection")
+			task_result_save = process_connection_links(user, href_list)
 
 	if(!task_result_save)	
 		switch(href_list["task"])

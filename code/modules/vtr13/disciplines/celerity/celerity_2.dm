@@ -21,12 +21,10 @@
 	. = ..()
 	to_chat(owner, span_notice("You feel yourself become faster."))
 	ADD_TRAIT(owner, TRAIT_QUICK_JUMP, CELERITY_TRAIT)
-	owner.celerity_visual = TRUE
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/vtr/celerity2)
 
 /datum/discipline_power/vtr/celerity/two/deactivate()
 	. = ..()
 	to_chat(owner, span_notice("Your reflexes return to normal."))
 	REMOVE_TRAIT(owner, TRAIT_QUICK_JUMP, CELERITY_TRAIT)
-	owner.celerity_visual = FALSE
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/vtr/celerity2)

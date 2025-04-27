@@ -26,17 +26,6 @@
 
 	cooldown_length = 20 SECONDS
 
-	aggressive_signals = list(
-		COMSIG_MOB_ATTACK_HAND,
-		COMSIG_MOB_ATTACKED_HAND,
-		COMSIG_MOB_MELEE_SWING,
-		COMSIG_MOB_FIRED_GUN,
-		COMSIG_MOB_THREW_MOVABLE,
-		COMSIG_MOB_ATTACKING_MELEE,
-		COMSIG_MOB_ATTACKED_BY_MELEE,
-		COMSIG_PROJECTILE_PREHIT
-	)
-
 	bothers_with_duration_timers = FALSE
 
 
@@ -46,7 +35,7 @@
 
 /datum/discipline_power/vtr/obfuscate/familiar_stranger/activate(mob/living/carbon/human/victim)
 	. = ..()
-	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal), override = TRUE)
+
 	if (!victim)
 		return
 	playsound(get_turf(owner), 'code/modules/wod13/sounds/obfuscate_activate.ogg', 100, TRUE, -6)

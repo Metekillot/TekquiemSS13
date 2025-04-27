@@ -1,6 +1,6 @@
 /datum/discipline_power/vtr/protean/misty_dispersal
 	name = "Mist Form"
-	desc = "Become a cloud of blood, and coalescing at a point you marked previously."
+	desc = "Become a cloud of blood, traveling through doors and coalescing somewhere else."
 	level = 5
 	vitae_cost = 8
 	check_flags = DISC_CHECK_IMMOBILE | DISC_CHECK_CAPABLE

@@ -1,23 +1,4 @@
 /datum/preferences/proc/character_settings_page(mob/user, list/dat)
-	if(path)
-		var/savefile/S = new /savefile(path)
-		if(S)
-			dat += "<center>"
-			var/name
-			var/unspaced_slots = 0
-			for(var/i=1, i<=max_save_slots, i++)
-				unspaced_slots++
-				if(unspaced_slots > 4)
-					dat += "<br>"
-					unspaced_slots = 0
-				S.cd = "/character[i]"
-				S["real_name"] >> name
-				if(!name)
-					name = "Character[i]"
-				if(istype(user, /mob/dead/new_player))
-					dat += "<a style='white-space:nowrap;' href='byond://?_src_=prefs;preference=changeslot;num=[i];' [i == default_slot ? "class='linkOn'" : ""]>[name]</a> "
-			dat += "</center>"
-
 	if(reason_of_death != "None")
 		dat += "<center><b>Last death</b>: [reason_of_death]</center>"
 

@@ -18,12 +18,8 @@
 
 /datum/discipline_power/vtr/resiliance/two/activate()
 	. = ..()
-	owner.physiology.armor.melee += 30
-	owner.physiology.armor.bullet += 30
-	owner.physiology.armor.fire += 20
+	owner.physiology.damage_resistance += 30
 
 /datum/discipline_power/vtr/resiliance/two/deactivate()
 	. = ..()
-	owner.physiology.armor.melee -= 30
-	owner.physiology.armor.bullet -= 30
-	owner.physiology.armor.fire -= 20
+	owner.physiology.damage_resistance -= 30
