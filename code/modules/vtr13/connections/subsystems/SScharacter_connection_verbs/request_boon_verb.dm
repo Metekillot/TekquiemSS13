@@ -14,4 +14,4 @@
 	if(!choice)
 		return
 	
-	human_src.apply_status_effect(STATUS_EFFECT_REQUEST_CONNECTION, choice, TRUE)
+	human_src.apply_status_effect(STATUS_EFFECT_REQUEST_CONNECTION, choice)

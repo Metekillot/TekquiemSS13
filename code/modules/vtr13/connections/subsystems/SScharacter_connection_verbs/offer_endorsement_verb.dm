@@ -32,7 +32,7 @@
 		var/choice = tgui_input_list(human_src, "Select an endorsement to offer:", "Endorsement Selection", connection_selection)
 		if(!choice)
 			return
-		human_src.apply_status_effect(STATUS_EFFECT_REQUEST_CONNECTION, choice, FALSE)
+		human_src.apply_status_effect(STATUS_EFFECT_REQUEST_CONNECTION, choice, TRUE)
 	//if there is only one, then you already know what you're doin'
 	else
-		human_src.apply_status_effect(STATUS_EFFECT_REQUEST_CONNECTION, connection_selection[1], FALSE)
+		human_src.apply_status_effect(STATUS_EFFECT_REQUEST_CONNECTION, connection_selection[1], TRUE)
