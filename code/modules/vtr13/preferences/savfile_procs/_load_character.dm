@@ -183,7 +183,7 @@
 	var/vampire_faction_id
 	READ_FILE(S["vamp_faction"], vampire_faction_id)
 	if(vampire_faction_id)
-		var/faction = GLOB.factions_list[clane_id]
+		var/faction = GLOB.factions_list[vampire_faction_id]
 		if(faction && istype(faction, /datum/vtr_faction/vamp_faction))
 			vamp_faction = new faction()
 		else
