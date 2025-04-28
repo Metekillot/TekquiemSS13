@@ -10,7 +10,7 @@
 	if(human_src.has_status_effect(STATUS_EFFECT_REQUEST_CONNECTION))
 		return
 
-	var/choice = tgui_input_list(human_src, "Select an a boon to offer:", "Boon Selection", SScharacter_connection.endorsement_connection_list)
+	var/choice = tgui_input_list(human_src, "Select a boon to offer:", "Boon Selection", SScharacter_connection.boon_connection_list)
 	if(!choice)
 		return
 	

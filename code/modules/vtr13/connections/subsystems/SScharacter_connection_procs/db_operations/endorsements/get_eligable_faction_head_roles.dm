@@ -31,9 +31,9 @@
 
 	if(!query.Execute(async = TRUE))
 		qdel(query)
-		return null
+		return list()
 
-	var/list/eligiable_roles
+	var/list/eligiable_roles =  list()
 	var/seneschal_faction_leader_endorsement = FALSE
 	var/seneschal_popular_endorsement = FALSE
 	while(query.NextRow())
