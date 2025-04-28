@@ -29,7 +29,7 @@
 	if(!invader.mind)
 		return
 	get_memory_data(src, FALSE)
-	invader << browse(dat.Join("<br>"), "window=vampire;size=500x450;border=1;can_resize=1;can_minimize=0")
+	invader << browse(dat.Join("<br>"), "window=vampire;size=500x600;border=1;can_resize=1;can_minimize=0")
 	
 
 /datum/component/base_memory/proc/get_memory_data(datum/source, var/is_own_memories = TRUE)
@@ -102,7 +102,7 @@
 				dat += "<b>My bank account code is: [account.code]</b>"
 				break
 	
-	if(is_own_memories && owner?.mind?.character_connections?.len)
+	if(is_own_memories && owner?.mind?.character_connections)
 		dat += " "
 		dat += "<b>I've made some connections in the city:</b>"
 		for(var/datum/character_connection/connection in owner.mind.character_connections)

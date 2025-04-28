@@ -46,6 +46,7 @@
 	if(!query_get.Execute(async = TRUE))
 		qdel(query_get)
 		return null
+	
 	while(query_get.NextRow())
 		var/datum/character_connection/connection = new(
 			query_get.item[1],
@@ -64,6 +65,7 @@
 			to_chat(user, span_warning("[character_name] endorsement for [connection.character_name] has expired from inactivity. (ID: [connection.id], GROUP_ID: [connection.group_id])"))
 		else if (connection.member_type == MEMBER_TYPE_ENDORSER)
 			to_chat(user, span_warning("[connection.character_name]'s endorsement for [character_name] has expired from inactivity. (ID: [connection.id], GROUP_ID: [connection.group_id])"))
+	qdel(query_get)
 
 	//retire all stale connections
 	var/datum/db_query/query_update = SSdbcore.NewQuery(
