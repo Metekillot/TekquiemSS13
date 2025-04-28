@@ -336,7 +336,7 @@
 		return JOB_UNAVAILABLE_PLAYTIME
 	if(latejoin && !job.special_check_latejoin(client))
 		return JOB_UNAVAILABLE_GENERIC
-	if((client.prefs.pref_species.name == "Vampire" || client.prefs.pref_species.name == "Ghoul") && job.minimum_vamp_rank && (client.prefs.vamp_rank >= job.minimum_vamp_rank) && !bypass)
+	if((client.prefs.pref_species.name == "Vampire" || client.prefs.pref_species.name == "Ghoul") && job.minimum_vamp_rank && (client.prefs.vamp_rank < job.minimum_vamp_rank) && !bypass)
 		return JOB_UNAVAILABLE_GENERATION
 	if((client.prefs.pref_species.name == "Vampire" || client.prefs.pref_species.name == "Ghoul") && GLOB.vampire_factions_list.Find(job.exp_type_department) && client.prefs.vamp_faction?.name != job.exp_type_department)
 		return JOB_UNAVAILABLE_FACTION
