@@ -33,6 +33,7 @@
 	
 
 /datum/component/base_memory/proc/get_memory_data(datum/source, var/is_own_memories = TRUE)
+
 	dat = list()
 	dat += {"
 		<style type="text/css">
@@ -51,7 +52,7 @@
 	dat += "Tonight, I have taken the role of \a [owner.mind.assigned_role]."
 	dat += ""
 	SEND_SIGNAL(src, COMSIG_MEMORY_SPLAT_TEXT, owner, is_own_memories)
-	
+
 	dat += "<b>Physique</b>: [owner.physique] + [owner.additional_physique]"
 	dat += "<b>Stamina</b>: [owner.stamina] + [owner.additional_stamina]"
 	dat += "<b>Charisma</b>: [owner.charisma] + [owner.additional_charisma]"
@@ -102,11 +103,13 @@
 				dat += "<b>My bank account code is: [account.code]</b>"
 				break
 	
-	if(is_own_memories && owner?.mind?.character_connections)
-		dat += " "
-		dat += "<b>I've made some connections in the city:</b>"
-		for(var/datum/character_connection/connection in owner.mind.character_connections)
-			dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(source)];delete_connection=[connection.group_id]'>Delete</a>"
-		dat += " "
+	if(is_own_memories && owner.mind)
+		owner.mind.character_connections = SScharacter_connection.get_character_connections(owner.ckey, owner.true_real_name)
+		if(length(owner.mind.character_connections))
+			dat += " "
+			dat += "<b>I've made some connections in the city:</b>"
+			for(var/datum/character_connection/connection in owner.mind.character_connections)
+				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(source)];delete_connection=[connection.group_id]'>Delete</a>"
+			dat += " "
 	
 	return dat
