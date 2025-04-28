@@ -58,7 +58,7 @@
 			if((pref_species.name == "Vampire" || pref_species.name == "Ghoul") && job.minimum_vamp_rank && vamp_rank < job.minimum_vamp_rank && !bypass)
 				HTML += "<font color=#290204><b>[rank]</b></font></td><td width='75%' align='center'><b><font color=#290204> \[[GLOB.vampire_rank_names[vamp_rank]] RESTRICTED\]</font></b></td></tr>"
 				continue
-			if(masquerade < job.minimal_masquerade) && !bypass)
+			if(masquerade < job.minimal_masquerade && !bypass)
 				HTML += "<font color=#290204><b>[rank]</b></font></td><td width='75%' align='center'><b><font color=#290204> \[[job.minimal_masquerade] MASQUERADE REQUIRED\]</font></b></td></tr>"
 			if(job.endorsement_required && endorsement_roles_eligable && !endorsement_roles_eligable.Find(job.title) && !bypass)
 				HTML += "<font color=#290204><b>[rank]</b></font></td><td width='75%' align='center'><b><font color=#290204> \[[job.title == "Seneschal"? "[SENESCHAL_SPECIAL_ENDORSEMENT_MIN + FACTION_HEAD_ENDORSEMENT_MIN]": "[FACTION_HEAD_ENDORSEMENT_MIN]"] ENDORSEMENTS NEEDED\]</font></b></td></tr>"
