@@ -344,7 +344,7 @@
 		return JOB_UNAVAILABLE_MASQUERADE
 	if(!job.allowed_species.Find(client.prefs.pref_species.name) && !bypass)
 		return JOB_UNAVAILABLE_SPECIES
-	if(job.endorsement_required && !client.prefs.endorsement_roles_eligable.Find(job.title) && !bypass)
+	if(job.endorsement_required && (!client.prefs.endorsement_roles_eligable || !client.prefs.endorsement_roles_eligable.Find(job.title)) && !bypass)
 		return JOB_UNAVAILABLE_ENDORSEMENT
 	if((job.species_slots[client.prefs.pref_species.name] == 0) && !bypass)
 		return JOB_UNAVAILABLE_SPECIES_LIMITED
