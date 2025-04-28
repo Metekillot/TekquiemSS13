@@ -3,6 +3,10 @@
 	if(!our_group_id)
 		our_group_id = get_next_character_connection_group_id()
 
+
+	if(!group_type || !member_type || !connection_desc)
+		return
+
 	var/datum/db_query/query = SSdbcore.NewQuery({"
 			INSERT INTO [format_table_name("character_connection")] (`group_id`, `group_type`, `member_type`, `player_ckey`, `character_name`, `connection_desc`, `round_id_established`, `date_established`)
 			VALUES (:group_id, :group_type, :member_type, :ckey, :char_name, :connection_desc, :round_id, Now())

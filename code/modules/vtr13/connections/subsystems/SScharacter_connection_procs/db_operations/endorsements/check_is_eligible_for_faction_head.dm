@@ -35,6 +35,7 @@
 		if(!query.Execute(async = TRUE) || !query.NextRow())
 			qdel(query)
 			return FALSE
+		qdel(query)
 	if(faction_head_connnection_type)
 		if(!SScharacter_connection.get_character_connection_type(faction_head_connnection_type))
 			return FALSE
@@ -64,5 +65,6 @@
 		if(!query.Execute(async = TRUE) || !query.NextRow())
 			qdel(query)
 			return FALSE
+		qdel(query)
 
 	return TRUE
