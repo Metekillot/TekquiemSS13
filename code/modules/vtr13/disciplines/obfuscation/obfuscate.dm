@@ -13,6 +13,8 @@
 	deactivate_sound = 'code/modules/wod13/sounds/obfuscate_deactivate.ogg'
 	cooldown_length = 8 SECONDS
 	var/list/aggressive_signals = list(
+		COMSIG_POWER_TRY_ACTIVATE,
+		COMSIG_ATOM_START_PULL,
 		COMSIG_MOB_ATTACK_HAND,
 		COMSIG_MOB_ATTACKED_HAND,
 		COMSIG_MOB_MELEE_SWING,

@@ -455,7 +455,7 @@
 					if(B.type == /datum/reagent/blood)
 						var/blood_data = B.data
 						if(blood_data)
-							var/generation = blood_data["generation"]
+							var/generation = blood_data["blood_potency"]
 							var/clan = blood_data["clan"]
 
 							var/message = generate_message(generation, clan)

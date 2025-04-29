@@ -30,11 +30,9 @@
 	var/datum/discipline/bloodheal/giving_bloodheal = new(1)
 	C.give_discipline(giving_bloodheal)
 
-	C.generation = 13
-	C.bloodpool = 10
-	C.maxbloodpool = 10
-	C.maxHealth = 200
-	C.health = 200
+	C.bloodpool = 5
+	C.maxbloodpool = 5 + C.get_total_stamina()
+	C.recalculate_max_health()
 
 /datum/species/ghoul/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, pref_load)
 	. = ..()
@@ -105,7 +103,7 @@
 		if (HAS_TRAIT(owner, TRAIT_TORPOR))
 			return
 		var/mob/living/carbon/human/H = owner
-		level = clamp(13-H.generation, 1, 4)
+		level = clamp(H.blood_potency, 1, 4)
 		if(HAS_TRAIT(H, TRAIT_COFFIN_THERAPY))
 			if(!istype(H.loc, /obj/structure/closet/crate/coffin))
 				to_chat(usr, "<span class='warning'>You need to be in a coffin to use that!</span>")

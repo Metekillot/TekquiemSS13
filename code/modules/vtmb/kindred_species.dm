@@ -47,7 +47,7 @@
 	vitae.Grant(C)
 
 	//this needs to be adjusted to be more accurate for blood spending rates
-	var/datum/discipline/bloodheal/giving_bloodheal = new(clamp(11 - C.generation, 1, 10))
+	var/datum/discipline/bloodheal/giving_bloodheal = new(C.blood_potency)
 	C.give_discipline(giving_bloodheal)
 
 	var/datum/action/blood_power/bloodpower = new()
@@ -56,11 +56,6 @@
 	add_verb(C, /mob/living/carbon/human/verb/teach_discipline)
 
 	SScharacter_connection.setup_character_connection_verbs(C)
-
-	C.yang_chi = 0
-	C.max_yang_chi = 0
-	C.yin_chi = 6
-	C.max_yin_chi = 6
 
 	//vampires go to -200 damage before dying
 	for (var/obj/item/bodypart/bodypart in C.bodyparts)

@@ -21,7 +21,7 @@
 
 /datum/discipline_power/vtr/obfuscate/unseen_presence/activate()
 	. = ..()
-	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal), override = TRUE)
+	RegisterSignal(owner, aggressive_signals, PROC_REF(on_combat_signal))
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(handle_move))
 
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)

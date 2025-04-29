@@ -41,7 +41,7 @@
 
 /datum/discipline_power/vtr/obfuscate/cloak_the_gathering/activate(mob/living/target)
 	. = ..()
-	RegisterSignal(target, aggressive_signals, PROC_REF(gathering_on_combat_signal), override = TRUE)
+	RegisterSignal(target, aggressive_signals, PROC_REF(gathering_on_combat_signal))
 	RegisterSignal(target, COMSIG_MOVABLE_MOVED, PROC_REF(handle_move))
 
 	for(var/mob/living/carbon/human/npc/NPC in GLOB.npc_list)
