@@ -40,12 +40,20 @@
 				return
 
 			var/new_name = tgui_input_text(user, "Choose your character's name:", "Character Preference", max_length = MAX_NAME_LEN)
-			if(new_name)
-				new_name = reject_bad_name(new_name)
-				if(new_name)
-					real_name = new_name
-				else
-					to_chat(user, "<font color='red'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and . It must not contain any words restricted by IC chat and name filters.</font>")
+
+			if(!new_name)
+				return
+
+			new_name = reject_bad_name(new_name)
+
+			if(!new_name)
+				to_chat(user, "<font color='red'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and . It must not contain any words restricted by IC chat and name filters.</font>")
+				return
+
+			if(new_name != real_name)
+				SScharacter_connection.retire_all_endorsements(user.ckey, real_name)
+				real_name = new_name
+
 
 		if("age")
 			var/new_age = tgui_input_number(user, "Choose your character's biological age:\n([AGE_MIN]-[AGE_MAX])", "Character Preference", age, AGE_MAX, AGE_MIN, round_value = TRUE)
@@ -360,7 +368,7 @@
 			for (var/discipline_type in possible_new_disciplines)
 				var/datum/discipline/discipline = new discipline_type
 				if(!discipline.clan_restricted)
-					discipline_input_list[discipline.name] = discipline_type
+					discipline_input_list[discipline.name] = discipline.type
 				qdel(discipline)
 
 			var/new_discipline = tgui_input_list(user, "Select your new Discipline", "Discipline Selection", sortList(discipline_input_list))
@@ -411,8 +419,12 @@
 		if("vamp_faction")
 			if((clane?.name == "Revenant"))
 				return
+
+			if(real_name && alert(user, "WARNING: Changing faction will invalidate any endorsement you have recieved or given!", "WARNING", "Okay", "Cancel") == "Cancel")
+				return
 			var/new_faction_name = tgui_input_list(user, "Choose a Covenant:", "Character Preference", GLOB.vampire_faction_list, vamp_faction.name)
-			if(new_faction_name)
+
+			if(new_faction_name != vamp_faction.name)
 				qdel(vamp_faction)
 				var/new_faction_type = GLOB.factions_list[new_faction_name]
 				vamp_faction = new new_faction_type()
@@ -479,19 +491,25 @@
 				qdel(selecting_species)
 
 			var/result = tgui_input_list(user, "Select a species", "Species Selection", sortList(choose_species))
-			if(result)
+			qdel(choose_species)
+
+			if(result && result != pref_species.id)
 				all_quirks.Cut()
 				auspice_level = 0
 				qdel(clane)
+				clane = null
 				qdel(regent_clan)
+				regent_clan = null
 				var/newtype = GLOB.species_list[result]
 				pref_species = new newtype()
 				switch(pref_species.id)
 					if("human","garou")
+						vamp_rank = 0
 						discipline_types.Cut()
 						discipline_levels.Cut()
 					if("ghoul")
 						regent_clan = new /datum/vampireclane/vtr/daeva()
+						vamp_faction = new /datum/vtr_faction/vamp_faction/unaligned()
 						vamp_rank = VAMP_RANK_GHOUL
 						discipline_types.Cut()
 						discipline_levels.Cut()
@@ -500,16 +518,13 @@
 							discipline_levels.Add(0)
 					if("kindred")
 						clane = new /datum/vampireclane/vtr/daeva()
+						vamp_faction = new /datum/vtr_faction/vamp_faction/unaligned()
 						vamp_rank = VAMP_RANK_NEONATE
 						discipline_types.Cut()
 						discipline_levels.Cut()
 						for (var/disc_type in clane.clane_disciplines)
 							discipline_types.Add(disc_type)
 							discipline_levels.Add(0)
-				//Now that we changed our species, we must verify that the mutant colour is still allowed.
-				var/temp_hsv = RGBtoHSV(features["mcolor"])
-				if(features["mcolor"] == "#000" || (!(MUTCOLORS_PARTSONLY in pref_species.species_traits) && ReadHSV(temp_hsv)[3] < ReadHSV("#7F7F7F")[3]))
-					features["mcolor"] = pref_species.default_color
 				if(randomise[RANDOM_NAME])
 					real_name = pref_species.random_name(gender)
 

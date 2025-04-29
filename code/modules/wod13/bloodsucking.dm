@@ -102,12 +102,9 @@
 					AdjustHumanity(-1, 0)
 					adjustBruteLoss(-50, TRUE)
 					adjustFireLoss(-50, TRUE)
-					if(SSroll.storyteller_roll(
-						src.humanity + src.get_total_resolve() - eaten_vampire.blood_potency, 
-						8, 
-						FALSE, 
-						list(src, eaten_vampire), 
-						eaten_vampire) <= ROLL_FAILURE)
+					if(SSroll.storyteller_roll(src.humanity + src.get_total_resolve() - eaten_vampire.blood_potency, 8, FALSE, list(src, eaten_vampire), eaten_vampire) <= ROLL_FAILURE)
+						to_chat(src, span_warning("You fail to diablerize [eaten_vampire]."))
+						/*
 						to_chat(src, "<span class='userdanger'><b>[eaten_vampire]'s SOUL OVERCOMES YOURS AND GAINS CONTROL OF YOUR BODY.</b></span>")
 						message_admins("[ADMIN_LOOKUPFLW(src)] tried to Diablerize [ADMIN_LOOKUPFLW(mob)] and was overtaken.")
 						log_attack("[key_name(src)] tried to Diablerize [key_name(mob)] and was overtaken.")
@@ -119,6 +116,7 @@
 							eaten_vampire.mind.transfer_to(src, TRUE)
 						else
 							death()
+						*/
 						return
 					else
 						message_admins("[ADMIN_LOOKUPFLW(src)] successfully Diablerized [ADMIN_LOOKUPFLW(mob)]")

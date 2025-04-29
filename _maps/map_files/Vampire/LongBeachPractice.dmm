@@ -26578,10 +26578,6 @@
 /obj/structure/lamppost/sidewalk,
 /turf/open/floor/plating/vampwood,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
-"xUS" = (
-/obj/matrix,
-/turf/open/space/basic,
-/area/vtm/vtr/masquerade/exterior/ground_floor/northeast/northeast_long_beach/inaccessible)
 "xUY" = (
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/church)
@@ -121542,15 +121538,15 @@ xZF
 xZF
 xZF
 xZF
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
 xZF
 xZF
 xZF
@@ -121799,7 +121795,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 qki
 qki
@@ -121807,7 +121803,7 @@ qki
 qki
 qki
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -122056,7 +122052,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 hOH
 kFH
@@ -122064,7 +122060,7 @@ kFH
 rVR
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -122313,7 +122309,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 wnI
 kFH
@@ -122321,7 +122317,7 @@ kFH
 ogh
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -122570,7 +122566,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 tZg
 kFH
@@ -122578,7 +122574,7 @@ kFH
 wlm
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -122827,7 +122823,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 jDb
 kFH
@@ -122835,7 +122831,7 @@ kFH
 adI
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -123084,7 +123080,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 tRy
 kFH
@@ -123092,7 +123088,7 @@ kFH
 bPv
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -123341,7 +123337,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 iNZ
 kFH
@@ -123349,7 +123345,7 @@ kFH
 xKc
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -123598,7 +123594,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 sZd
 kFH
@@ -123606,7 +123602,7 @@ kFH
 kFH
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -123855,7 +123851,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 gEf
 kFH
@@ -123863,7 +123859,7 @@ kFH
 kFH
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -124112,7 +124108,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 wnQ
 kFH
@@ -124120,7 +124116,7 @@ kFH
 kFH
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -124369,7 +124365,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 xhr
 kFH
@@ -124377,7 +124373,7 @@ kFH
 kFH
 kFH
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -124626,7 +124622,7 @@ xZF
 xZF
 xZF
 xZF
-xUS
+aXr
 qki
 qki
 qki
@@ -124634,7 +124630,7 @@ qki
 qki
 qki
 qki
-xUS
+aXr
 xZF
 xZF
 xZF
@@ -124883,15 +124879,15 @@ xZF
 xZF
 xZF
 xZF
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
-xUS
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
+aXr
 xZF
 xZF
 xZF

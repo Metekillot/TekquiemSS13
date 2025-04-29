@@ -3581,6 +3581,7 @@
 #include "code\modules\vtr13\connections\subsystems\SScharacter_connection_procs\db_operations\get_character_connections.dm"
 #include "code\modules\vtr13\connections\subsystems\SScharacter_connection_procs\db_operations\get_connection_by_group_id.dm"
 #include "code\modules\vtr13\connections\subsystems\SScharacter_connection_procs\db_operations\insert_character_connection.dm"
+#include "code\modules\vtr13\connections\subsystems\SScharacter_connection_procs\db_operations\update_retire_all_character_connections.dm"
 #include "code\modules\vtr13\connections\subsystems\SScharacter_connection_procs\db_operations\update_retire_connection_by_group_id.dm"
 #include "code\modules\vtr13\connections\subsystems\SScharacter_connection_procs\db_operations\blood_bonds\check_character_level_three_blood_bonds.dm"
 #include "code\modules\vtr13\connections\subsystems\SScharacter_connection_procs\db_operations\blood_bonds\check_mutual_blood_bonds_made_this_round.dm"

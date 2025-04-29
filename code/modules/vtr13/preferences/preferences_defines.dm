@@ -177,7 +177,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/resolve = 1
 
 //===========GHOUL/VAMPS===========
-	var/datum/vampireclane/clane = new /datum/vampireclane/vtr/daeva()
+	var/datum/vampireclane/clane
 	var/humanity = 7
 	var/diablerist = 0
 	var/masquerade = 5
@@ -191,8 +191,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	//-----------NEW ITEMS-----------
 	var/vamp_rank = VAMP_RANK_GHOUL		//rank in vampire society
 	var/actual_age = 30					//true age of character
-	var/datum/vampireclane/regent_clan = new /datum/vampireclane/vtr/daeva()
-	var/datum/vtr_faction/vamp_faction = new /datum/vtr_faction/vamp_faction/unaligned()
+	var/datum/vampireclane/regent_clan
+	var/datum/vtr_faction/vamp_faction
 
 //===========WEREWOLVES===========
 	var/datum/auspice/auspice = new /datum/auspice/ahroun()

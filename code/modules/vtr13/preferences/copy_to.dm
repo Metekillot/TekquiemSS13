@@ -58,7 +58,7 @@
 	if(pref_species.name == "Vampire")
 		var/datum/vampireclane/CLN = new clane.type()
 		character.clane = CLN
-		character.regent_clan = null
+		qdel(character.regent_clan)
 		character.clane.current_accessory = clane_accessory
 		character.maxbloodpool = 9 + character.blood_potency
 		if(character.clane.name == "Revenant")
@@ -78,7 +78,7 @@
 		character.blood_potency = 5
 	else
 		character.clane = null
-		character.regent_clan = null
+		qdel(character.regent_clan)
 		character.bloodpool = character.maxbloodpool
 
 	character.masquerade = masquerade

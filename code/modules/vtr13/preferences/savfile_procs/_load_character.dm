@@ -175,8 +175,8 @@
 
 	var/regent_clan_id
 	READ_FILE(S["regent_clan"], regent_clan_id)
-	if(clane_id)
-		var/newtype = GLOB.clanes_list[clane_id]
+	if(regent_clan_id)
+		var/newtype = GLOB.clanes_list[regent_clan_id]
 		if(newtype)
 			regent_clan = new newtype
 	

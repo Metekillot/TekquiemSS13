@@ -11,15 +11,30 @@
 		var/discipline_level = discipline_levels[i]
 		var/is_clan_discipline = FALSE
 		
-		if(clane.clane_disciplines)
+		if(clane?.clane_disciplines)
 			is_clan_discipline = clane.clane_disciplines.Find(discipline.type)
 		
-		if(!is_clan_discipline && regent_clan.clane_disciplines)
+		if(!is_clan_discipline && regent_clan?.clane_disciplines)
 			is_clan_discipline = regent_clan.clane_disciplines.Find(discipline.type)
 		
 		discipline_count += 1
 
-		dat += "<b>[discipline.name]</b>: [discipline_level > 0 ? "●" : "○"][discipline_level > 1 ? "●" : "○"][discipline_level > 2 ? "●" : "○"][discipline_level > 3 ? "●" : "○"][discipline_level > 4 ? "●" : "○"]([discipline_level])"
+		dat += "<b>[discipline.name]</b>: "
+		switch(discipline_level)
+			if(0)
+				dat+= "○○○○○"
+			if(1)
+				dat+= "●○○○○"
+			if(2)
+				dat+= "●●○○○"
+			if(3)
+				dat+= "●●●○○"
+			if(4)
+				dat+= "●●●●○"
+			if(5)
+				dat+= "●●●●●"
+		
+		dat+="([discipline_level])"
 		if(discipline_dots && (discipline_level != 5))
 			dat += " <a href='byond://?_src_=prefs;preference=discipline;task=input;upgradediscipline=[i]'>+</a>"
 		if(discipline_level)

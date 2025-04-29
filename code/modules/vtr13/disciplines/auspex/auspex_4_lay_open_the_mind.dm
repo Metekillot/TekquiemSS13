@@ -54,14 +54,16 @@
 
 /datum/discipline_power/vtr/auspex/lay_open_the_mind/proc/ask_connections(mob/living/carbon/human/target, var/question)
 	if(!target.mind)
-		to_chat(owner, span_notice("[target] any strong connections..."))
-	var/bonds_spoken = FALSE
-	for(var/datum/character_connection/connection in target.mind.character_connections)
-		if(!bonds_spoken)
-			bonds_spoken = TRUE
-		to_chat(owner, span_notice("You hear [target]'s voice: \"[connection.connection_desc]\""))
-	if(!bonds_spoken)
+		to_chat(owner, span_notice("[target] has no interesting connections..."))
+		return
+
+	if(!length(target.mind.character_connections))
 		to_chat(owner, span_notice("[target] has no strong connections..."))
+		return
+
+	for(var/datum/character_connection/connection in target.mind.character_connections)
+		to_chat(owner, span_notice("You hear [target]'s voice: \"[connection.connection_desc]\""))
+	
 
 /datum/discipline_power/vtr/auspex/lay_open_the_mind/proc/ask_prompt(mob/living/carbon/human/target, var/question)
 	if(!target.mind)

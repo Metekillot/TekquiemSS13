@@ -19,9 +19,21 @@
 		SSoverwatch.record_action(usr, "[ckey] has ended their [connection.group_type] connection of group_id [connection.group_id]. (They were a [connection.member_type])")
 		break
 	qdel(existing_connections)
+
 	if(!found_existing_connection)
 		return FALSE
 
-	
 	SScharacter_connection.update_retire_character_connection_by_group_id(deleting_group_id)
+
+	
+	if(isliving(target))
+		var/mob/living/living_target = target
+		if(living_target.mind)
+			living_target.mind.character_connections = SScharacter_connection.get_character_connections(ckey, character_name)
+	
+	if(istype(target, /client))
+		var/client/target_client = target
+		if(target_client?.prefs)
+			target_client.prefs.character_connections = SScharacter_connection.get_character_connections(ckey, character_name)
+	
 	return TRUE

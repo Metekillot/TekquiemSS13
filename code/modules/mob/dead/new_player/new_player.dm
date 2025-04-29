@@ -541,8 +541,7 @@
 	new_character = .
 	if(transfer_after)
 		transfer_character()
-//	if(client.prefs.archtype)
-//		H.__archetype = new client.prefs.archtype
+
 /mob/dead/new_player/proc/transfer_character()
 	. = new_character
 	if(.)
@@ -558,7 +557,8 @@
 						if(S.tribe == H.auspice.tribe)
 							H.forceMove(get_turf(S))
 				GLOB.fucking_joined |= H.client.prefs.real_name
-				H.mind.character_connections = SScharacter_connection.get_character_connections(H.ckey, H.true_real_name)
+		if(new_character.mind)
+			new_character.mind.character_connections = SScharacter_connection.get_character_connections(ckey, new_character.true_real_name)
 		new_character = null
 		qdel(src)
 

@@ -52,7 +52,7 @@
 	WRITE_FILE(S["resolve"], resolve)
 
 //===========GHOUL/VAMPS===========
-	WRITE_FILE(S["clan"], clane.name)
+	WRITE_FILE(S["clan"], clane?.name)
 
 	WRITE_FILE(S["humanity"], humanity)
 	WRITE_FILE(S["diablerist"], diablerist)
@@ -65,8 +65,8 @@
 	//-----------NEW ITEMS-----------
 	WRITE_FILE(S["vamp_rank"], vamp_rank)
 	WRITE_FILE(S["actual_age"], actual_age)
-	WRITE_FILE(S["regent_clan"], regent_clan.name)
-	WRITE_FILE(S["vamp_faction"], vamp_faction.name)
+	WRITE_FILE(S["regent_clan"], regent_clan?.name)
+	WRITE_FILE(S["vamp_faction"], vamp_faction?.name)
 
 //===========WEREWOLVES===========
 	WRITE_FILE(S["auspice"], auspice.name)

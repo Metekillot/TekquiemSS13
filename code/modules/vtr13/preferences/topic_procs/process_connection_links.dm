@@ -5,6 +5,7 @@
 
 	switch(href_list["task"])
 		if("delete_connection")
-			if(SScharacter_connection.retire_connection(user, parent.ckey, src.real_name, text2num(href_list["connection_id"])))
-				character_connections = SScharacter_connection.get_character_connections(parent.ckey, src.real_name)
+			SScharacter_connection.retire_connection(user, parent.ckey, src.real_name, text2num(href_list["connection_id"]))
+			character_connections = SScharacter_connection.get_character_connections(parent.ckey, src.real_name)
+
 	return TRUE

@@ -104,11 +104,15 @@
 				break
 	
 	if(is_own_memories && owner.mind)
-		owner.mind.character_connections = SScharacter_connection.get_character_connections(owner.ckey, owner.true_real_name)
-		if(length(owner.mind.character_connections))
+		if(length(owner.mind.character_connections) || length(owner.mind.fake_character_connections))
 			dat += " "
 			dat += "<b>I've made some connections in the city:</b>"
+		if(length(owner.mind.character_connections))
 			for(var/datum/character_connection/connection in owner.mind.character_connections)
+				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(source)];delete_connection=[connection.group_id]'>Delete</a>"
+			dat += " "
+		if(length(owner.mind.fake_character_connections))
+			for(var/datum/character_connection/connection in owner.mind.fake_character_connections)
 				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(source)];delete_connection=[connection.group_id]'>Delete</a>"
 			dat += " "
 	

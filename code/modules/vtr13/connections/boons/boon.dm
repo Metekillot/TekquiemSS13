@@ -19,7 +19,7 @@
 
 /datum/character_connection_type/boon/attempt_connection_add(mob/living/granter, mob/living/recipient)
 	var/granter_phrase = "I owe [recipient.true_real_name] a [src.name]."
-	var/recipient_phrase = "[recipient.true_real_name] owes you a [src.name]."
+	var/recipient_phrase = "[granter.true_real_name] owes you a [src.name]."
 
 	var/group_id = SScharacter_connection.insert_character_connection(granter, src.name, MEMBER_TYPE_BOON_GRANTER, granter_phrase)
 
