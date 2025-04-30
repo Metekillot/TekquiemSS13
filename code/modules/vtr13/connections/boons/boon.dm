@@ -2,7 +2,7 @@
 	name = CONNECTION_BOON
 	alert_type = /atom/movable/screen/alert/connection/trivial_boon
 
-/datum/character_connection_type/boon/add_connection(mob/living/granter, mob/living/recipient)
+/datum/character_connection_type/boon/add_connection(mob/living/recipient, mob/living/granter)
 
 	if(!iskindred(granter))
 		to_chat(recipient, span_notice("[granter] cannot give you a boon if they aren't a vampire."))
@@ -17,7 +17,7 @@
 	return attempt_connection_add(arglist(args))
 
 
-/datum/character_connection_type/boon/attempt_connection_add(mob/living/granter, mob/living/recipient)
+/datum/character_connection_type/boon/attempt_connection_add(mob/living/recipient, mob/living/granter)
 	var/granter_phrase = "I owe [recipient.true_real_name] a [src.name]."
 	var/recipient_phrase = "[granter.true_real_name] owes you a [src.name]."
 

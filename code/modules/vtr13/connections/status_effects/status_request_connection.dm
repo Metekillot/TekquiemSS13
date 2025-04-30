@@ -41,6 +41,9 @@
 	else
 		new_owner.visible_message(span_notice("[new_owner] is requesting \a [connection_type_name]!"), span_notice("You request \a [connection_type_name]."))
 
+
+	src.is_offering = is_offering
+
 	if(!possible_takers) // no one around
 		qdel(src)
 		return
@@ -97,14 +100,14 @@
 	return owner.CanReach(taker) && !IS_DEAD_OR_INCAP(taker)
 
 //run an attempt to forge a connection. If successful, return true. 
-/datum/status_effect/request_connection/proc/trigger_establish_connection(mob/living/endorser)
+/datum/status_effect/request_connection/proc/trigger_establish_connection(mob/living/responder)
 	if(!is_offering)
-		if(connection_type.add_connection(owner, endorser))
+		if(connection_type.add_connection(owner, responder))
 			qdel(src)
 		else
-			remove_candidate(endorser)
+			remove_candidate(responder)
 	else
-		if(connection_type.add_connection(endorser, owner))
+		if(connection_type.add_connection(responder, owner))
 			qdel(src)
 		else
-			remove_candidate(endorser)
+			remove_candidate(responder)

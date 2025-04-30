@@ -23,6 +23,9 @@
 		if(endorsement_type.minimum_candidate_rank > human_src.vamp_rank)
 			continue
 		connection_selection += key
+
+	if(human_src.vamp_rank >= VAMP_RANK_ANCILLAE && human_src?.vtr_faction?.name == "Invictus")
+		connection_selection += CONNECTION_ENDORSEMENT_FACTION_LEADER_SENESCHAL
 	
 	if(!length(connection_selection))
 		return
