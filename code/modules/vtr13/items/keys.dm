@@ -21,6 +21,11 @@
 	accesslocks = list()
 	color = "#00ffff"
 
+/obj/item/vamp/keys/barista
+	name = "Barista's keys"
+	accesslocks = list()
+	color = "#00ffff"
+
 /obj/item/vamp/keys/page
 	name = "Page's Keys"
 	accesslocks = list()

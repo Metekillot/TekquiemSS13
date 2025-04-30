@@ -477,6 +477,13 @@
 	},
 /turf/open/floor/carpet/black,
 /area/vtm/vtr/masquerade/interior/floor_two/northwest/apartment)
+"awU" = (
+/obj/effect/turf_decal/arrows/white{
+	dir = 1;
+	pixel_y = 7
+	},
+/turf/open/floor/plating/concrete,
+/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "awV" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/gibspawner/human,
@@ -671,7 +678,7 @@
 "aHi" = (
 /obj/structure/chair/sofa/right,
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "aHr" = (
 /obj/structure/chair/wood/wings,
 /turf/open/floor/sepia,
@@ -1292,6 +1299,12 @@
 /obj/effect/landmark/npcactivity,
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
+"bmp" = (
+/obj/machinery/light/small{
+	dir = 1
+	},
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "bmz" = (
 /mob/living/carbon/human/npc/bouncer/boris,
 /turf/open/floor/plating/concrete,
@@ -1491,7 +1504,7 @@
 "bvb" = (
 /obj/structure/table/wood,
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "bvo" = (
 /obj/structure/railing{
 	dir = 8
@@ -2070,6 +2083,11 @@
 	},
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/exterior/floor_two/southeast/southeast_long_beach/inaccessible)
+"bWA" = (
+/obj/structure/vampdoor/glass,
+/obj/effect/turf_decal/siding/wideplating/dark,
+/turf/open/floor/plating/sidewalk,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "bWY" = (
 /obj/machinery/light{
 	pixel_y = 32
@@ -2673,7 +2691,7 @@
 "ctX" = (
 /obj/structure/vampdoor/wood,
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "cut" = (
 /obj/structure/chair/comfy/black,
 /obj/effect/landmark/start/vtr/representative,
@@ -3609,7 +3627,7 @@
 	pixel_y = 8
 	},
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "dqn" = (
 /obj/structure/closet/cabinet,
 /obj/item/storage/box/lights/mixed,
@@ -4032,7 +4050,7 @@
 "dGU" = (
 /obj/structure/closet/crate/large,
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "dJp" = (
 /obj/effect/decal/wallpaper,
 /obj/structure/noticeboard{
@@ -5156,7 +5174,7 @@
 "eIa" = (
 /obj/structure/chair/wood/wings,
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "eId" = (
 /obj/effect/turf_decal/siding/wideplating/dark{
 	dir = 5
@@ -5463,6 +5481,11 @@
 	},
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/library)
+"eUv" = (
+/obj/structure/table/wood,
+/obj/machinery/mineral/equipment_vendor/fastfood/donuts,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "eVa" = (
 /obj/effect/decal/shadow,
 /turf/open/floor/plating/vampocean,
@@ -5848,7 +5871,7 @@
 	pixel_y = 0
 	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "fki" = (
 /obj/effect/decal/stock{
 	dir = 1;
@@ -6558,7 +6581,7 @@
 "fQO" = (
 /obj/structure/cratestack,
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "fQR" = (
 /obj/effect/turf_decal/siding/wideplating{
 	dir = 1;
@@ -7819,7 +7842,7 @@
 	pixel_y = 6
 	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "gZu" = (
 /obj/structure/railing{
 	dir = 8
@@ -8056,7 +8079,7 @@
 "hhF" = (
 /obj/structure/chair/sofa/left,
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "hhI" = (
 /obj/structure/chair/office/light{
 	dir = 8
@@ -9149,7 +9172,7 @@
 "ilm" = (
 /obj/effect/decal/wallpaper/red,
 /turf/closed/wall/vampwall/painted,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "ilG" = (
 /obj/structure/fluff/hedge{
 	pixel_x = 0;
@@ -9849,7 +9872,7 @@
 	pixel_y = 8
 	},
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "iUD" = (
 /obj/machinery/light{
 	pixel_y = 32
@@ -9978,7 +10001,7 @@
 	pixel_x = 0
 	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "iZo" = (
 /obj/structure/chair/wood{
 	dir = 8
@@ -10170,6 +10193,9 @@
 /obj/structure/curtain/cloth,
 /turf/closed/wall/vampwall/old/low/window/reinforced,
 /area/vtm/vtr/masquerade/interior/ground_floor/southwest/clinic)
+"jhV" = (
+/turf/closed/wall/vampwall/painted,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "jig" = (
 /turf/closed/wall/vampwall/painted,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach/inaccessible)
@@ -11275,7 +11301,7 @@
 "kmV" = (
 /obj/structure/window/reinforced/tinted,
 /turf/closed/wall/vampwall/painted/low/window,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "kmX" = (
 /obj/structure/table/wood,
 /turf/open/floor/plating/vampcanalplating,
@@ -12504,15 +12530,6 @@
 /obj/structure/column,
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/church)
-"lAY" = (
-/obj/effect/turf_decal/arrows/white{
-	dir = 4
-	},
-/obj/effect/turf_decal/arrows/white{
-	dir = 4
-	},
-/turf/open/floor/plating/concrete,
-/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "lBY" = (
 /obj/structure/chair/wood{
 	dir = 1
@@ -13526,7 +13543,7 @@
 	pixel_y = 10
 	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "mve" = (
 /obj/machinery/light/prince{
 	pixel_y = 32
@@ -13695,12 +13712,6 @@
 	},
 /turf/open/floor/plating/sidewalk,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
-"mDr" = (
-/obj/effect/turf_decal/arrows/white{
-	dir = 1
-	},
-/turf/open/floor/plating/concrete,
-/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "mDI" = (
 /obj/structure/chair/wood{
 	dir = 4;
@@ -13734,12 +13745,6 @@
 	},
 /turf/open/floor/carpet/black,
 /area/vtm/vtr/masquerade/interior/floor_two/central/library)
-"mEN" = (
-/obj/structure/sign/barsign{
-	icon_state = "the_lightbulb"
-	},
-/turf/closed/wall/vampwall/painted,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
 "mEX" = (
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/masquerade/exterior/floor_three/northwest/northwest_long_beach/inaccessible)
@@ -14523,6 +14528,9 @@
 /obj/structure/flora/ausbushes/sparsegrass,
 /turf/open/floor/plating/vampgrass,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southwest/southwest_long_beach)
+"noK" = (
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "npj" = (
 /obj/structure/table/wood/poker,
 /turf/open/floor/carpet/royalblack,
@@ -14631,12 +14639,6 @@
 	},
 /turf/open/floor/plating/vampwood,
 /area/vtm/vtr/masquerade/interior/ground_floor/southwest/warehouse)
-"ntn" = (
-/obj/effect/turf_decal/arrows/white{
-	dir = 4
-	},
-/turf/open/floor/plating/concrete,
-/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "ntF" = (
 /turf/open/openspace,
 /area/vtm/vtr/elysium/interior/floor_three/central/castle_elysium)
@@ -15085,7 +15087,7 @@
 "nMt" = (
 /obj/manholeup,
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "nMC" = (
 /obj/structure/sink{
 	pixel_y = 16
@@ -16718,8 +16720,11 @@
 /area/vtm/vtr/masquerade/exterior/ground_floor/northeast/northeast_long_beach)
 "pdy" = (
 /obj/machinery/jukebox,
+/obj/machinery/light/small{
+	pixel_y = 32
+	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "pdG" = (
 /obj/structure/fireplace,
 /turf/open/floor/plating/parquetry,
@@ -17377,7 +17382,7 @@
 	pixel_y = 4
 	},
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "pJQ" = (
 /obj/structure/table/wood,
 /turf/open/floor/carpet,
@@ -17872,7 +17877,7 @@
 	pixel_x = 6
 	},
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "qhj" = (
 /obj/effect/turf_decal/siding/wideplating/end{
 	dir = 4
@@ -18049,12 +18054,11 @@
 /turf/open/floor/plating/parquetry,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/hotel)
 "qqa" = (
-/obj/structure/table/wood,
-/obj/machinery/light/small{
-	pixel_y = 32
+/obj/structure/sign/barsign{
+	icon_state = "the_lightbulb"
 	},
-/turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/turf/closed/wall/vampwall/painted,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "qql" = (
 /turf/open/water,
 /area/vtm/vtr/masquerade/interior/ground_floor/southeast/queen_lilith)
@@ -18217,6 +18221,12 @@
 /obj/structure/safe,
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/elysium/interior/basement/central/castle_elysium)
+"qyp" = (
+/obj/effect/turf_decal/arrows/white{
+	dir = 4
+	},
+/turf/open/floor/plating/concrete,
+/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "qyN" = (
 /turf/closed/wall/vampwall/redbrick,
 /area/vtm/vtr/masquerade/interior/floor_two/northwest/police_station)
@@ -19185,7 +19195,7 @@
 	dir = 1
 	},
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "rrS" = (
 /obj/effect/decal/bordur{
 	dir = 5
@@ -19504,13 +19514,12 @@
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/basement/central/library_basement)
 "rEF" = (
-/obj/structure/table/wood,
-/obj/machinery/chem_dispenser/drinks/fullupgrade{
-	pixel_x = 0;
-	pixel_y = 13
+/obj/machinery/light/small{
+	dir = 4;
+	pixel_x = -16
 	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "rEK" = (
 /turf/closed/wall/vampwall/bar,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/laundromat)
@@ -20418,6 +20427,10 @@
 	},
 /turf/open/floor/plating/sidewalk,
 /area/vtm/vtr/masquerade/exterior/ground_floor/park/shoreline_park)
+"ssf" = (
+/obj/effect/landmark/start/vtr/barista,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "ssg" = (
 /obj/machinery/light{
 	dir = 1
@@ -21228,6 +21241,15 @@
 	},
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/ground_floor/southeast/queen_lilith)
+"sWO" = (
+/obj/effect/turf_decal/arrows/white{
+	dir = 4
+	},
+/obj/effect/turf_decal/arrows/white{
+	dir = 4
+	},
+/turf/open/floor/plating/concrete,
+/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "sWR" = (
 /obj/structure/lamppost/sidewalk,
 /turf/open/floor/plating/vampgrass,
@@ -21700,6 +21722,11 @@
 	},
 /turf/open/floor/plating/concrete,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/nightclub)
+"tuU" = (
+/obj/structure/table/wood,
+/obj/machinery/chem_dispenser/drinks/coffee_master,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "tvh" = (
 /obj/effect/decal/bordur{
 	dir = 4
@@ -22862,6 +22889,13 @@
 /obj/structure/vampdoor/simple,
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/library)
+"usE" = (
+/obj/machinery/light/small{
+	dir = 8;
+	pixel_x = 16
+	},
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "utw" = (
 /obj/structure/bed,
 /obj/item/bedsheet/rd,
@@ -24092,7 +24126,7 @@
 /area/vtm/vtr/masquerade/interior/floor_two/northwest/police_station)
 "vvl" = (
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "vvw" = (
 /obj/effect/decal/bordur{
 	dir = 5
@@ -24257,10 +24291,6 @@
 /obj/effect/landmark/npcwall,
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
-"vCI" = (
-/obj/structure/fence,
-/turf/open/floor/plating/concrete,
-/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "vCN" = (
 /obj/structure/bookcase/random,
 /turf/open/floor/plating/parquetry/old,
@@ -25076,6 +25106,10 @@
 	},
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/floor_two/northwest/apartment)
+"wtz" = (
+/obj/structure/window,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "wub" = (
 /obj/structure/safe{
 	pixel_x = 7;
@@ -25439,7 +25473,7 @@
 	pixel_y = 4
 	},
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "wGy" = (
 /obj/structure/chair/office/light{
 	dir = 4
@@ -25761,7 +25795,7 @@
 "wUR" = (
 /obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor,
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "wUS" = (
 /obj/structure/chair/wood/wings{
 	dir = 8
@@ -25990,7 +26024,7 @@
 "xdz" = (
 /obj/machinery/vending/coffee,
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "xdE" = (
 /obj/structure/railing{
 	dir = 4
@@ -26139,7 +26173,7 @@
 	dir = 1
 	},
 /turf/open/floor/carpet/black,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "xlf" = (
 /obj/structure/railing{
 	dir = 4
@@ -26376,7 +26410,7 @@
 	},
 /obj/structure/vampdoor/wood,
 /turf/open/floor/plating/concrete,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "xvI" = (
 /obj/effect/decal/bordur,
 /obj/effect/landmark/npcactivity,
@@ -26399,6 +26433,15 @@
 "xyn" = (
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/elysium/interior/ground_floor/central/castle_elysium)
+"xyo" = (
+/obj/effect/turf_decal/arrows/white{
+	dir = 4
+	},
+/obj/machinery/light/small{
+	pixel_y = 32
+	},
+/turf/open/floor/plating/concrete,
+/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "xyJ" = (
 /obj/effect/decal/bordur{
 	dir = 8
@@ -26456,12 +26499,12 @@
 	pixel_x = 7;
 	pixel_y = 13
 	},
-/obj/item/reagent_containers/glass/rag{
-	pixel_x = -7;
-	pixel_y = 16
+/obj/item/storage/box/drinkingglasses{
+	pixel_x = -8;
+	pixel_y = 13
 	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "xCF" = (
 /obj/structure/water_source{
 	pixel_x = 0;
@@ -26734,7 +26777,7 @@
 	pixel_y = 0
 	},
 /turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "xQw" = (
 /obj/structure/curtain/cloth,
 /turf/closed/wall/vampwall/junk/low/window,
@@ -26871,6 +26914,14 @@
 	},
 /turf/open/water/la_river,
 /area/vtm/vtr/masquerade/exterior/basement/river/la_river)
+"xWC" = (
+/obj/structure/table/wood,
+/obj/item/reagent_containers/glass/rag{
+	pixel_x = -7;
+	pixel_y = 16
+	},
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "xWD" = (
 /obj/structure/sink{
 	pixel_y = 16
@@ -26958,6 +27009,10 @@
 	},
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northeast/northeast_long_beach)
+"yaG" = (
+/obj/structure/fence,
+/turf/open/floor/plating/concrete,
+/area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "yaT" = (
 /obj/structure/table/wood,
 /turf/closed/wall/vampwall/old/low,
@@ -101835,7 +101890,7 @@ tUG
 eTa
 eTa
 rHX
-ntn
+qyp
 bpU
 ddi
 sft
@@ -102080,19 +102135,19 @@ rYY
 vlj
 dju
 cGo
-odA
-odA
-odA
-odA
-odA
-odA
-odA
-odA
-odA
-odA
-odA
-odA
-ntn
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+xyo
 bpU
 ddi
 vIr
@@ -102340,16 +102395,16 @@ tIm
 kmV
 dGU
 nMt
-riu
+noK
 ilm
 gZt
-riu
+wtz
 xQv
-riu
+rEF
 vvl
 pJK
-odA
-ntn
+jhV
+qyp
 bpU
 ddi
 lfe
@@ -102596,17 +102651,17 @@ wYC
 kyl
 kmV
 xdz
-riu
-riu
+noK
+noK
 ilm
 xAQ
-riu
+wtz
 fjR
-riu
+noK
 eIa
 dqm
-mEN
-ntn
+qqa
+qyp
 bpU
 ddi
 rfr
@@ -102853,17 +102908,17 @@ wYC
 wYC
 kmV
 wUR
-riu
-riu
+noK
+noK
 ilm
-qqa
-riu
-bvb
-riu
+xWC
+noK
+eUv
+noK
 vvl
 wGw
-odA
-ntn
+jhV
+qyp
 bpU
 ddi
 oWd
@@ -103108,19 +103163,19 @@ rYY
 vlj
 wYC
 wYC
-ioI
-riu
-riu
-riu
+bWA
+noK
+noK
+noK
 ilm
-rEF
-riu
+tuU
+ssf
 bvb
-riu
-riu
-riu
-odA
-lAY
+noK
+noK
+noK
+jhV
+sWO
 bpU
 ddi
 oBK
@@ -103366,18 +103421,18 @@ vlj
 wYC
 wYC
 kmV
-dGU
-riu
-riu
+noK
+noK
+noK
 ilm
 pdy
-riu
+noK
 iYP
-riu
-riu
-riu
+noK
+noK
+noK
 xvD
-mDr
+awU
 bpU
 ddi
 oWd
@@ -103623,17 +103678,17 @@ vlj
 wYC
 kyl
 kmV
-riu
+noK
 fQO
-riu
+noK
 ctX
-riu
-riu
-riu
-riu
-riu
-riu
-odA
+noK
+noK
+noK
+noK
+noK
+bmp
+jhV
 hrV
 bpU
 ddi
@@ -103880,19 +103935,19 @@ vlj
 mDk
 eVZ
 kmV
-riu
-riu
+noK
+noK
 dGU
 ilm
 muV
-riu
-riu
-riu
+noK
+noK
+noK
 vvl
 pJK
-odA
+jhV
 pjD
-vCI
+yaG
 ddi
 xqI
 xZS
@@ -104136,18 +104191,18 @@ rYY
 vlj
 xtu
 jwV
-odA
-odA
-odA
-odA
+jhV
+jhV
+jhV
+jhV
 ilm
 aHi
 iTZ
 rrQ
-riu
+noK
 eIa
 dqm
-odA
+jhV
 lnE
 isH
 iuL
@@ -104401,10 +104456,10 @@ ilm
 hhF
 qhb
 xkd
-riu
+usE
 vvl
 wGw
-odA
+jhV
 nyV
 bpU
 cLR
@@ -104654,14 +104709,14 @@ rIR
 sqI
 sqI
 sqI
-odA
-odA
-odA
-odA
-odA
-odA
-odA
-odA
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
+jhV
 dSq
 bpU
 cLR

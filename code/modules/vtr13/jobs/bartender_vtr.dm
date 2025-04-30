@@ -7,7 +7,7 @@
 	supervisors = "the Keeper of Elysium"
 	selection_color = "#00ffff"
 
-	outfit = /datum/outfit/job/keeper
+	outfit = /datum/outfit/job/bartender_vtr
 
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
@@ -24,7 +24,7 @@
 
 /datum/outfit/job/bartender_vtr
 	name = "Bartender"
-	jobtype = /datum/job/vamp/vtr/keeper
+	jobtype = /datum/job/vamp/vtr/bartender_vtr
 
 	id = /obj/item/card/id/bartender_vtr
 	uniform = /obj/item/clothing/under/vampire/emo

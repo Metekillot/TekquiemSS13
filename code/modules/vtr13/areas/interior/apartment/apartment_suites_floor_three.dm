@@ -2,7 +2,7 @@
 	name = "Apartment Suite 31"
 	icon_state = "anarch"
 	ambiance_message = "elge might draw from her own experience n write a blurb abt this pie hole"
-	id = "apartment"
+	id = "apartment_3"
 	is_loot_dwelling = TRUE
 	area_tag = "a-s-31"
 
@@ -10,7 +10,7 @@
 	name = "Apartment Suite 32"
 	icon_state = "anarch"
 	ambiance_message = "elge might draw from her own experience n write a blurb abt this pie hole"
-	id = "apartment"
+	id = "apartment_3"
 	is_loot_dwelling = TRUE
 	area_tag = "a-s-32"
 
@@ -18,7 +18,7 @@
 	name = "Apartment Suite 33"
 	icon_state = "anarch"
 	ambiance_message = "elge might draw from her own experience n write a blurb abt this pie hole"
-	id = "apartment"
+	id = "apartment_3"
 	is_loot_dwelling = TRUE
 	area_tag = "a-s-33"
 
@@ -26,6 +26,6 @@
 	name = "Apartment Suite 34"
 	icon_state = "anarch"
 	ambiance_message = "elge might draw from her own experience n write a blurb abt this pie hole"
-	id = "apartment"
+	id = "apartment_3"
 	is_loot_dwelling = TRUE
 	area_tag = "a-s-34"

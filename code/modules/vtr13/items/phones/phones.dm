@@ -79,6 +79,7 @@
 	var/datum/phonecontact/page/page = new()
 	contacts += page
 
+
 /obj/item/vamp/phone/bartender_vtr
 	exchange_num = 664
 
@@ -87,6 +88,8 @@
 	var/datum/phonecontact/keeper/club_owner/club_owner = new()
 	contacts += club_owner
 
+/obj/item/vamp/phone/barista
+	exchange_num = 151
 
 /obj/item/vamp/phone/representative
 	exchange_num = 666
