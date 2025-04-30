@@ -4,7 +4,8 @@
 		our_group_id = get_next_character_connection_group_id()
 
 
-	if(!group_type || !member_type || !connection_desc)
+	if(!group_type || !member_type || !connection_desc || !our_group_id)
+		log_admin("Can't add connection because something is missing")
 		return
 
 	var/datum/db_query/query = SSdbcore.NewQuery({"
@@ -19,7 +20,9 @@
 			"connection_desc" = connection_desc, 
 			"round_id" = GLOB.round_id)
 	)
-	query.Execute()
+	if(!query.Execute())
+		qdel(query)
+		return null
+
 	qdel(query)
-	
 	return our_group_id

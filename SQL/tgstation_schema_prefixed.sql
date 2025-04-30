@@ -717,9 +717,9 @@ DROP TABLE IF EXISTS `SS13_character_connection`;
 CREATE TABLE `character_connection` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL, --unique to an individual connection between two or more players
-  `group_type` varchar(32) NOT NULL, --the kind of connection: boon, blood bond, etc.
-  `member_type` varchar(32) NOT NULL, --the character's position in this connection: Thrall, Domitor, Debtor, etc.
-  `player_ckey` varchar(32) NOT NULL, 
+  `group_type` varchar(128) NOT NULL, --the kind of connection: boon, blood bond, etc.
+  `member_type` varchar(128) NOT NULL, --the character's position in this connection: Thrall, Domitor, Debtor, etc.
+  `player_ckey` varchar(128) NOT NULL, 
   `character_name` varchar(128) NOT NULL, 
   `connection_desc` text, --Description of how connection shows to the player, eg "You are blood bonded to Y"
   `round_id_established` int(11) NOT NULL, --the Round ID this connection was made.

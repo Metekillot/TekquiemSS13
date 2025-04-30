@@ -35,10 +35,10 @@
 	return attempt_connection_add(arglist(args))
 
 
-/datum/character_connection_type/endorsement/attempt_connection_add(mob/living/candidate, mob/living/carbon/human/endorser, faction)
+/datum/character_connection_type/endorsement/attempt_connection_add(mob/living/candidate, mob/living/carbon/human/endorser)
 
-	var/candidate_phrase = "[endorser.true_real_name] endorses me for the position of [desired_position]."
-	var/endorser_phrase = "I endorse [candidate.true_real_name] for the position of [desired_position]."
+	var/candidate_phrase = "[endorser.true_real_name][endorser_must_be_faction_head?", as a faction head,":""] endorses me for the position of [desired_position]."
+	var/endorser_phrase = "I endorse [candidate.true_real_name][endorser_must_be_faction_head?", as a faction head,":""] for the position of [desired_position]."
 
 	var/group_id = SScharacter_connection.insert_character_connection(candidate, src.name, MEMBER_TYPE_CANDIDATE, candidate_phrase)
 

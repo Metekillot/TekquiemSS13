@@ -28,3 +28,10 @@ Version 5.18, February 2025, by Helihat aka Hex37
 ALTER TABLE `character_connection` ADD COLUMN `hidden` BOOLEAN NOT NULL DEFAULT FALSE;
 ```
 -----------------------------------------------------
+
+Version 5.19, February 2025, by Helihat aka Hex37
+ALTER TABLE `character_connection` CHANGE `group_type` `group_type` varchar(128) NOT NULL;
+ALTER TABLE `character_connection` CHANGE `member_type` `member_type` varchar(128) NOT NULL;
+ALTER TABLE `character_connection` CHANGE `player_ckey` `player_ckey` varchar(128) NOT NULL;
+
+-----------------------------------------------------
