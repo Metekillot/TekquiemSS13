@@ -17,11 +17,4 @@
 		MEMBER_TYPE_SIRE,
 		sire_description,
 		new_group_id)
-
-	if(childe.mind)
-		childe.mind.character_connections = SScharacter_connection.get_character_connections(childe.ckey, childe.true_real_name)
-
-	if(sire.mind)
-		sire.mind.character_connections = SScharacter_connection.get_character_connections(sire.ckey, sire.true_real_name)
-	
 	return TRUE

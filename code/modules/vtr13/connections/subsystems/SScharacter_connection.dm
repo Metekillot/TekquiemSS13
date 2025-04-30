@@ -51,11 +51,20 @@ SUBSYSTEM_DEF(character_connection)
 /datum/controller/subsystem/character_connection/proc/get_character_connection_type(name)
 	return connection_type_list[name]
 
-/datum/controller/subsystem/character_connection/proc/add_connection(connection_type_name, ...)
+/datum/controller/subsystem/character_connection/proc/add_connection(connection_type_name, mob/living/player_a, mob/living/player_b, ...)
 	var/datum/character_connection_type/connection_type = get_character_connection_type(connection_type_name)
 	if(!connection_type)
 		CRASH("Tried to create a connection of type [connection_type_name] and it wasn't loaded!")
-	return connection_type.attempt_connection_add(arglist(args.Copy(2)))
+	
+	var/response = connection_type.attempt_connection_add(arglist(args.Copy(2)))
+	
+	if(player_a.mind)
+		player_a.mind.character_connections = SScharacter_connection.get_character_connections(player_a.ckey, player_a.true_real_name)
+
+	if(player_b.mind)
+		player_b.mind.character_connections = SScharacter_connection.get_character_connections(player_b.ckey, player_b.true_real_name)
+
+	return response
 
 
 /datum/controller/subsystem/character_connection/proc/setup_character_connection_verbs(mob/living/carbon/human/new_player)

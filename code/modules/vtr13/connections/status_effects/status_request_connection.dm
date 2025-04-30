@@ -102,12 +102,12 @@
 //run an attempt to forge a connection. If successful, return true. 
 /datum/status_effect/request_connection/proc/trigger_establish_connection(mob/living/responder)
 	if(!is_offering)
-		if(connection_type.add_connection(owner, responder))
+		if(SScharacter_connection.add_connection(connection_type.name, owner, responder))
 			qdel(src)
 		else
 			remove_candidate(responder)
 	else
-		if(connection_type.add_connection(responder, owner))
+		if(SScharacter_connection.add_connection(connection_type.name, responder, owner))
 			qdel(src)
 		else
 			remove_candidate(responder)

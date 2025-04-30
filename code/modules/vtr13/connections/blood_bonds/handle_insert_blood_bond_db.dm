@@ -19,6 +19,3 @@
 		MEMBER_TYPE_DOMITOR,
 		domitor_description,
 		new_group_id)
-	
-	thrall.mind.character_connections = SScharacter_connection.get_character_connections(thrall.ckey, thrall.true_real_name)
-	domitor.mind.character_connections = SScharacter_connection.get_character_connections(domitor.ckey, domitor.true_real_name)
