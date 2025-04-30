@@ -297,6 +297,8 @@
 			if (tgui_alert(user, "Are you sure you want to reset your character? This will retire your character connections!", "Confirmation", list("Yes", "No")) != "Yes")
 				return
 			reset_character()
+			SScharacter_connection.update_retire_all_character_connections(parent, parent.ckey, real_name)
+			character_connections = null
 
 		if("changeslot")
 			if(!load_character(text2num(href_list["num"])))

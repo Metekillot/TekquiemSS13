@@ -7,11 +7,11 @@
 			player_ckey = :ckey AND \
 			character_name = :char_name AND \
 			member_type = :mem_type AND \
-			group_type IN ( :grp_type_1 , :grp_type_2 , :grp_type_3, :grp_type_4 ) AND \
+			group_type IN ( :grp_type_1 , :grp_type_2 , :grp_type_3, :grp_type_4, :grp_type_5, :grp_type_6, :grp_type_7, :grp_type_8 ) AND \
 			date_ended IS NULL AND \
 			date_established >= DATE_SUB(NOW(), INTERVAL :stale_offset MONTH) \
 		GROUP BY \
-			group_type HAVING COUNT(*) \
+			group_type \
 		ORDER BY group_type desc",
 		list(
 			"ckey" = ckey,
@@ -22,9 +22,9 @@
 			"grp_type_3" = CONNECTION_ENDORSEMENT_BISHOP,
 			"grp_type_4" = CONNECTION_ENDORSEMENT_REPRESENTATIVE,
 			"grp_type_5" = CONNECTION_ENDORSEMENT_SHERIFF,
-			"grp_type_5" = CONNECTION_ENDORSEMENT_KEEPER,
-			"grp_type_5" = CONNECTION_ENDORSEMENT_SENESCHAL,
-			"grp_type_5" = CONNECTION_ENDORSEMENT_FACTION_LEADER_SENESCHAL,
+			"grp_type_6" = CONNECTION_ENDORSEMENT_KEEPER,
+			"grp_type_7" = CONNECTION_ENDORSEMENT_SENESCHAL,
+			"grp_type_8" = CONNECTION_ENDORSEMENT_FACTION_LEADER_SENESCHAL,
 			"stale_offset" = ENDORSEMENT_STALE_OFFSET_MONTHS
 		)
 	)

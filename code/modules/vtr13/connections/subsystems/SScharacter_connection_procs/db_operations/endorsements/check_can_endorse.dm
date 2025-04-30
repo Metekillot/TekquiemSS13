@@ -67,7 +67,7 @@
 
 	
 	if(endorser_must_be_faction_head)
-		if(!SScharacter_connection.check_is_eligible_for_faction_head(endorser))
+		if(!SScharacter_connection.check_is_eligible_for_faction_head(endorser.ckey, endorser.true_real_name))
 			to_chat(endorser, span_notice("Your character cannot give this endorsement without being an eligible faction head for the Lancea et Sanctum, Ordo Dracul, Circle of the Crone, or the Carthian Movement."))
 			to_chat(candidate, span_notice("[endorser] cannot endorse you."))
 			return FALSE

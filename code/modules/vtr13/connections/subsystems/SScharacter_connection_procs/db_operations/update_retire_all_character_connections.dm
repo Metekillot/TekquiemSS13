@@ -24,6 +24,6 @@
 	query_update.Execute()
 	qdel(query_update)
 	
-	to_chat(target, span_notice("All active endorsements have been retired."))
+	to_chat(target, span_notice("All connections have been retired."))
 
 

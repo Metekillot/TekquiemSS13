@@ -1,10 +1,6 @@
 /datum/preferences/proc/reset_character()
 
 //===========GENERAL===========
-	if(parent.ckey)
-		SScharacter_connection.update_retire_all_character_connections(parent, parent.ckey, real_name)
-		character_connections = null
-
 	real_name = random_unique_name(gender)
 	ooc_notes = null
 	flavor_text = null
