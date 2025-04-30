@@ -13,10 +13,8 @@
 	wits = 1
 	resolve = 1
 
-	qdel(clane)
 	clane = null
-
-	humanity = clane.start_humanity
+	humanity = 7
 	diablerist = 0
 	masquerade = initial(masquerade)
 	random_species()

@@ -21,6 +21,7 @@
 	if(pref_species.id == "kindred")
 		qdel(clane)
 		clane = new /datum/vampireclane/vtr/daeva()
+
 		discipline_types = list()
 		discipline_levels = list()
 		for (var/disc_type in clane.clane_disciplines)

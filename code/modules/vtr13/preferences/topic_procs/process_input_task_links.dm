@@ -313,8 +313,6 @@
 					discipline_types.Add(disc_type)
 					discipline_levels.Add(0)
 
-				humanity = clane.start_humanity
-
 				if(length(clane.accessories))
 					if("none" in clane.accessories)
 						clane_accessory = "none"
