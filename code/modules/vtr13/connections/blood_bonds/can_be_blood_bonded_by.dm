@@ -1,7 +1,6 @@
 /datum/character_connection_type/blood_bond/proc/can_be_blood_bonded_by(mob/living/thrall, mob/living/domitor)
 
 	if(!thrall || !thrall.mind)
-		to_chat(domitor, "<span class='warning'>Your thrall is mindless???????????</span>")
 		return FALSE
 
 	if(!domitor || !domitor.mind)

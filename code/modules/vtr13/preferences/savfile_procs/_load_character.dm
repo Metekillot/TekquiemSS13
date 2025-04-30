@@ -184,7 +184,7 @@
 	READ_FILE(S["vamp_faction"], vampire_faction_id)
 	if(vampire_faction_id)
 		var/faction = GLOB.factions_list[vampire_faction_id]
-		if(faction && istype(faction, /datum/vtr_faction/vamp_faction))
+		if(faction)
 			vamp_faction = new faction()
 		else
 			vamp_faction = new /datum/vtr_faction/vamp_faction/unaligned()
