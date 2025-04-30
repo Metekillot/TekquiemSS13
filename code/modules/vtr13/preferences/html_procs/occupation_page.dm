@@ -2,6 +2,7 @@
 	//limit - The amount of jobs allowed per column. Defaults to 17 to make it look nice.
 	//widthPerColumn - Screen's width for every column.
 	//height - Screen's height.
+	character_connections = SScharacter_connection.get_character_connections(parent.ckey, src.real_name)
 	var/limit = 9
 	var/widthPerColumn = 295
 	

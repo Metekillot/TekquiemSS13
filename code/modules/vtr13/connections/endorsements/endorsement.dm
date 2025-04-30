@@ -23,7 +23,7 @@
 		return FALSE
 
 	//your char must be in the same faction to endorse
-	if(required_faction && endorser.vtr_faction.name != required_faction)
+	if(required_faction && endorser?.vtr_faction?.name != required_faction)
 		to_chat(endorser, span_notice("You must be a part of [required_faction] to endorse [candidate] for [desired_position]."))
 		to_chat(candidate, span_notice("[endorser] must be a part of [required_faction] to endorse you for [desired_position]."))
 		return FALSE

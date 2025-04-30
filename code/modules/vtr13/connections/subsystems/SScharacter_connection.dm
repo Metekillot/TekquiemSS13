@@ -56,7 +56,7 @@ SUBSYSTEM_DEF(character_connection)
 	if(!connection_type)
 		CRASH("Tried to create a connection of type [connection_type_name] and it wasn't loaded!")
 	
-	var/response = connection_type.attempt_connection_add(arglist(args.Copy(2)))
+	var/response = connection_type.add_connection(arglist(args.Copy(2)))
 	
 	if(player_a.mind)
 		player_a.mind.character_connections = SScharacter_connection.get_character_connections(player_a.ckey, player_a.true_real_name)
