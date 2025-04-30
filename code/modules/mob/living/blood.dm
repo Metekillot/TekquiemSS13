@@ -251,7 +251,7 @@
 		blood_data["donor"] = src
 		blood_data["viruses"] = list()
 
-		blood_data["generation"] = src.generation
+		blood_data["potency"] = src.blood_potency
 		if(istype(src, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = src
 			if(H.clane)

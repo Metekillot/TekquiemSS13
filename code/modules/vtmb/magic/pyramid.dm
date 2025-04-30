@@ -118,7 +118,7 @@
 	BG.melee_damage_lower = BG.melee_damage_lower+activator_bonus
 	BG.melee_damage_upper = BG.melee_damage_upper+activator_bonus
 	playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
-	if(length(H.beastmaster) > 3+H.mentality)
+	if(length(H.beastmaster) > 3+H.wits)
 		var/mob/living/simple_animal/hostile/beastmaster/B = pick(H.beastmaster)
 		B.death()
 	qdel(src)
@@ -401,7 +401,6 @@
 				H.clane.on_gain(H)
 				H.clane.post_gain(H)
 				H.forceMove(get_turf(src))
-				H.create_disciplines(FALSE, H.clane.clane_disciplines)
 				if(!H.key)
 					var/list/mob/dead/observer/candidates = pollCandidatesForMob("Do you wish to play as Sentient Gargoyle?", null, null, null, 50, src)
 					for(var/mob/dead/observer/G in GLOB.player_list)
@@ -456,7 +455,7 @@
 					if(B.type == /datum/reagent/blood)
 						var/blood_data = B.data
 						if(blood_data)
-							var/generation = blood_data["generation"]
+							var/generation = blood_data["blood_potency"]
 							var/clan = blood_data["clan"]
 
 							var/message = generate_message(generation, clan)

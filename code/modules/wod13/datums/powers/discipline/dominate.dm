@@ -50,15 +50,15 @@
 	range = 7
 
 /datum/discipline_power/dominate/command/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 
 	if(ishuman(target))
 		var/mob/living/carbon/human/human_target = target
 		if(human_target.clane?.name == "Gargoyle")
 			return TRUE
 
-	if((theirpower >= mypower) || (owner.generation > target.generation))
+	if((theirpower >= mypower))
 		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
 		return FALSE
 
@@ -89,15 +89,15 @@
 	range = 7
 
 /datum/discipline_power/dominate/mesmerize/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 
 	if(ishuman(target))
 		var/mob/living/carbon/human/human_target = target
 		if(human_target.clane?.name == "Gargoyle")
 			return TRUE
 
-	if((theirpower >= mypower) || (owner.generation > target.generation))
+	if((theirpower >= mypower))
 		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
 		return FALSE
 
@@ -130,15 +130,15 @@
 	range = 7
 
 /datum/discipline_power/dominate/the_forgetful_mind/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 
 	if(ishuman(target))
 		var/mob/living/carbon/human/human_target = target
 		if(human_target.clane?.name == "Gargoyle")
 			return TRUE
 
-	if((theirpower >= mypower) || (owner.generation > target.generation))
+	if((theirpower >= mypower))
 		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
 		return FALSE
 
@@ -170,15 +170,15 @@
 	range = 7
 
 /datum/discipline_power/dominate/conditioning/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 
 	if(ishuman(target))
 		var/mob/living/carbon/human/human_target = target
 		if(human_target.clane?.name == "Gargoyle")
 			return TRUE
 
-	if((theirpower >= mypower) || (owner.generation > target.generation))
+	if((theirpower >= mypower))
 		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
 		return FALSE
 
@@ -209,15 +209,15 @@
 	range = 7
 
 /datum/discipline_power/dominate/possession/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 
 	if(ishuman(target))
 		var/mob/living/carbon/human/human_target = target
 		if(human_target.clane?.name == "Gargoyle")
 			return TRUE
 
-	if((theirpower >= mypower) || (owner.generation > target.generation))
+	if((theirpower >= mypower))
 		to_chat(owner, span_warning("[target]'s mind is too powerful to dominate!"))
 		return FALSE
 

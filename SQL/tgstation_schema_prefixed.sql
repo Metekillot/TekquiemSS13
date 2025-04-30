@@ -708,6 +708,30 @@ CREATE TABLE `SS13_whitelist` (
     PRIMARY KEY (`id`)
 );
 
+--
+-- Table structure for table `character_connection`
+--
+DROP TABLE IF EXISTS `SS13_character_connection`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `character_connection` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL, --unique to an individual connection between two or more players
+  `group_type` varchar(128) NOT NULL, --the kind of connection: boon, blood bond, etc.
+  `member_type` varchar(128) NOT NULL, --the character's position in this connection: Thrall, Domitor, Debtor, etc.
+  `player_ckey` varchar(128) NOT NULL, 
+  `character_name` varchar(128) NOT NULL, 
+  `connection_desc` text, --Description of how connection shows to the player, eg "You are blood bonded to Y"
+  `round_id_established` int(11) NOT NULL, --the Round ID this connection was made.
+  `date_established` datetime NOT NULL, --Date this part of the connection was made
+  `date_ended` datetime, --Date that this participant had their end of the connection nullified
+  `hidden` BOOLEAN NOT NULL DEFAULT FALSE, --Whether or not the connection is major enough to show on the database
+  PRIMARY KEY (`id`),
+  INDEX `group_id_index` (`group_id`),
+  INDEX `player_ckey_index` (`player_ckey`),
+  INDEX `character_name_index` (`character_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

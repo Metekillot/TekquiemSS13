@@ -71,7 +71,7 @@
 		return
 	if(is_locked() || key_locked)
 		if(uses_pincode_lock)
-			ui_interact()
+			ui_interact(user)
 		if(door_user.a_intent != INTENT_HARM)
 			to_chat(user, "<span class='warning'>[src] is locked!</span>")
 		return

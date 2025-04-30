@@ -462,7 +462,7 @@
 	if(prob(50))
 		icon_state = "asphalt[rand(1, 3)]"
 		update_icon()
-	if(prob(25))
+	if(prob(5))
 		new /obj/effect/decal/asphalt(src)
 	set_light(1, 0.5, "#a4b7ff")
 
@@ -1122,24 +1122,6 @@
 			if(V.upper)
 				icon_state = "snow[rand(1, 14)]"
 
-/turf/open/floor/plating/vampocean
-	gender = PLURAL
-	name = "water"
-	icon = 'code/modules/wod13/tiles.dmi'
-	icon_state = "ocean"
-	flags_1 = NONE
-	attachment_holes = FALSE
-	bullet_bounce_sound = null
-	footstep = FOOTSTEP_WATER
-	barefootstep = FOOTSTEP_WATER
-	clawfootstep = FOOTSTEP_HARD_CLAW
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-	density = TRUE
-
-/turf/open/floor/plating/vampocean/Initialize()
-	..()
-	set_light(1, 0.5, "#a4b7ff")
-
 /turf/open/floor/plating/vampacid
 	gender = PLURAL
 	name = "goop"
@@ -1173,13 +1155,6 @@
 
 
 
-/obj/effect/decal/coastline
-	name = "water"
-	icon = 'code/modules/wod13/tiles.dmi'
-	icon_state = "coastline"
-
-/obj/effect/decal/coastline/corner
-	icon_state = "coastline_corner"
 
 /obj/effect/decal/shadow
 	name = "shadow"

@@ -75,7 +75,10 @@
 
 	output += "</center>"
 
-	var/datum/browser/popup = new(src, "playersetup", "<div align='center'>[make_font_cool("NEW PLAYER")]</div>", 250, 265)
+	
+
+
+	var/datum/browser/popup = new(src, "playersetup", "<div align='center'>[make_font_cool("NEW PLAYER")]</div>", 265, 280)
 	popup.set_window_options("can_close=0")
 	popup.set_content(output.Join())
 	popup.open(FALSE)
@@ -298,17 +301,25 @@
 			return "[jobtitle] is already filled to capacity."
 		if(JOB_UNAVAILABLE_GENERATION)
 			return "Your generation is too young for [jobtitle]."
+		if(JOB_UNAVAILABLE_FACTION)
+			return "You are in the wrong faction for [jobtitle]."
 		if(JOB_UNAVAILABLE_SPECIES)
 			return "Your species cannot be [jobtitle]."
+		if(JOB_UNAVAILABLE_ENDORSEMENT)
+			return "You need more endorsments for [jobtitle]."
 		if(JOB_UNAVAILABLE_SPECIES_LIMITED)
 			return "Your species has a limit on how many can be [jobtitle]."
 	return "Error: Unknown job availability."
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
 	var/bypass = FALSE
+
+	/*
 	if (check_rights_for(client, R_ADMIN))
 		bypass = TRUE
-	var/datum/job/job = SSjob.GetJob(rank)
+	*/
+
+	var/datum/job/vamp/vtr/job = SSjob.GetJob(rank)
 	if(!job)
 		return JOB_UNAVAILABLE_GENERIC
 	if (job.title == "Citizen")
@@ -325,20 +336,18 @@
 		return JOB_UNAVAILABLE_PLAYTIME
 	if(latejoin && !job.special_check_latejoin(client))
 		return JOB_UNAVAILABLE_GENERIC
-	if((client.prefs.generation > job.minimal_generation) && !bypass)
+	if((client.prefs.pref_species.name == "Vampire" || client.prefs.pref_species.name == "Ghoul") && job.minimum_vamp_rank && (client.prefs.vamp_rank < job.minimum_vamp_rank) && !bypass)
 		return JOB_UNAVAILABLE_GENERATION
+	if((client.prefs.pref_species.name == "Vampire" || client.prefs.pref_species.name == "Ghoul") && GLOB.vampire_factions_list.Find(job.exp_type_department) && client.prefs.vamp_faction?.name != job.exp_type_department)
+		return JOB_UNAVAILABLE_FACTION
 	if((client.prefs.masquerade < job.minimal_masquerade) && !bypass)
 		return JOB_UNAVAILABLE_MASQUERADE
 	if(!job.allowed_species.Find(client.prefs.pref_species.name) && !bypass)
 		return JOB_UNAVAILABLE_SPECIES
-	if ((job.species_slots[client.prefs.pref_species.name] == 0) && !bypass)
+	if(job.endorsement_required && (!client.prefs.endorsement_roles_eligable || !client.prefs.endorsement_roles_eligable.Find(job.title)) && !bypass)
+		return JOB_UNAVAILABLE_ENDORSEMENT
+	if((job.species_slots[client.prefs.pref_species.name] == 0) && !bypass)
 		return JOB_UNAVAILABLE_SPECIES_LIMITED
-	if((client.prefs.pref_species.name == "Vampire") && !bypass)
-		if(client.prefs.clane)
-			for(var/i in job.allowed_bloodlines)
-				if(i == client.prefs.clane.name)
-					return JOB_AVAILABLE
-			return JOB_UNAVAILABLE_CLAN
 	return JOB_AVAILABLE
 
 /mob/dead/new_player/proc/AttemptLateSpawn(rank)
@@ -464,14 +473,19 @@
 		var/list/dept_dat = list()
 		for(var/job in GLOB.position_categories[category]["jobs"])
 			var/datum/job/job_datum = SSjob.name_occupations[job]
+			// TFN EDIT START: alt job titles
 			if(job_datum && IsJobUnavailable(job_datum.title, TRUE) == JOB_AVAILABLE)
+				var/altjobline = ""
 				var/command_bold = ""
+				if(client && client.prefs && client.prefs.alt_titles_preferences[job_datum.title])//tegu edit - alt job titles
+					altjobline = "(as [client.prefs.alt_titles_preferences[job_datum.title]])"//tegu edit - alt job titles
 				if(job in GLOB.leader_positions)
 					command_bold = " command"
 				if(job_datum in SSjob.prioritized_jobs)
-					dept_dat += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'><span class='priority'>[job_datum.title] ([job_datum.current_positions])</span></a>"
+					dept_dat += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'><span class='priority'>[job_datum.title] [altjobline] ([job_datum.current_positions])</span></a>"
 				else
-					dept_dat += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'>[job_datum.title] ([job_datum.current_positions])</a>"
+					dept_dat += "<a class='job[command_bold]' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'>[job_datum.title] [altjobline] ([job_datum.current_positions])</a>"
+			// TFN EDIT END
 		if(!dept_dat.len)
 			dept_dat += "<span class='nopositions'>No positions open.</span>"
 		dat += jointext(dept_dat, "")
@@ -527,8 +541,7 @@
 	new_character = .
 	if(transfer_after)
 		transfer_character()
-//	if(client.prefs.archtype)
-//		H.__archetype = new client.prefs.archtype
+
 /mob/dead/new_player/proc/transfer_character()
 	. = new_character
 	if(.)
@@ -538,35 +551,14 @@
 			var/mob/living/carbon/human/H = new_character
 			if(H.client)
 				H.true_real_name = H.client.prefs.real_name
-				if(H.age < 16)
-					H.add_quirk(/datum/quirk/freerunning)
-					H.add_quirk(/datum/quirk/light_step)
-					H.add_quirk(/datum/quirk/skittish)
-					H.add_quirk(/datum/quirk/pushover)
 				H.create_disciplines()
 				if(isgarou(H))
 					for(var/obj/structure/werewolf_totem/S in GLOB.totems)
 						if(S.tribe == H.auspice.tribe)
 							H.forceMove(get_turf(S))
-				if(iscathayan(H))
-					if(H.mind)
-						H.mind.dharma = new H.client.prefs.dharma_type()
-						H.mind.dharma.level = H.client.prefs.dharma_level
-						H.mind.dharma.Po = H.client.prefs.po_type
-						H.mind.dharma.Hun = H.client.prefs.hun
-						H.mind.dharma.on_gain(H)
-//						H.mind.dharma.initial_skin_color = H.skin_tone
 				GLOB.fucking_joined |= H.client.prefs.real_name
-				var/datum/relationship/R = new ()
-				H.Myself = R
-				R.owner = H
-				R.need_friend = H.client.prefs.friend
-				R.need_enemy = H.client.prefs.enemy
-				R.need_lover = H.client.prefs.lover
-				R.friend_text = H.client.prefs.friend_text
-				R.enemy_text = H.client.prefs.enemy_text
-				R.lover_text = H.client.prefs.lover_text
-				R.publish()
+		if(new_character.mind)
+			new_character.mind.character_connections = SScharacter_connection.get_character_connections(ckey, new_character.true_real_name)
 		new_character = null
 		qdel(src)
 

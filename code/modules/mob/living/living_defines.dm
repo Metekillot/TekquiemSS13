@@ -177,20 +177,22 @@
 	var/total_cleaned = 0
 
 	var/physique = 1
-	var/dexterity = 1
-	var/social = 1
-	var/mentality = 1
-	var/lockpicking = 0
-	var/athletics = 0
-	var/blood = 1
+	var/stamina = 1
+	var/charisma = 1
+	var/composure = 1
+	var/wits = 1
+	var/resolve = 1
 
 	var/additional_physique = 0
-	var/additional_dexterity = 0
-	var/additional_mentality = 0
-	var/additional_social = 0
-	var/additional_blood = 0
-	var/additional_lockpicking = 0
-	var/additional_athletics = 0
+	var/additional_stamina = 0
+	var/additional_charisma = 0
+	var/additional_composure = 0
+	var/additional_wits = 0
+	var/additional_resolve = 0
+
+	var/blood_potency = 0
+	var/additional_blood_potency = 0
+
 	var/more_companions = 0
 	var/melee_professional = FALSE
 
@@ -256,7 +258,6 @@
 
 	var/bloodpool = 5
 	var/maxbloodpool = 5
-	var/generation = 13
 	var/humanity = 7
 	var/masquerade = 5
 	var/last_masquerade_violation = 0
@@ -289,3 +290,6 @@
 
 	//If we are currently leaning on something, and what that object is
 	var/atom/leaned_object
+
+	//Target is under the effects of dominate
+	var/is_dominated = FALSE
