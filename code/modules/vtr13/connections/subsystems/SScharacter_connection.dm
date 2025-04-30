@@ -54,7 +54,7 @@ SUBSYSTEM_DEF(character_connection)
 /datum/controller/subsystem/character_connection/proc/add_connection(connection_type_name, ...)
 	var/datum/character_connection_type/connection_type = get_character_connection_type(connection_type_name)
 	if(!connection_type)
-		return null
+		CRASH("Tried to create a connection of type [connection_type_name] and it wasn't loaded!")
 	return connection_type.attempt_connection_add(arglist(args.Copy(2)))
 
 

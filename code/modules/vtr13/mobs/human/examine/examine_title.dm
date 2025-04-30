@@ -59,7 +59,7 @@
 
 	var/cleanliness_note = ""
 	if(get_total_composure() == 1)
-		cleanliness_note = " [p_they(TRUE)] seem disheveled."
+		cleanliness_note = " [p_they(TRUE)] seems disheveled."
 	if(get_total_composure() == 5)
 		cleanliness_note = " [p_they(TRUE)] [p_are()] immaculately well put-together."
 

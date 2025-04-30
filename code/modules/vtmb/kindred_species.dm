@@ -243,9 +243,6 @@
 					if(H?.clane?.name == "Revenant")
 						to_chat(owner, "<span class='notice'>[BLOODBONDED] does not respond to your vitae.</span>")
 						return
-					if(BLOODBONDED.has_status_effect(STATUS_EFFECT_INLOVE))
-						BLOODBONDED.remove_status_effect(STATUS_EFFECT_INLOVE)
-					BLOODBONDED.apply_status_effect(STATUS_EFFECT_INLOVE, owner)
 					to_chat(owner, "<span class='notice'>You successfuly fed [BLOODBONDED] with vitae.</span>")
 					to_chat(BLOODBONDED, "<span class='userlove'>You feel good when you drink this <b>BLOOD</b>...</span>")
 
@@ -253,12 +250,16 @@
 					if(H.reagents)
 						if(length(H.reagents.reagent_list))
 							H.reagents.trans_to(BLOODBONDED, min(10, H.reagents.total_volume), transfered_by = H, methods = VAMPIRE)
+					
 					BLOODBONDED.adjustBruteLoss(-25, TRUE)
+					
 					if(length(BLOODBONDED.all_wounds))
 						var/datum/wound/W = pick(BLOODBONDED.all_wounds)
 						W.remove_wound()
+					
 					BLOODBONDED.adjustFireLoss(-25, TRUE)
 					BLOODBONDED.bloodpool = min(BLOODBONDED.maxbloodpool, BLOODBONDED.bloodpool+2)
+					
 					giving = FALSE
 					if (iskindred(BLOODBONDED))
 						var/datum/species/kindred/species = BLOODBONDED.dna.species

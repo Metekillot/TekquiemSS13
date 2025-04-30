@@ -36,6 +36,7 @@
 		qdel(query)
 		return FALSE
 	if(query.NextRow())
+		qdel(query)
 		return TRUE
 	qdel(query)
 	return FALSE

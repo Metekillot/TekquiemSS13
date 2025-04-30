@@ -45,9 +45,9 @@
 		WHERE \
 			player_ckey = :ckey AND \
 			character_name = :char_name AND \
-			member_type = :mem_type \
-			group_type = :grp_type \
-			date_ended IS NULL AND \
+			member_type = :mem_type AND \
+			group_type = :grp_type AND \
+			date_ended IS NULL \
 		LIMIT 1",
 		list(
 			"ckey" = endorser.ckey,
