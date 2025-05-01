@@ -27,7 +27,8 @@
 	dat += "<i>[ooc_notes]</i><br>"
 	dat += "<b>Blood Bonding Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_bond_pref;task=input'>[ooc_bond_pref]</a><BR><BR>"
 	dat += "<b>Ghouling Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_ghoul_pref;task=input'>[ooc_ghoul_pref]</a><BR><BR>"
-	dat += "<b>Embracing Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_embrace_pref;task=input'>[ooc_embrace_pref]</a>"
+	dat += "<b>Embracing Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_embrace_pref;task=input'>[ooc_embrace_pref]</a><BR><BR>"
+	dat += "<b>Blood Bonding Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_escalation_pref;task=input'>[ooc_escalation_pref]</a>"
 	dat += "</td></tr></table>"
 	
 	dat += "<h2>[make_font_cool("SPECIES")]</h2>"

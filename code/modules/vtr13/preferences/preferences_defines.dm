@@ -171,6 +171,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/ooc_bond_pref = "Ask"
 	var/ooc_ghoul_pref = "Ask"
 	var/ooc_embrace_pref = "Ask"
+	var/ooc_escalation_pref = "No"
 	var/ooc_link = ""
 
 	//STATS

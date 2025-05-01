@@ -23,19 +23,20 @@
 	var/ooc_embrace_pref = ""
 	var/ooc_ghoul_pref = ""
 	var/ooc_bond_pref = ""
+	var/ooc_escalation_pref = ""
 
 	if(ishuman(holder))
 		var/mob/living/carbon/human/holder_human = holder
 		var/mob/living/carbon/human/disguise_human = disguise
 
 		ooc_notes = holder_human.ooc_notes
-		
 
 		if(holder_human?.client?.prefs)
 			ooc_embrace_pref = holder_human.client.prefs.ooc_embrace_pref
 			ooc_ghoul_pref = holder_human.client.prefs.ooc_ghoul_pref
 			ooc_bond_pref = holder_human.client.prefs.ooc_bond_pref
 			ooc_link = holder_human.client.prefs.ooc_link
+			ooc_escalation_pref = holder_human.client.prefs.ooc_escalation_pref
 
 		//Check if the mob is obscured, then continue to headshot
 		if(!holder_human.dna && !isobserver(user))
@@ -55,4 +56,5 @@
 	data["ooc_embrace_pref"] = ooc_embrace_pref
 	data["ooc_ghoul_pref"] = ooc_ghoul_pref
 	data["ooc_bond_pref"] = ooc_bond_pref
+	data["ooc_escalation_pref"] = ooc_escalation_pref
 	return data

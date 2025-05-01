@@ -605,6 +605,10 @@
 			var/new_ooc_pref = tgui_alert(user, "Select an OOC Preference for being Embraced:", "Consent Preferences", list("Yes", "Ask", "No"))
 			if(new_ooc_pref != ooc_embrace_pref)
 				ooc_embrace_pref = new_ooc_pref
+		if ("ooc_escalation_pref")
+			var/new_ooc_pref = tgui_alert(user, "Select an OOC Preference for being Unprovoked Violence:", "Consent Preferences", list("Yes", "Ask", "No"))
+			if(new_ooc_pref != ooc_escalation_pref)
+				ooc_escalation_pref = new_ooc_pref
 		if("ooc_link")
 			to_chat(user, span_notice("Please use a character page that you have actually made and reflects the character."))
 			var/new_ooc_link = tgui_input_text(user, "Input the headshot link (https, hosts: carrd, toyhou.se, refsheet, f-list, google-docs, neocities):", "Character Link", ooc_link, encode = FALSE)
