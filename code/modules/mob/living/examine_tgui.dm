@@ -19,12 +19,23 @@
 	var/name = ""
 	var/headshot = ""
 	var/ooc_notes = ""
+	var/ooc_link = ""
+	var/ooc_ghoul_pref = ""
+	var/ooc_embrace_pref = ""
+	var/ooc_bond_pref = ""
 
 	if(ishuman(holder))
 		var/mob/living/carbon/human/holder_human = holder
 		obscured = (holder_human.wear_mask && (holder_human.wear_mask.flags_inv & HIDEFACE)) && (holder_human.head && (holder_human.head.flags_inv & HIDEFACE))
 
 		ooc_notes = holder_human.ooc_notes
+		
+		if(holder_human?.client?.prefs)
+			ooc_embrace_pref = holder_human.client.prefs.ooc_embrace_pref
+			ooc_ghoul_pref = holder_human.client.prefs.ooc_ghoul_pref
+			ooc_bond_pref = holder_human.client.prefs.ooc_bond_pref
+			ooc_link = holder_human.client.prefs.ooc_link
+
 		//Check if the mob is obscured, then continue to headshot
 		if((obscured || !holder_human.dna) && !isobserver(user))
 			flavor_text = "Obscured"
@@ -39,4 +50,8 @@
 	data["flavor_text"] = flavor_text
 	data["ooc_notes"] = ooc_notes
 	data["headshot"] = headshot
+	data["ooc_link"] = ooc_link
+	data["ooc_embrace_pref"] = ooc_embrace_pref
+	data["ooc_ghoul_pref"] = ooc_ghoul_pref
+	data["ooc_bond_pref"] = ooc_bond_pref
 	return data

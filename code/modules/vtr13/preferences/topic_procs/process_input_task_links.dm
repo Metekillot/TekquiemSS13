@@ -54,7 +54,6 @@
 				SScharacter_connection.retire_all_endorsements(user.ckey, real_name)
 				real_name = new_name
 
-
 		if("age")
 			var/new_age = tgui_input_number(user, "Choose your character's biological age:\n([AGE_MIN]-[AGE_MAX])", "Character Preference", age, AGE_MAX, AGE_MIN, round_value = TRUE)
 			if(new_age)
@@ -594,4 +593,31 @@
 			var/desiredlength = input(user, "Choose the max character length of shown Runechat messages. Valid range is 1 to [CHAT_MESSAGE_MAX_LENGTH] (default: [initial(max_chat_length)]))", "Character Preference", max_chat_length)  as null|num
 			if (!isnull(desiredlength))
 				max_chat_length = clamp(desiredlength, 1, CHAT_MESSAGE_MAX_LENGTH)
+		if ("ooc_bond_pref")
+			var/new_ooc_pref = tgui_alert(user, "Select an OOC Preference for being Blood Bonded:", "Consent Preferences", list("Yes", "Ask", "No"))
+			if(new_ooc_pref != ooc_bond_pref)
+				ooc_bond_pref = new_ooc_pref
+		if ("ooc_ghoul_pref")
+			var/new_ooc_pref = tgui_alert(user, "Select an OOC Preference for being Ghouled:", "Consent Preferences", list("Yes", "Ask", "No"))
+			if(new_ooc_pref != ooc_ghoul_pref)
+				ooc_ghoul_pref = new_ooc_pref
+		if ("ooc_embrace_pref")
+			var/new_ooc_pref = tgui_alert(user, "Select an OOC Preference for being Embraced:", "Consent Preferences", list("Yes", "Ask", "No"))
+			if(new_ooc_pref != ooc_embrace_pref)
+				ooc_embrace_pref = new_ooc_pref
+		if("ooc_link")
+			to_chat(user, span_notice("Please use a character page that you have actually made and reflects the character."))
+			var/new_ooc_link = tgui_input_text(user, "Input the headshot link (https, hosts: carrd, toyhou.se, refsheet, f-list, google-docs, neocities):", "Character Link", ooc_link, encode = FALSE)
+			if(isnull(new_ooc_link))
+				ooc_link = ""
+				return TRUE
+			if(!length(new_ooc_link))
+				ooc_link = ""
+				return TRUE
+			if(!valid_character_link(user, new_ooc_link))
+				ooc_link = ""
+				return TRUE
+			ooc_link = new_ooc_link
+			to_chat(user, span_notice("Successfully updated ooc link!"))
+			log_game("[key_name(user)] has set their ooc link to '[ooc_link]'.")
 	return TRUE

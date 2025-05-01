@@ -1,7 +1,7 @@
 /datum/preferences/proc/character_settings_page(mob/user, list/dat)
 	if(reason_of_death != "None")
 		dat += "<center><b>Last death</b>: [reason_of_death]</center>"
-
+	dat += "<table width='100%'><tr><td width='50%' valign='top'>"
 	dat += "<h2>[make_font_cool("IDENTITY")]</h2>"
 
 	if(is_banned_from(user.ckey, "Appearance"))
@@ -13,19 +13,26 @@
 
 	if(!(AGENDER in pref_species.species_traits))
 		dat += "<b>Gender:</b> <a href='byond://?_src_=prefs;preference=gender'>[gender == MALE ? "Male" : gender == FEMALE ? "Female" : "Other"]</a>"
-	
 	dat += "<BR><b>Body Type:</b> <a href='byond://?_src_=prefs;preference=body_type'>[body_type == MALE ? "Masculine" : body_type == FEMALE ? "Feminine" : "Other"]</a>"
-
-	
 	if(pref_species.name == "Vampire" || pref_species.name == "Ghoul" || pref_species.name == "Werewolf")
 		dat += "<br><b>Biological Age:</b> <a href='byond://?_src_=prefs;preference=age;task=input'>[age]</a>"
 		dat += "<br><b>Actual Age:</b> <a href='byond://?_src_=prefs;preference=actual_age;task=input'>[max(age, actual_age)]</a>"
 	else
 		dat += "<br><b>Age:</b> <a href='byond://?_src_=prefs;preference=age;task=input'>[age]</a>"
+	dat += "<br>"
+	dat += "<a href='byond://?_src_=prefs;preference=all;task=random'>Random Body</a>"
+	dat += "</td><td width='50%' valign='top'>"
+	dat += "<h2>[make_font_cool("OOC NOTES")]</h2>"
+	dat += "<b>OOC Notes:</b> <a href='byond://?_src_=prefs;preference=ooc_notes;task=input'>Change</a><BR>"
+	dat += "<i>[ooc_notes]</i><br>"
+	dat += "<b>Blood Bonding Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_bond_pref;task=input'>[ooc_bond_pref]</a><BR><BR>"
+	dat += "<b>Ghouling Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_ghoul_pref;task=input'>[ooc_ghoul_pref]</a><BR><BR>"
+	dat += "<b>Embracing Preference:</b> <a href='byond://?_src_=prefs;preference=ooc_embrace_pref;task=input'>[ooc_embrace_pref]</a>"
+	dat += "</td></tr></table>"
+	
+	dat += "<h2>[make_font_cool("SPECIES")]</h2>"
 
-	dat += "<h2>[make_font_cool("BODY")]</h2>"
-
-	dat += "<a href='byond://?_src_=prefs;preference=all;task=random'>Random Body</A><BR>"
+	
 
 	dat += "<b>Species:</b><BR><a href='?_src_=prefs;preference=species;task=input'>[pref_species.name]</a><BR>"
 	if(pref_species.name == "Vampire")
@@ -169,16 +176,15 @@
 	dat += "<h2>[make_font_cool("DESCRIPTION")]</h2>"
 	dat += "<b>Flavor Text: </b><a href='byond://?_src_=prefs;preference=flavor_text;task=input'>Change</a><BR>"
 	if(length(flavor_text) <= 110)
-		dat += "<i>[flavor_text]</i><br>"
+		dat += "<i>[flavor_text]</i><br><br>"
 	else
-		dat += "<i>[copytext_char(flavor_text, 1, 110)]...</i> <a href='byond://?_src_=prefs;preference=view_flavortext;task=input'>Show More</a><br>"
-	dat += "<b>OOC Notes:</b> <a href='byond://?_src_=prefs;preference=ooc_notes;task=input'>Change</a><BR>"
-	
-	dat += "<i>[ooc_notes]</i><br>"
-
+		dat += "<i>[copytext_char(flavor_text, 1, 110)]...</i> <a href='byond://?_src_=prefs;preference=view_flavortext;task=input'>Show More</a><br><br>"
 	dat += "<b>Headshot(1:1):</b> <a href='byond://?_src_=prefs;preference=headshot;task=input'>Change</a>"
 	if(headshot_link != null)
 		dat += " <a href='byond://?_src_=prefs;preference=view_headshot;task=input'>View</a>"
+	dat += "<br><br>"
+	dat += "<b>Character Link:</b> <a href='byond://?_src_=prefs;preference=ooc_link;task=input'>Change</a><br><i>[ooc_link]</i>"
+
 	dat += "</td>"
 	dat += "<td width ='20%' valign='top'>"
 	

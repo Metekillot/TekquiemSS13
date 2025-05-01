@@ -168,6 +168,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/list/exp = list() //playtime tracker
 
+	var/ooc_bond_pref = "Ask"
+	var/ooc_ghoul_pref = "Ask"
+	var/ooc_embrace_pref = "Ask"
+	var/ooc_link = ""
+
 	//STATS
 	var/physique = 1
 	var/stamina = 1

@@ -3809,6 +3809,7 @@
 #include "code\modules\vtr13\preferences\preferences_setup.dm"
 #include "code\modules\vtr13\preferences\global_procs\make_font_cool.dm"
 #include "code\modules\vtr13\preferences\global_procs\sanitize_keybindings.dm"
+#include "code\modules\vtr13\preferences\global_procs\valid_character_link.dm"
 #include "code\modules\vtr13\preferences\global_procs\valid_headshot_link.dm"
 #include "code\modules\vtr13\preferences\helper_procs\build_attribute_score.dm"
 #include "code\modules\vtr13\preferences\helper_procs\calculate_dots.dm"
