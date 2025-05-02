@@ -1051,7 +1051,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Roll WoD dice"
 	set desc = "Roll WoD dice at yourself."
 	var/dice_count = tgui_input_number(usr, "Input amount of dice to roll:", "Dice", 5, 100, 1)
-	var/difficulty = tgui_input_number(usr, "Input roll difficulty:", "Difficulty", 6, 10, 1)
+	var/difficulty = tgui_input_number(usr, "Input roll difficulty:", "Difficulty", 2, 10, 1)
 
 	SSroll.storyteller_roll(dice_count, difficulty, mobs_to_show_output = usr, alert_atom = usr)
 

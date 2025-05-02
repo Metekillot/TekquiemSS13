@@ -19,27 +19,25 @@
       
 			animate(src, pixel_y = 0, time = 0)
 
-		var/success = ROLL_FAILURE
+		var/success = 0
 		if(has_gecko_grip)
-			success = ROLL_SUCCESS
+			success = 3
 		else
-			success = SSroll.storyteller_roll(total_physique, 6 , alert_atom=src)
+			success = SSroll.storyteller_roll(total_physique*2, 3, src, alert_atom=src)
 
-		if(success == ROLL_SUCCESS)
-			loc = above_turf
-			var/turf/forward_turf = get_step(loc, dir)
-			if(forward_turf && !forward_turf.density)
-				forceMove(forward_turf)
-				to_chat(src, span_notice("You climb up successfully."))
-			else if(has_gecko_grip)
-				forceMove(above_turf)
-				to_chat(src, span_notice("You climb up and cling to the wall!."))
-		else if(success == ROLL_BOTCH)
-			ZImpactDamage(loc, 1)
-			to_chat(src, span_warning("You slip while climbing!"))
-		else
-			to_chat(src, span_warning("You fail to climb up."))
-	return
+		switch(success)
+			if(0)
+				ZImpactDamage(loc, 1)
+				to_chat(src, span_warning("You slip while climbing!"))
+			if(1 to 2)
+				to_chat(src, span_warning("You fail to climb up."))
+			else
+				loc = above_turf
+				var/turf/forward_turf = get_step(loc, dir)
+				if(forward_turf && !forward_turf.density)
+					forceMove(forward_turf)
+					to_chat(src, span_notice("You climb up successfully."))
+
 
 
 /mob/living/carbon/human/proc/climb_down(turf/open/openspace/target_turf)

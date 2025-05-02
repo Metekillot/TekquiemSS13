@@ -97,8 +97,8 @@
 		var/mob/living/carbon/hit_person = target
 		if(SSroll.storyteller_roll(
 			dice = hit_person.get_total_composure() + hit_person.get_total_stamina(),
-			difficulty = 4,
-			mobs_to_show_output = target) <= ROLL_FAILURE)
+			difficulty = 2,
+			mobs_to_show_output = target) <= 2)
 			hit_person.Knockdown(20)
 			to_chat(hit_person, "<span class='danger'>The force of a projectile sends you sprawling!</span>")
 

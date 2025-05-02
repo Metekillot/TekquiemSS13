@@ -53,6 +53,23 @@
 	dat += ""
 	SEND_SIGNAL(src, COMSIG_MEMORY_SPLAT_TEXT, owner, is_own_memories)
 
+	var/datum/mind/brain = parent
+	switch(brain.tempted_mod)
+		if(1)
+			dat += "The Beast is tempting me."
+			dat += ""
+		if(2)
+			dat += "The Beast is pushing me to lose myself."
+			dat += ""
+		if(3)
+			dat += "The Beast is screaming to be let loose."
+			dat += ""
+	
+	if(HAS_TRAIT(owner, TRAIT_CHARMED))
+		for(var/mob/charmer in owner.status_traits[TRAIT_CHARMED])
+			dat += "I find myself trusting [charmer]."
+		dat += ""
+
 	dat += "<b>Physique</b>: [owner.physique] + [owner.additional_physique]"
 	dat += "<b>Stamina</b>: [owner.stamina] + [owner.additional_stamina]"
 	dat += "<b>Charisma</b>: [owner.charisma] + [owner.additional_charisma]"
@@ -61,27 +78,6 @@
 	dat += "<b>Resolve</b>: [owner.resolve] + [owner.additional_resolve]"
 	dat += ""
 	SEND_SIGNAL(src, COMSIG_MEMORY_DISCIPLINE_TEXT, owner, is_own_memories)
-
-	if(owner.Myself)
-		if(owner.Myself.Friend)
-			if(owner.Myself.Friend.owner)
-				dat += "<b>My friend's name is [owner.Myself.Friend.owner.true_real_name].</b>"
-				if(owner.Myself.Friend.phone_number)
-					dat += "Their number is [owner.Myself.Friend.phone_number]."
-				if(owner.Myself.Friend.friend_text)
-					dat += "[owner.Myself.Friend.friend_text]"
-		if(owner.Myself.Enemy)
-			if(owner.Myself.Enemy.owner)
-				dat += "<b>My nemesis is [owner.Myself.Enemy.owner.true_real_name]!</b>"
-				if(owner.Myself.Enemy.enemy_text)
-					dat += "[owner.Myself.Enemy.enemy_text]"
-		if(owner.Myself.Lover)
-			if(owner.Myself.Lover.owner)
-				dat += "<b>I'm in love with [owner.Myself.Lover.owner.true_real_name].</b>"
-				if(owner.Myself.Lover.phone_number)
-					dat += "Their number is [owner.Myself.Lover.phone_number]."
-				if(owner.Myself.Lover.lover_text)
-					dat += "[owner.Myself.Lover.lover_text]"
 
 	var/obj/keypad/armory/armory = find_keypad(/obj/keypad/armory)
 	if(armory && (owner.mind.assigned_role == "Sheriff" || owner.mind.assigned_role == "Seneschal"))

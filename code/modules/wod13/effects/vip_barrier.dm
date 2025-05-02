@@ -143,11 +143,11 @@
 	if(!do_mob(user, bouncer, max(5 SECONDS, social_bypass_time - (user.get_total_charisma() * 2 SECONDS))))
 		return
 
-	var/involved_social_roll = social_roll_difficulty
+	var/badge_bonus = 0
 	if(used_badge)
-		involved_social_roll -= 1
+		badge_bonus = 2
 
-	if(SSroll.storyteller_roll(user.get_total_charisma(), involved_social_roll, mobs_to_show_output = user) == ROLL_SUCCESS)
+	if(SSroll.storyteller_roll(user.get_total_charisma()*2 + badge_bonus, social_roll_difficulty, mobs_to_show_output = user, alert_atom = bouncer) >= social_roll_difficulty)
 		to_chat(user, "<span class='notice'>You manage to persuade your way past the guards.</span>")
 		linked_perm.allow_list += user
 		return

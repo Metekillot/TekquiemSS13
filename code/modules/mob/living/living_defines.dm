@@ -216,9 +216,7 @@
 
 	var/temporis_visual = FALSE
 	var/temporis_blur = FALSE
-
-	var/frenzy_chance_boost = 10
-
+	
 	var/last_bloodpool_restore = 0
 
 	var/list/knowscontacts = list()

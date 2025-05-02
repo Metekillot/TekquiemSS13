@@ -232,14 +232,13 @@
 		addtimer(cb, (i - 1) * 1.5 SECONDS)
 
 /mob/living/carbon/human/proc/attack_myself_command()
-	if(!CheckFrenzyMove())
-		a_intent = INTENT_HARM
-		var/obj/item/I = get_active_held_item()
-		if(I)
-			if(I.force)
-				ClickOn(src)
-			else
-				drop_all_held_items()
-				ClickOn(src)
-		else
+	a_intent = INTENT_HARM
+	var/obj/item/I = get_active_held_item()
+	if(I)
+		if(I.force)
 			ClickOn(src)
+		else
+			drop_all_held_items()
+			ClickOn(src)
+	else
+		ClickOn(src)

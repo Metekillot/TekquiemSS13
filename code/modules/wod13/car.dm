@@ -189,18 +189,13 @@ SUBSYSTEM_DEF(carpool)
 			if(!repairing)
 				repairing = TRUE
 				if(do_mob(user, src, 20 SECONDS))
-					switch(SSroll.storyteller_roll(user.get_total_wits(), 6, FALSE, list(user), src))
-						if (ROLL_SUCCESS)
-							locked = FALSE
-							repairing = FALSE
-							to_chat(user, "<span class='notice'>You've managed to open [src]'s lock.</span>")
-							playsound(src, 'code/modules/wod13/sounds/open.ogg', 50, TRUE)
-						if (ROLL_BOTCH)
+					switch(SSroll.storyteller_roll(user.get_total_wits()*2, 3, list(user), src))
+						if (0)
 							to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
 							qdel(K)
 							repairing = FALSE
 							return
-						if(ROLL_FAILURE)
+						if (1 to 2)
 							to_chat(user, "<span class='warning'>You've failed to open [src]'s lock.</span>")
 							playsound(src, 'code/modules/wod13/sounds/signal.ogg', 50, FALSE)
 							for(var/mob/living/carbon/human/npc/police/P in oviewers(7, src))
@@ -208,6 +203,12 @@ SUBSYSTEM_DEF(carpool)
 									P.Aggro(user)
 							repairing = FALSE
 							return //Don't penalize vampire humanity if they failed.
+						else
+							locked = FALSE
+							repairing = FALSE
+							to_chat(user, "<span class='notice'>You've managed to open [src]'s lock.</span>")
+							playsound(src, 'code/modules/wod13/sounds/open.ogg', 50, TRUE)
+							
 					if(initial(access) == "none") //Stealing a car with no keys assigned to it is basically robbing a random person and not an organization
 						if(ishuman(user))
 							var/mob/living/carbon/human/H = user

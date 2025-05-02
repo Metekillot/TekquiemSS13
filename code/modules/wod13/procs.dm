@@ -10,7 +10,7 @@
 	if(!GLOB.canon_event)
 		return
 	if(!is_special_character(src) || forced)
-		if(!in_frenzy || forced)
+		if(forced)
 			var/mod = 1
 			var/enlight = FALSE
 			if(clane)

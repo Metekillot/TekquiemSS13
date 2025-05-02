@@ -220,21 +220,21 @@
 	else
 		var/success_count = SSroll.storyteller_roll(
 			dice = get_total_wits() + get_total_physique(),
-			numerical = TRUE,
+			difficulty = 1,
 			mobs_to_show_output = list(src),
 			alert_atom = src)
-
-		if(success_count < 0)
-			visible_message("<span class='danger'>[src] tries to a jump, but stumbles and eats \the [loc] like a chump.</span>", \
-						"<span class='userdanger'>You embarass yourself jumping by falling to the floor.</span>")
-			Knockdown(abs(success_count) * 50)
-			return
-		else if (!success_count)
-			visible_message("<span class='notice'>[src] tries to a jump, but stumbles.</span>", \
-						"<span class='notice'>You stumble while trying to jump.</span>")
-			return
-		else
-			adjusted_jump_range = clamp(success_count * 2, 2, 7)
+		switch(success_count)
+			if(0)
+				visible_message("<span class='danger'>[src] tries to a jump, but stumbles and eats \the [loc] like a chump.</span>", \
+							"<span class='userdanger'>You embarass yourself jumping by falling to the floor.</span>")
+				Knockdown(50)
+				return
+			if (1)
+				visible_message("<span class='notice'>[src] tries to a jump, but stumbles.</span>", \
+							"<span class='notice'>You stumble while trying to jump.</span>")
+				return
+			else
+				adjusted_jump_range = clamp(success_count * 2, 2, 7)
 
 	var/distance = get_dist(loc, target)
 	var/turf/adjusted_target = target

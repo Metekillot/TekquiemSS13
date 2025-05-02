@@ -39,7 +39,7 @@ INITIALIZE_IMMEDIATE(/obj/werewolf_holder/transformation)
 	if(trans.auspice.rage == 0 && form != trans.auspice.base_breed)
 		to_chat(trans, "Not enough rage to transform into anything but [trans.auspice.base_breed].")
 		return
-	if(trans.in_frenzy)
+	if(trans.mind && HAS_TRAIT(trans.mind, TRAIT_IN_FRENZY))
 		to_chat(trans, "You can't transform while in frenzy.")
 		return
 	trans.inspired = FALSE

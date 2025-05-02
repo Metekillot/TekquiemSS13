@@ -9,8 +9,17 @@
 //called in /obj/transfer_point_vamp/Bumped (atom, obj/transfer_point_vamp, turf/new_turf)
 #define COMSIG_ATOM_MOVABLE_TRANSFER_POINT_USE "atom_movable_transfer_point_use"
 
+//called in /datum/controller/subsystem/frenzypool/fire 
+#define COMSIG_HANDLE_AUTOMATED_FRENZY "handle_automated_frenzy"
+
+///called in /mob/living/proc/try_frenzy (brain, modifier)
+#define COMSIG_MIND_TRY_FRENZY "mind_frenzy"
+
 ///called in /datum/mind/proc/transfer_to (brain, new_mob)
 #define COMSIG_MIND_TRANSFERRED "mind_transferred"
+
+#define COMSIG_MIND_DRAUGR "mind_draugr"
+
 
 ///called in /datum/element/memories/Detach
 #define COMSIG_MEMORY_DELETE "memory_delete"
@@ -27,6 +36,7 @@
 
 //called in /datum/component/base_memory/proc/get_memory_data
 #define COMSIG_MEMORY_DISCIPLINE_TEXT "memory_discipline_text"
+
 
 //from base of /mob/verb/pointed(): (mob/pointer)
 #define COMSIG_MOB_LIVING_POINTED "mob_living_pointed"

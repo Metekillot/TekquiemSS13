@@ -92,6 +92,9 @@
 	//round-only connections not stored on the db, don't mix your peas and carrots
 	var/list/fake_character_connections
 
+	//Controls the tempted condition for frenzy
+	var/tempted_mod
+
 /datum/mind/New(_key)
 	key = _key
 	martial_art = default_martial_art

@@ -171,13 +171,13 @@
 				if(P)
 					P.Aggro(user)
 			if(do_mob(user, src, max((lockpick_timer - user.get_total_wits() * 3), 2) SECONDS))
-				switch(SSroll.storyteller_roll(user.get_total_wits() * 2, lockpick_difficulty, FALSE, list(user), src))
-					if(ROLL_BOTCH)
+				switch(SSroll.storyteller_roll(user.get_total_wits() * 2 - lockpick_difficulty, 2, list(user), src))
+					if(0)
 						to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
 						qdel(W)
-					if(ROLL_FAILURE)
+					if(1)
 						to_chat(user, "<span class='warning'>You failed to pick the lock.</span>")
-					if(ROLL_SUCCESS)
+					else
 						to_chat(user, "<span class='notice'>You pick the lock.</span>")
 						locked = FALSE
 				hacking = FALSE

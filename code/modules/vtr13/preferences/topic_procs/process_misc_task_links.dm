@@ -217,9 +217,6 @@
 		if("ghost_laws")
 			chat_toggles ^= CHAT_GHOSTLAWS
 
-		if("roll_mode")
-			chat_toggles ^= CHAT_ROLL_INFO
-
 		if("hear_login_logout")
 			chat_toggles ^= CHAT_LOGIN_LOGOUT
 

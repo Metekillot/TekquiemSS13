@@ -30,18 +30,11 @@
 	GLOB.masquerade_breakers_list -= src
 	GLOB.sabbatites -= src
 
-	//So upon death the corpse is filled with yin chi
-	yin_chi = min(max_yin_chi, yin_chi+yang_chi)
-	yang_chi = 0
-
-	if(iskindred(src) || iscathayan(src))
+	if(iskindred(src))
 		can_be_embraced = FALSE
 		var/obj/item/organ/brain/brain = getorganslot(ORGAN_SLOT_BRAIN) //NO REVIVAL EVER
 		if (brain)
 			brain.organ_flags |= ORGAN_FAILING
-
-		if(in_frenzy)
-			exit_frenzymod()
 		SEND_SOUND(src, sound('code/modules/wod13/sounds/final_death.ogg', 0, 0, 50))
 
 		//annoying code that depends on clan doesn't work for Kuei-jin

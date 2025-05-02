@@ -183,8 +183,6 @@
 				cathayan.mind.dharma?.roll_po(source, cathayan)
 
 /datum/dharma/proc/roll_po(atom/Source, mob/living/carbon/human/owner)
-	if(owner.in_frenzy)
-		return
 	if(!COOLDOWN_FINISHED(src, po_call))
 		return
 	COOLDOWN_START(src, po_call, 5 SECONDS)
@@ -192,89 +190,3 @@
 	Po_Focus = Source
 	owner.demon_chi = min(owner.demon_chi + 1, owner.max_demon_chi)
 	to_chat(owner, "<span class='warning'>Some <b>DEMON</b> Chi energy fills you...</span>")
-
-//good luck to whoever wants to fix this thing
-/mob/living/carbon/human/frenzystep()
-	if(!iscathayan(src))
-		return ..()
-
-	if(!mind?.dharma?.Po_combat)
-		switch(mind?.dharma?.Po)
-			if("Rebel")
-				if(frenzy_target)
-					if(get_dist(frenzy_target, src) <= 1)
-						if(isliving(frenzy_target))
-							var/mob/living/L = frenzy_target
-							if(L.stat != DEAD)
-								a_intent = INTENT_HARM
-								if(last_rage_hit+5 < world.time)
-									last_rage_hit = world.time
-									UnarmedAttack(L)
-					else
-						step_to(src,frenzy_target,0)
-						face_atom(frenzy_target)
-			if("Legalist")
-				if(mind?.dharma?.Po_Focus)
-					if(prob(5))
-						say(pick("Kneel to me!", "Obey my orders!", "I command you!"))
-						point_at(mind?.dharma?.Po_Focus)
-					if(get_dist(mind?.dharma?.Po_Focus, src) <= 1)
-						if(isliving(mind?.dharma?.Po_Focus))
-							var/mob/living/L = mind?.dharma?.Po_Focus
-							if(L.stat != DEAD)
-								a_intent = INTENT_GRAB
-								dropItemToGround(get_active_held_item())
-								if(last_rage_hit+5 < world.time)
-									last_rage_hit = world.time
-									UnarmedAttack(L)
-					else
-						step_to(src,mind?.dharma?.Po_Focus,0)
-						face_atom(mind?.dharma?.Po_Focus)
-			if("Monkey")
-				if(mind?.dharma?.Po_Focus)
-					if(get_dist(mind?.dharma?.Po_Focus, src) <= 1)
-						a_intent = INTENT_HELP
-						if(!istype(get_active_held_item(), /obj/item/toy))
-							dropItemToGround(get_active_held_item())
-						else
-							var/obj/item/toy/T = get_active_held_item()
-							T.attack_self(src)
-							if(prob(5))
-								emote(pick("laugh", "giggle", "chuckle", "smile"))
-							return
-						if(last_rage_hit+50 < world.time)
-							last_rage_hit = world.time
-					else
-						step_to(src, mind?.dharma?.Po_Focus, 0)
-						face_atom(mind?.dharma?.Po_Focus)
-			if("Demon")
-				if(mind?.dharma?.Po_Focus)
-					if(get_dist(mind?.dharma?.Po_Focus, src) <= 1)
-						a_intent = INTENT_GRAB
-						dropItemToGround(get_active_held_item())
-						if(last_rage_hit+5 < world.time)
-							last_rage_hit = world.time
-							UnarmedAttack(mind?.dharma?.Po_Focus)
-							if(hud_used.drinkblood_icon)
-								hud_used.drinkblood_icon.bite()
-					else
-						step_to(src,mind?.dharma?.Po_Focus,0)
-						face_atom(mind?.dharma?.Po_Focus)
-			if("Fool")
-				if(prob(5))
-					emote(pick("cry", "scream", "groan"))
-					point_at(mind?.dharma?.Po_Focus)
-				resist_fire()
-	else
-		if(frenzy_target)
-			if(get_dist(frenzy_target, src) <= 1)
-				if(isliving(frenzy_target))
-					var/mob/living/L = frenzy_target
-					if(L.stat != DEAD)
-						a_intent = INTENT_HARM
-						if(last_rage_hit+5 < world.time)
-							last_rage_hit = world.time
-							UnarmedAttack(L)
-			else
-				step_to(src,frenzy_target,0)
-				face_atom(frenzy_target)

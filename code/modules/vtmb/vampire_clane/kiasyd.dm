@@ -42,26 +42,3 @@
 	//give them sunglasses to hide their freakish eyes
 	var/obj/item/clothing/glasses/vampire/sun/new_glasses = new(H.loc)
 	H.equip_to_appropriate_slot(new_glasses, TRUE)
-
-/obj/item/afterattack(atom/target, mob/living/carbon/user, proximity)
-	if(!proximity)
-		return
-	if(iskindred(target) && is_iron)
-		var/mob/living/carbon/human/L = target
-		if(L.clane?.name == "Kiasyd")
-			var/datum/vampireclane/kiasyd/kiasyd = L.clane
-			if (COOLDOWN_FINISHED(kiasyd, cold_iron_frenzy))
-				COOLDOWN_START(kiasyd, cold_iron_frenzy, 10 SECONDS)
-				to_chat(L, "<span class='danger'><b>COLD IRON!</b></span>")
-				L.rollfrenzy()
-	if(iscathayan(target) && is_iron)
-		var/mob/living/carbon/human/L = target
-		if(L.max_yang_chi > L.max_yin_chi + 2)
-			to_chat(L, "<span class='danger'><b>COLD METAL!</b></span>")
-			L.adjustBruteLoss(15, TRUE)
-	if(iscathayan(target) && is_wood)
-		var/mob/living/carbon/human/L = target
-		if(L.max_yin_chi > L.max_yang_chi + 2)
-			to_chat(L, "<span class='danger'><b>WOOD!</b></span>")
-			L.adjustBruteLoss(15, TRUE)
-	..()
