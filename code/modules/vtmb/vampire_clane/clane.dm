@@ -18,8 +18,8 @@ And it also helps for the character set panel
 	var/alt_sprite
 	///If the Clan's unique body sprites need to account for skintone
 	var/alt_sprite_greyscale = FALSE
-	var/no_hair		//unused
-	var/no_facial	//unused
+	var/no_hair
+	var/no_facial
 	var/humanitymod = 1
 	var/frenzymod = 1
 	var/start_humanity = 7
@@ -45,7 +45,7 @@ And it also helps for the character set panel
 			H.apply_overlay(accessories_layers[current_accessory])
 	if(alt_sprite)
 		if (!alt_sprite_greyscale)
-			H.skin_tone = ALBINO
+			H.skin_tone = "albino"
 		H.dna.species.limbs_id = alt_sprite
 		H.update_body_parts()
 		H.update_body()
@@ -54,10 +54,11 @@ And it also helps for the character set panel
 /datum/vampireclane/proc/post_gain(var/mob/living/carbon/human/H)
 	SHOULD_CALL_PARENT(TRUE)
 
-	if(violating_appearance && length(GLOB.masquerade_latejoin))
-		var/obj/effect/landmark/latejoin_masquerade/LM = pick(GLOB.masquerade_latejoin)
-		if(LM)
-			H.forceMove(LM.loc)
+	if(violating_appearance && H.roundstart_vampire)
+		if(length(GLOB.masquerade_latejoin))
+			var/obj/effect/landmark/latejoin_masquerade/LM = pick(GLOB.masquerade_latejoin)
+			if(LM)
+				H.forceMove(LM.loc)
 
 	if(clan_keys)
 		H.put_in_r_hand(new clan_keys(H))

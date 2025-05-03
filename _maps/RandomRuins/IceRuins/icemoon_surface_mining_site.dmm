@@ -76,7 +76,7 @@
 	dir = 8
 	},
 /obj/item/paper/crumpled/bloody{
-	default_raw_text = "help...";
+	info = "help...";
 	text = ""
 	},
 /turf/open/floor/wood,

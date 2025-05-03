@@ -462,7 +462,7 @@
 	if(prob(50))
 		icon_state = "asphalt[rand(1, 3)]"
 		update_icon()
-	if(prob(5))
+	if(prob(25))
 		new /obj/effect/decal/asphalt(src)
 	set_light(1, 0.5, "#a4b7ff")
 
@@ -888,23 +888,6 @@
 	..()
 	icon_state = "toilet[rand(1, 9)]"
 
-/turf/open/floor/plating/industrial
-	gender = PLURAL
-	name = "plating"
-	icon = 'code/modules/wod13/tiles.dmi'
-	icon_state = "industrial1"
-	flags_1 = NONE
-	attachment_holes = FALSE
-	bullet_bounce_sound = null
-	footstep = FOOTSTEP_PARKET
-	barefootstep = FOOTSTEP_PARKET
-	clawfootstep = FOOTSTEP_HARD_CLAW
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-
-/turf/open/floor/plating/industrial/Initialize()
-	..()
-	icon_state = "industrial[rand(1, 9)]"
-
 /turf/open/floor/plating/circled
 	gender = PLURAL
 	name = "fancy plating"
@@ -921,66 +904,6 @@
 /turf/open/floor/plating/circled/Initialize()
 	..()
 	icon_state = "circle[rand(1, 8)]"
-
-/turf/open/floor/plating/woodrough
-	gender = PLURAL
-	name = "wood flooring"
-	icon = 'code/modules/wod13/tiles.dmi'
-	icon_state = "wood1"
-	flags_1 = NONE
-	attachment_holes = FALSE
-	bullet_bounce_sound = null
-	footstep = FOOTSTEP_PARKET
-	barefootstep = FOOTSTEP_PARKET
-	clawfootstep = FOOTSTEP_HARD_CLAW
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-
-/turf/open/floor/plating/woodrough/Initialize()
-	..()
-	icon_state = "wood[rand(1, 12)]"
-
-/turf/open/floor/plating/woodfancy
-	gender = PLURAL
-	name = "fancy wood flooring"
-	icon = 'code/modules/wod13/tiles.dmi'
-	icon_state = "woodd1"
-	flags_1 = NONE
-	attachment_holes = FALSE
-	bullet_bounce_sound = null
-	footstep = FOOTSTEP_PARKET
-	barefootstep = FOOTSTEP_PARKET
-	clawfootstep = FOOTSTEP_HARD_CLAW
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-
-/turf/open/floor/plating/woodfancy/Initialize()
-	..()
-	icon_state = "woodd[rand(1, 12)]"
-
-/turf/open/floor/plating/grate
-	gender = PLURAL
-	name = "grate"
-	icon = 'code/modules/wod13/tiles.dmi'
-	icon_state = "lattice_new"
-	flags_1 = NONE
-	attachment_holes = FALSE
-	bullet_bounce_sound = null
-	footstep = FOOTSTEP_PLATING
-	barefootstep = FOOTSTEP_PARKET
-	clawfootstep = FOOTSTEP_HARD_CLAW
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
-
-/turf/open/floor/plating/grate/dirty
-	gender = PLURAL
-	name = "grate"
-	icon = 'code/modules/wod13/tiles.dmi'
-	icon_state = "lattice_new_dirt"
-	flags_1 = NONE
-	attachment_holes = FALSE
-	bullet_bounce_sound = null
-	footstep = FOOTSTEP_PLATING
-	barefootstep = FOOTSTEP_PARKET
-	clawfootstep = FOOTSTEP_HARD_CLAW
-	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
 
 /turf/open/floor/plating/church
 	gender = PLURAL
@@ -1199,6 +1122,24 @@
 			if(V.upper)
 				icon_state = "snow[rand(1, 14)]"
 
+/turf/open/floor/plating/vampocean
+	gender = PLURAL
+	name = "water"
+	icon = 'code/modules/wod13/tiles.dmi'
+	icon_state = "ocean"
+	flags_1 = NONE
+	attachment_holes = FALSE
+	bullet_bounce_sound = null
+	footstep = FOOTSTEP_WATER
+	barefootstep = FOOTSTEP_WATER
+	clawfootstep = FOOTSTEP_HARD_CLAW
+	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
+	density = TRUE
+
+/turf/open/floor/plating/vampocean/Initialize()
+	..()
+	set_light(1, 0.5, "#a4b7ff")
+
 /turf/open/floor/plating/vampacid
 	gender = PLURAL
 	name = "goop"
@@ -1232,6 +1173,13 @@
 
 
 
+/obj/effect/decal/coastline
+	name = "water"
+	icon = 'code/modules/wod13/tiles.dmi'
+	icon_state = "coastline"
+
+/obj/effect/decal/coastline/corner
+	icon_state = "coastline_corner"
 
 /obj/effect/decal/shadow
 	name = "shadow"

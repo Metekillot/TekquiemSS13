@@ -139,7 +139,7 @@
 	name = "helicopter rope"
 	icon = 'code/modules/wod13/64x64.dmi'
 	icon_state = "swat"
-	duration = 20
+	duration = 7
 
 /obj/effect/temp_visual/desant/Destroy()
 	var/mob/living/simple_animal/hostile/retaliate/nanotrasenpeace/vampire/V = new(loc)

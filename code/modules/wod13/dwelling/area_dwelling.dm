@@ -21,7 +21,7 @@
 		"moderate" = 0,
 		"major" = 0,
 		)
-/*
+
 /area/vtm/dwelling/proc/add_heat(ammount = 0) //Adds heat to given area, then checks if alarm shoudl be trigerred
 	if(alarm_disabled == 1) return
 	if(alarm_trigerred == 1)
@@ -116,4 +116,3 @@
 	dwelling_doors = null
 	loot_containers = null
 	dwelling_windows = null
-*/

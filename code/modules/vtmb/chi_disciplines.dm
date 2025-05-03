@@ -654,7 +654,7 @@
 
 /datum/chi_discipline/ghost_flame_shintai/activate(mob/living/target, mob/living/carbon/human/caster)
 	..()
-	var/limit = min(2, level) + caster.charisma + caster.more_companions - 1
+	var/limit = min(2, level) + caster.social + caster.more_companions - 1
 	if(length(caster.beastmaster) >= limit)
 		var/mob/living/simple_animal/hostile/beastmaster/random_beast = pick(caster.beastmaster)
 		random_beast.death()
@@ -1169,8 +1169,8 @@
 
 /datum/chi_discipline/hellweaving/activate(mob/living/target, mob/living/carbon/human/caster)
 	..()
-	var/mypower = 1
-	var/theirpower = 1
+	var/mypower = caster.get_total_social()
+	var/theirpower = target.get_total_mentality()
 	if(theirpower >= mypower)
 		to_chat(caster, "<span class='warning'>[target]'s mind is too powerful to cause flashbacks for!</span>")
 		return
@@ -1196,7 +1196,7 @@
 			target.clear_fullscreen("yomi", 5)
 			if(ishuman(target))
 				var/mob/living/carbon/human/human_target = target
-				var/datum/cb = CALLBACK(human_target, TYPE_PROC_REF(/mob/living/carbon/human, attack_myself_command))
+				var/datum/cb = CALLBACK(human_target, /mob/living/carbon/human/proc/attack_myself_command)
 				for(var/i in 1 to 20)
 					addtimer(cb, (i - 1) * 1.5 SECONDS)
 				target.emote("scream")
@@ -1266,8 +1266,8 @@
 			sound_gender = 'code/modules/wod13/sounds/kiai_female.ogg'
 	caster.emote("scream")
 	playsound(caster.loc, sound_gender, 100, FALSE)
-	var/mypower = 1
-	var/theirpower = 1
+	var/mypower = caster.get_total_social()
+	var/theirpower = target.get_total_mentality()
 	if(theirpower >= mypower)
 		to_chat(caster, "<span class='warning'>[target]'s mind is too powerful to affect!</span>")
 		return
@@ -1279,14 +1279,14 @@
 			target.emote("stare")
 			if(ishuman(target))
 				var/mob/living/carbon/human/human_target = target
-				var/datum/cb = CALLBACK(human_target, TYPE_PROC_REF(/mob/living/carbon/human, combat_to_caster))
+				var/datum/cb = CALLBACK(human_target, /mob/living/carbon/human/proc/combat_to_caster)
 				for(var/i in 1 to 20)
 					addtimer(cb, (i - 1) * 1.5 SECONDS)
 		if(3)
 			target.emote("scream")
 			if(ishuman(target))
 				var/mob/living/carbon/human/human_target = target
-				var/datum/cb = CALLBACK(human_target, TYPE_PROC_REF(/mob/living/carbon/human, step_away_caster))
+				var/datum/cb = CALLBACK(human_target, /mob/living/carbon/human/proc/step_away_caster)
 				for(var/i in 1 to 20)
 					addtimer(cb, (i - 1) * 1.5 SECONDS)
 		if(4)
@@ -1350,7 +1350,7 @@
 	..()
 	if(!wolflike_shapeshift)
 		wolflike_shapeshift = new(caster)
-	var/limit = min(2, level) + 1 + caster.more_companions - 1
+	var/limit = min(2, level) + caster.social + caster.more_companions - 1
 	if(length(caster.beastmaster) >= limit)
 		var/mob/living/simple_animal/hostile/beastmaster/random_beast = pick(caster.beastmaster)
 		random_beast.death()
@@ -1718,6 +1718,9 @@
 			caster.dna.species.punchdamagehigh += 5
 			caster.physiology.armor.melee += 15
 			caster.physiology.armor.bullet += 15
+			caster.dexterity += 2
+			caster.athletics += 2
+			caster.lockpicking += 2
 			ADD_TRAIT(caster, TRAIT_IGNORESLOWDOWN, SPECIES_TRAIT)
 			caster.do_jitter_animation(1 SECONDS)
 			spawn(delay+caster.discipline_time_plus)
@@ -1725,6 +1728,9 @@
 					caster.dna.species.punchdamagehigh -= 5
 					caster.physiology.armor.melee -= 15
 					caster.physiology.armor.bullet -= 15
+					caster.dexterity -= 2
+					caster.athletics -= 2
+					caster.lockpicking -= 2
 					REMOVE_TRAIT(caster, TRAIT_IGNORESLOWDOWN, SPECIES_TRAIT)
 		if(2)
 			caster.yin_chi += 1
@@ -1775,6 +1781,9 @@
 				affected_mob.dna.species.punchdamagehigh += 5
 				affected_mob.physiology.armor.melee += 15
 				affected_mob.physiology.armor.bullet += 15
+				affected_mob.dexterity += 2
+				affected_mob.athletics += 2
+				affected_mob.lockpicking += 2
 				ADD_TRAIT(affected_mob, TRAIT_IGNORESLOWDOWN, SPECIES_TRAIT)
 				var/obj/effect/celerity/celerity_effect = new(get_turf(affected_mob))
 				celerity_effect.appearance = affected_mob.appearance
@@ -1788,6 +1797,9 @@
 						affected_mob.dna.species.punchdamagehigh -= 5
 						affected_mob.physiology.armor.melee -= 15
 						affected_mob.physiology.armor.bullet -= 15
+						affected_mob.dexterity -= 2
+						affected_mob.athletics -= 2
+						affected_mob.lockpicking -= 2
 						REMOVE_TRAIT(affected_mob, TRAIT_IGNORESLOWDOWN, SPECIES_TRAIT)
 		if(4)
 			for(var/mob/living/affected_mob in oviewers(5, caster))

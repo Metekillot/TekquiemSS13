@@ -67,6 +67,19 @@
 	H.physiology.armor.melee = H.physiology.armor.melee-10
 	H.physiology.armor.bullet = H.physiology.armor.bullet-10
 
+/obj/item/vtm_artifact/tarulfang
+	true_name = "Tarulfang"
+	true_desc = "Decreases chance of frenzy."
+	icon_state = "tarulfang"
+
+/obj/item/vtm_artifact/weekapaug_thistle/get_powers()
+	..()
+	owner.frenzy_chance_boost = 5
+
+/obj/item/vtm_artifact/weekapaug_thistle/remove_powers()
+	..()
+	owner.frenzy_chance_boost = 10
+
 /obj/item/vtm_artifact/mummywrap_fetish
 	true_name = "Mummywrap Fetish"
 	true_desc = "Passive health regeneration."

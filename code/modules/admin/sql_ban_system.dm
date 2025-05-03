@@ -232,13 +232,15 @@
 				banned_from += query_get_banned_roles.item[1]
 			qdel(query_get_banned_roles)
 		var/break_counter = 0
-		var/list/job_lists = list("Invictus" = GLOB.command_positions,
-							"Lancea et Sanctum" = GLOB.lancea_positions,
-							"Ordo Dracul" = GLOB.ordo_positions,
-							"Circle of the Crone" = GLOB.crone_positions,
-							"Carthian Movement" = GLOB.carthian_positions,
-							"Law Enforcement" = GLOB.police_positions,
-							"Other" = GLOB.citizen_positions + GLOB.services_positions + GLOB.clinic_positions)
+		var/list/job_lists = list("Camarilla" = GLOB.command_positions,
+							"Primogen Council" = GLOB.camarilla_council_positions,
+							"Tremere" = GLOB.tremere_positions,
+							"Anarch" = GLOB.anarch_positions,
+							"Giovanni" = GLOB.giovanni_positions,
+							"Clan Tzimisce" = GLOB.tzimisce_positions,
+							"Law Enforcement" = GLOB.police_positions + GLOB.national_security_positions,
+							"Warehouse" = GLOB.warehouse_positions,
+							"Triad" = GLOB.gang_positions)
 		for(var/department in job_lists)
 			output += "<div class='column'><label class='rolegroup [ckey(department)]'><input type='checkbox' name='[department]' class='hidden' [usr.client.prefs.tgui_fancy ? " onClick='toggle_checkboxes(this, \"_com\")'" : ""]>[department]</label><div class='content'>"
 			break_counter = 0
@@ -479,7 +481,6 @@
 	var/msg = "has created a [isnull(duration) ? "permanent" : "temporary [time_message]"] [applies_to_admins ? "admin " : ""][roles_to_ban[1] == "Server" ? "server ban" : "role ban from [roles_to_ban.len] roles"] for [target]."
 	log_admin_private("[kn] [msg][roles_to_ban[1] == "Server" ? "" : " Roles: [roles_to_ban.Join(", ")]"] Reason: [reason]")
 	message_admins("[kna] [msg][roles_to_ban[1] == "Server" ? "" : " Roles: [roles_to_ban.Join("\n")]"]\nReason: [reason]")
-	SSoverwatch.record_action(usr, "[kn] [msg][roles_to_ban[1] == "Server" ? "" : " Roles: [roles_to_ban.Join(", ")]"] Reason: [reason]")
 	if(applies_to_admins)
 		send2adminchat("BAN ALERT","[kn] [msg]")
 	if(player_ckey)

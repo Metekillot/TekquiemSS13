@@ -125,10 +125,13 @@
 	var/celerity_visual = FALSE
 	var/potential = 0
 
+	var/in_frenzy = FALSE
+	var/frenzy_hardness = 1
 	var/last_frenzy_check = 0
+	var/atom/frenzy_target = null
 	var/last_experience = 0
 
-	
+	var/last_rage_hit = 0
 
 	var/datum/auspice/auspice
 	var/obj/werewolf_holder/transformation/transformator

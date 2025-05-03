@@ -65,7 +65,8 @@
 
 	for (file in scripts)
 		head_content += "<script type='text/javascript' src='[SSassets.transport.get_asset_url(file)]'></script>"
-	return {"<!DOCTYPE HTML>
+
+	return {"<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 		<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
@@ -238,7 +239,7 @@
 /datum/browser/modal/listpicker/New(User,Message,Title,Button1="Ok",Button2,Button3,StealFocus = 1, Timeout = FALSE,list/values,inputtype="checkbox", width, height, slidecolor)
 	if (!User)
 		return
-	
+
 	var/output =  {"<form><input type="hidden" name="src" value="[REF(src)]"><ul class="sparse">"}
 	if (inputtype == "checkbox" || inputtype == "radio")
 		for (var/i in values)

@@ -49,6 +49,7 @@
 "h" = (
 /obj/structure/table/wood,
 /obj/item/clothing/mask/cigarette/pipe,
+/obj/item/book/manual/random,
 /turf/open/floor/holofloor/carpet,
 /area/template_noop)
 "i" = (
@@ -114,6 +115,7 @@
 /area/template_noop)
 "t" = (
 /obj/structure/table/wood/bar,
+/obj/item/book/manual/wiki/barman_recipes,
 /turf/open/floor/holofloor{
 	dir = 9;
 	icon_state = "wood"
@@ -207,6 +209,7 @@
 /area/template_noop)
 "J" = (
 /obj/structure/table/wood,
+/obj/item/book/manual/random,
 /turf/open/floor/holofloor/carpet,
 /area/template_noop)
 "K" = (

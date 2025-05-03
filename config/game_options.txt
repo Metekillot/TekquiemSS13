@@ -464,7 +464,7 @@ ROUNDSTART_RACES ethereal
 #JOIN_WITH_MUTANT_HUMANS
 
 ##Overflow job. Default is assistant
-OVERFLOW_JOB Pedestrian
+OVERFLOW_JOB Citizen
 
 ## Overflow slot cap. Set to -1 for unlimited. If limited, it will still open up if every other job is full.
 OVERFLOW_CAP -1
@@ -563,12 +563,3 @@ RATCAP 64
 
 ## Maximum fine for a citation
 MAXFINE 2000
-
-## Uncomment to disable area ambiance text.
-#DISABLE_AREA_AMBIANCE
-
-## Set the maximum amount of loadout slots
-MAX_LOADOUT_ITEMS 10
-
-## Set the base amount of loadout points for a player
-BASE_LOADOUT_POINTS 10

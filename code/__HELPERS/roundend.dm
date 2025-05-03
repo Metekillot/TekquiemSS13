@@ -156,27 +156,27 @@
 	var/list/file_data = list()
 	var/pos = 1
 	for(var/V in GLOB.news_network.network_channels)
-		var/datum/feed_channel/channel = V
+		var/datum/newscaster/feed_channel/channel = V
 		if(!istype(channel))
 			stack_trace("Non-channel in newscaster channel list")
 			continue
-		file_data["[pos]"] = list("channel name" = "[channel.channel_name]", "author" = "[channel.author]", "censored" = channel.censored ? 1 : 0, "author censored" = channel.author_censor ? 1 : 0, "messages" = list())
+		file_data["[pos]"] = list("channel name" = "[channel.channel_name]", "author" = "[channel.author]", "censored" = channel.censored ? 1 : 0, "author censored" = channel.authorCensor ? 1 : 0, "messages" = list())
 		for(var/M in channel.messages)
-			var/datum/feed_message/message = M
+			var/datum/newscaster/feed_message/message = M
 			if(!istype(message))
 				stack_trace("Non-message in newscaster channel messages list")
 				continue
 			var/list/comment_data = list()
 			for(var/C in message.comments)
-				var/datum/feed_comment/comment = C
+				var/datum/newscaster/feed_comment/comment = C
 				if(!istype(comment))
 					stack_trace("Non-message in newscaster message comments list")
 					continue
 				comment_data += list(list("author" = "[comment.author]", "time stamp" = "[comment.time_stamp]", "body" = "[comment.body]"))
-			file_data["[pos]"]["messages"] += list(list("author" = "[message.author]", "time stamp" = "[message.time_stamp]", "censored" = message.body_censor ? 1 : 0, "author censored" = message.author_censor ? 1 : 0, "photo file" = "[message.photo_file]", "photo caption" = "[message.caption]", "body" = "[message.body]", "comments" = comment_data))
+			file_data["[pos]"]["messages"] += list(list("author" = "[message.author]", "time stamp" = "[message.time_stamp]", "censored" = message.bodyCensor ? 1 : 0, "author censored" = message.authorCensor ? 1 : 0, "photo file" = "[message.photo_file]", "photo caption" = "[message.caption]", "body" = "[message.body]", "comments" = comment_data))
 		pos++
 	if(GLOB.news_network.wanted_issue.active)
-		file_data["wanted"] = list("author" = "[GLOB.news_network.wanted_issue.scanned_user]", "criminal" = "[GLOB.news_network.wanted_issue.criminal]", "description" = "[GLOB.news_network.wanted_issue.body]", "photo file" = "[GLOB.news_network.wanted_issue.photo_file]")
+		file_data["wanted"] = list("author" = "[GLOB.news_network.wanted_issue.scannedUser]", "criminal" = "[GLOB.news_network.wanted_issue.criminal]", "description" = "[GLOB.news_network.wanted_issue.body]", "photo file" = "[GLOB.news_network.wanted_issue.photo_file]")
 	WRITE_FILE(json_file, json_encode(file_data))
 
 ///Handles random hardcore point rewarding if it applies.
@@ -499,14 +499,14 @@
 	var/list/parts = list()
 	parts += "<span class='header'>City Economic Summary:</span>"
 	///This is the richest account on station at roundend.
-	var/datum/vtr_bank_account/mr_moneybags = GLOB.bank_account_list[1]
+	var/datum/vtm_bank_account/mr_moneybags = GLOB.bank_account_list[1]
 	if(!istype(mr_moneybags))
 		CRASH("A bank account wasn't found in GLOB.bank_account_list for determining the richest player at round-end.")
 	///This is the station's total wealth at the end of the round.
 	var/station_vault = 0
 	///How many players joined the round.
 	var/total_players = GLOB.joined_player_list.len
-	for(var/datum/vtr_bank_account/account in GLOB.bank_account_list)
+	for(var/datum/vtm_bank_account/account in GLOB.bank_account_list)
 		if(account && account.account_owner)
 			station_vault += account.balance
 			if(mr_moneybags.balance < account.balance)

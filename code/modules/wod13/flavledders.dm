@@ -107,6 +107,7 @@
 
 /obj/transfer_point_vamp/Bumped(atom/movable/AM)
 	. = ..()
-	var/turf/new_turf = get_step(exit, get_dir(AM, src))
-	AM.forceMove(new_turf)
-	SEND_SIGNAL(AM, COMSIG_ATOM_MOVABLE_TRANSFER_POINT_USE, src, new_turf)
+	var/turf/T = get_step(exit, get_dir(AM, src))
+//	to_chat(world, "Moving from [x] [y] [z] to [exit.x] [exit.y] [exit.z]")
+//	to_chat(world, "Actually [T.x] [T.y] [T.z]")
+	AM.forceMove(T)

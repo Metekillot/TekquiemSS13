@@ -14,7 +14,7 @@
 
 /obj/structure/sign/barsign/Initialize()
 	. = ..()
-	//set_sign(new /datum/barsign/hiddensigns/signoff)
+	set_sign(new /datum/barsign/hiddensigns/signoff)
 
 /obj/structure/sign/barsign/proc/set_sign(datum/barsign/sign)
 	if(!istype(sign))

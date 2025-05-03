@@ -845,7 +845,6 @@
 	del_on_death = 1
 	maxHealth = 5
 	health = 5
-	var/should_despawn = TRUE
 
 /mob/living/simple_animal/pet/rat/Initialize()
 	. = ..()
@@ -862,7 +861,7 @@
 	for(var/mob/living/carbon/human/H in viewers(5, src))
 		if(H)
 			delete_me = FALSE
-	if(delete_me && should_despawn)
+	if(delete_me)
 		death()
 
 /mob/living/simple_animal/pet/rat/will_escape_storage()
@@ -923,7 +922,7 @@
 	is_flying_animal = TRUE
 	maxHealth = 10
 	health = 10
-	speed = -0.4
+	speed = -0.8
 
 /mob/living/simple_animal/hostile/beastmaster/rat/flying/UnarmedAttack(atom/A)
 	. = ..()
@@ -1349,7 +1348,6 @@
 	max_stat = 4
 	my_weapon_type = /obj/item/gun/ballistic/automatic/vampire/m1911
 	my_backup_weapon_type = /obj/item/melee/classic_baton/vampire
-	tolerates_ugly = TRUE
 
 /mob/living/carbon/human/npc/guard/Initialize()
 	. = ..()
@@ -1496,7 +1494,6 @@
 
 /mob/living/carbon/human/npc/stripper
 	staying = TRUE
-	tolerates_ugly = TRUE
 
 /mob/living/carbon/human/npc/stripper/Initialize()
 	. = ..()

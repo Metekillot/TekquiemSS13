@@ -132,6 +132,7 @@
 /area/ruin/unpowered/buried_library)
 "aE" = (
 /obj/item/stack/sheet/mineral/wood,
+/obj/item/book/manual/random,
 /turf/open/floor/wood{
 	initial_gas_mix = "ICEMOON_ATMOS"
 	},
@@ -173,6 +174,7 @@
 /area/ruin/unpowered/buried_library)
 "aM" = (
 /obj/item/stack/sheet/mineral/wood,
+/obj/item/book/manual/random,
 /turf/open/floor/plating/asteroid/snow/icemoon,
 /area/ruin/unpowered/buried_library)
 "aN" = (
@@ -256,6 +258,7 @@
 /turf/open/floor/plating/asteroid/snow/icemoon,
 /area/ruin/unpowered/buried_library)
 "bb" = (
+/obj/item/book/manual/random,
 /turf/open/floor/plating/asteroid/snow/icemoon,
 /area/ruin/unpowered/buried_library)
 "bc" = (
@@ -311,6 +314,7 @@
 /turf/open/floor/plating/asteroid/snow/icemoon,
 /area/ruin/unpowered/buried_library)
 "bj" = (
+/obj/item/book/manual/random,
 /turf/closed/mineral/random/snow,
 /area/ruin/unpowered/buried_library)
 "bk" = (
@@ -329,6 +333,7 @@
 /turf/closed/mineral/random/snow,
 /area/ruin/unpowered/buried_library)
 "bn" = (
+/obj/item/book/manual/random,
 /obj/item/stack/sheet/mineral/wood,
 /turf/open/floor/plating/asteroid/snow/icemoon,
 /area/ruin/unpowered/buried_library)

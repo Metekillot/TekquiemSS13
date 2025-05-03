@@ -1,5 +1,3 @@
-// this is evil
-// todo: use a datum or something instead lol
 /obj/werewolf_holder/transformation
 	var/mob/living/carbon/human/human_form
 	var/mob/living/carbon/werewolf/crinos/crinos_form
@@ -8,10 +6,6 @@
 	var/transformating = FALSE
 	var/given_quirks = FALSE
 
-// we should really initialize on creation always
-// if this were a datum we'd just use New()
-// but since it's an atom subtype we have to use INITIALIZE_IMMEDIATE
-INITIALIZE_IMMEDIATE(/obj/werewolf_holder/transformation)
 /obj/werewolf_holder/transformation/Initialize()
 	. = ..()
 	crinos_form = new()
@@ -29,7 +23,13 @@ INITIALIZE_IMMEDIATE(/obj/werewolf_holder/transformation)
 
 /obj/werewolf_holder/transformation/proc/trans_gender(mob/living/carbon/trans, form)
 	if(!given_quirks)
-		given_quirks = TRUE
+		given_quirks = TRUE/*
+		if(HAS_TRAIT(trans, TRAIT_ACROBATIC))
+			var/datum/action/acrobate/DA = new()
+			DA.Grant(lupus_form)
+			var/datum/action/acrobate/NE = new()
+			NE.Grant(crinos_form)
+			*/
 		if(HAS_TRAIT(trans, TRAIT_DANCER))
 			var/datum/action/dance/DA = new()
 			DA.Grant(lupus_form)
@@ -39,7 +39,7 @@ INITIALIZE_IMMEDIATE(/obj/werewolf_holder/transformation)
 	if(trans.auspice.rage == 0 && form != trans.auspice.base_breed)
 		to_chat(trans, "Not enough rage to transform into anything but [trans.auspice.base_breed].")
 		return
-	if(trans.mind && HAS_TRAIT(trans.mind, TRAIT_IN_FRENZY))
+	if(trans.in_frenzy)
 		to_chat(trans, "You can't transform while in frenzy.")
 		return
 	trans.inspired = FALSE

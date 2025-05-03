@@ -20,7 +20,7 @@
  *
  * make sure you add an update to the schema_version stable in the db changelog
  */
-#define DB_MINOR_VERSION 22
+#define DB_MINOR_VERSION 12
 
 
 //! ## Timing subsystem
@@ -119,7 +119,6 @@
 #define INIT_ORDER_WHITELISTS		76
 #define INIT_ORDER_RESEARCH			75
 #define INIT_ORDER_EVENTS			70
-#define INIT_ORDER_LOADOUT			71
 #define INIT_ORDER_JOBS				65
 #define INIT_ORDER_QUIRKS			60
 #define INIT_ORDER_TICKER			55

@@ -152,67 +152,66 @@ window "infowindow"
 	elem "changelog"
 		type = BUTTON
 		pos = 5,5
-		size = 80x20
-		anchor1 = 0,0
-		anchor2 = 12,0
+		size = 90x20
+		anchor1 = 3,0
+		anchor2 = 19,0
 		saved-params = "is-checked"
 		text = "Changelog"
 		command = "changelog"
 	elem "rules"
 		type = BUTTON
-		pos = 90,5
-		size = 80x20
-		anchor1 = 12,0
-		anchor2 = 24,0
+		pos = 95,5
+		size = 90x20
+		anchor1 = 19,0
+		anchor2 = 34,0
 		saved-params = "is-checked"
 		text = "Rules"
 		command = "rules"
 	elem "wiki"
 		type = BUTTON
-		pos = 175,5
-		size = 80x20
-		anchor1 = 24,0
-		anchor2 = 36,0
+		pos = 185,5
+		size = 90x20
+		anchor1 = 34,0
+		anchor2 = 50,0
 		saved-params = "is-checked"
 		text = "Wiki"
 		command = "wiki"
-	elem "fullscreen-toggle"
+	elem "forum"
 		type = BUTTON
-		pos = 260,5
-		size = 80x20
-		anchor1 = 36,0
-		anchor2 = 48,0
+		pos = 275,5
+		size = 90x20
+		anchor1 = 50,0
+		anchor2 = 66,0
 		saved-params = "is-checked"
-		text = "Fullscreen"
-		command = "fullscreen"
+		text = "Forum"
+		command = "forum"
 	elem "discord"
 		type = BUTTON
-		pos = 345,5
-		size = 80x20
-		anchor1 = 48,0
-		anchor2 = 60,0
+		pos = 365,5
+		size = 90x20
+		anchor1 = 66,0
+		anchor2 = 81,0
 		saved-params = "is-checked"
 		text = "Discord"
 		command = "discord"
 	elem "github"
 		type = BUTTON
-		pos = 430,5
-		size = 80x20
-		anchor1 = 60,0
-		anchor2 = 72,0
+		pos = 455,5
+		size = 90x20
+		anchor1 = 81,0
+		anchor2 = 97,0
 		saved-params = "is-checked"
 		text = "Github"
 		command = "github"
 	elem "report-issue"
 		type = BUTTON
-		pos = 515,5
-		size = 80x20
-		anchor1 = 72,0
-		anchor2 = 84,0
+		pos = 545,5
+		size = 90x20
+		anchor1 = 97,0
+		anchor2 = 113,0
 		saved-params = "is-checked"
 		text = "Report Issue"
 		command = "report-issue"
-
 
 window "outputwindow"
 	elem "outputwindow"
@@ -374,23 +373,3 @@ window "statwindow"
 		anchor2 = 100,100
 		is-visible = false
 		saved-params = ""
-
-window "tgui_say"
-	elem "tgui_say"
-		type = MAIN
-		pos = 848,500
-		size = 231x30
-		anchor1 = 50,50
-		anchor2 = 50,50
-		is-visible = false
-		saved-params = ""
-		statusbar = false
-		can-minimize = false
-	elem "browser"
-		type = BROWSER
-		pos = 0,0
-		size = 231x30
-		anchor1 = 0,0
-		anchor2 = 0,0
-		saved-params = ""
-

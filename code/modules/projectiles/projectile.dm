@@ -250,24 +250,6 @@
 		return BULLET_ACT_HIT
 
 	var/mob/living/L = target
-	if(isliving(firer))
-		var/mob/living/living_firer = firer
-		var/successes = SSroll.opposed_roll(
-			player_a = firer, 
-			player_b = L, 
-			dice_a = living_firer.get_total_wits() + 2, 
-			dice_b = L.get_total_resolve() + (HAS_TRAIT(L, TRAIT_SUPERNATURAL_DEXTERITY) ? 3 : 0), 
-			show_player_a = TRUE, 
-			show_player_b = TRUE, 
-			alert_atom = L, 
-			draw_goes_to_b = TRUE, 
-			numerical = TRUE)
-		if(successes <= 0)
-			L.visible_message("<span class='danger'>[L] narrowly dodges \a [src]!</span>", \
-				"<span class='userdanger'>You're narrowly dodge \a [src]!</span>", null, COMBAT_MESSAGE_RANGE)
-			return BULLET_ACT_FORCE_PIERCE
-		else
-			damage = 1*successes
 
 	if(blocked != 100) // not completely blocked
 		if(damage && L.bloodpool && damage_type == BRUTE)
@@ -588,7 +570,13 @@
 	. = ..()
 	if(!fired)
 		return
-
+	if(firer && !probed_to_crit)
+		probed_to_crit = TRUE
+		if(ishuman(firer))
+			var/mob/living/carbon/human/frer = firer
+			if(frer.blood)
+				if(prob(frer.get_total_blood()*10))
+					damage *= 2
 	if(temporary_unstoppable_movement)
 		temporary_unstoppable_movement = FALSE
 		movement_type &= ~PHASING

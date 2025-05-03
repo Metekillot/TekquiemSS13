@@ -14,12 +14,11 @@
 	if(b)
 		var/obj/item/vamp/creditcard/card = locate() in b.contents
 		if(card && card.has_checked == FALSE)
-			for(var/obj/item/vamp/creditcard/a_card in b.contents)
-				if(a_card)
-					H.bank_id = a_card.account.bank_id
-					a_card.account.account_owner = H.true_real_name
-					a_card.account.tracked_owner_mob = WEAKREF(H)
-					a_card.has_checked = TRUE
+			for(var/obj/item/vamp/creditcard/caard in b.contents)
+				if(caard)
+					H.bank_id = caard.account.bank_id
+					caard.account.account_owner = H.true_real_name
+					caard.has_checked = TRUE
 
 //ID
 

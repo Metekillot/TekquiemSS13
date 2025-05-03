@@ -74,31 +74,35 @@
     background-color: #6d3f40;
 }
 
-.invictus {
+.camarilla {
 	background-color: #00008B
 }
 
-.lanceaetsanctum{
+.primogencouncil{
 	background-color: #FF8C00
 }
 
-.carthianmovement {
+.tremere {
 	background-color: #B22222
 }
 
-.circleofthecrone {
+.giovanni {
 	background-image: linear-gradient(to right, #009246,white,#CE2B37);
 	color: black
 }
 
-.other {
-    background-color: #6eaa2c;
-}
-
-.ordodracul {
+.clantzimisce {
 	background-color: #6d2d77
 }
 
 .lawenforcement {
 	background-color: #009fd4
+}
+
+.warehouse {
+	background-color: #964B00
+}
+
+.triad {
+	background-color: #C69DD2
 }
