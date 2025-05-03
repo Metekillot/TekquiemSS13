@@ -42,26 +42,26 @@
 	else
 		to_chat(current, "I'm too <span class='danger'><b>AFRAID</b></span> to continue doing this. Rolling...")
 	
-	SEND_SOUND(src, sound('code/modules/wod13/sounds/bloodneed.ogg', 0, 0, 50))
+	SEND_SOUND(current, sound('code/modules/wod13/sounds/bloodneed.ogg', 0, 0, 50))
 
 	var/frenzy_dice = current.get_total_resolve() + current.get_total_composure() + situational_modifier - brain.tempted_mod
 
-	var/check = SSroll.storyteller_roll(frenzy_dice, 3, current, current)
+	var/check = SSroll.storyteller_roll(frenzy_dice, 3)
 
 	switch(check)
 		if(0)	//bad frenzy
 			enter_frenzy()
-			if(iskindred(src))
-				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 200)
+			if(iskindred(current))
+				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 300)
 			else
-				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 200)
+				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 300)
 
 		if(1 to 2)
 			enter_frenzy()
-			if(iskindred(src))
-				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 100)
+			if(iskindred(current))
+				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 200)
 			else
-				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 100)
+				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 200)
 		else
 			if(iskindred(current))
 				brain.mod_tempted(1)
@@ -76,8 +76,15 @@
 
 	if(current.m_intent == MOVE_INTENT_WALK)
 		current.toggle_move_intent()
+	
+	current.additional_wits += current.blood_potency
+	current.additional_physique += current.blood_potency
+	current.additional_stamina += current.blood_potency
+	if(ishuman(current))
+		var/mob/living/carbon/human/current_human = current
+		current_human.recalculate_max_health()
 
-	SEND_SOUND(src, sound('code/modules/wod13/sounds/frenzy.ogg', 0, 0, 50))
+	SEND_SOUND(current, sound('code/modules/wod13/sounds/frenzy.ogg', 0, 0, 50))
 	
 	current.balloon_alert(current, "<span style='color: #0000ff;'>+FRENZY</span>")
 	current.add_client_colour(/datum/client_colour/glass_colour/red)
@@ -99,6 +106,13 @@
 	UnregisterSignal(current, COMSIG_MOB_CLICKON)
 	UnregisterSignal(current, COMSIG_LIVING_DEATH)
 	UnregisterSignal(SSfrenzypool, COMSIG_HANDLE_AUTOMATED_FRENZY)
+
+	current.additional_wits -= current.blood_potency
+	current.additional_physique -= current.blood_potency
+	current.additional_stamina -= current.blood_potency
+	if(ishuman(current))
+		var/mob/living/carbon/human/current_human = current
+		current_human.recalculate_max_health()
 
 	REMOVE_TRAIT(brain, TRAIT_IN_FRENZY, src)
 	current.remove_client_colour(/datum/client_colour/glass_colour/red)
@@ -150,6 +164,7 @@
 
 	if(length(targets))
 		frenzy_target = pick(targets)
+		return
 	
 	frenzy_target = null
 
@@ -160,7 +175,7 @@
 	current.set_glide_size(DELAY_TO_GLIDE_SIZE(current.total_multiplicative_slowdown()))
 
 	//rotshreck
-	if(iskindred(src))
+	if(iskindred(current))
 		var/atom/fear
 		var/last_best_dist
 		for(var/obj/effect/fire/fire in GLOB.fires_list)
@@ -180,31 +195,33 @@
 			return
 	
 	//if there's no target, stop doing things
-	if(!frenzy_target || frenzy_target.stat != DEAD)
+	if(!frenzy_target || frenzy_target.stat == DEAD)
 		return
 
 	//frezying creature has not yet reached its destination
-	if(get_dist(frenzy_target, current) >= 1)
-		step_to(current,frenzy_target,0)
+	var/new_dist = get_dist(frenzy_target, current)
+	if(new_dist > 1)
+		step_towards(current, frenzy_target)
 		current.face_atom(frenzy_target)
 		return
 
 	//get sum bloood
-	if(iskindred(current) && frenzy_target.bloodpool && current.last_drinkblood_use+95 <= world.time)
+	if(iskindred(current) && current.bloodpool <= 5 && frenzy_target.bloodpool && current.last_drinkblood_use+95 <= world.time)
+		current.a_intent = INTENT_GRAB
 		var/mob/living/carbon/human/human_current = current
-		frenzy_target.grabbedby(human_current)
-		if(ishuman(frenzy_target))
-			frenzy_target.emote("scream")
-			var/mob/living/carbon/human/BT = frenzy_target
-			BT.add_bite_animation()
-		
+
+		if(current.grab_state < GRAB_AGGRESSIVE)
+			frenzy_target.grabbedby(human_current)
+
+		if(current.grab_state < GRAB_AGGRESSIVE)
+			if(isnpc(frenzy_target))
+				frenzy_target.emote("scream")
+			return
+
 		if(human_current.CheckEyewitness(frenzy_target, current, 7, FALSE))
 			human_current.AdjustMasquerade(-1)
 		
-		playsound(current, 'code/modules/wod13/sounds/drinkblood1.ogg', 50, TRUE)
-		frenzy_target.visible_message("<span class='warning'><b>[current] bites [current]'s neck!</b></span>", "<span class='warning'><b>[current] bites your neck!</b></span>")
-		current.face_atom(frenzy_target)
-		human_current.drinksomeblood(frenzy_target, TRUE)
+		human_current.vamp_bite()
 		return
 
 	//beat the shit out of it
@@ -223,7 +240,23 @@
 	UnregisterSignal(current, COMSIG_MOB_CLICKON)
 	RegisterSignal(new_character, COMSIG_MOB_CLICKON, PROC_REF(cancel_click))
 	RegisterSignal(new_character, COMSIG_LIVING_DEATH, PROC_REF(handle_current_death))
+
+	current.additional_wits -= current.blood_potency
+	current.additional_physique -= current.blood_potency
+	current.additional_stamina -= current.blood_potency
+	if(ishuman(current))
+		var/mob/living/carbon/human/current_human = current
+		current_human.recalculate_max_health()
+	
+	new_character.additional_wits += new_character.blood_potency
+	new_character.additional_physique += new_character.blood_potency
+	new_character.additional_stamina += new_character.blood_potency
+	if(ishuman(current))
+		var/mob/living/carbon/human/new_character_human = new_character
+		new_character_human.recalculate_max_health()
+
 	current = new_character
+	
 
 /datum/component/frenzy_handler/proc/cancel_click()
 	SIGNAL_HANDLER

@@ -28,8 +28,13 @@
 	SIGNAL_HANDLER
 	if(!invader.mind)
 		return
+	INVOKE_ASYNC(src, PROC_REF(open_invader_window), invader)
+
+/datum/component/base_memory/proc/open_invader_window(mob/invader)
 	get_memory_data(src, FALSE)
-	invader << browse(dat.Join("<br>"), "window=vampire;size=500x600;border=1;can_resize=1;can_minimize=0")
+	var/datum/browser/popup = new(invader, "memories_window_invader", null, 500, 500)
+	popup.set_content(dat.Join("<br>"))
+	popup.open()
 	
 
 /datum/component/base_memory/proc/get_memory_data(datum/source, var/is_own_memories = TRUE)
@@ -48,27 +53,22 @@
 
 	if(!(SEND_SIGNAL(src, COMSIG_MEMORY_NAME_OVERRIDE, owner, is_own_memories) & COMPONENT_MEMORY_OVERRIDE))
 		dat += "[icon2html(getFlatIcon(owner, SOUTH), owner)]I am [owner.true_real_name]."
-	dat += ""
 	dat += "Tonight, I have taken the role of \a [owner.mind.assigned_role]."
-	dat += ""
+	dat += "<hr>"
 	SEND_SIGNAL(src, COMSIG_MEMORY_SPLAT_TEXT, owner, is_own_memories)
 
 	var/datum/mind/brain = parent
 	switch(brain.tempted_mod)
 		if(1)
 			dat += "The Beast is tempting me."
-			dat += ""
 		if(2)
 			dat += "The Beast is pushing me to lose myself."
-			dat += ""
 		if(3)
 			dat += "The Beast is screaming to be let loose."
-			dat += ""
 	
 	if(HAS_TRAIT(owner, TRAIT_CHARMED))
 		for(var/mob/charmer in owner.status_traits[TRAIT_CHARMED])
 			dat += "I find myself trusting [charmer]."
-		dat += ""
 
 	dat += "<b>Physique</b>: [owner.physique] + [owner.additional_physique]"
 	dat += "<b>Stamina</b>: [owner.stamina] + [owner.additional_stamina]"
@@ -76,7 +76,7 @@
 	dat += "<b>Composure</b>: [owner.composure] + [owner.additional_composure]"
 	dat += "<b>Wits</b>: [owner.wits] + [owner.additional_wits]"
 	dat += "<b>Resolve</b>: [owner.resolve] + [owner.additional_resolve]"
-	dat += ""
+	dat += "<hr>"
 	SEND_SIGNAL(src, COMSIG_MEMORY_DISCIPLINE_TEXT, owner, is_own_memories)
 
 	var/obj/keypad/armory/armory = find_keypad(/obj/keypad/armory)
@@ -101,15 +101,13 @@
 	
 	if(is_own_memories && owner.mind)
 		if(length(owner.mind.character_connections) || length(owner.mind.fake_character_connections))
-			dat += " "
+			dat += "<hr>"
 			dat += "<b>I've made some connections in the city:</b>"
 		if(length(owner.mind.character_connections))
 			for(var/datum/character_connection/connection in owner.mind.character_connections)
 				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(source)];delete_connection=[connection.group_id]'>Delete</a>"
-			dat += " "
 		if(length(owner.mind.fake_character_connections))
 			for(var/datum/character_connection/connection in owner.mind.fake_character_connections)
 				dat += "<b>[connection.connection_desc]</b> <a style='white-space:nowrap;' href='byond://?src=[REF(source)];delete_connection=[connection.group_id]'>Delete</a>"
-			dat += " "
 	
 	return dat

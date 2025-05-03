@@ -2,7 +2,7 @@
 	if(!modifier)
 		return
 	
-	var/new_tempted_mod = clamp(tempted_mod - modifier,0 , 3)
+	var/new_tempted_mod = clamp(tempted_mod + modifier, 0, 3)
 	if(balloon_popup && new_tempted_mod != tempted_mod && current)
 		if(new_tempted_mod > tempted_mod)
 			current.balloon_alert(current, "<span style='color: #0000ff;'>[tempted_mod?"+":""]TEMPTED [new_tempted_mod]</span>")
