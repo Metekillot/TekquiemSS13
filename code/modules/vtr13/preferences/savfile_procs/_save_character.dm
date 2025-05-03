@@ -67,6 +67,7 @@
 	WRITE_FILE(S["actual_age"], actual_age)
 	WRITE_FILE(S["regent_clan"], regent_clan?.name)
 	WRITE_FILE(S["vamp_faction"], vamp_faction?.name)
+	WRITE_FILE(S["tempted"], tempted)
 
 //===========WEREWOLVES===========
 	WRITE_FILE(S["auspice"], auspice.name)

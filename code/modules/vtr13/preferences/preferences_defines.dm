@@ -199,6 +199,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/actual_age = 30					//true age of character
 	var/datum/vampireclane/regent_clan
 	var/datum/vtr_faction/vamp_faction
+	var/tempted = 0						//Temptation from the beast
 
 //===========WEREWOLVES===========
 	var/datum/auspice/auspice = new /datum/auspice/ahroun()

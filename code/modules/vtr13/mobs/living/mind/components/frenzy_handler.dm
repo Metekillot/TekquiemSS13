@@ -63,7 +63,8 @@
 			else
 				addtimer(CALLBACK(src, PROC_REF(exit_frenzy)), 100)
 		else
-			brain.mod_tempted(1)
+			if(iskindred(current))
+				brain.mod_tempted(1)
 
 /datum/component/frenzy_handler/proc/enter_frenzy()
 	if(HAS_TRAIT(parent, TRAIT_IN_FRENZY))

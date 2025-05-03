@@ -10,4 +10,12 @@
 			current.balloon_alert(current, "<span style='color: #14a833;'>-TEMPTED</span>")
 		else
 			current.balloon_alert(current, "<span style='color: #14a833;'>TEMPTED [new_tempted_mod]</span>")
+	
+	if(tempted_mod == new_tempted_mod)
+		return
+	
 	tempted_mod = new_tempted_mod
+	var/datum/preferences/P = GLOB.preferences_datums[ckey(src.key)]
+	if(P)
+		P.tempted = tempted_mod
+		P.save_character()

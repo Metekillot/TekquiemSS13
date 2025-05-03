@@ -64,11 +64,9 @@
 		if(P)
 			if(P.humanity != H.humanity)
 				P.humanity = H.humanity
-				P.save_preferences()
 				P.save_character()
 			if(P.masquerade != H.masquerade)
 				P.masquerade = H.masquerade
-				P.save_preferences()
 				P.save_character()
 
 			if(P.humanity < 1 && H.mind)

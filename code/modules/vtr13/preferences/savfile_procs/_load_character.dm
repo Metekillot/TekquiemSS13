@@ -188,6 +188,9 @@
 			vamp_faction = new faction()
 		else
 			vamp_faction = new /datum/vtr_faction/vamp_faction/unaligned()
+	
+	READ_FILE(S["tempted"], tempted)
+	tempted = clamp(tempted, 0, 3)
 
 //===========WEREWOLVES===========
 	var/auspice_id

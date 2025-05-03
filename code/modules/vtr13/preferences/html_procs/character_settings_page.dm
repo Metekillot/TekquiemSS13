@@ -43,6 +43,8 @@
 		dat += "<b>Veil:</b> [masquerade]/5<BR>"
 	if(pref_species.name == "Vampire" || pref_species.name == "Ghoul")
 		dat += "<b>Masquerade:</b> [masquerade]/5<BR>"
+	if(pref_species.name == "Vampire")
+		dat += "<b>Beast's Temptation:</b> [tempted]/3<br>"
 
 	if(pref_species.name == "Ghoul" || clane?.name == "Revenant")
 		dat += "<b>Vampire Rank:</b> [GLOB.vampire_rank_names[vamp_rank]]"

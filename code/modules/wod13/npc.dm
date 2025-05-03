@@ -132,6 +132,8 @@
 					HS.my_creator.last_nonraid = world.time
 					HS.my_creator.killed_count = HS.my_creator.killed_count+1
 					HS.my_creator.set_warrant(HS.my_creator.killed_count >= 5, "SUSPICIOUS ACTION (murder)")
+					if(HS.my_creator.mind)
+						HS.my_creator.mind.mod_tempted(-3)
 			else
 				if(ishuman(last_attacker))
 					var/mob/living/carbon/human/HM = last_attacker
@@ -139,6 +141,8 @@
 					HM.last_nonraid = world.time
 					HM.killed_count = HM.killed_count+1
 					HM.set_warrant(HM.killed_count >= 5, "SUSPICIOUS ACTION (murder)")
+					if(HM.mind)
+						HM.mind.mod_tempted(-3)
 	remove_overlay(FIGHT_LAYER)
 	..()
 
