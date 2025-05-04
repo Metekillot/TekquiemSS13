@@ -163,7 +163,7 @@
 	icon_grow = "geranium-grow"
 	icon_dead = "geranium-dead"
 	reagents_add = list(/datum/reagent/medicine/c2/libital = 0.2, /datum/reagent/consumable/nutriment = 0.05)
-	mutatelist = list(/obj/item/seeds/geranium/fraxinella)
+	mutatelist = list(/obj/item/seeds/fraxinella)
 
 /obj/item/food/grown/flower/geranium
 	seed = /obj/item/seeds/geranium
@@ -179,26 +179,36 @@
 		. += span_notice("Hanakotoba expresses Friendship.")
 
 ///Fraxinella seeds.
-/obj/item/seeds/geranium/fraxinella
+/obj/item/seeds/fraxinella
 	name = "pack of fraxinella seeds"
 	desc = "These seeds grow into fraxinella."
 	icon_state = "seed-fraxinella"
 	species = "fraxinella"
 	plantname = "Fraxinella Plants"
-	product = /obj/item/food/grown/flower/geranium/fraxinella
+	product = /obj/item/food/grown/flower/fraxinella
+	endurance = 10
+	maturation = 8
+	yield = 6
+	potency = 20
+	instability = 1 //Flowers have 1 instability, if you want to breed out instability, crossbreed with flowers.
+	growthstages = 3
+	growing_icon = 'icons/obj/hydroponics/growing_flowers.dmi'
+	icon_grow = "poppy-grow"
+	icon_dead = "poppy-dead"
 	mutatelist = list()
 	rarity = 15
 	reagents_add = list(/datum/reagent/consumable/nutriment = 0.05, /datum/reagent/fuel/oil = 0.05)
 
 ///Fraxinella Flowers.
-/obj/item/food/grown/flower/geranium/fraxinella //typically not found in America and thus lacks US Victorian Floriography. A modern subsitute was applied.
-	seed = /obj/item/seeds/geranium/fraxinella
+/obj/item/food/grown/flower/fraxinella //typically not found in America and thus lacks US Victorian Floriography. A modern subsitute was applied.
+	seed = /obj/item/seeds/fraxinella
 	name = "fraxinella"
 	desc = "A beautiful light pink flower."
 	icon_state = "fraxinella"
 	distill_reagent = /datum/reagent/ash
 
 /obj/item/food/grown/flower/fraxinella/examine(mob/user)
+	. = ..()
 	if(HAS_TRAIT(user, TRAIT_FLOWER_LANGUAGE))
 		. += span_notice("Floriography speaks to you of Fire.")
 	if(HAS_TRAIT(user, TRAIT_FLOWER_LANGUAGE_JAPANESE))
@@ -280,7 +290,7 @@
 	to_chat(user, "<font color='green'>Your sunflower's <font color='orange'><b>FLOWER POWER</b></font> strikes [M]!</font>")
 	. = ..()
 
-/obj/item/food/grown/grown/flower/sunflower/examine(mob/user)
+/obj/item/food/grown/flower/sunflower/examine(mob/user)
 	. = ..()
 	if(HAS_TRAIT(user, TRAIT_FLOWER_LANGUAGE))
 		. += span_notice("Floriography tells you, if short, this flower speaks of devout adoration. If notably tall, this flower speaks of Pride.</span>")
@@ -316,7 +326,7 @@
 	bite_consumption_mod = 2
 	distill_reagent = /datum/reagent/consumable/ethanol/absinthe //It's made from flowers.
 
-/obj/item/seeds/sunflower/moonflower/examine(mob/user)
+/obj/item/food/grown/flower/moonflower/examine(mob/user)
 	. = ..()
 	if(HAS_TRAIT(user, TRAIT_FLOWER_LANGUAGE))
 		. += span_notice("Floriography speaks to you of mortality, of love in vain.</span>")
@@ -413,7 +423,7 @@ Choosing not to delete it in case the example of its code is useful for somethin
 	desc = "A beautiful blue flower."
 	icon_state = "forget_me_not"
 
-/obj/item/food/grown/flower/geranium/examine(mob/user)
+/obj/item/food/grown/flower/forgetmenot/examine(mob/user)
 	. = ..()
 	if(HAS_TRAIT(user, TRAIT_FLOWER_LANGUAGE))
 		. += span_notice("Floriography speaks to you of True love, Fidelity and a Lasting Connection.")
