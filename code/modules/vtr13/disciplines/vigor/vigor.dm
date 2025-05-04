@@ -177,7 +177,7 @@
 		qdel(wallpaper_destroyed)
 	wall.ScrapeAway(amount=1)
 
-	playsound(get_turf(attacker), 'code/modules/wod13/sounds/werewolf_fall.ogg', 100, FALSE)
+	playsound(get_turf(attacker), 'code/modules/wod13/sounds/werewolf_fall.ogg', 80, FALSE)
 	attacker.forceMove(get_step(attacker, dir))
 	animate(attacker, pixel_x = 0, pixel_y = 0, time = 0)
 	
