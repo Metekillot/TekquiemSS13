@@ -55,7 +55,4 @@
 	WRITE_FILE(S["pda_color"], pda_color)
 	WRITE_FILE(S["key_bindings"], key_bindings)
 	WRITE_FILE(S["hearted_until"], (hearted_until > world.realtime ? hearted_until : null))
-	WRITE_FILE(S["ooc_bond_pref"], ooc_bond_pref)
-	WRITE_FILE(S["ooc_ghoul_pref"], ooc_ghoul_pref)
-	WRITE_FILE(S["ooc_embrace_pref"], ooc_embrace_pref)
 	return TRUE

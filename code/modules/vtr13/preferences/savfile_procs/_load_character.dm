@@ -135,6 +135,19 @@
 	READ_FILE(S["resolve"], resolve)
 	resolve = sanitize_integer(resolve, 1, 5, 1)
 
+	READ_FILE(S["ooc_bond_pref"], ooc_bond_pref)
+	if(!ooc_bond_pref)
+		ooc_bond_pref = "Ask"
+	READ_FILE(S["ooc_ghoul_pref"], ooc_ghoul_pref)
+	if(!ooc_ghoul_pref)
+		ooc_ghoul_pref = "Ask"
+	READ_FILE(S["ooc_embrace_pref"], ooc_embrace_pref)
+	if(!ooc_embrace_pref)
+		ooc_embrace_pref = "Ask"
+	READ_FILE(S["ooc_escalation_pref"], ooc_escalation_pref)
+	if(!ooc_escalation_pref)
+		ooc_escalation_pref = "No"
+
 //===========GHOUL/VAMPS===========
 	var/clane_id
 	READ_FILE(S["clan"], clane_id)
@@ -156,8 +169,11 @@
 	READ_FILE(S["masquerade"], masquerade)
 	masquerade = sanitize_integer(masquerade, 0, 5, initial(masquerade))
 
-	READ_FILE(S["clan_accessory"], clane_accessory)	
-	clane_accessory = sanitize_inlist(clane_accessory, clane.accessories, null)
+	READ_FILE(S["clan_accessory"], clane_accessory)
+	if(clane?.accessories)
+		clane_accessory = sanitize_inlist(clane_accessory, clane.accessories, null)
+	else
+		clane_accessory = null
 
 	//Disciplines
 	READ_FILE(S["discipline_types"], discipline_types)

@@ -60,9 +60,6 @@
 	READ_FILE(S["tip_delay"], tip_delay)
 	READ_FILE(S["pda_style"], pda_style)
 	READ_FILE(S["pda_color"], pda_color)
-	READ_FILE(S["ooc_bond_pref"], ooc_bond_pref)
-	READ_FILE(S["ooc_ghoul_pref"], ooc_ghoul_pref)
-	READ_FILE(S["ooc_embrace_pref"], ooc_embrace_pref)
 
 	// Custom hotkeys
 	READ_FILE(S["key_bindings"], key_bindings)

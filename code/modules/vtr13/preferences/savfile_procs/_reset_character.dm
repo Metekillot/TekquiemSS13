@@ -12,7 +12,10 @@
 	composure = 1
 	wits = 1
 	resolve = 1
-
+	ooc_bond_pref = "Ask"
+	ooc_ghoul_pref = "Ask"
+	ooc_embrace_pref = "Ask"
+	ooc_escalation_pref = "No"
 	clane = null
 	humanity = 7
 	diablerist = 0

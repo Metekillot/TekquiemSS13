@@ -50,6 +50,10 @@
 	WRITE_FILE(S["composure"], composure)
 	WRITE_FILE(S["wits"], wits)
 	WRITE_FILE(S["resolve"], resolve)
+	WRITE_FILE(S["ooc_bond_pref"], ooc_bond_pref)
+	WRITE_FILE(S["ooc_ghoul_pref"], ooc_ghoul_pref)
+	WRITE_FILE(S["ooc_embrace_pref"], ooc_embrace_pref)
+	WRITE_FILE(S["ooc_escalation_pref"], ooc_escalation_pref)
 
 //===========GHOUL/VAMPS===========
 	WRITE_FILE(S["clan"], clane?.name)
