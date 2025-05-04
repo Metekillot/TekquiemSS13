@@ -24,8 +24,10 @@
 			for(var/mob/mob in range(9, src))
 				shake_camera(mob, 7, 3)
 			playsound(get_turf(src), 'code/modules/wod13/sounds/werewolf_fall.ogg', 80, 9)
-			src.visible_message("The truck bursts through the shutters! Fucking asshole!")
+			src.visible_message(span_boldwarning("The cargo truck bursts through the shutters! Fucking asshole!"))
 
 	for(var/mob/living/L in get_step(src, Dir))
-		L.gib()
+		L.Knockdown(3 SECONDS)
+		L.apply_damage(50, BRUTE)
+		src.visible_message(span_boldwarning("The cargo truck runs over [L]!"))
 	..()
