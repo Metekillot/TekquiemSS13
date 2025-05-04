@@ -1,7 +1,7 @@
 /datum/discipline_power/vtr/nightmare/mortal_terror
 	name = "Mortal Terror"
 	desc = "Inflict such piquant horror into your victim that they suffer physical damage."
-	
+
 	level = 4
 
 	check_flags = DISC_CHECK_CAPABLE | DISC_CHECK_SEE
@@ -13,7 +13,7 @@
 
 	var/list/victims = list()
 
-/datum/discipline_power/vtr/nightmare/mortal_terror/pre_activation_check_no_spend(mob/living/target)	
+/datum/discipline_power/vtr/nightmare/mortal_terror/pre_activation_check_no_spend(mob/living/target)
 	if(LAZYFIND(victims, target))
 		to_chat(owner, span_warning("[target]'s has already been afflicted once tonight by your vision of true horror, and are steeled to it."))
 		return FALSE
@@ -28,7 +28,7 @@
 		dice_b = target.get_total_resolve() + target.blood_potency,
 		alert_atom = target,
 		numerical = TRUE)
-	
+
 	target.playsound_local(get_turf(target), 'sound/magic/ethereal_enter.ogg', 100, FALSE)
 
 	if(success_count <= 0)
@@ -36,7 +36,7 @@
 		to_chat(owner, span_warning("[target] resists the terror put onto them!"))
 		to_chat(target, span_userdanger("You are faced with a dread beyond your reckoning, but push it away before it can take hold!"))
 		return
-	
+
 	victims += target
 
 	apply_discipline_affliction_overlay(target, "dementation", 1, 5 SECONDS)
@@ -56,7 +56,7 @@
 		var/datum/disease/heart_attack = new /datum/disease/heart_failure()
 		target.ForceContractDisease(heart_attack, FALSE, TRUE)
 
-	to_chat(target, span_userdanger("A horrifying, traumatic fear grips you. Elge write a better description im weak"))
+	to_chat(target, span_userdanger("A vast fear rips through the thin skin of your mind, and every primal part of your mind screams in the base horror prey harbor for their predators."))
 	target.adjustOrganLoss(ORGAN_SLOT_BRAIN, success_count * base_damage, 90)
 
 /datum/discipline_power/vtr/nightmare/mortal_terror/proc/end_blindness(mob/living/carbon/human/target)

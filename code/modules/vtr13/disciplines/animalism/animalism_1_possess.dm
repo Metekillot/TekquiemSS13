@@ -1,6 +1,6 @@
 /datum/discipline_power/vtr/animalism/possess
 	name = "Possess Animal"
-	desc = "Elgeon write a description kthx. Get that rat in you"
+	desc = "Bind an animal to your will, controlling them as an extension of your body."
 	level = 1
 	violates_masquerade = FALSE
 	cancelable = TRUE
@@ -52,7 +52,7 @@
 	UnregisterSignal(owner, list(COMSIG_PARENT_QDELETING, COMSIG_LIVING_DEATH, COMSIG_POWER_TRY_ACTIVATE))
 	if(possessed_creature.mind)
 		possessed_creature.mind.transfer_to(owner)
-	
+
 	unpossess_datum.Remove(possessed_creature)
 	qdel(unpossess_datum)
 	possessed_creature = null

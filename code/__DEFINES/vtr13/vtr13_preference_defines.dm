@@ -22,7 +22,7 @@
 
 GLOBAL_LIST_INIT(vampire_rank_list, list(
 	"Fledgling" = VAMP_RANK_FLEDGLING,
-	"Neonate" = VAMP_RANK_NEONATE, 
+	"Neonate" = VAMP_RANK_NEONATE,
 	"Ancillae" = VAMP_RANK_ANCILLAE,
 	"Elder" = VAMP_RANK_ELDER))
 
@@ -30,17 +30,17 @@ GLOBAL_LIST_INIT(vampire_rank_names, list(
 	VAMP_RANK_GHOUL = "Ghoul",
 	VAMP_RANK_HALF_DAMNED = "Half-Damned",
 	VAMP_RANK_FLEDGLING = "Fledgling",
-	VAMP_RANK_NEONATE = "Neonate", 
+	VAMP_RANK_NEONATE = "Neonate",
 	VAMP_RANK_ANCILLAE = "Ancillae",
 	VAMP_RANK_ELDER = "Elder"))
 
 GLOBAL_LIST_INIT(vampire_rank_desc_list, list(
-	VAMP_RANK_GHOUL = "Elge write a description for a Ghoul's place in vampire society",
-	VAMP_RANK_HALF_DAMNED = "Elge write a description for a Half-Damned's place in vampire society",
-	VAMP_RANK_FLEDGLING = "Elge write a description for a Fledgling's place in vampire society",
-	VAMP_RANK_NEONATE = "Elge write a description for a Neonates's place in vampire society",
-	VAMP_RANK_ANCILLAE = "Elge write a description for an Ancillae's place in vampire society",
-	VAMP_RANK_ELDER = "Elge write a description for an Elder's place in vampire society"))
+	VAMP_RANK_GHOUL = "The Vitae-addicted human servants of the Kindred known as Ghouls exist at the very bottom of the All-Night Society.",
+	VAMP_RANK_HALF_DAMNED = "Revenants, the Half-Damned, the misbegotten bastard cousins of the Kindred, and have no place in the All-Night Society without Kindred patronage.",
+	VAMP_RANK_FLEDGLING = "Recently-Embraced vampires are known as fledglings, and are considered social, political, and legal extensions of their sires for the first months of their unlives.",
+	VAMP_RANK_NEONATE = "Neonates, who have been Kindred for less than fifty years, make up the majority of the All-Night Society. They are fully independent, but weaker than their elders and barred from high office outside of the Carthian Movement",
+	VAMP_RANK_ANCILLAE = "Ancillae, who have been dead between fifty and one hundred years, are the backbone of Kindred politics. In Long Beach, they can hold all offices.",
+	VAMP_RANK_ELDER = "Elders, dead for more than a century, shape the All-Night Society with their ambitions, but generally prefer to act through younger proxies. The highest stations in the city are theirs for the taking."))
 
 #define CHARACTER_DOTS_DEFAULT 12
 #define CHARACTER_DOTS_GHOUL 12
@@ -58,12 +58,12 @@ GLOBAL_LIST_INIT(vampire_rank_desc_list, list(
 #define DISCIPLINE_DOTS_ANCILLAE 8
 #define DISCIPLINE_DOTS_ELDER 11
 
-#define PHYSIQUE_DESCRIPTION "Elge write a description for physique"
-#define STAMINA_DESCRIPTION "Elge write a description for stamina"
-#define WITS_DESCRIPTION "Elge write a description for wits"
-#define RESOLVE_DESCRIPTION "Elge write a description for resolve"
-#define CHARISMA_DESCRIPTION "Elge write a description for charisma"
-#define COMPOSURE_DESCRIPTION "Elge write a description for composure"
+#define PHYSIQUE_DESCRIPTION "Muscular strength and athletic ability."
+#define STAMINA_DESCRIPTION "Constitution, endurance, fortitude, and physical robustness."
+#define WITS_DESCRIPTION "Reflexes, intelligence, and fine motor skills."
+#define RESOLVE_DESCRIPTION "Mental shrewdness, discernment, and willpower."
+#define CHARISMA_DESCRIPTION "Social skills and presence."
+#define COMPOSURE_DESCRIPTION "Emotional stability and self-control."
 
 GLOBAL_LIST_INIT(vampire_faction_list, list(
 	"Invictus",

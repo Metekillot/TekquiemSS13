@@ -1,6 +1,6 @@
 /datum/discipline_power/vtr/animalism/cause_frenzy
 	name = "Awaken the Beast"
-	desc = "Elgeon write a description kthx. Summon a cat or rat"
+	desc = "Force the Beast of all nearby Kindred into frenzy."
 	level = 4
 	violates_masquerade = FALSE
 	cooldown_length = 30 SECONDS
@@ -10,5 +10,5 @@
 	for(var/mob/living/carbon/human/target in view(7, get_turf(owner)))
 		if(!iskindred(target) || target == owner || !target.mind)
 			continue
-		to_chat(target, span_danger("You look at [owner] and you think to yourself 'IT'S MORBIN TIME!' You are compelled to morb all over the place. Elge write this better or delete this line."))
+		to_chat(target, span_danger("An unnatural force brings your Beast to the surface, slavering for blood and dominance!"))
 		target.mind.try_frenzy()

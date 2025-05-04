@@ -1,7 +1,7 @@
 /datum/vampireclane/vtr/nosferatu
 	name = "Nosferatu"
-	desc = "The Nosferatu wear their curse on the outside. Elgeon wears her curse on the inside."
-	curse = "Masquerade-violating appearance."
+	desc = "The Nosferatu, each marred in unnatural ways by the Embrace, command terror and fear."
+	curse = "It is obvious to anyone who looks at you that you are unnatural and offsettling. Ordinary humans barely tolerate your presence."
 	clane_disciplines = list(
 		/datum/discipline/vtr/vigor,
 		/datum/discipline/vtr/obfuscate,

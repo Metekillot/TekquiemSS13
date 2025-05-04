@@ -1,9 +1,9 @@
 /datum/discipline/vtr/animalism
 	name = "Animalism"
-	desc = "Elgeon should write a description for this. Violates Masquerade (?)."
+	desc = "Summon and control animals, including the Beasts of other Kindred."
 	icon_state = "animalism"
 	power_type = /datum/discipline_power/vtr/animalism
-	
+
 	//Allowed animal possession types
 	var/list/allowed_types = list(
 		/mob/living/simple_animal/hostile/beastmaster/rat,
@@ -20,7 +20,7 @@
 		allowed_types += /mob/living/simple_animal/deer
 	if(level == 5)
 		allowed_types += /mob/living/simple_animal/hostile/bear/wod13
-		
+
 
 
 

@@ -1,7 +1,7 @@
 /datum/vampireclane/vtr/daeva
 	name = "Daeva"
-	desc = "Buncha twilight vampires, probably gonna play one l8r, elgeon write a description thanks"
-	curse = "get addicted to kine blood, idiot. elge write this better"
+	desc = "The Daeva are supernaturally charming and physically powerful, known for their passion and their emotional dependency on their human herds."
+	curse = "You act as though second-stage blood bound to any human you drink from twice."
 	clane_disciplines = list(
 		/datum/discipline/vtr/vigor,
 		/datum/discipline/vtr/celerity,

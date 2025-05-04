@@ -1,6 +1,6 @@
 /datum/discipline_power/vtr/animalism/summon/fell
-	name = "Summon fell Animals idk elge describe this"
-	desc = "Elgeon write a description kthx. Summon a dog or bat"
+	name = "Summon Fell Animals"
+	desc = "Summon a wild dog or a vampire bat from the city outskirts."
 	level = 3
 	summon_list = list(
 		"dog" = /mob/living/simple_animal/hostile/beastmaster,

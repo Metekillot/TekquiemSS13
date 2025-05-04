@@ -1,6 +1,6 @@
 /datum/discipline_power/vtr/animalism/summon
 	name = "Summon Small Animals"
-	desc = "Elgeon write a description kthx. Summon a cat or rat"
+	desc = "Summon a cat or rat from the urban environment."
 	level = 2
 	violates_masquerade = FALSE
 	var/list/summon_list = list(
@@ -14,7 +14,7 @@
 	if(length(owner.beastmaster) >= limit)
 		var/mob/living/simple_animal/hostile/beastmaster/beast = pick(owner.beastmaster)
 		beast.death()
-	
+
 	if(!length(owner.beastmaster))
 		var/datum/action/beastmaster_stay/stay = new()
 		stay.Grant(owner)

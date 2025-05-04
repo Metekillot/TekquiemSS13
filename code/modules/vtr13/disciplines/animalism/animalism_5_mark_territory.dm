@@ -1,6 +1,6 @@
 /datum/discipline_power/vtr/animalism/mark_territory
 	name = "Mark Territory"
-	desc = "Elgeon write a description kthx. Summon a cat or rat"
+	desc = "Mark a stretch of tiles with your blood, notifying you whenever someone crosses over them."
 	level = 4
 	vitae_cost = 0
 	cooldown_length = 0.2 SECONDS
