@@ -30,7 +30,7 @@
 	current_card = null
 
 
-
+/*
 /datum/vtm_bank_account
 	var/account_owner = ""
 	var/bank_id = 0
@@ -46,7 +46,7 @@ var/mob/living/carbon/human/H
 		var/random_id = rand(1, 999999)
 		bank_id = random_id
 		GLOB.bank_account_list += src
-
+*/
 /obj/item/vamp/creditcard
 	name = "debit card"
 	desc = "Used to access bank money."
@@ -63,7 +63,7 @@ var/mob/living/carbon/human/H
 	onflooricon = 'code/modules/wod13/onfloor.dmi'
 
 	var/owner = ""
-	var/datum/vtm_bank_account/account
+	var/datum/vtr_bank_account/account
 	var/code
 	var/balance = 0
 	var/has_checked = FALSE
@@ -89,7 +89,7 @@ var/mob/living/carbon/human/H
 /obj/item/vamp/creditcard/New(mob/user)
 	..()
 	if(!account || code == "")
-		account = new /datum/vtm_bank_account()
+		account = new /datum/vtr_bank_account()
 	if(user)
 		owner = user.ckey
 	if(istype(src, /obj/item/vamp/creditcard/prince))
@@ -138,7 +138,7 @@ var/mob/living/carbon/human/H
 	var/list/data = list()
 	var/list/accounts = list()
 
-	for(var/datum/vtm_bank_account/account in GLOB.bank_account_list)
+	for(var/datum/vtr_bank_account/account in GLOB.bank_account_list)
 		if(account && account.account_owner)
 			accounts += list(
 				list("account_owner" = account.account_owner
@@ -212,8 +212,8 @@ var/mob/living/carbon/human/H
 				to_chat(usr, "<span class='notice'>Invalid target account ID.</span>")
 				return FALSE
 
-			var/datum/vtm_bank_account/target_account = null
-			for(var/datum/vtm_bank_account/account in GLOB.bank_account_list)
+			var/datum/vtr_bank_account/target_account = null
+			for(var/datum/vtr_bank_account/account in GLOB.bank_account_list)
 				if(account.account_owner == target_account_id)
 					target_account = account
 					break

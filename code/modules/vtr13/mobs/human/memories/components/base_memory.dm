@@ -94,7 +94,7 @@
 	
 	if(is_own_memories && istype(owner, /mob/living/carbon/human))
 		var/mob/living/carbon/human/owner_human = owner
-		for(var/datum/vtm_bank_account/account in GLOB.bank_account_list)
+		for(var/datum/vtr_bank_account/account in GLOB.bank_account_list)
 			if(owner_human.bank_id == account.bank_id)
 				dat += "<b>My bank account code is: [account.code]</b>"
 				break

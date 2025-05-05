@@ -144,10 +144,11 @@
 /area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "agP" = (
 /obj/structure/table,
-/obj/machinery/mineral/equipment_vendor/fastfood/products{
-	pixel_y = 10
+/obj/structure/retail/junkfood_menu,
+/obj/structure/retail/smoke_menu{
+	pixel_x = 0;
+	pixel_y = 11
 	},
-/obj/machinery/mineral/equipment_vendor/fastfood/smoking,
 /turf/open/floor/plasteel,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/grocery)
 "ahm" = (
@@ -3152,7 +3153,7 @@
 /turf/open/floor/plating/vampwood,
 /area/vtm/vtr/masquerade/interior/ground_floor/southwest/warehouse)
 "cQK" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/snacks{
+/obj/structure/retail/snack_vendor{
 	pixel_x = 0;
 	pixel_y = 8
 	},
@@ -4711,7 +4712,7 @@
 /area/vtm/vtr/masquerade/interior/floor_two/central/library)
 "eox" = (
 /obj/structure/table/wood,
-/obj/machinery/mineral/equipment_vendor/fastfood/smoking,
+/obj/structure/retail/smoke_menu,
 /turf/closed/wall/vampwall/junk/low,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/nightclub)
 "epi" = (
@@ -4779,9 +4780,9 @@
 /turf/open/openspace,
 /area/vtm/vtr/masquerade/exterior/floor_two/river/la_river)
 "eru" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/snacks{
+/obj/structure/retail/snack_vendor{
 	pixel_x = 0;
-	pixel_y = 8
+	pixel_y = 11
 	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/hotel)
@@ -5483,7 +5484,10 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/central/library)
 "eUv" = (
 /obj/structure/table/wood,
-/obj/machinery/mineral/equipment_vendor/fastfood/donuts,
+/obj/structure/retail/coffee_shop{
+	name = "Pastry Shop";
+	desc = "A rather generic bakery selection. Wierd that it's open so late, though."
+	},
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "eVa" = (
@@ -6872,12 +6876,9 @@
 /turf/open/floor/carpet,
 /area/vtm/vtr/masquerade/interior/basement/northeast/church)
 "gff" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor{
-	pixel_x = 0;
-	pixel_y = 5
-	},
-/turf/open/floor/plating/vampplating/stone,
-/area/vtm/vtr/masquerade/interior/floor_two/southwest/clinic)
+/mob/living/carbon/human/npc/shop,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
 "gfm" = (
 /obj/structure/toilet{
 	pixel_y = 16
@@ -7882,7 +7883,7 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/park/shoreline_park)
 "hab" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/snacks{
+/obj/structure/retail/snack_vendor{
 	pixel_x = 0;
 	pixel_y = 10
 	},
@@ -10033,7 +10034,7 @@
 /turf/closed/wall/vampwall/metal/alt,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach/inaccessible)
 "jaX" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/sodavendor{
+/obj/structure/retail/drink_vendor{
 	pixel_x = 0;
 	pixel_y = 8
 	},
@@ -11101,7 +11102,7 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/central/bank)
 "kdT" = (
 /obj/structure/rack/bubway/horizontal,
-/obj/machinery/mineral/equipment_vendor/fastfood/bubway,
+/obj/structure/retail/bubway_menu,
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/bubway)
 "kdV" = (
@@ -11572,6 +11573,11 @@
 /obj/structure/trashbag,
 /turf/open/floor/plating/vampcanalplating,
 /area/vtm/vtr/masquerade/interior/basement/southeast/sewers_beach)
+"kEH" = (
+/obj/structure/table/wood,
+/obj/structure/retail/black_market,
+/turf/closed/wall/vampwall/brick/low,
+/area/vtm/vtr/masquerade/interior/ground_floor/southwest/warehouse)
 "kEX" = (
 /obj/structure/chair/office{
 	dir = 1
@@ -12264,7 +12270,7 @@
 /turf/open/floor/carpet,
 /area/vtm/vtr/elysium/interior/floor_three/central/castle_elysium)
 "lon" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor{
+/obj/structure/retail/coffee_vendor{
 	pixel_x = 0;
 	pixel_y = 8
 	},
@@ -12763,10 +12769,10 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/southwest/clinic)
 "lMi" = (
 /obj/structure/table,
-/obj/machinery/mineral/equipment_vendor/fastfood/america,
 /obj/structure/window/reinforced{
 	dir = 1
 	},
+/obj/structure/retail/gun_store,
 /turf/closed/wall/vampwall/rich/old/low,
 /area/vtm/vtr/masquerade/interior/ground_floor/southwest/gun_store)
 "lMx" = (
@@ -13826,10 +13832,7 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/southeast/queen_lilith)
 "mHJ" = (
 /obj/structure/table,
-/obj/machinery/mineral/equipment_vendor/fastfood/gas{
-	pixel_x = 0;
-	pixel_y = 0
-	},
+/obj/structure/retail/gas_station,
 /turf/open/floor/plating/circled,
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/gas_station)
 "mIp" = (
@@ -14168,7 +14171,7 @@
 /area/vtm/vtr/masquerade/exterior/ground_floor/park/shoreline_park)
 "mXZ" = (
 /obj/structure/table/wood,
-/obj/machinery/mineral/equipment_vendor/fastfood/clothing,
+/obj/structure/retail/clothing_store,
 /turf/closed/wall/vampwall/city/low,
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/clothing_store)
 "mYf" = (
@@ -15387,7 +15390,7 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/central/central_long_beach)
 "nWn" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/sodavendor/blue{
+/obj/structure/retail/drink_vendor/blue{
 	pixel_x = 0;
 	pixel_y = 6
 	},
@@ -15551,7 +15554,7 @@
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/castle_lobby)
 "ocK" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/snacks{
+/obj/structure/retail/snack_vendor{
 	pixel_x = 0;
 	pixel_y = 6
 	},
@@ -16819,7 +16822,7 @@
 /turf/open/floor/carpet,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/church)
 "pjg" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/sodavendor{
+/obj/structure/retail/drink_vendor{
 	pixel_x = 0;
 	pixel_y = 8
 	},
@@ -17116,7 +17119,7 @@
 /obj/machinery/light{
 	pixel_y = 32
 	},
-/obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor{
+/obj/structure/retail/coffee_vendor{
 	pixel_x = 0;
 	pixel_y = 10
 	},
@@ -17163,7 +17166,7 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/hotel)
 "pAE" = (
 /obj/structure/rack/tacobell/horizontal,
-/obj/machinery/mineral/equipment_vendor/fastfood/bacotell,
+/obj/structure/retail/bacotell_menu,
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/ground_floor/southeast/baco_tell)
 "pAJ" = (
@@ -18395,9 +18398,9 @@
 /turf/open/floor/carpet/green,
 /area/vtm/vtr/masquerade/interior/floor_two/northeast/hotel)
 "qHL" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor{
+/obj/structure/retail/coffee_vendor{
 	pixel_x = 0;
-	pixel_y = 8
+	pixel_y = 11
 	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/hotel)
@@ -20480,7 +20483,7 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/tattoo)
 "stJ" = (
 /obj/structure/table/wood,
-/obj/machinery/mineral/equipment_vendor/fastfood/clothing,
+/obj/structure/retail/clothing_store,
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/record_store)
 "stS" = (
@@ -24000,6 +24003,10 @@
 /area/vtm/vtr/elysium/interior/ground_floor/central/castle_elysium)
 "vqD" = (
 /obj/structure/table,
+/obj/structure/retail/coffee_shop{
+	name = "Pastry Shop";
+	desc = "A rather generic bakery selection. Wierd that it's open so late, though."
+	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/bakery)
 "vqO" = (
@@ -24885,9 +24892,9 @@
 /turf/open/floor/carpet,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/bright_house)
 "wiH" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/sodavendor/blue{
+/obj/structure/retail/drink_vendor/blue{
 	pixel_x = 0;
-	pixel_y = 10
+	pixel_y = 11
 	},
 /turf/open/floor/sepia,
 /area/vtm/vtr/masquerade/interior/ground_floor/northeast/hotel)
@@ -25793,9 +25800,10 @@
 /turf/open/openspace,
 /area/vtm/vtr/masquerade/exterior/ground_floor/river/la_river/inaccessible)
 "wUR" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor,
-/turf/open/floor/plating/parquetry/old,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
+/obj/structure/table,
+/obj/structure/retail/pharmacy,
+/turf/open/floor/plasteel,
+/area/vtm/vtr/masquerade/interior/ground_floor/northeast/grocery)
 "wUS" = (
 /obj/structure/chair/wood/wings{
 	dir = 8
@@ -25953,7 +25961,7 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northeast/northeast_long_beach)
 "xaF" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/snacks{
+/obj/structure/retail/snack_vendor{
 	pixel_x = 0;
 	pixel_y = 8
 	},
@@ -26022,7 +26030,7 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "xdz" = (
-/obj/machinery/vending/coffee,
+/obj/structure/retail/coffee_vendor,
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/coffee_shop)
 "xdE" = (
@@ -26113,12 +26121,10 @@
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/masquerade/interior/basement/southeast/abandoned_store)
 "xhg" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor{
-	pixel_x = 0;
-	pixel_y = 6
-	},
-/turf/open/floor/plating/parquetry,
-/area/vtm/vtr/masquerade/interior/ground_floor/northwest/police_station)
+/obj/structure/table/wood/fancy/blue,
+/obj/structure/retail/flower_shop,
+/turf/open/floor/plating/parquetry/old,
+/area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
 "xhj" = (
 /turf/closed/wall/vampwall/bar/low/window,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/library)
@@ -27196,7 +27202,7 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach)
 "yjy" = (
-/obj/machinery/mineral/equipment_vendor/fastfood/coffeevendor{
+/obj/structure/retail/coffee_vendor{
 	pixel_x = 0;
 	pixel_y = 10
 	},
@@ -102907,7 +102913,7 @@ vlj
 wYC
 wYC
 kmV
-wUR
+noK
 noK
 noK
 ilm
@@ -104681,7 +104687,7 @@ vZY
 gQZ
 bpU
 vOu
-xhg
+xeC
 xeC
 btB
 wOy
@@ -108361,7 +108367,7 @@ wLV
 ttV
 cyK
 cyK
-rSD
+kEH
 cyK
 cyK
 mQj
@@ -109335,8 +109341,8 @@ vUM
 riu
 riu
 riu
-dTH
-riu
+xhg
+gff
 riu
 vbO
 riu
@@ -109358,7 +109364,7 @@ dur
 mXZ
 dur
 gIk
-gmB
+fxO
 tzh
 lTr
 byw
@@ -127563,7 +127569,7 @@ sUl
 fxH
 gWK
 gWK
-wQB
+wUR
 agP
 wQB
 gWK
@@ -128334,7 +128340,7 @@ sUl
 sIw
 gWK
 gWK
-wQB
+wUR
 agP
 wQB
 gWK
@@ -173108,7 +173114,7 @@ xuV
 xuV
 xuV
 seG
-gff
+oiT
 oiT
 oiT
 oiT
