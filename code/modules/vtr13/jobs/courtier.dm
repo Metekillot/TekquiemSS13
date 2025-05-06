@@ -49,7 +49,7 @@
 	id = /obj/item/cockclock
 	l_pocket = /obj/item/vamp/phone
 	r_pocket = /obj/item/flashlight
-	l_hand = /obj/item/vamp/keys/invictus
+	l_hand = /obj/item/vamp/keys/courtier
 	backpack_contents = list(/obj/item/vamp/creditcard=1, /obj/item/clothing/mask/vampire/balaclava =1, /obj/item/gun/ballistic/automatic/vampire/beretta=2,/obj/item/ammo_box/magazine/semi9mm=2, /obj/item/melee/vampirearms/knife)
 
 /obj/effect/landmark/start/vtr/courtier

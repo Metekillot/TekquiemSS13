@@ -37,7 +37,7 @@
 	gloves = /obj/item/clothing/gloves/vampire/work
 	suit = /obj/item/clothing/suit/vampire/trench
 	shoes = /obj/item/clothing/shoes/vampire
-	r_pocket = /obj/item/vamp/keys/invictus
+	r_pocket = /obj/item/vamp/keys/hound
 	l_pocket = /obj/item/vamp/phone/invictus
 	backpack_contents = list(/obj/item/cockclock=1, /obj/item/vampire_stake=3, /obj/item/flashlight=1, /obj/item/masquerade_contract=1, /obj/item/vamp/keys/hack=1, /obj/item/vamp/creditcard=1)
 
