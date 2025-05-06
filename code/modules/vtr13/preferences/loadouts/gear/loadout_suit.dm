@@ -105,6 +105,7 @@
 	display_name = "nun frock"
 	path = /obj/item/clothing/suit/vampire/vtr/nun
 
+
 /datum/gear/suit/hawaiian
 	display_name = "hawaiian overshirt"
 	path = /obj/item/clothing/suit/hawaiian

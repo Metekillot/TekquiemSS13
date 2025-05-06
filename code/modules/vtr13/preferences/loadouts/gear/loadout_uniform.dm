@@ -237,10 +237,16 @@
 	display_name = "daisy dukes"
 	path = /obj/item/clothing/under/vampire/burlesque/daisyd
 
-/datum/gear/uniform/maid
-	display_name = "maid costume"
-	cost = 4 // And your dignity.
+/datum/gear/uniform/maid_costume
+	display_name = "maid uniform (costume)"
+	cost = 2 // And your dignity.
 	path = /obj/item/clothing/under/costume/maid
+
+
+/datum/gear/uniform/maid
+	display_name = "maid uniform (authentic)"
+	cost = 4
+	path = /obj/item/clothing/under/vampire/vtr/maid
 
 /datum/gear/uniform/redeveninggown
 	display_name = "evening gown, red"

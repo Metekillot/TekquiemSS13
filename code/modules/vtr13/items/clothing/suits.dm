@@ -8,4 +8,5 @@
 	desc = "Maximum piety in this star system."
 	icon_state = "nun"
 	inhand_icon_state = "nun"
-	allowed = list(/obj/item/storage/book/bible, /obj/item/nullrod, /obj/item/reagent_containers/food/drinks/bottle/holywater, /obj/item/storage/fancy/candle_box, /obj/item/candle, /obj/item/tank/internals/emergency_oxygen, /obj/item/tank/internals/plasmaman)
+	body_parts_covered = CHEST|GROIN|LEGS|ARMS
+

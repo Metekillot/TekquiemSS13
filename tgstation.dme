@@ -3737,6 +3737,7 @@
 #include "code\modules\vtr13\items\travel_brochure.dm"
 #include "code\modules\vtr13\items\clothing\hats.dm"
 #include "code\modules\vtr13\items\clothing\suits.dm"
+#include "code\modules\vtr13\items\clothing\under.dm"
 #include "code\modules\vtr13\items\phones\phone_contacts.dm"
 #include "code\modules\vtr13\items\phones\phones.dm"
 #include "code\modules\vtr13\jobs\acolyte.dm"
