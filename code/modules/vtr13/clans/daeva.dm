@@ -7,5 +7,3 @@
 		/datum/discipline/vtr/celerity,
 		/datum/discipline/vtr/majesty
 	)
-	male_clothes = /obj/item/clothing/under/vampire/toreador
-	female_clothes = /obj/item/clothing/under/vampire/toreador/female

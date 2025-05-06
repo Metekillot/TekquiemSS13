@@ -1,3 +1,4 @@
+
 /datum/preferences/proc/ShowChoices(mob/user)
 	if(!SSatoms.initialized)
 		to_chat(user, span_warning("Please wait for the game to do a little more setup first...!"))
@@ -7,7 +8,9 @@
 	if(slot_randomized)
 		load_character(default_slot) // Reloads the character slot. Prevents random features from overwriting the slot if saved.
 		slot_randomized = FALSE
-	update_preview_icon()
+	
+	show_loadout = (current_tab == PREFS_LOADOUT_TAB) ? show_loadout : FALSE
+	update_preview_icon(show_loadout)
 	var/list/dat = list()
 
 	if(path)
@@ -33,40 +36,40 @@
 
 	dat += "<center>"
 	if(istype(user, /mob/dead/new_player))
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=0' [current_tab == 0 ? "class='linkOn'" : ""]>[make_font_cool("CHARACTER SETTINGS")]</a> "
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=1' [current_tab == 1 ? "class='linkOn'" : ""]>[make_font_cool("MERITS & FLAWS")]</a> "
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=2' [current_tab == 2 ? "class='linkOn'" : ""]>[make_font_cool("ATTRIBUTES")]</a> "
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=3' [current_tab == 3 ? "class='linkOn'" : ""]>[make_font_cool("CONNECTIONS")]</a> "
-		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=4' [current_tab == 4 ? "class='linkOn'" : ""]>[make_font_cool("OCCUPATION")]</a>"
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_CHARACTER_SETTINGS_TAB]' [current_tab == PREFS_CHARACTER_SETTINGS_TAB ? "class='linkOn'" : ""]>[make_font_cool("CHARACTER SETTINGS")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_QUIRKS_TAB]' [current_tab == PREFS_QUIRKS_TAB ? "class='linkOn'" : ""]>[make_font_cool("MERITS & FLAWS")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_ATTRIBUTES_TAB]' [current_tab ==PREFS_ATTRIBUTES_TAB  ? "class='linkOn'" : ""]>[make_font_cool("ATTRIBUTES")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_LOADOUT_TAB]' [current_tab == PREFS_LOADOUT_TAB ? "class='linkOn'" : ""]>[make_font_cool("LOADOUT")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_CONNECTIONS_TAB]' [current_tab == PREFS_CONNECTIONS_TAB ? "class='linkOn'" : ""]>[make_font_cool("CONNECTIONS")]</a> "
+		dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_OCCUPATION_TAB]' [current_tab == PREFS_OCCUPATION_TAB ? "class='linkOn'" : ""]>[make_font_cool("OCCUPATION")]</a>"
 		dat += "<br>"
-	else if(current_tab < 5)
-		current_tab = 5
-	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=5' [current_tab == 5 ? "class='linkOn'" : ""]>[make_font_cool("GAME PREFERENCES")]</a> "
-	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=6' [current_tab == 6 ? "class='linkOn'" : ""]>[make_font_cool("OOC PREFERENCES")]</a> "
-	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=7' [current_tab == 7 ? "class='linkOn'" : ""]>[make_font_cool("CUSTOM KEYBINDINGS")]</a>"
-
-
-
+	else if(current_tab < PREFS_GAME_PREFERENCES_TAB)
+		current_tab = PREFS_GAME_PREFERENCES_TAB
+	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_GAME_PREFERENCES_TAB]' [current_tab == PREFS_GAME_PREFERENCES_TAB ? "class='linkOn'" : ""]>[make_font_cool("GAME PREFERENCES")]</a> "
+	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_OOC_PREFERENCES_TAB]' [current_tab == PREFS_OOC_PREFERENCES_TAB ? "class='linkOn'" : ""]>[make_font_cool("OOC PREFERENCES")]</a> "
+	dat += "<a href='byond://?_src_=prefs;preference=tab;tab=[PREFS_KEYBINDINGS_TAB]' [current_tab == PREFS_KEYBINDINGS_TAB ? "class='linkOn'" : ""]>[make_font_cool("CUSTOM KEYBINDINGS")]</a>"
 	dat += "</center>"
 
 	dat += "<HR>"
 
 	switch(current_tab)
-		if (0)
-			character_settings_page(user, dat)
 		if (1)
-			quirk_page(user, dat)
+			character_settings_page(user, dat)
 		if (2)
-			attributes_page(user, dat)
+			quirk_page(user, dat)
 		if (3)
-			connections_page(user, dat)
+			attributes_page(user, dat)
 		if (4)
-			occupation_page(user, dat)
+			loadout_page(user, dat)
 		if (5)
+			connections_page(user, dat)
+		if (6)
+			occupation_page(user, dat)
+		if (7)
 			game_preferences_page(user, dat)
-		if(6)
+		if(8)
 			ooc_preferences_page(user, dat)
-		if(7)
+		if(9)
 			custom_keybindings_page(user, dat)
 	dat += "<hr><center>"
 

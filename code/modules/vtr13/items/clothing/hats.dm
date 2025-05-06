@@ -1,3 +1,18 @@
+///VTR CLOTHES
+/obj/item/clothing/head/vampire/vtr
+	name = "generic vamp suit"
+	icon = 'icons/vtr13/obj/clothing/hats.dmi'
+	worn_icon = 'icons/vtr13/obj/clothing/worn.dmi'
+	onflooricon = 'icons/vtr13/obj/clothing/onfloor.dmi'
+
+/obj/item/clothing/head/vampire/vtr/nun
+	name = "Sisterly Habit"
+	desc = "The head covering of a religious sister."
+	icon_state = "nun_hood"
+	inhand_icon_state = "nun_hood"
+
+
+//OTHER
 /obj/item/clothing/head/pagecap
 	name = "Page's cap"
 	icon_state = "hopcap"

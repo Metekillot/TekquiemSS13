@@ -54,3 +54,18 @@
 	
 	if(discipline_dots < 0)
 		CRASH("Error - More discipline dots have been taken than there are dots to have!")
+
+/datum/preferences/proc/calculate_loadout_dots()
+	loadout_slots_max = CONFIG_GET(number/max_loadout_items)
+	loadout_slots = length(equipped_gear)
+
+	loadout_dots_max = CONFIG_GET(number/base_loadout_points)
+	loadout_dots = CONFIG_GET(number/base_loadout_points)
+	if(!equipped_gear || !length(equipped_gear))
+		return
+
+	for(var/i = 1, i <= length(equipped_gear), i++)
+		var/datum/gear/selected_gear = SSloadout.gear_datums[equipped_gear[i]]
+		loadout_dots -= selected_gear.cost
+	if(loadout_slots < 0)
+		CRASH("Error - More Loadout Slots have been used then there are to begin with.")

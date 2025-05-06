@@ -7,6 +7,19 @@
 //	where you would want the updater procs below to run
 #define SAVEFILE_VERSION_MAX	42
 
+GLOBAL_LIST_EMPTY(preferences_datums)
+
+//Tab definitions - KEEP SEQUENTIAL
+#define PREFS_CHARACTER_SETTINGS_TAB 1
+#define PREFS_QUIRKS_TAB 2
+#define PREFS_ATTRIBUTES_TAB 3
+#define PREFS_LOADOUT_TAB 4
+#define PREFS_CONNECTIONS_TAB 5
+#define PREFS_OCCUPATION_TAB 6
+#define PREFS_GAME_PREFERENCES_TAB 7
+#define PREFS_OOC_PREFERENCES_TAB 8
+#define PREFS_KEYBINDINGS_TAB 9
+
 
 #define APPEARANCE_CATEGORY_COLUMN "<td valign='top' width='25%' border='1px solid white'>"
 #define MAX_MUTANT_ROWS 4

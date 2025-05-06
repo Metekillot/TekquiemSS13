@@ -7,6 +7,4 @@
 		/datum/discipline/vtr/resilience,
 		/datum/discipline/vtr/dominate
 	)
-	male_clothes = /obj/item/clothing/under/vampire/ventrue
-	female_clothes = /obj/item/clothing/under/vampire/ventrue/female
 	humanitymod = 2

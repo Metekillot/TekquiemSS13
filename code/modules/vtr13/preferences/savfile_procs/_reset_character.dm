@@ -20,6 +20,7 @@
 	humanity = 7
 	diablerist = 0
 	masquerade = initial(masquerade)
+	equipped_gear = list()
 	random_species()
 	random_character()
 	save_character()

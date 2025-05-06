@@ -7,5 +7,3 @@
 		/datum/discipline/vtr/resilience,
 		/datum/discipline/vtr/protean
 	)
-	male_clothes = /obj/item/clothing/under/vampire/gangrel
-	female_clothes = /obj/item/clothing/under/vampire/gangrel/female

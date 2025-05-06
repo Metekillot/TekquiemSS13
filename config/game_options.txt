@@ -546,9 +546,6 @@ ROUNDSTART_TRAITS
 ## Uncomment to disable human moods.
 DISABLE_HUMAN_MOOD
 
-## Uncomment to disable area ambiance text.
-#DISABLE_AREA_AMBIANCE
-
 ## Enable night shifts ##
 #ENABLE_NIGHT_SHIFTS
 
@@ -566,3 +563,12 @@ RATCAP 64
 
 ## Maximum fine for a citation
 MAXFINE 2000
+
+## Uncomment to disable area ambiance text.
+#DISABLE_AREA_AMBIANCE
+
+## Set the maximum amount of loadout slots
+MAX_LOADOUT_ITEMS 10
+
+## Set the base amount of loadout points for a player
+BASE_LOADOUT_POINTS 10

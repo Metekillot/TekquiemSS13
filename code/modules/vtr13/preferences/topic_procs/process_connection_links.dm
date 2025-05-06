@@ -1,7 +1,7 @@
 /datum/preferences/proc/process_connection_links(mob/user, list/href_list)
 
 	if(href_list["preference"] != "connection")
-		CRASH("process_job_links called when preferences href not set to job!")
+		CRASH("process_connection_links called when preferences href not set to connection!")
 
 	switch(href_list["task"])
 		if("delete_connection")

@@ -304,6 +304,8 @@
 		if("tab")
 			if (href_list["tab"])
 				current_tab = text2num(href_list["tab"])
+				if(current_tab == PREFS_LOADOUT_TAB)
+					show_loadout = TRUE
 
 		if("clear_heart")
 			hearted = FALSE

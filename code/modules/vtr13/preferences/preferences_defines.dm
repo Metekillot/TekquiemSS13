@@ -1,11 +1,10 @@
-GLOBAL_LIST_EMPTY(preferences_datums)
 /datum/preferences
 	var/client/parent
 //---------Non Preference Vars---------
 	var/path
 	var/default_slot = 1				//Holder so it doesn't default to slot 1, rather the last one used
 	var/max_save_slots = 20
-	var/current_tab = 0					// 0 = character settings, 1 = game preferences
+	var/current_tab = PREFS_CHARACTER_SETTINGS_TAB
 	var/muted = 0
 	var/last_ip
 	var/last_id
@@ -70,6 +69,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/character_dots = 0				//Replacement for XP; calculated dynamically based on character choices
 	var/discipline_dots = 0
+	
+	var/show_loadout = TRUE
+	var/gear_tab = "General"
+	var/loadout_dots_max = 0
+	var/loadout_dots = 0
+	var/loadout_slots = 0
+	var/loadout_slots_max = 0
 
 //---------In-Round-Only-Preferences---------
 	var/action_buttons_screen_locs = list()	//sets up the locations of buttons on the screen. Resets each round
@@ -168,12 +174,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/list/exp = list() //playtime tracker
 
-	var/ooc_bond_pref = "Ask"
-	var/ooc_ghoul_pref = "Ask"
-	var/ooc_embrace_pref = "Ask"
-	var/ooc_escalation_pref = "No"
-	var/ooc_link = ""
-
 	//STATS
 	var/physique = 1
 	var/stamina = 1
@@ -181,6 +181,14 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/composure = 1
 	var/wits = 1
 	var/resolve = 1
+
+	var/list/equipped_gear = list()
+
+	var/ooc_bond_pref = "Ask"
+	var/ooc_ghoul_pref = "Ask"
+	var/ooc_embrace_pref = "Ask"
+	var/ooc_escalation_pref = "No"
+	var/ooc_link = ""
 
 //===========GHOUL/VAMPS===========
 	var/datum/vampireclane/clane

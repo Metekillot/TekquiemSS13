@@ -1,4 +1,4 @@
-/datum/preferences/proc/update_preview_icon()
+/datum/preferences/proc/update_preview_icon(show_loadout = FALSE)
 	if(!parent) // If we don't have anyone to show, don't waste our time making a preview
 		return
 	// Determine what job is marked as 'High' priority, and dress them up as such.
@@ -27,7 +27,7 @@
 	var/mutable_appearance/MAMA = mutable_appearance('code/modules/wod13/64x32.dmi', "slot", layer = SPACE_LAYER)
 	MAMA.pixel_x = -16
 	mannequin.add_overlay(MAMA)
-	copy_to(mannequin, 1, TRUE, TRUE)
+	copy_to(mannequin, 1, TRUE, TRUE, loadout = show_loadout)
 	if(clane?.alt_sprite)
 		mannequin.dna.species.limbs_id = clane.alt_sprite
 	mannequin.update_body()

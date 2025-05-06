@@ -7,5 +7,3 @@
 		/datum/discipline/vtr/auspex,
 		/datum/discipline/vtr/obfuscate
 	)
-	male_clothes = /obj/item/clothing/under/vampire/tremere
-	female_clothes = /obj/item/clothing/under/vampire/tremere/female

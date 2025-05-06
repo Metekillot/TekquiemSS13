@@ -1,4 +1,4 @@
-/datum/preferences/proc/copy_to(mob/living/carbon/human/character, icon_updates = 1, roundstart_checks = TRUE, character_setup = FALSE, antagonist = FALSE, is_latejoiner = TRUE)
+/datum/preferences/proc/copy_to(mob/living/carbon/human/character, icon_updates = 1, roundstart_checks = TRUE, character_setup = FALSE, antagonist = FALSE, is_latejoiner = TRUE, loadout = FALSE)
 
 	hardcore_survival_score = 0 //Set to 0 to prevent you getting points from last another time.
 
@@ -125,6 +125,12 @@
 	character.undershirt = undershirt
 	character.socks = socks
 	character.backpack = backpack
+
+	if(loadout)
+		for(var/gear_name in equipped_gear)
+			var/datum/gear/gear = SSloadout.gear_datums[gear_name]
+			if(gear?.slot)
+				character.equip_to_slot_or_del(gear.spawn_item(character, character), gear.slot)
 
 	var/datum/species/chosen_species
 	chosen_species = pref_species.type
