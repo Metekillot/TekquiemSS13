@@ -1,74 +1,58 @@
-/obj/structure/vampdoor/vtr_invictus_garage
+/obj/structure/vampdoor/vtr_invictus //used for the theater
 	icon_state = "wood-1"
 	baseicon = "wood"
 	burnable = TRUE
 	locked = TRUE
+	lock_id = "courtier"
+	lockpick_difficulty = 2
+
+/obj/structure/vampdoor/vtr_invictus/garage
 	lock_id = "invictus_car"
 	lockpick_difficulty = 4
 
-/obj/structure/vampdoor/vtr_invictus_theater
-	icon_state = "wood-1"
-	baseicon = "wood"
-	burnable = TRUE
-	locked = TRUE
-	lock_id = "sheriff"
-	lockpick_difficulty = 4
-
-/obj/structure/vampdoor/vtr_invictus_hound_office
-	icon_state = "wood-1"
-	baseicon = "wood"
-	burnable = TRUE
-	locked = TRUE
+/obj/structure/vampdoor/vtr_invictus/hound_office
 	lock_id = "hound"
 	lockpick_difficulty = 3
 
-/obj/structure/vampdoor/vtr_invictus_hound_equipment
+/obj/structure/vampdoor/vtr_invictus/hound_equipment
 	icon_state = "door-1"
 	baseicon = "door"
-	locked = TRUE
+	burnable = FALSE
 	lock_id = "hound"
 	lockpick_difficulty = 4
 
-/obj/structure/vampdoor/vtr_invictus_cell
+/obj/structure/vampdoor/vtr_invictus/cell
 	icon_state = "prison-1"
 	baseicon = "prison"
-	locked = TRUE
+	burnable = FALSE
 	lock_id = "hound"
 	lockpick_difficulty = 6
 
-/obj/structure/vampdoor/vtr_invictus_basement
-	icon_state = "door-1"
-	baseicon = "door"
-	locked = TRUE
+/obj/structure/vampdoor/vtr_invictus/basement
+	icon_state = "reinf-1"
+	baseicon = "reinf"
+	burnable = FALSE
 	lock_id = "sheriff"
 	lockpick_difficulty = 4
 
-/obj/structure/vampdoor/vtr_seneschal
-	icon_state = "wood-1"
-	baseicon = "wood"
-	burnable = TRUE
-	locked = TRUE
+/obj/structure/vampdoor/vtr_invictus/seneschal
 	lock_id = "page" //page, show them in
 	lockpick_difficulty = 4
 
-/obj/structure/vampdoor/vtr_seneschal_inner
-	icon_state = "wood-1"
-	baseicon = "wood"
-	burnable = TRUE
-	locked = TRUE
+/obj/structure/vampdoor/vtr_invictus/seneschal_inner
 	lock_id = "seneschal"
 	lockpick_difficulty = 5
 
-/obj/structure/vampdoor/vtr_seneschal_vault
+/obj/structure/vampdoor/vtr_invictus/seneschal_vault
 	icon_state = "vault-1"
 	baseicon = "vault"
-	locked = TRUE
+	burnable = FALSE
 	lock_id = "seneschal"
 	lockpick_difficulty = 6
 
-/obj/structure/vampdoor/vtr_janitor
+/obj/structure/vampdoor/vtr_invictus/janitor
 	icon_state = "cam-1"
 	baseicon = "cam"
-	locked = TRUE
+	burnable = FALSE
 	lock_id = "janitor"
 	lockpick_difficulty = 3
