@@ -3813,6 +3813,7 @@
 #include "code\modules\vtr13\mobs\living\mind\subsystems\frenzypool.dm"
 #include "code\modules\vtr13\mobs\npcs\simplemob_say.dm"
 #include "code\modules\vtr13\mobs\npcs\bouncers\bouncer_boris.dm"
+#include "code\modules\vtr13\objects\cars.dm"
 #include "code\modules\vtr13\objects\fax_machines.dm"
 #include "code\modules\vtr13\objects\fax_machines_admin.dm"
 #include "code\modules\vtr13\panicbunker\panicbunker.dm"
