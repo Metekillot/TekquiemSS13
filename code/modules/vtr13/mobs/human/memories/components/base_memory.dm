@@ -54,7 +54,16 @@
 	if(!(SEND_SIGNAL(src, COMSIG_MEMORY_NAME_OVERRIDE, owner, is_own_memories) & COMPONENT_MEMORY_OVERRIDE))
 		dat += "[icon2html(getFlatIcon(owner, SOUTH), owner)]I am [owner.true_real_name]."
 	dat += "Tonight, I have taken the role of \a [owner.mind.assigned_role]."
+	
+	if(is_own_memories && istype(owner, /mob/living/carbon/human))
+		var/mob/living/carbon/human/owner_human = owner
+		for(var/datum/vtr_bank_account/account in GLOB.bank_account_list)
+			if(owner_human.bank_id == account.bank_id)
+				dat += "<b>My bank account code is: [account.code]</b>"
+				break
+	
 	dat += "<hr>"
+	
 	SEND_SIGNAL(src, COMSIG_MEMORY_SPLAT_TEXT, owner, is_own_memories)
 
 	var/datum/mind/brain = parent
@@ -91,13 +100,6 @@
 		dat += "<b>I have the contact info of some others in this city:</b>"
 		for(var/i in owner.knowscontacts)
 			dat += "-[i] contact"
-	
-	if(is_own_memories && istype(owner, /mob/living/carbon/human))
-		var/mob/living/carbon/human/owner_human = owner
-		for(var/datum/vtr_bank_account/account in GLOB.bank_account_list)
-			if(owner_human.bank_id == account.bank_id)
-				dat += "<b>My bank account code is: [account.code]</b>"
-				break
 	
 	if(is_own_memories && owner.mind)
 		if(length(owner.mind.character_connections) || length(owner.mind.fake_character_connections))
