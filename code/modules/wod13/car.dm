@@ -134,6 +134,10 @@ SUBSYSTEM_DEF(carpool)
 	STR.max_w_class = baggage_max
 	STR.max_items = baggage_limit
 	STR.locked = TRUE
+	if(istype(src, /obj/vampire_car/track))
+		add_object_fade_zone(2,3,-1,0, mouse_opacity_interact = FALSE)
+	else
+		add_object_fade_zone(1,3,-1,0, mouse_opacity_interact = FALSE)
 
 /obj/vampire_car/bullet_act(obj/projectile/P, def_zone, piercing_hit = FALSE)
 	. = ..()
