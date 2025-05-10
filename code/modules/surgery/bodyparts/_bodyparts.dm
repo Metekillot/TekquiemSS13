@@ -92,8 +92,8 @@
 	var/generic_bleedstacks
 	/// If we have a gauze wrapping currently applied (not including splints)
 	var/obj/item/stack/current_gauze
-	/// If something is currently grasping this bodypart and trying to staunch bleeding (see [/obj/item/self_grasp])
-	var/obj/item/self_grasp/grasped_by
+	/// If something is currently grasping this bodypart and trying to staunch bleeding (see [/obj/item/hand_item/self_grasp])
+	var/obj/item/hand_item/self_grasp/grasped_by
 
 
 /obj/item/bodypart/Initialize(mapload)
@@ -855,7 +855,8 @@
 
 
 	if(should_draw_greyscale)
-		var/draw_color = mutation_color || species_color || (skin_tone && skintone2hex(skin_tone))
+		//var/draw_color = mutation_color || species_color || (skin_tone && skintone2hex(skin_tone))
+		var/draw_color = mutation_color || species_color || skin_tone
 		if(draw_color)
 			limb.color = "#[draw_color]"
 			if(aux_zone)

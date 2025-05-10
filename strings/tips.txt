@@ -1,44 +1,32 @@
-You can find a lockpick on certain NPCs and at the black market. Lockpicking skill and physique assist in your chances to succeed, and doors have varying difficulty.
+If you ever find yourself lost, check the maps scattered throughout the city, or the brochure Pedestrians spawn with.
 Cars use gasoline - you can buy more at a Gas Station. This can be used in the production of molotovs, as well.
-If you ever find yourself lost, the bus stations usually have a map of the city near them.
-Less humane clans and the Sabbat have access to the Paths of Enlightenment. They are various and diverse, each a method to co-exist with your beast.
-Discipline levels can be changed with Right-Click.
-Human players can use the "REPORT MASQUERADE VIOLATION" button in people's examine text to report any weird supernatural stuff they shouldn't be seeing, like vampires feeding or punching people across a room.
-You can parry melee attacks my clicking directly on the opponent with Grab intent. Successful parry will stun your enemy and force them to drop their weapon if it matches yours by size.
-You can block melee attacks by pressing C or BLOCK interface button. While blocking attacks you are getting Stun damage instead of Brute. Bare hands are weaker in blocking than any other weapon, and big items block extremely better.
-You can restore Humanity by dancing near an active jukebox. You will need special Quirk to dance.
-You can jump around by clicking MMB. You can even jump over railings while standing next to them.
-You can send announcements as the Prince by using your computer. Other kindred can see it on other computers too.
-Malkavian hivemind allows to send any message, including images. To send one - write <img src="image link">.
+You can repair a damaged car by using a tire iron on it.
+You can find a lockpick on certain NPCs and at the black market. Wits determines your chance to succeed, and doors have varying difficulty.
+Discipline levels can be changed by right-clicking the discipline icon.
+Players can use the "REPORT MASQUERADE VIOLATION" button in people's examine text to report any weird supernatural stuff, like vampires feeding in front of witnesses or punching people across a room.
+You can parry melee attacks by clicking directly on the opponent with Grab intent. Successful parries will stun your enemy and potentially force them to drop their weapons.
+You can block melee attacks by pressing C or BLOCK interface button. While blocking attacks you take Stun damage instead of Brute. Bare hands are weaker in blocking than any other weapon, and big items block much better.
+You can jump around after a lengthy windup by clicking MMB or using the jump button. You can even jump over railings while standing next to them.
+You can send announcements as the Seneschal by using your computer. Other Kindred can see it on other computers too.
 You can find and publish your phone number on your phone.
-To use Thaumaturgy properly you should get an Arcane Tome. Some of them spawn in Chantry. Lasombra can also learn Abyss Mysticism by crafting a tome after reaching Obtenebration at level 5.
-Followers of Set, also known as Ministry, can avoid diablerie and staking by moving their heart to an urn.
-Diablerie lowers your generation by one, if your victim's is lower than yours. You should only ever attempt diablerie if you believe it has sufficient RP justification. Diablerie is one of the vilest deeds imaginable, and any kindred who learn of this will seek your permanent death.
-Blood quality depends on the power or lifestyle of a creature. Vampire blood satisfies the most, after that lupine blood, then the wealthy, then the poor, then animals, and so on.
-You can bloodbond people as a kindred. To do so - grab them and force them to swallow your vitae with Give Vitae ability. Bloodbonds strengthen the victim's emotions towards you and create an obsession.
-You can gain experience points by talking with other people. The more you talk, the more experience you gain.
-You can play as 14 different clans, excluding Caitiff as the clanless.
-You can make a ghoul by bloodbonding a non-playable character. If there are any ghosts that want to play a ghoul - they will take over the ghouled NPC.
-Ghouls are weaker than kindred, and require vitae instead of mortal blood. But they also are immune to humanity and can learn any clan's disciplines to level 1.
+You can bloodbond people as Kindred. To do so - grab them and force them to swallow your vitae with Give Vitae ability. Bloodbonds produce both obsession and loyalty in a victim, but begin relatively weak.
+If you blood-bond an NPC, observers have the option of playing them as your ghoul.
+Ghouls are weaker than kindred, and require vitae instead of mortal blood. However, they can still heal over time or through medical care, and are immune to frenzy.
+You can Embrace the recently deceased by feeding them your Vitae, but beware the consequences.
 If you are a mortal and do drugs, kindred can experience the same high by drinking your blood.
-Tzimisce can upgrade your body with flesh and blood. Or they can turn you into a chair. Take this risk at your own judgement.
-Tremere have powers to identificate any existing artifact.
-As a Prince, your objectives are to rule Camarilla and the City. Follow all Six Traditions of Kindred and decide how to fight global dangers. Don't forget to call on the Primogens if you need some help.
-As a Sheriff, your objectives are to protect Masquerade in the City. Speak with Camarilla's agents and decide the best technique to liquidate Masquerade breaches and breachers.
-As a Seneschal, your objectives are to help Prince make any business in the City. You are his right hand man, and he expects you to deal with matters beneath him.
-As a Hound, your objectives are to enforce the Traditions and the Camarilla's rule of the city.
-As a Janitor, your objectives are to liquidate Masquerade breaches. Clean up streets and don't let any pale bloodless corpses be found by mortal eyes.
-As a Doctor, your objectives are to heal Kine for proper feeding. You can also sell blood bags to other kindred.
-As a Graveyard Keeper, your objectives are to protect City from a Shadowlands Masquerade breach. There is no more room in Hell, so walking dead are rising up. Kill 'em all...
-As a Stripper, you are free to do with the Strip Club as you wish. It is your domain - unless the Prince changes his mind.
-As a Baron, you lead the individualistic kindred of the city. You are still part of the Camarilla and are subject to it's laws. San Francisco is not an Anarch domain.
-As a Bruiser, you hang out with the Baron and support him in his rebellious troublemaking.
-As a Dealer, you hold a powerful domain. You can make deals with whomever you want - but boons are always worth more than money.
-As a Supply Technician, you work for the dealer - who has graciously accepted you into his coterie.
-As a Chantry Regent, your objectives are to lead the Tremere of San Francisco and keep the Chantry secure, as well as hunt down any who would steal your clan's secrets.
-As an Archivist, your objectives are to protect Tremere knowledge and the Chantry.
-As a Taxi Driver, your objectives are to drive. Real human being.
-As a Primogen, your objectives are to represent your clan in the city, and make sure they are organized and loyal enough to keep you in power.
-As a Sabbat member, you must fight the enemies of the Dark Father - servants of the vile Antediluvians.
-As a Hunter, your objectives are to Hunt abnormal beings and night creatures in City.
-As a Caitiff (role), your objectives are to kill exact kindred that shoved you from your original clan.
+Shift-right click to open the context menu.
+Alt-click a satchel to hide its sprite on your character.
+Kindreds' minimum starting blood level is based on their Composure.
+Characters with high Charisma can shift-right click a bouncer to talk their way into areas they're not allowed into.
+Kindred can tell if another character is a Kindred by examining them.
+A wooden stake can be used to paralyze a vampire, but is slow to use.
+At two or fewer points of Vitae remaining, you risk a hunger frenzy. You risk frenzy more often the hungrier you are.
+Your amount of time spent in torpor is based on your rank and your Humanity.
+Auspex can be used on ATM cards to find the associated PIN.
+Vigor can be used to overturn tables and break holes in walls.
+All vampires and ghouls can heal themselves by spending Vitae. Older Kindred can spend more Vitae at once.
+Covenant leaders require at least three endorsements from other faction members to play, but more is always safer.
+Rats can be found in the storm drains off the river and the beach. Young Kindred and revenants can use them as a quick, if disgusting and embarassing, supply of blood.
+Be careful what you say about the Prince. The walls have ears.
+Press H while in hotkey mode to stop grabbing a victim and cease feeding.
+Burning bodies in the church incinerator can help repair your Masquerade, though expect a lecture from the Lance.

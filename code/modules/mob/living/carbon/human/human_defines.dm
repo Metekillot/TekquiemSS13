@@ -31,7 +31,7 @@
 	//Eye colour
 	var/eye_color = "000"
 
-	var/skin_tone = "caucasian1"	//Skin tone
+	var/skin_tone = LATINO	//Skin tone
 
 	var/lip_style = null	//no lipstick by default- arguably misleading, as it could be used for general makeup
 	var/lip_color = "white"
@@ -85,8 +85,6 @@
 	///Exposure to damaging heat levels increases stacks, stacks clean over time when temperatures are lower. Stack is consumed to add a wound.
 	var/heat_exposure_stacks = 0
 
-	//Shitty VtM vars I'm moving here so they're not strewn around the codebase
-	var/datum/vampireclane/clane
 
 	var/last_repainted_mark
 
@@ -119,6 +117,8 @@
 
 	var/last_showed = 0
 	var/last_raid = 0
+	var/next_raid = 900 //time between SWAT raids, varies a bit randomly
+	var/current_police_raid = FALSE //execution lock for police raid stealth logic
 	var/killed_count = 0
 
 	var/base_body_mod = ""
@@ -135,7 +135,17 @@
 	yin_chi = 2
 	max_yin_chi = 2
 
-	var/ooc_notes
-
 	///The Examine Panel TGUI.
 	var/datum/examine_panel/tgui = new() //create the datum
+	var/headshot_link = null
+	var/ooc_notes
+
+
+	//VTR EDIT BEGIN
+	var/ooc_link
+	var/datum/vtr_faction/vtr_faction
+	var/datum/vampireclane/clane
+	var/datum/vampireclane/regent_clan
+	var/vamp_rank = 0
+	var/datum/examine_panel_fake/examine_panel_fake = new()
+	//VTR EDIT END

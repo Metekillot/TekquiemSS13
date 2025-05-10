@@ -89,10 +89,8 @@
 	if(mob.stat == DEAD)
 		mob.ghostize()
 		return FALSE
-	if(ishuman(mob))
-		var/mob/living/carbon/human/H = mob
-		if(H.in_frenzy)
-			return FALSE
+	if(mob.mind && HAS_TRAIT(mob.mind, TRAIT_IN_FRENZY))
+		return FALSE
 	if(mob.force_moving)
 		return FALSE
 

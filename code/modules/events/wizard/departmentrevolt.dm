@@ -65,7 +65,7 @@
 			jobs_to_revolt = GLOB.ss13
 			nation_name = pick("Atomo", "Engino", "Power", "Teleco")
 		if("Science")
-			jobs_to_revolt = GLOB.anarch_positions
+			jobs_to_revolt = GLOB.ss13
 			nation_name = pick("Sci", "Griffa", "Geneti", "Explosi", "Mecha", "Xeno", "Nani", "Cyto")
 		if("Supply")
 			jobs_to_revolt = GLOB.ss13

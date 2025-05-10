@@ -862,8 +862,8 @@ GLOBAL_LIST_EMPTY(allCasters)
 
 
 /obj/item/newspaper
-	name = "newspaper (San Francisco Chronicle)"
-	desc = "An issue of San Francisco Chronicle, the newspaper circulating aboard San Francisco and North California."
+	name = "newspaper (Epoch Times)"
+	desc = "An issue of Epoch Times, a local newspaper circulating around Los Angeles."
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "newspaper"
 	lefthand_file = 'icons/mob/inhands/misc/books_lefthand.dmi'

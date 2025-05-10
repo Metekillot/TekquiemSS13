@@ -54,10 +54,9 @@
 						adjust_gnosis(-1, src, FALSE)
 
 			if(auspice.rage >= 9)
-				if(!in_frenzy)
-					if((last_frenzy_check + 40 SECONDS) <= world.time)
-						last_frenzy_check = world.time
-						rollfrenzy()
+				if(mind && !HAS_TRAIT(mind, TRAIT_IN_FRENZY) && (last_frenzy_check + 40 SECONDS) <= world.time)
+					last_frenzy_check = world.time
+					mind.try_frenzy()
 
 			if(istype(get_area(src), /area/vtm/interior/penumbra))
 				if((last_veil_restore + 40 SECONDS) < world.time)

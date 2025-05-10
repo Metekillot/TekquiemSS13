@@ -97,6 +97,8 @@
 	return .
 
 /datum/action/discipline/ApplyIcon(atom/movable/screen/movable/action_button/current_button, force = FALSE)
+	if(discipline && !discipline.level)
+		return
 	button_icon = 'code/modules/wod13/UI/actions.dmi'
 	icon_icon = 'code/modules/wod13/UI/actions.dmi'
 	if(icon_icon && button_icon_state && ((current_button.button_icon_state != button_icon_state) || force))

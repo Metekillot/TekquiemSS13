@@ -31,8 +31,8 @@
 	duration_length = 3 SECONDS
 
 /datum/discipline_power/dementation/passion/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 	if(theirpower >= mypower)
 		to_chat(owner, span_warning("[target]'s mind is too powerful to corrupt!"))
 		return FALSE
@@ -50,7 +50,7 @@
 	target.Stun(0.5 SECONDS)
 	target.emote("laugh")
 	to_chat(target, "<span class='userdanger'><b>HAHAHAHAHAHAHAHAHAHAHAHA!!</b></span>")
-	owner.playsound_local(get_turf(H), pick('sound/items/SitcomLaugh1.ogg', 'sound/items/SitcomLaugh2.ogg', 'sound/items/SitcomLaugh3.ogg'), 100, FALSE)
+	owner.playsound_local(get_turf(target), pick('sound/items/SitcomLaugh1.ogg', 'sound/items/SitcomLaugh2.ogg', 'sound/items/SitcomLaugh3.ogg'), 100, FALSE)
 	if(target.body_position == STANDING_UP)
 		target.toggle_resting()
 
@@ -74,8 +74,8 @@
 	duration_length = 3 SECONDS
 
 /datum/discipline_power/dementation/the_haunting/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 	if(theirpower >= mypower)
 		to_chat(owner, span_warning("[target]'s mind is too powerful to corrupt!"))
 		return FALSE
@@ -113,8 +113,8 @@
 	duration_length = 3 SECONDS
 
 /datum/discipline_power/dementation/eyes_of_chaos/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 	if(theirpower >= mypower)
 		to_chat(owner, span_warning("[target]'s mind is too powerful to corrupt!"))
 		return FALSE
@@ -246,8 +246,8 @@
 	duration_length = 3 SECONDS
 
 /datum/discipline_power/dementation/voice_of_madness/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 	if(theirpower >= mypower)
 		to_chat(owner, span_warning("[target]'s mind is too powerful to corrupt!"))
 		return FALSE
@@ -285,8 +285,8 @@
 	duration_length = 3 SECONDS
 
 /datum/discipline_power/dementation/total_insanity/pre_activation_checks(mob/living/target)
-	var/mypower = owner.get_total_social()
-	var/theirpower = target.get_total_mentality()
+	var/mypower = owner.get_total_charisma()
+	var/theirpower = target.get_total_wits()
 	if(theirpower >= mypower)
 		to_chat(owner, span_warning("[target]'s mind is too powerful to corrupt!"))
 		return FALSE

@@ -55,7 +55,7 @@
 	var/number_of_lamps
 	pixel_w = -32
 	anchored = TRUE
-	density = TRUE
+	density = FALSE
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF | FREEZE_PROOF
 
 /obj/effect/decal/lamplight
@@ -487,7 +487,7 @@
 	icon_state = "painting3"
 
 /obj/structure/jesuscross
-	name = "Jesus Christ on a cross"
+	name = "crucifix"
 	desc = "Jesus said, “Father, forgive them, for they do not know what they are doing.” And they divided up his clothes by casting lots (Luke 23:34)."
 	icon = 'code/modules/wod13/64x64.dmi'
 	icon_state = "cross"
@@ -1559,6 +1559,9 @@
 						user.visible_message("<span class='warning'>[user] digs a hole in [src].</span>", "<span class='warning'>You dig a hole in [src].</span>")
 						if(dead_amongst)
 							call_dharma("respect", user)
+					if(!dead_amongst)
+						user.visible_message("<span class='warning'>[user] refills [src].</span>", "<span class='warning'>You refill [src].</span>")
+						qdel(src)
 				else
 					var/dead_amongst = FALSE
 					for(var/mob/living/L in src)

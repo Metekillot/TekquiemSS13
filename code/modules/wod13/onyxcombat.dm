@@ -30,18 +30,11 @@
 	GLOB.masquerade_breakers_list -= src
 	GLOB.sabbatites -= src
 
-	//So upon death the corpse is filled with yin chi
-	yin_chi = min(max_yin_chi, yin_chi+yang_chi)
-	yang_chi = 0
-
-	if(iskindred(src) || iscathayan(src))
+	if(iskindred(src))
 		can_be_embraced = FALSE
 		var/obj/item/organ/brain/brain = getorganslot(ORGAN_SLOT_BRAIN) //NO REVIVAL EVER
 		if (brain)
 			brain.organ_flags |= ORGAN_FAILING
-
-		if(in_frenzy)
-			exit_frenzymod()
 		SEND_SOUND(src, sound('code/modules/wod13/sounds/final_death.ogg', 0, 0, 50))
 
 		//annoying code that depends on clan doesn't work for Kuei-jin
@@ -306,78 +299,8 @@
 
 /atom/movable/screen/drinkblood/proc/bite()
 	if(ishuman(usr))
-		var/mob/living/carbon/human/BD = usr
-		BD.update_blood_hud()
-		if(world.time < BD.last_drinkblood_use+30)
-			return
-		if(world.time < BD.last_drinkblood_click+10)
-			return
-		BD.last_drinkblood_click = world.time
-		if(BD.grab_state > GRAB_PASSIVE)
-			if(ishuman(BD.pulling))
-				var/mob/living/carbon/human/PB = BD.pulling
-				if(isghoul(BD))
-					if(!iskindred(PB))
-						SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-						to_chat(BD, "<span class='warning'>Eww, that is <b>GROSS</b>.</span>")
-						return
-				if(!isghoul(BD) && !iskindred(BD) && !iscathayan(BD))
-					SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-					to_chat(BD, "<span class='warning'>Eww, that is <b>GROSS</b>.</span>")
-					return
-				if(PB.stat == DEAD && !HAS_TRAIT(BD, TRAIT_GULLET) && !iscathayan(BD))
-					SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-					to_chat(BD, "<span class='warning'>This creature is <b>DEAD</b>.</span>")
-					return
-				if(PB.bloodpool <= 0 && (!iskindred(BD.pulling) || !iskindred(BD)))
-					SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-					to_chat(BD, "<span class='warning'>There is no <b>BLOOD</b> in this creature.</span>")
-					return
-				if(BD.clane)
-					var/special_clan = FALSE
-					if(BD.clane.name == "Salubri")
-						if(!PB.IsSleeping())
-							to_chat(BD, "<span class='warning'>You can't drink from aware targets!</span>")
-							return
-						special_clan = TRUE
-						PB.emote("moan")
-					if(BD.clane.name == "Giovanni")
-						PB.emote("scream")
-						special_clan = TRUE
-					if(!special_clan)
-						PB.emote("groan")
-				PB.add_bite_animation()
-			if(isliving(BD.pulling))
-				if(!iskindred(BD) && !iscathayan(BD))
-					SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-					to_chat(BD, "<span class='warning'>Eww, that is <b>GROSS</b>.</span>")
-					return
-				var/mob/living/LV = BD.pulling
-				if(LV.bloodpool <= 0 && (!iskindred(BD.pulling) || !iskindred(BD)))
-					SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-					to_chat(BD, "<span class='warning'>There is no <b>BLOOD</b> in this creature.</span>")
-					return
-				if(LV.stat == DEAD && !HAS_TRAIT(BD, TRAIT_GULLET) && !iscathayan(BD))
-					SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-					to_chat(BD, "<span class='warning'>This creature is <b>DEAD</b>.</span>")
-					return
-				var/skipface = (BD.wear_mask && (BD.wear_mask.flags_inv & HIDEFACE)) || (BD.head && (BD.head.flags_inv & HIDEFACE))
-				if(!skipface)
-					if(!HAS_TRAIT(BD, TRAIT_BLOODY_LOVER))
-						playsound(BD, 'code/modules/wod13/sounds/drinkblood1.ogg', 50, TRUE)
-						LV.visible_message("<span class='warning'><b>[BD] bites [LV]'s neck!</b></span>", "<span class='warning'><b>[BD] bites your neck!</b></span>")
-					if(!HAS_TRAIT(BD, TRAIT_BLOODY_LOVER))
-						if(BD.CheckEyewitness(LV, BD, 7, FALSE))
-							BD.AdjustMasquerade(-1)
-					else
-						playsound(BD, 'code/modules/wod13/sounds/kiss.ogg', 50, TRUE)
-						LV.visible_message("<span class='italics'><b>[BD] kisses [LV]!</b></span>", "<span class='userlove'><b>[BD] kisses you!</b></span>")
-					if(iskindred(LV))
-						var/mob/living/carbon/human/HV = BD.pulling
-						if(HV.stakeimmune)
-							to_chat(BD, "<span class='warning'>There is no <b>HEART</b> in this creature.</span>")
-							return
-					BD.drinksomeblood(LV)
+		var/mob/living/carbon/human/human_user = usr
+		human_user.vamp_bite()
 
 /atom/movable/screen/bloodpower
 	name = "Bloodpower"
@@ -483,161 +406,11 @@
 	else
 		harm_focus = dir
 
-//mob/living/Click()
-//	if(ishuman(usr) && usr != src)
-//		var/mob/living/carbon/human/SH = usr
-//		for(var/atom/movable/screen/disciplines/DISCP in SH.hud_used.static_inventory)
-//			if(DISCP)
-//				if(DISCP.active)
-//					DISCP.range_activate(src, SH)
-//					SH.face_atom(src)
-//					return
-//	..()
-
-/atom/Click(location,control,params)
-/*
-	if(!isobserver(usr))
-		usr.client.show_popup_menus = FALSE
-	else
-		usr.client.show_popup_menus = TRUE
-*/
-	if(ishuman(usr))
-		if(isopenturf(src.loc) || isopenturf(src))
-			var/list/modifiers = params2list(params)
-			var/mob/living/carbon/human/HUY = usr
-			if(!HUY.get_active_held_item() && Adjacent(usr))
-				if(LAZYACCESS(modifiers, "right"))
-					var/list/shit = list()
-					var/obj/item/item_to_pick
-					var/turf/T
-					if(isturf(src))
-						T = src
-					else
-						T = src.loc
-					for(var/obj/item/I in T)
-						if(I)
-							if(!I.anchored)
-								shit[I.name] = I
-						if(length(shit) == 1)
-							item_to_pick = I
-					if(length(shit) >= 2)
-						var/result = input(usr, "Select the item you want to pick up.", "Pick up") as null|anything in shit
-						if(result)
-							item_to_pick = shit[result]
-						else
-							return
-					if(item_to_pick)
-						if(HUY.CanReach(item_to_pick))
-							HUY.put_in_active_hand(item_to_pick)
-						return
-	..()
-/*
-/atom/movable/screen/disciplines/Initialize()
-	. = ..()
-
-/atom/movable/screen/disciplines/Click(location,control,params)
-	var/dadelay = dscpln.delay
-	if(dscpln.leveldelay)
-		dadelay = dscpln.delay*dscpln.level_casting
-	SEND_SOUND(usr, sound('code/modules/wod13/sounds/highlight.ogg', 0, 0, 50))
-	var/list/modifiers = params2list(params)
-	if(LAZYACCESS(modifiers, "right"))
-		if(dscpln)
-			if(dscpln.level > 1)
-				if(dscpln.level_casting < dscpln.level)
-					dscpln.level_casting = min(dscpln.level_casting+1, dscpln.level)
-				else
-					dscpln.level_casting = 1
-			else
-				dscpln.level_casting = 1
-			switch(dscpln.level_casting)
-				if(1)
-					overlays -= level2
-					overlays -= level3
-					overlays -= level4
-					overlays -= level5
-				if(2)
-					overlays |= level2
-					overlays -= level3
-					overlays -= level4
-					overlays -= level5
-				if(3)
-					overlays -= level2
-					overlays |= level3
-					overlays -= level4
-					overlays -= level5
-				if(4)
-					overlays -= level2
-					overlays -= level3
-					overlays |= level4
-					overlays -= level5
-				if(5)
-					overlays -= level2
-					overlays -= level3
-					overlays -= level4
-					overlays |= level5
-			to_chat(usr, "[dscpln.name] [dscpln.level_casting]/[dscpln.level] - [dscpln.desc]")
-		return
-
-	if(ishuman(usr))
-		var/mob/living/carbon/human/BD = usr
-		if(world.time < last_discipline_click+5)
-			return
-		if(world.time < last_discipline_use+dadelay+5)
-			return
-		last_discipline_click = world.time
-		if(active)
-			active = FALSE
-			BD.toggled = null
-			icon_state = main_state
-			return
-		var/plus = 0
-		if(HAS_TRAIT(BD, TRAIT_HUNGRY))
-			plus = 1
-		if(BD.bloodpool < dscpln.cost+plus)
-			SEND_SOUND(BD, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-			to_chat(BD, "<span class='warning'>You don't have enough <b>BLOOD</b> to use this discipline.</span>")
-			return
-		if(dscpln.ranged)
-			for(var/atom/movable/screen/disciplines/DISCP in BD.hud_used.static_inventory)
-				if(DISCP)
-					if(DISCP.active && DISCP != src && DISCP.dscpln.ranged)
-						DISCP.active = FALSE
-						BD.toggled = null
-						DISCP.icon_state = DISCP.main_state
-			active = TRUE
-			BD.toggled = src
-			icon_state = "[main_state]-on"
-		else if(!dscpln.ranged)
-			last_discipline_use = world.time
-			if(dscpln.check_activated(BD, BD))
-				icon_state = "[main_state]-on"
-				dscpln.activate(BD, BD)
-				spawn(dadelay+BD.discipline_time_plus)
-					icon_state = main_state
-
-/atom/movable/screen/disciplines/proc/range_activate(var/mob/living/trgt, var/mob/living/carbon/human/cstr)
-	var/plus = 0
-	if(HAS_TRAIT(cstr, TRAIT_HUNGRY))
-		plus = 1
-	if(cstr.bloodpool < dscpln.cost+plus)
-		icon_state = main_state
-		active = FALSE
-		SEND_SOUND(cstr, sound('code/modules/wod13/sounds/need_blood.ogg', 0, 0, 75))
-		to_chat(cstr, "<span class='warning'>You don't have enough <b>BLOOD</b> to use this discipline.</span>")
-		return
-
-	if(dscpln.check_activated(trgt, cstr))
-		dscpln.activate(trgt, cstr)
-		last_discipline_use = world.time
-	active = FALSE
-	icon_state = main_state
-*/
 /mob/living/carbon/werewolf/Life()
 	. = ..()
 	update_blood_hud()
 	update_rage_hud()
-	update_auspex_hud()
+	//update_auspex_hud_vtr()
 
 /mob/living/carbon/human/Life()
 	if(!iskindred(src) && !iscathayan(src))
@@ -648,35 +421,8 @@
 	update_rage_hud()
 	update_shadow()
 	handle_vampire_music()
-	update_auspex_hud()
-	if(warrant)
-		last_nonraid = world.time
-		if(key)
-			if(stat != DEAD)
-				if(istype(get_area(src), /area/vtm))
-					var/area/vtm/V = get_area(src)
-					if(V.upper)
-						last_showed = world.time
-						if(last_raid+600 < world.time)
-							last_raid = world.time
-							for(var/turf/open/O in range(1, src))
-								if(prob(25))
-									new /obj/effect/temp_visual/desant(O)
-							playsound(loc, 'code/modules/wod13/sounds/helicopter.ogg', 50, TRUE)
-				if(last_showed+9000 < world.time)
-					to_chat(src, "<b>POLICE STOPPED SEARCHING</b>")
-					SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_gain.ogg', 0, 0, 75))
-					killed_count = 0
-					warrant = FALSE
-			else
-				warrant = FALSE
-		else
-			warrant = FALSE
-	else
-		if(last_nonraid+1800 < world.time)
-			last_nonraid = world.time
-			killed_count = max(0, killed_count-1)
-
+	//update_auspex_hud_vtr()
+	check_police_raid()
 	..()
 
 /mob/living/Initialize()
@@ -704,7 +450,6 @@
 /mob/living/proc/update_blood_hud()
 	if(!client || !hud_used)
 		return
-	maxbloodpool = 10+((13-generation)*3)
 	if(hud_used.blood_icon)
 		var/emm = round((bloodpool/maxbloodpool)*10)
 		if(emm > 10)
@@ -728,3 +473,8 @@
 				elysium_checks = 0
 				if(HAS_TRAIT(src, TRAIT_ELYSIUM))
 					REMOVE_TRAIT(src, TRAIT_ELYSIUM, "elysium")
+
+
+
+
+
