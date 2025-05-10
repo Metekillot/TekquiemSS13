@@ -129,132 +129,10 @@
 	var/mob/living/C = usr
 	to_chat(usr, "Yin Chi: [C.yin_chi]/[C.max_yin_chi], Yang Chi: [C.yang_chi]/[C.max_yang_chi], Demon Chi: [C.demon_chi]/[C.max_demon_chi]")
 
-/datum/action/kueijininfo
-	name = "About Me"
-	desc = "Check assigned role, dharma, known disciplines, known contacts etc."
-	button_icon_state = "masquerade"
-	check_flags = NONE
-	var/mob/living/carbon/human/host
-
-/datum/action/kueijininfo/Trigger()
-	if(host)
-		var/dat = {"
-			<style type="text/css">
-
-			body {
-				padding: 5px;
-				background-color: #090909; color: white;
-			}
-
-			</style>
-			"}
-		dat += "<p><center><h2>Memories</h2></center></p>"
-		dat += "<p>[icon2html(getFlatIcon(host), host)]I am "
-		if(host.real_name)
-			dat += "[host.real_name],"
-		if(!host.real_name)
-			dat += "Unknown,"
-		dat += " the Kuei-Jin"
-
-		if(host.mind)
-
-			if(host.mind.assigned_role)
-				if(host.mind.special_role)
-					dat += ", carrying the [host.mind.assigned_role] (<font color=red>[host.mind.special_role]</font>) role."
-				else
-					dat += ", carrying the [host.mind.assigned_role] role."
-			if(!host.mind.assigned_role)
-				dat += "."
-			dat += "</p>"
-		for(var/datum/vtm_bank_account/account in GLOB.bank_account_list)
-			if(host.bank_id == account.bank_id)
-				dat += "<p>My bank account code is: [account.code]</b></p>"
-				break
-		if(host.mind.special_role)
-			for(var/datum/antagonist/A in host.mind.antag_datums)
-				if(A.objectives)
-					dat += "<p>[printobjectives(A.objectives)]</p>"
-		var/masquerade_level = " is clueless about my presence."
-		switch(host.masquerade)
-			if(4)
-				masquerade_level = " has some thoughts of awareness."
-			if(3)
-				masquerade_level = " is barely spotting the truth."
-			if(2)
-				masquerade_level = " is starting to know."
-			if(1)
-				masquerade_level = " knows me and my true nature."
-			if(0)
-				masquerade_level = " thinks I'm a monster and is hunting me."
-		dat += "<p>West[masquerade_level]</p>"
-		var/dharma = "I'm mindless carrion-eater!"
-		switch(host.mind.dharma?.level)
-			if(1)
-				dharma = "I have not proved my worthiness to exist as Kuei-jin..."
-			if(2 to 3)
-				dharma = "I'm only at the basics of my Dharma."
-			if(4 to 5)
-				dharma = "I'm so enlighted I can be a guru."
-			if(6)
-				dharma = "I have mastered the Dharma so far!"
-
-		dat += "<p>[dharma]</p>"
-
-		dat += "<p>"
-		dat += "The <b>[host.mind.dharma?.animated]</b> Chi Energy helps me to stay alive...<BR>"
-		dat += "My P'o is [host.mind.dharma?.Po]<BR>"
-		dat += "<b>Yin/Yang</b>[host.max_yin_chi]/[host.max_yang_chi]<BR>"
-		dat += "<b>Hun/P'o</b>[host.mind.dharma?.Hun]/[host.max_demon_chi]<BR>"
-/*
-		dat += "<b>Physique</b>: [host.physique]<BR>"
-		dat += "<b>Dexterity</b>: [host.dexterity]<BR>"
-		dat += "<b>Social</b>: [host.social]<BR>"
-		dat += "<b>Mentality</b>: [host.mentality]<BR>"
-		dat += "<b>Lockpicking</b>: [host.lockpicking]<BR>"
-		dat += "<b>Athletics</b>: [host.athletics]<BR>"
-		dat += "<b>Cruelty</b>: [host.blood]<BR>"
-*/
-//		if(host.hud_used)
-//			dat += "<b>Known disciplines:</b><BR>"
-//			for(var/datum/action/discipline/D in host.actions)
-//				if(D)
-//					if(D.discipline)
-//						dat += "[D.discipline.name] [D.discipline.level] - [D.discipline.desc]<BR>"
-		if(host.Myself)
-			if(host.Myself.Friend)
-				if(host.Myself.Friend.owner)
-					dat += "<p><b>My friend's name is [host.Myself.Friend.owner.true_real_name].</b><BR>"
-					if(host.Myself.Friend.phone_number)
-						dat += "Their number is [host.Myself.Friend.phone_number].<BR>"
-					if(host.Myself.Friend.friend_text)
-						dat += "[host.Myself.Friend.friend_text]</p>"
-			if(host.Myself.Enemy)
-				if(host.Myself.Enemy.owner)
-					dat += "<p><b>My nemesis is [host.Myself.Enemy.owner.true_real_name]!</b><BR>"
-					if(host.Myself.Enemy.enemy_text)
-						dat += "[host.Myself.Enemy.enemy_text]</p>"
-			if(host.Myself.Lover)
-				if(host.Myself.Lover.owner)
-					dat += "<p><b>I'm in love with [host.Myself.Lover.owner.true_real_name].</b><BR>"
-					if(host.Myself.Lover.phone_number)
-						dat += "Their number is [host.Myself.Lover.phone_number].<BR>"
-					if(host.Myself.Lover.lover_text)
-						dat += "[host.Myself.Lover.lover_text]</p>"
-
-		if(length(host.knowscontacts) > 0)
-			dat += "<p><b>I know some other of my kind in this city. Need to check my phone, there definetely should be:</b><BR>"
-			for(var/i in host.knowscontacts)
-				dat += "-[i] contact<BR>"
-		host << browse(dat, "window=vampire;size=400x450;border=1;can_resize=1;can_minimize=0")
-		onclose(HTML_SKELETON(host), "vampire", src)
-
 /datum/species/kuei_jin/on_species_gain(mob/living/carbon/human/C)
 	. = ..()
 	C.update_body(0)
 	C.last_experience = world.time + 5 MINUTES
-	var/datum/action/kueijininfo/infor = new()
-	infor.host = C
-	infor.Grant(C)
 	var/datum/action/reanimate_yang/YG = new()
 	YG.Grant(C)
 	var/datum/action/reanimate_yin/YN = new()
@@ -266,9 +144,6 @@
 /datum/species/kuei_jin/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, pref_load)
 	. = ..()
 	UnregisterSignal(C, COMSIG_MOB_VAMPIRE_SUCKED)
-	for(var/datum/action/kueijininfo/VI in C.actions)
-		if(VI)
-			VI.Remove(C)
 	for(var/datum/action/breathe_chi/QI in C.actions)
 		if(QI)
 			QI.Remove(C)
