@@ -4,7 +4,7 @@
 	var/shifting //If we are in the shifting setting.
 
 /datum/keybinding/mob/pixel_shift
-	hotkey_keys = list("Unbound") //Unbound by default. Set it yourselves.
+	hotkey_keys = list(".")
 	name = "pixel_shift"
 	full_name = "Pixel Shift"
 	description = "Shift your characters offset."
