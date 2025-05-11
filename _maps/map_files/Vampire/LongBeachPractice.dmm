@@ -1177,12 +1177,13 @@
 /area/vtm/vtr/masquerade/exterior/ground_floor/southwest/southwest_long_beach)
 "bfY" = (
 /obj/machinery/button/door{
-	id = "tower";
+	id = "warehouse";
 	name = "Parking Shutters Control";
-	req_access_txt = "3"
+	pixel_x = 0;
+	pixel_y = 32
 	},
-/turf/closed/wall/vampwall/rich,
-/area/vtm/vtr/elysium/interior/ground_floor/central/castle_theater)
+/turf/open/floor/plating/asphalt,
+/area/vtm/vtr/masquerade/interior/ground_floor/southwest/warehouse)
 "bgu" = (
 /obj/structure/chair/wood{
 	dir = 4
@@ -6412,6 +6413,12 @@
 /turf/open/floor/plating/parquetry,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/bank)
 "fIc" = (
+/obj/machinery/button/door{
+	id = "tower";
+	name = "Parking Shutters Control";
+	pixel_x = 0;
+	pixel_y = 32
+	},
 /turf/open/floor/plasteel/stairs/medium{
 	dir = 8
 	},
@@ -10491,7 +10498,7 @@
 "jtu" = (
 /obj/machinery/door/poddoor/shutters{
 	dir = 4;
-	id = "tower"
+	id = "invictus_car"
 	},
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/elysium/interior/ground_floor/central/castle_elysium)
@@ -11294,7 +11301,7 @@
 "kkq" = (
 /obj/machinery/door/poddoor/shutters{
 	dir = 4;
-	id = "warehouse"
+	id = "carthian"
 	},
 /turf/open/floor/plating/asphalt,
 /area/vtm/vtr/masquerade/interior/ground_floor/southwest/warehouse)
@@ -12292,12 +12299,6 @@
 	},
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/ground_floor/southwest/clinic)
-"lmU" = (
-/obj/machinery/button/door{
-	id = "house"
-	},
-/turf/closed/wall/vampwall/junk/alt,
-/area/vtm/vtr/masquerade/interior/ground_floor/northeast/old_house)
 "lnu" = (
 /obj/effect/turf_decal/siding/wideplating/corner{
 	dir = 4;
@@ -21351,11 +21352,12 @@
 /area/vtm/vtr/masquerade/exterior/ground_floor/park/shoreline_park)
 "sXE" = (
 /obj/machinery/button/door{
-	id = "warehouse";
-	name = "Parking Shutters Control"
+	id = "house";
+	pixel_x = 0;
+	pixel_y = 32
 	},
-/turf/closed/wall/vampwall/brick,
-/area/vtm/vtr/masquerade/interior/ground_floor/southwest/warehouse)
+/turf/open/floor/plating/asphalt,
+/area/vtm/vtr/masquerade/interior/ground_floor/northeast/old_house)
 "sYw" = (
 /obj/structure/table,
 /obj/machinery/chem_dispenser/drinks/fullupgrade{
@@ -104617,8 +104619,8 @@ gGX
 ekg
 vSW
 fxO
-sXE
-qiZ
+wLV
+bfY
 qiZ
 qiZ
 qiZ
@@ -121015,7 +121017,7 @@ xDs
 xDs
 xDs
 xDs
-bfY
+xDs
 fIc
 iSv
 iSv
@@ -142335,8 +142337,8 @@ fpz
 fpz
 fma
 jgj
-lmU
-ehj
+oDm
+sXE
 ehj
 ehj
 ehj
