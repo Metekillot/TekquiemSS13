@@ -30,7 +30,7 @@
 /datum/discipline_power/vtr/vigor/proc/vigor_boom(mob/living/carbon/human/jumper)
 	playsound(get_turf(jumper), 'code/modules/wod13/sounds/werewolf_fall.ogg', 100, FALSE)
 	new /obj/effect/temp_visual/dir_setting/crack_effect(get_turf(jumper))
-	new /obj/effect/temp_visual/dir_setting/fall_effect(get_turf(jumper))
+	new /obj/effect/shockwave(get_turf(jumper),  8, 0.5, QUAD_EASING | EASE_OUT, 8)
 	for(var/mob/living/carbon/C in range(5, jumper))
 		C.Stun(20)
 		shake_camera(C, (6-get_dist(C, jumper))+1, (6-get_dist(C, jumper)))
@@ -61,8 +61,10 @@
 			playsound(get_turf(door_thing), 'code/modules/wod13/sounds/get_bent.ogg', 100, FALSE)
 			var/obj/item/shield/door/broke_door = new(get_turf(door_thing))
 			broke_door.icon_state = door_thing.baseicon
+			new /obj/effect/shockwave(get_turf(door_thing), 5, 0.5, QUAD_EASING | EASE_OUT, 8)
 			var/atom/throw_target = get_edge_target_turf(door_thing, attacker.dir)
 			broke_door.throw_at(throw_target, rand(2, 4), 4, attacker)
+			attacker.visible_message(span_danger("[attacker] blasts \the [attacked_thing] off of its hinges!"))
 			door_thing.proc_unlock(50)
 			qdel(door_thing)
 			violate_masquerade(attacker, attacker)
@@ -77,7 +79,9 @@
 
 	if(istype(attacked_thing, /obj/structure/table))
 		if(level >= 3)
-			playsound(get_turf(attacked_thing), 'code/modules/wod13/sounds/get_bent.ogg', 100, FALSE)
+			playsound(get_turf(attacked_thing), 'code/modules/wod13/sounds/werewolf_fall.ogg', 100, FALSE)
+			new /obj/effect/shockwave(get_turf(attacked_thing), 5, 0.5, QUAD_EASING | EASE_OUT, 8)
+			attacker.visible_message(span_danger("[attacker] smashes through \the [attacked_thing]!"))
 			qdel(attacked_thing)
 			violate_masquerade(attacker, attacker)
 		return COMPONENT_CANCEL_ATTACK_CHAIN
@@ -88,6 +92,8 @@
 			var/obj/vampire_car/car_thing = attacked_thing
 			var/atom/throw_target = get_edge_target_turf(car_thing, attacker.dir)
 			playsound(get_turf(attacker), 'code/modules/wod13/sounds/bump.ogg', 100, FALSE)
+			new /obj/effect/shockwave(get_turf(attacked_thing), 5, 0.5, QUAD_EASING | EASE_OUT, 8)
+			attacker.visible_message(span_danger("[attacker] punches \the [attacked_thing] and it goes flying!"))
 			car_thing.get_damage(10)
 			car_thing.throw_at(throw_target, rand(4, 6), 4, attacker)
 			violate_masquerade(owner, owner)
@@ -132,10 +138,8 @@
 			windup_pixel_y = 32
 			windup_pixel_x = 32
 
-
 	animate(attacker, pixel_x = windup_pixel_x, pixel_y = windup_pixel_y, time = 30)
 
-	
 	if(!do_mob(attacker, attacker, 3 SECONDS))
 		animate(attacker, pixel_x = 0, pixel_y = 0, time = 0)
 		return
@@ -176,6 +180,8 @@
 	if(wallpaper_destroyed)
 		qdel(wallpaper_destroyed)
 	wall.ScrapeAway(amount=1)
+
+	new /obj/effect/shockwave(get_turf(attacker), 5, 0.75, QUAD_EASING | EASE_OUT, 8)
 
 	playsound(get_turf(attacker), 'code/modules/wod13/sounds/werewolf_fall.ogg', 80, FALSE)
 	attacker.forceMove(get_step(attacker, dir))

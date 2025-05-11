@@ -3730,6 +3730,8 @@
 #include "code\modules\vtr13\effects\lamplight.dm"
 #include "code\modules\vtr13\effects\queen_lilith.dm"
 #include "code\modules\vtr13\effects\river_mouth.dm"
+#include "code\modules\vtr13\effects\shockwave.dm"
+#include "code\modules\vtr13\elements\temporary.dm"
 #include "code\modules\vtr13\factions\faction.dm"
 #include "code\modules\vtr13\factions\vamp_factions\carthian_movement.dm"
 #include "code\modules\vtr13\factions\vamp_factions\circle_of_the_crone.dm"

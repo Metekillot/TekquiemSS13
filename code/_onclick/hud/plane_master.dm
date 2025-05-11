@@ -16,6 +16,13 @@
 //Trust me, you need one. Period. If you don't think you do, you're doing something extremely wrong.
 /atom/movable/screen/plane_master/proc/backdrop(mob/mymob)
 
+
+/atom/movable/screen/plane_master/displacement
+	name = "displacement plane"
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	plane = DISPLACEMENT_PLATE_RENDER_LAYER
+	render_target = DISPLACEMENT_PLATE_RENDER_TARGET
+
 ///Things rendered on "openspace"; holes in multi-z
 /atom/movable/screen/plane_master/openspace
 	name = "open space plane master"
@@ -49,8 +56,13 @@
 	appearance_flags = PLANE_MASTER //should use client color
 	blend_mode = BLEND_OVERLAY
 
+
+/atom/movable/screen/plane_master/game_world/Initialize()
+	. = ..()
+	add_filter("displacer", 1, displacement_map_filter(render_source = DISPLACEMENT_PLATE_RENDER_TARGET, size = 10))
+
 /atom/movable/screen/plane_master/game_world/backdrop(mob/mymob)
-	clear_filters()
+	remove_filter(list("AO", "eye_blur"))
 	if(istype(mymob) && mymob.client && mymob.client.prefs && mymob.client.prefs.ambientocclusion)
 		add_filter("AO", 1, drop_shadow_filter(x = 0, y = -2, size = 4, color = "#04080FAA"))
 	if(istype(mymob) && mymob.eye_blurry)

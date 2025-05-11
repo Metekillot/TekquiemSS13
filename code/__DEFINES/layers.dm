@@ -10,9 +10,11 @@
 
 
 #define OPENSPACE_LAYER 17 //Openspace layer over all
-#define OPENSPACE_PLANE -4 //Openspace plane below all turfs
-#define OPENSPACE_BACKDROP_PLANE -3 //Black square just over openspace plane to guaranteed cover all in openspace turf
+#define OPENSPACE_PLANE -5 //Openspace plane below all turfs
+#define OPENSPACE_BACKDROP_PLANE -4 //Black square just over openspace plane to guaranteed cover all in openspace turf
 
+#define DISPLACEMENT_PLATE_RENDER_LAYER -3
+#define DISPLACEMENT_PLATE_RENDER_TARGET "*DISPLACEMENT_PLATE_RENDER_TARGET"
 
 #define FLOOR_PLANE -2
 #define FLOOR_PLANE_RENDER_TARGET "FLOOR_PLANE"
