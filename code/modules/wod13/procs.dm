@@ -17,9 +17,6 @@
 				to_chat(src, "<span class='userdanger'><b>HUMANITY DECREASED!</b></span>")
 				if(humanity == limit)
 					to_chat(src, "<span class='userdanger'><b>If I don't stop, I will succumb to the Beast.</b></span>")
-			else
-				var/msgShit = pick("<span class='userdanger'><b>I can barely control the Beast!</b></span>", "<span class='userdanger'><b>I SHOULD STOP.</b></span>", "<span class='userdanger'><b>I'm succumbing to the Beast!</b></span>")
-				to_chat(src, msgShit) // [ChillRaccoon] - I think we should make's players more scared
 		if(value > 0)				  // so please, do not say about that, they're in safety after they're humanity drops to limit
 			if((humanity < limit) || forced)
 				if (forced)

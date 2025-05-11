@@ -1323,6 +1323,10 @@
 	. = ..()
 	icon_state = "rock[rand(1, 4)]"
 
+/obj/structure/big_vamprocks/ComponentInitialize()
+	. = ..()
+	add_object_fade_zone(1,1,0,1)
+
 /obj/structure/stalagmite
 	name = "stalagmite"
 	desc = "Rokk."
@@ -1338,6 +1342,9 @@
 /obj/structure/stalagmite/Initialize()
 	. = ..()
 	icon_state = "stalagmite[rand(1, 5)]"
+
+/obj/structure/stalagmite/ComponentInitialize()
+	add_object_fade_zone(1,1,0,1)
 
 /obj/were_ice
 	name = "ice block"

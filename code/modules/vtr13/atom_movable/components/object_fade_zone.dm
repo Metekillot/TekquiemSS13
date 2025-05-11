@@ -130,14 +130,14 @@
 		if(mouse_opacity_interact && initial_mouse_opacity)
 			parent_atom.mouse_opacity = 0
 		if(!obj_is_faded)
-			animate(parent_atom, alpha = (parent_atom.alpha - fade_strength), 5)
+			animate(parent_atom, alpha = (parent_atom.alpha - fade_strength), time = 5, flags = ANIMATION_PARALLEL)
 		obj_is_faded = TRUE
 	else
 		var/atom/parent_atom = parent
 		if(mouse_opacity_interact && initial_mouse_opacity)
 			parent_atom.mouse_opacity = initial_mouse_opacity
 		if(obj_is_faded)
-			animate(parent_atom, alpha = (parent_atom.alpha + fade_strength), 5)
+			animate(parent_atom, alpha = (parent_atom.alpha + fade_strength), time = 5, flags = ANIMATION_PARALLEL)
 		obj_is_faded = FALSE
 
 /datum/component/object_fade_zone/Destroy()
