@@ -10493,6 +10493,7 @@
 /obj/machinery/light{
 	dir = 1
 	},
+/obj/machinery/p25transceiver/clinic,
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/floor_two/southwest/clinic)
 "jtu" = (
@@ -19553,6 +19554,11 @@
 	},
 /turf/open/openspace,
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach/inaccessible)
+"rBS" = (
+/obj/structure/table,
+/obj/machinery/p25policeportal,
+/turf/open/floor/plating/vampplating,
+/area/vtm/vtr/masquerade/interior/floor_two/northwest/police_station)
 "rCm" = (
 /obj/item/kirbyplants/random,
 /turf/open/floor/plating/vampplating/stone,
@@ -20658,6 +20664,7 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/northwest/apartment)
 "swi" = (
 /obj/structure/table,
+/obj/machinery/p25transceiver/police,
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/floor_two/northwest/police_station)
 "swD" = (
@@ -24678,6 +24685,11 @@
 "vSw" = (
 /turf/closed/wall/vampwall/painted,
 /area/vtm/vtr/masquerade/exterior/basement/southwest/southwest_long_beach)
+"vSS" = (
+/obj/structure/table/wood,
+/obj/machinery/p25transceiver/tower,
+/turf/closed/wall/vampwall/wood/low,
+/area/vtm/vtr/elysium/interior/ground_floor/central/castle_elysium)
 "vSW" = (
 /obj/effect/decal/trash,
 /turf/open/floor/plating/concrete,
@@ -25609,6 +25621,11 @@
 /obj/effect/vip_barrier/elysium_2,
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/castle_lobby)
+"wHv" = (
+/obj/structure/table/wood,
+/obj/machinery/p25transceiver/elysium,
+/turf/open/floor/plating/vampwood,
+/area/vtm/vtr/masquerade/interior/ground_floor/central/nightclub)
 "wHU" = (
 /obj/machinery/roulette,
 /turf/open/floor/carpet,
@@ -120280,7 +120297,7 @@ sBh
 cpj
 hcV
 vis
-mXL
+wHv
 mXL
 uLs
 mXL
@@ -126675,7 +126692,7 @@ onf
 qWR
 rAK
 sAP
-dme
+vSS
 rAK
 gFd
 smH
@@ -172649,7 +172666,7 @@ jMh
 qyN
 aTL
 aTL
-swi
+rBS
 swi
 aTL
 aTL
