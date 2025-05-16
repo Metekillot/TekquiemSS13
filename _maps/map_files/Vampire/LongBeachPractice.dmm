@@ -1177,7 +1177,7 @@
 /area/vtm/vtr/masquerade/exterior/ground_floor/southwest/southwest_long_beach)
 "bfY" = (
 /obj/machinery/button/door{
-	id = "warehouse";
+	id = "carthian";
 	name = "Parking Shutters Control";
 	pixel_x = 0;
 	pixel_y = 32
@@ -6414,7 +6414,7 @@
 /area/vtm/vtr/masquerade/interior/ground_floor/central/bank)
 "fIc" = (
 /obj/machinery/button/door{
-	id = "tower";
+	id = "invictus_car";
 	name = "Parking Shutters Control";
 	pixel_x = 0;
 	pixel_y = 32
