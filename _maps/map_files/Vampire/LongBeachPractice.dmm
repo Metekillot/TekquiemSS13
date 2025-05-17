@@ -6003,6 +6003,7 @@
 	pixel_x = 7;
 	pixel_y = 16
 	},
+/obj/machinery/p25transceiver/clinic,
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/floor_two/southwest/clinic)
 "foP" = (
@@ -10493,7 +10494,6 @@
 /obj/machinery/light{
 	dir = 1
 	},
-/obj/machinery/p25transceiver/clinic,
 /turf/open/floor/plating/vampplating/stone,
 /area/vtm/vtr/masquerade/interior/floor_two/southwest/clinic)
 "jtu" = (
@@ -19556,7 +19556,6 @@
 /area/vtm/vtr/masquerade/exterior/ground_floor/southeast/southeast_long_beach/inaccessible)
 "rBS" = (
 /obj/structure/table,
-/obj/machinery/p25policeportal,
 /turf/open/floor/plating/vampplating,
 /area/vtm/vtr/masquerade/interior/floor_two/northwest/police_station)
 "rCm" = (
