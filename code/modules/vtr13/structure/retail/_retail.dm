@@ -74,6 +74,7 @@ GLOBAL_LIST_EMPTY(retail_products)
 			path = replacetext(replacetext("[product.equipment_path]", "/obj/item/", ""), "/", "-"),
 			name = product.equipment_name,
 			price = product.cost,
+			dimensions = product.icon_dimension,
 			ref = REF(product)
 		)
 		.["product_records"] += list(product_data)
