@@ -9,6 +9,7 @@ GLOBAL_LIST_EMPTY(retail_products)
 	anchored = TRUE
 	var/owner_needed = TRUE //Does an npc need to be here for this
 	var/mob/living/carbon/human/npc/my_owner //tracks existence of owner
+	var/is_gun_store = FALSE
 
 	var/list/products_list = list(
 		new /datum/data/retail_product("Plain Donut", /obj/item/food/donut/plain, 5),
@@ -49,7 +50,7 @@ GLOBAL_LIST_EMPTY(retail_products)
 
 /obj/structure/retail/ui_assets(mob/user)
 	return list(
-		get_asset_datum(/datum/asset/spritesheet/vending),
+		get_asset_datum(/datum/asset/spritesheet/retail),
 	)
 
 /obj/structure/retail/ui_interact(mob/user, datum/tgui/ui)
