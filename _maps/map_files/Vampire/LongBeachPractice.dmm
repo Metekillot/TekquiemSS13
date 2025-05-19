@@ -692,7 +692,7 @@
 /turf/open/floor/plating/church,
 /area/vtm/vtr/elysium/interior/ground_floor/central/castle_theater)
 "aHB" = (
-/obj/structure/vaultdoor/pincode,
+/obj/structure/vaultdoor/pincode/basement,
 /turf/open/floor/plating/sidewalk/poor,
 /area/vtm/vtr/elysium/interior/basement/central/castle_elysium)
 "aHN" = (
@@ -1944,10 +1944,10 @@
 /turf/open/floor/plating/sidewalk/rich,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northwest/northwest_long_beach)
 "bQI" = (
-/obj/structure/vaultdoor/pincode,
 /obj/effect/turf_decal/siding/wood{
 	dir = 1
 	},
+/obj/structure/vaultdoor/pincode/records,
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/elysium/interior/floor_three/central/castle_elysium)
 "bQJ" = (

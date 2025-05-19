@@ -36,6 +36,10 @@
 
 /obj/structure/vaultdoor/pincode/bank
 
+/obj/structure/vaultdoor/pincode/records //door on the tower top floor that goes into the room with the masquerade contracts
+
+/obj/structure/vaultdoor/pincode/basement //door in the tower basement
+
 /obj/structure/vaultdoor/New()
 	..()
 	if(uses_pincode_lock)
