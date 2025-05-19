@@ -117,6 +117,7 @@
 	if(do_after(user, 4 SECONDS))
 		icon_state = "[baseicon]-1"
 		density = TRUE
+		opacity = TRUE
 		layer = ABOVE_ALL_MOB_LAYER
 		to_chat(user, "<span class='notice'>You close [src].</span>")
 		closed = TRUE
