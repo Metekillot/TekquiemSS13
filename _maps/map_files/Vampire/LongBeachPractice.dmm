@@ -16730,11 +16730,6 @@
 "oZI" = (
 /turf/open/floor/plating/vampgrass,
 /area/vtm/vtr/masquerade/exterior/ground_floor/northeast/graveyard)
-"paf" = (
-/obj/keypad/armory,
-/obj/effect/decal/wallpaper/stone,
-/turf/closed/wall/vampwall/rich,
-/area/vtm/vtr/elysium/interior/basement/central/castle_elysium)
 "pap" = (
 /obj/effect/decal/wallpaper/paper/rich,
 /turf/closed/wall/vampwall/metal/alt,
@@ -61144,7 +61139,7 @@ aJY
 bOj
 wPj
 wPj
-paf
+hKv
 aJY
 aJY
 aJY
@@ -251337,7 +251332,7 @@ lQm
 ddP
 ddP
 vMM
-poQ
+aUX
 jVY
 jVY
 jVY
