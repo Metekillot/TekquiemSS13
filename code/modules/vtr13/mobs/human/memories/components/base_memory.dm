@@ -64,11 +64,11 @@
 
 	var/obj/structure/vaultdoor/basement = find_door_pin(/obj/structure/vaultdoor/pincode/basement)
 	if(basement && (owner.mind.assigned_role == "Sheriff" || owner.mind.assigned_role == "Seneschal"))
-		dat += "The pincode for the basement vault is<b>: [basement.pincode]</b>"
+		dat += "The code for the basement vault is<b>: [basement.pincode]</b>"
 
 	var/obj/structure/vaultdoor/records = find_door_pin(/obj/structure/vaultdoor/pincode/records)
 	if(records && (owner.mind.assigned_role == "Page" || owner.mind.assigned_role == "Seneschal"))
-		dat += "The pincode for the masquerade records room is<b>: [records.pincode]</b>"
+		dat += "The code for the masquerade records room is<b>: [records.pincode]</b>"
 
 	dat += "<hr>"
 
