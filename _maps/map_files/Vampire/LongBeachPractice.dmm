@@ -9546,6 +9546,10 @@
 /obj/structure/stairs/east,
 /turf/open/floor/plating/parquetry/old,
 /area/vtm/vtr/masquerade/interior/ground_floor/central/library)
+"iBS" = (
+/obj/effect/landmark/observer_start,
+/turf/open/floor/plating/asphalt,
+/area/vtm/vtr/masquerade/exterior/ground_floor/central/central_long_beach)
 "iCh" = (
 /obj/structure/table,
 /obj/item/kitchen/knife,
@@ -118229,7 +118233,7 @@ tgh
 sBh
 sBh
 sBh
-sBh
+iBS
 sBh
 sBh
 sBh
