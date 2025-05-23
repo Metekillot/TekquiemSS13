@@ -8,6 +8,7 @@
 /cfg/**/*
 
 # Ignore compiled linux libs in the root folder, e.g. librust_g.so
+/*.so
 
 #Ignore compiled files and other files generated during compilation.
 *.mdme
@@ -158,11 +159,7 @@ Temporary Items
 *.sublime-project
 *.sublime-workspace
 
-#Visual studio stuff
-*.vscode/*
-!/.vscode/extensions.json
-!/.vscode/launch.json
-!/.vscode/tasks.json
+
 /tools/MapAtmosFixer/MapAtmosFixer/obj/*
 /tools/MapAtmosFixer/MapAtmosFixer/bin/*
 /tools/CreditsTool/bin/*
@@ -179,24 +176,48 @@ Temporary Items
 /_maps/**/backup/
 /_maps/templates.dm
 
+#dmm palette file. You really should be using StrongDMM instead.
+*.dmm-pal
+
 #dmdoc default folder
 /dmdoc
 
 #Linux docker
-/tools/LinuxOneShot/SetupProgram/obj/*
-/tools/LinuxOneShot/SetupProgram/bin/*
-/tools/LinuxOneShot/SetupProgram/.vs
-/tools/LinuxOneShot/Database
-/tools/LinuxOneShot/TGS_Config
-/tools/LinuxOneShot/TGS_Instances
-/tools/LinuxOneShot/TGS_Logs
-imgui.ini
-config/config.txt
-config/dbconfig.txt
+/tools/tgs_test/.vs/*
+/tools/tgs_test/bin/*
+/tools/tgs_test/obj/*
 
-#tgs_test thats generated @ obj & bin
-/tools/tgs_test/obj*
-/tools/tgs_test/bin*
+# Built auxtools libraries and intermediate files
+aux*.dll
+libaux*.so
+*.pdb
 
-# User environment setup for building with specific versions of BYOND
+# byond-tracy, we intentionally do not ship this and do not want to maintain it
+# https://github.com/mafemergency/byond-tracy/
+prof.dll
+libprof.so
+
+# Tracy can read source files when it is in the root folder, even without absolute paths.
+# If you're interested, run this hack:
+# https://gist.github.com/Mothblocks/db5462aa84d7d6b1d1b1276b820f62da
+Tracy.exe
+
+# JavaScript tools
+**/node_modules
+
+# Screenshot tests
+/artifacts
+
+# named byond versions config
 /tools/build/dm_versions.json
+
+# From /tools/define_sanity/check.py - potential output file that we load onto the user's machine that we don't want to have committed.
+define_sanity_output.txt
+
+# ezdb
+/db/
+/config/ezdb.txt
+
+# Running OpenDream locally
+tgstation.json
+rust_g64.dll
