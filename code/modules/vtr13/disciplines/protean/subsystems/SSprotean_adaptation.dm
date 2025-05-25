@@ -1,7 +1,10 @@
 SUBSYSTEM_DEF(protean_adaptation)
 	name = "Protean Adaptations"
 	flags = SS_NO_FIRE
-	init_order = INIT_ORDER_ATOMS
+	dependencies = list(
+		/datum/controller/subsystem/mapping,
+		/datum/controller/subsystem/atoms,
+	)
 
 	var/list/adaptations_predatory = list()
 
@@ -15,7 +18,7 @@ SUBSYSTEM_DEF(protean_adaptation)
 			CRASH("Two protean predatory adaptations of the same name exist on [p_adaptation.name]! Not allowed!")
 		adaptations_predatory["[p_adaptation.name]"] = adaptation
 		qdel(p_adaptation)
-	
+
 	for(var/adaptation in subtypesof(/datum/adaptation/unnatural))
 		var/datum/adaptation/unnatural/u_adaptation = new adaptation
 		if(adaptations_unnatural["[u_adaptation.name]"])

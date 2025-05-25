@@ -241,3 +241,19 @@
 	/// First element is the current martial art - any other elements are "saved" for if they unlearn the first one
 	/// Reference handling is done by the martial arts themselves
 	var/list/datum/martial_art/martial_arts
+
+//VTR STATS
+	var/physique = 1
+	var/stamina = 1
+	var/charisma = 1
+	var/composure = 1
+	var/wits = 1
+	var/resolve = 1
+
+	var/additional_physique = 0
+	var/additional_stamina = 0
+	var/additional_charisma = 0
+	var/additional_composure = 0
+	var/additional_wits = 0
+	var/additional_resolve = 0
+//VTR STATS

@@ -2,8 +2,8 @@
 /datum/controller/subsystem/character_connection/proc/retire_connection(target, ckey, character_name, deleting_group_id)
 	if(!deleting_group_id || !target || !ckey || !character_name)
 		return FALSE
-	
-	
+
+
 	if(tgui_alert(target, "Are you sure you wish to delete this connection?", "Delete Connection", list("I'm Sure", "Cancel")) != "I'm Sure")
 		return FALSE
 
@@ -25,15 +25,15 @@
 
 	SScharacter_connection.update_retire_character_connection_by_group_id(deleting_group_id)
 
-	
+
 	if(isliving(target))
 		var/mob/living/living_target = target
 		if(living_target.mind)
 			living_target.mind.character_connections = SScharacter_connection.get_character_connections(ckey, character_name)
-	
+
 	if(istype(target, /client))
 		var/client/target_client = target
 		if(target_client?.prefs)
 			target_client.prefs.character_connections = SScharacter_connection.get_character_connections(ckey, character_name)
-	
+
 	return TRUE

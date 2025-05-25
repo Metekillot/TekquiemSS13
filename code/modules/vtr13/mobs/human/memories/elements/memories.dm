@@ -1,7 +1,7 @@
 
 //Element handling the creation and deletion of memories, based on the splat of the holder
 /datum/element/memories
-	element_flags = ELEMENT_DETACH
+	element_flags = ELEMENT_DETACH_ON_HOST_DESTROY
 
 /datum/element/memories/Attach(datum/target)
 	. = ..()

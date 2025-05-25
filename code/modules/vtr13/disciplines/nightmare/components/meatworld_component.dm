@@ -12,11 +12,11 @@
 	if(!parent_living.client)
 		return COMPONENT_INCOMPATIBLE
 	ourclient = parent_living.client
-	
+
 	RegisterSignal(parent_living, COMSIG_MOVABLE_MOVED, PROC_REF(update_meatworld))
 	RegisterSignal(parent_living, COMSIG_POWER_PRE_ACTIVATION, PROC_REF(stop_abilities))
 	RegisterSignal(source, COMSIG_POWER_DEACTIVATE, PROC_REF(destroy_meatworld))
-	
+
 	update_meatworld(parent_living)
 
 /datum/component/meatworld_component/proc/stop_abilities()
@@ -53,7 +53,7 @@
 			new_meat += a_atom.hud_list[HUD_LIST_MEATWORLD]
 		else if(istype(a_atom, /obj/effect/addwall))
 			if(!a_atom.hud_list[HUD_LIST_MEATWORLD])
-				a_atom.hud_list[HUD_LIST_MEATWORLD] = image('icons/vtr13/hud/meatworld.dmi', a_atom, "fleshwall_addwall" , ABOVE_ALL_MOB_LAYERS_LAYER)
+				a_atom.hud_list[HUD_LIST_MEATWORLD] = image('icons/vtr13/hud/meatworld.dmi', a_atom, "fleshwall_addwall" , ABOVE_ALL_MOB_LAYER)
 				a_atom.hud_list[HUD_LIST_MEATWORLD].appearance_flags|=TILE_BOUND
 			new_meat += a_atom.hud_list[HUD_LIST_MEATWORLD]
 		else if(istype(a_atom, /obj/effect/decal/wallpaper))
@@ -61,12 +61,12 @@
 				a_atom.hud_list[HUD_LIST_MEATWORLD] = image('icons/vtr13/hud/meatworld.dmi', a_atom, "wallpaper-necro" , ABOVE_NORMAL_TURF_LAYER)
 				a_atom.hud_list[HUD_LIST_MEATWORLD].appearance_flags|=TILE_BOUND
 			new_meat += a_atom.hud_list[HUD_LIST_MEATWORLD]
-	
+
 	new_meat.Remove(tracked_meat)
-	
+
 	for(var/image/new_meat_image in new_meat)
 		ourclient.images |= new_meat_image
-	
+
 
 	tracked_meat.Add(new_meat)
 

@@ -182,7 +182,7 @@ Dancer
 /datum/action/fly_upper/Trigger()
 	if(last_acrobate+15 > world.time)
 		return
-	
+
 	if(!(owner.movement_type & FLYING))
 		to_chat(src, span_notice("You must be flying to go up."))
 		return
@@ -270,7 +270,7 @@ Dancer
 
 ///Very similar to squish, but for dwarves and shorties
 /datum/element/dwarfism
-	element_flags = ELEMENT_DETACH|ELEMENT_BESPOKE
+	element_flags = ELEMENT_DETACH_ON_HOST_DESTROY|ELEMENT_BESPOKE
 	id_arg_index = 2
 	var/comsig
 	var/list/attached_targets = list()
@@ -314,7 +314,7 @@ Dancer
 
 
 /datum/element/children
-	element_flags = ELEMENT_DETACH|ELEMENT_BESPOKE
+	element_flags = ELEMENT_DETACH_ON_HOST_DESTROY|ELEMENT_BESPOKE
 	id_arg_index = 2
 	var/comsig
 	var/list/attached_targets = list()
@@ -578,7 +578,7 @@ Dancer
 
 ///Very similar to squish, but for dwarves and shorties
 /datum/element/giantism
-	element_flags = ELEMENT_DETACH|ELEMENT_BESPOKE
+	element_flags = ELEMENT_DETACH_ON_HOST_DESTROY|ELEMENT_BESPOKE
 	id_arg_index = 2
 	var/comsig
 	var/list/attached_targets = list()

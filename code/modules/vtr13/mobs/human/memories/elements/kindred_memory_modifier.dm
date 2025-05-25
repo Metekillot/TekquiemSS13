@@ -1,6 +1,6 @@
 //Alters memory text for Kindred
 /datum/element/kindred_memory_modifier
-	element_flags = ELEMENT_DETACH
+	element_flags = ELEMENT_DETACH_ON_HOST_DESTROY
 
 /datum/element/kindred_memory_modifier/Attach(datum/target)
 	. = ..()
@@ -19,7 +19,7 @@
 	UnregisterSignal(source, COMSIG_MEMORY_NAME_OVERRIDE)
 	UnregisterSignal(source, COMSIG_MEMORY_SPLAT_TEXT)
 	UnregisterSignal(source, COMSIG_MEMORY_DISCIPLINE_TEXT)
-	
+
 
 
 /datum/element/kindred_memory_modifier/proc/name_override(datum/source, mob/living/carbon/human/owner, is_own_memories)

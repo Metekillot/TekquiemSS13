@@ -84,6 +84,8 @@
 
 #define FULLSCREEN_PLANE 23
 
+#define FAKE_SHADOW_PLANE 24
+
 ///--------------- FULLSCREEN RUNECHAT BUBBLES ------------
 
 ///Popup Chat Messages

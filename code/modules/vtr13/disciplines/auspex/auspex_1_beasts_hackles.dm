@@ -13,12 +13,12 @@
 /datum/discipline_power/vtr/auspex/beasts_hackles/activate()
 	. = ..()
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
-	abductor_hud.add_hud_to(owner)
+	abductor_hud.show_to(owner)
 
 	ADD_TRAIT(owner, list(TRAIT_THERMAL_VISION, TRAIT_NIGHT_VISION, TRAIT_USING_AUSPEX), AUSPEX_1_TRAIT)
 
 	var/datum/atom_hud/health_hud = GLOB.huds[DATA_HUD_MEDICAL_ADVANCED]
-	health_hud.add_hud_to(owner)
+	health_hud.show_to(owner)
 	owner.see_invisible = get_auspex_level()
 
 	owner.update_sight()
@@ -27,12 +27,12 @@
 /datum/discipline_power/vtr/auspex/beasts_hackles/deactivate()
 	. = ..()
 	var/datum/atom_hud/abductor_hud = GLOB.huds[DATA_HUD_ABDUCTOR]
-	abductor_hud.remove_hud_from(owner)
+	abductor_hud.hide_from(owner)
 
 	REMOVE_TRAIT(owner, list(TRAIT_THERMAL_VISION, TRAIT_NIGHT_VISION, TRAIT_USING_AUSPEX), AUSPEX_1_TRAIT)
 
 	var/datum/atom_hud/health_hud = GLOB.huds[DATA_HUD_MEDICAL_ADVANCED]
-	health_hud.remove_hud_from(owner)
+	health_hud.hide_from(owner)
 	owner.see_invisible = 0
 
 	owner.update_sight()

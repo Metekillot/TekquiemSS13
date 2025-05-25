@@ -1,7 +1,10 @@
 SUBSYSTEM_DEF(dominate_compulsion)
 	name = "Dominate Compulsions"
 	flags = SS_NO_FIRE
-	init_order = INIT_ORDER_ATOMS
+	dependencies = list(
+		/datum/controller/subsystem/mapping,
+		/datum/controller/subsystem/atoms,
+	)
 	var/list/compel_list = list()
 	var/list/command_list = list()
 

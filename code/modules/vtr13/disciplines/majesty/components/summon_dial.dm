@@ -22,12 +22,12 @@
 
 	to_chat(parent_mob, span_userdanger("You are called to [destination.loc]. You must go."))
 	parent_mob.add_client_colour(/datum/client_colour/glass_colour/red)
-	
+
 	//initialize dial
 	dial = new /atom/movable/screen/summon_arrow()
 	parent_mob.client.screen += dial
 
-	
+
 	var/list/current_destination_targets = SSarea_grouper.get_directions_to_point(get_turf(parent_mob), destination)
 	if(!current_destination_targets)
 		#ifdef AREA_GROUPER_DEBUGGING
@@ -40,7 +40,7 @@
 	final_destination = destination
 
 	reset_dial()
-	
+
 	//initialize destination marker
 	marker = new /obj/effect/decal/summon_marker(destination, owner, parent)
 
@@ -55,16 +55,16 @@
 		RegisterSignal(source_power, COMSIG_MAJESTY_5_END, PROC_REF(determine_remove_dial))
 
 /datum/component/summon_dial/proc/reset_dial()
-	current_angle = Get_Angle(get_turf(parent), current_destination)
+	current_angle = get_angle(get_turf(parent), current_destination)
 	animate(dial, transform = turn(matrix(), current_angle), time = 0, flags = ANIMATION_END_NOW)
-	
+
 
 
 /datum/component/summon_dial/proc/adjust_dial()
 	if(get_turf(parent) == final_destination)
 		remove_dial()
 		return
-	
+
 
 	//Handling when we can't get a path matrix
 	if(no_clear_path)
@@ -78,7 +78,7 @@
 		notified_floor = TRUE
 		return
 
-	var/new_angle = Get_Angle(get_turf(parent), current_destination)
+	var/new_angle = get_angle(get_turf(parent), current_destination)
 #ifdef AREA_GROUPER_DEBUGGING
 	to_chat(parent, "old angle: [current_angle], new angle: [new_angle], angle_diff=[new_angle - current_angle]")
 #endif
