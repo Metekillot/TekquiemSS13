@@ -1,8 +1,10 @@
 SUBSYSTEM_DEF(tides)
 	name = "Tides"
 	flags = SS_NO_FIRE
-	init_order = INIT_ORDER_DEFAULT
-
+	dependencies = list(
+		/datum/controller/subsystem/mapping,
+		/datum/controller/subsystem/atoms,
+	)
 	var/list/coastline_turfs = list()
 
 	var/list/surfers = list()
@@ -15,7 +17,7 @@ SUBSYSTEM_DEF(tides)
 /datum/controller/subsystem/tides/proc/send_to_shore(atom/movable/flotsam)
 	if(surfers.Find(flotsam))
 		return
-	
+
 	surfers += flotsam
 	playsound(get_turf(flotsam), 'sound/vtr13/water_splash.ogg', 100, TRUE)
 	if(isliving(flotsam))
@@ -25,7 +27,7 @@ SUBSYSTEM_DEF(tides)
 		soggy_lad.extinguish_mob()
 		if(soggy_lad.mind)
 			to_chat(soggy_lad, span_userdanger("You are pulled beneath inky black waves! The current tosses you like a ragdoll!"))
-			soggy_lad.add_client_colour(/datum/client_colour/glass_colour/darkblue)
+			soggy_lad.add_client_colour(/datum/client_colour/glass_colour/blue)
 			if(ishuman(soggy_lad))
 				soggy_lad.AddElement(/datum/element/ui_button_shake_inventory_group, 16)
 				soggy_lad.AddElement(/datum/element/ui_button_shake_wide_button_group, 1)
@@ -45,7 +47,7 @@ SUBSYSTEM_DEF(tides)
 		var/mob/living/soggy_lad = flotsam
 		if(soggy_lad.mind)
 			to_chat(soggy_lad, span_notice("You wash up on the shore, sogging wet."))
-			soggy_lad.remove_client_colour(/datum/client_colour/glass_colour/darkblue)
+			soggy_lad.remove_client_colour(/datum/client_colour/glass_colour/blue)
 		if(ishuman(soggy_lad))
 			soggy_lad.RemoveElement(/datum/element/ui_button_shake_inventory_group, 16)
 			soggy_lad.RemoveElement(/datum/element/ui_button_shake_wide_button_group, 1)
