@@ -78,7 +78,6 @@ export const GenericUplink = (props: GenericUplinkProps) => {
               placeholder="Search..."
               onChange={setSearchText}
               fluid
-              expensive
             />
           </Stack.Item>
           <Stack.Item grow>

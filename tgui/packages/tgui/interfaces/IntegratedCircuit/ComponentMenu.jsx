@@ -132,7 +132,6 @@ export class ComponentMenu extends Component {
               placeholder="Search.."
               value={currentSearch}
               fluid
-              expensive
               onChange={(val) =>
                 this.setState({
                   currentSearch: val,

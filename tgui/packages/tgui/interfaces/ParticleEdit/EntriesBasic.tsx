@@ -160,8 +160,7 @@ export const EntryGradient = (props: EntryGradientProps) => {
                   key={index}
                   maxWidth={'70px'}
                   value={entry.toString()}
-                  expensive
-                  onChange={(value) =>
+                  onBlur={(value) =>
                     act('edit', {
                       var: var_name,
                       new_value: gradient!.map((x, i) =>
@@ -353,8 +352,7 @@ export const EntryIconState = (props: EntryIconStateProps) => {
                 <Input
                   width="70px"
                   value={iconstate}
-                  expensive
-                  onChange={(value) =>
+                  onBlur={(value) =>
                     act('edit', {
                       var: var_name,
                       new_value: editKeyOf(icon_state, iconstate, value),
@@ -399,8 +397,7 @@ export const EntryIconState = (props: EntryIconStateProps) => {
           <>
             <Input
               value={icon_state ? icon_state : 'None'}
-              expensive
-              onChange={(value) =>
+              onBlur={(value) =>
                 act('edit', {
                   var: var_name,
                   new_value: value,

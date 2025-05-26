@@ -113,24 +113,15 @@ function CatalogTabs(props: CatalogTabsProps) {
   const sorted = sortBy(categories, (supply) => supply.name);
 
   return (
-    <Tabs vertical>
-      <Tabs.Tab
-        key="search_results"
-        selected={activeSupplyName === 'search_results'}
-      >
-        <Stack align="center">
-          <Stack.Item>
-            <Icon name="search" />
-          </Stack.Item>
-          <Stack.Item grow>
-            <Input
-              fluid
-              placeholder="Search..."
-              value={searchText}
-              onInput={(e, value) => {
-                if (value === searchText) {
-                  return;
-                }
+    <Stack fill vertical>
+      <Stack.Item>
+        <SearchBar
+          expensive
+          query={searchText}
+          onSearch={(value) => {
+            if (value === searchText) {
+              return;
+            }
 
                 if (value.length) {
                   // Start showing results

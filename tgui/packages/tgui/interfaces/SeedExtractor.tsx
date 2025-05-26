@@ -84,7 +84,6 @@ export const SeedExtractor = (props) => {
                   value={searchText}
                   onChange={setSearchText}
                   fluid
-                  expensive
                 />
               </Table.Cell>
               <Table.Cell collapsing p={1}>

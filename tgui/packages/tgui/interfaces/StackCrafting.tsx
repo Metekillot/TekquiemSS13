@@ -112,15 +112,12 @@ export const StackCrafting = (_props) => {
         <Section
           title={'Amount: ' + amount}
           buttons={
-            <>
-              Search
-              <Input
-                autoFocus
-                value={searchText}
-                onInput={(e, value) => setSearchText(value)}
-                mx={1}
-              />
-            </>
+            <SearchBar
+              expensive
+              style={{ width: '15em' }}
+              query={searchText}
+              onSearch={(value) => setSearchText(value)}
+            />
           }
         >
           {filteredRecipes ? (

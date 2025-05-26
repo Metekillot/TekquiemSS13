@@ -157,9 +157,8 @@ const PaperPublishing = (props) => {
             <Input
               mt={2}
               fluid
-              expensive
               value={author}
-              onChange={(value) =>
+              onBlur={(value) =>
                 act('rewrite', {
                   author: value,
                 })
@@ -170,8 +169,7 @@ const PaperPublishing = (props) => {
             <Input
               fluid
               value={title}
-              expensive
-              onChange={(value) =>
+              onBlur={(value) =>
                 act('rewrite', {
                   title: value,
                 })
@@ -196,8 +194,7 @@ const PaperPublishing = (props) => {
             <Input
               fluid
               value={abstract}
-              expensive
-              onChange={(value) =>
+              onBlur={(value) =>
                 act('rewrite', {
                   abstract: value,
                 })
