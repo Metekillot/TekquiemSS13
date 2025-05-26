@@ -209,7 +209,7 @@ SUBSYSTEM_DEF(carpool)
 							repairing = FALSE
 							to_chat(user, "<span class='notice'>You've managed to open [src]'s lock.</span>")
 							playsound(src, 'code/modules/wod13/sounds/open.ogg', 50, TRUE)
-							
+
 					if(initial(access) == "none") //Stealing a car with no keys assigned to it is basically robbing a random person and not an organization
 						if(ishuman(user))
 							var/mob/living/carbon/human/H = user
@@ -730,16 +730,6 @@ SUBSYSTEM_DEF(carpool)
 	var/total_y = abs(pixel_starts_y-pixel_ends_y)
 	return round(sqrt(total_x*total_x + total_y*total_y))
 
-/proc/get_angle_raw(start_x, start_y, start_pixel_x, start_pixel_y, end_x, end_y, end_pixel_x, end_pixel_y)
-	var/dy = (world.icon_size * end_y + end_pixel_y) - (world.icon_size * start_y + start_pixel_y)
-	var/dx = (world.icon_size * end_x + end_pixel_x) - (world.icon_size * start_x + start_pixel_x)
-	if(!dy)
-		return (dx >= 0) ? 90 : 270
-	. = arctan(dx/dy)
-	if(dy < 0)
-		. += 180
-	else if(dx < 0)
-		. += 360
 
 /proc/get_angle_diff(var/angle_a, var/angle_b)
 	return ((angle_b - angle_a) + 180) % 360 - 180;
