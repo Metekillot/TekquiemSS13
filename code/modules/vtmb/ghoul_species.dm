@@ -31,7 +31,7 @@
 	C.give_discipline(giving_bloodheal)
 
 	C.bloodpool = 5
-	C.maxbloodpool = 5 + C.get_total_stamina()
+	C.maxbloodpool = 5 + C.get_stamina()
 	C.recalculate_max_health()
 
 /datum/species/ghoul/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, pref_load)

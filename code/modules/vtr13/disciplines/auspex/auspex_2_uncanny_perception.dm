@@ -19,8 +19,8 @@
 	)
 
 /datum/discipline_power/vtr/auspex/uncanny_perception/pre_activation_checks(mob/living/carbon/human/target)
-	var/mypower = owner.get_total_wits() + discipline.level
-	var/theirpower = target.get_total_resolve() + target.blood_potency
+	var/mypower = owner.get_wits() + discipline.level
+	var/theirpower = target.get_resolve() + target.blood_potency
 
 	to_chat(owner, span_danger("You probe [target]'s mind..."))
 	if(!SSroll.opposed_roll(owner, target, mypower, theirpower, show_player_b = FALSE, alert_atom = target))
