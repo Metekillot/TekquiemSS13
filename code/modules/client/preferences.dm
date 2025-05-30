@@ -327,7 +327,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	discipline4type = null
 	enlightement = clane.enlightement
 	humanity = clane.start_humanity
-	true_experience = 10
+	true_experience = 50
 	key_bindings = deepCopyList(GLOB.hotkey_keybinding_list_by_key) // give them default keybinds and update their movement keys
 	C?.set_macros()
 //	pref_species = new /datum/species/kindred()
@@ -1385,26 +1385,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[FROM [job.minimal_generation] GENERATION AND OLDER\]</font></td></tr>"
 				continue
 			if(masquerade < job.minimal_masquerade)
-				HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[job.minimal_masquerade] MASQUERADE POINTS REQUIED\]</font></td></tr>"
+				HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[job.minimal_masquerade] MASQUERADE POINTS REQUIRED\]</font></td></tr>"
 				continue
-			if(job.kindred_only)
-				if(pref_species.name != "Vampire")
-					HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
-					continue
-			if(!job.garou_allowed)
-				if(pref_species.name == "Werewolf")
-					HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
-					continue
-			if(!job.humans_accessible)
-				if(pref_species.name == "Human")
-					HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
-					continue
-			if(job.human_only)
-				if(pref_species.name != "Human")
-					HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
-			if(job.ghoul_only)
-				if(pref_species.name != "Ghoul")
-					HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
+			if(!job.allowed_species.Find(pref_species.name))
+				HTML += "<font color=#290204>[rank]</font></td><td><font color=#290204> \[[pref_species.name] RESTRICTED\]</font></td></tr>"
+				continue
 			if(pref_species.name == "Vampire")
 				if(clane)
 					var/alloww = FALSE
@@ -2022,8 +2007,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						if(i != discipline1type && i != discipline2type && i != discipline3type)
 							var/datum/discipline/D = new i
 							if(!D.clane_restricted)
-								disc4 += i
-							if(clane.name == "Old Clan Tzimisce" && D.name == "Vicissitude")
 								disc4 += i
 							qdel(D)
 					var/discipline4 = input(user, "Select fourth discipline", "Discipline Selection") as null|anything in disc4
@@ -3003,7 +2986,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					random_species()
 					random_character()
 					body_model = rand(1, 3)
-					true_experience = 10
+					true_experience = 50
 					real_name = random_unique_name(gender)
 					save_character()
 
@@ -3047,7 +3030,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						random_species()
 						random_character()
 						body_model = rand(1, 3)
-						true_experience = 10
+						true_experience = 50
 						real_name = random_unique_name(gender)
 						save_character()
 
