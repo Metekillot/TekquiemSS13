@@ -1,7 +1,11 @@
 {
-	
-    "canadian": {
-		"toilet": "washroom",
+	"canadian": {
+		"about": "aboot",
+		"alcohol": "mickey",
+		"armor": "armour",
+		"armory": "armoury",
+		"backpack": "knapsack",
+		"bar": "boozecan",
 		"bathroom": "washroom",
 		"restroom": "washroom",
 		"coffee": "doubledouble",
@@ -37,9 +41,6 @@
 		"inch": "centimetre",
 		"yard": "metre",
 		"tumor": "tumour",
-		"mile": "kilometre",
-		"pound": "kilogram"
-		}
-	
-	
+		"yard": "metre"
+	}
 }

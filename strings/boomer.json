@@ -16,38 +16,13 @@
 	"When I was a kid I had to walk to school uphill both ways!"
     ],
 
-	"expense": [
-	"Healthcare",
-	"College",
-	"A car",
-	"A house",
-	"Food"
-	],
-	
-    "kids": [
-	"kids",
-	"millenials",
-	"snowflakes"
-    ],
+	"expense": ["A car", "A house", "College", "Food", "Healthcare"],
 
-    "file": [
-	"JPEG",
-	"PDF",
-	"DMI",
-	"JSON"
-    ],
+	"kids": ["kids", "millennials", "snowflakes"],
 
-    "sad": [
-	"sad",
-	"depressed",
-	"sad and depressed"
-    ],
+	"file": ["DMI", "JPEG", "JSON", "PDF"],
 
-    "impossible": [
-	"job",
-	"house",
-	"job and a house",
-	"life"
-    ]
+	"sad": ["depressed", "sad and depressed", "sad"],
 
+	"impossible": ["house", "job and a house", "job", "life"]
 }

@@ -143,77 +143,7 @@
 		"virology"
 	],
 
-	"authority": [
-		"cap",
-		"captain",
-		"chief",
-		"head",
-		"hop",
-		"hos",
-		"ce",
-		"cmo",
-		"rd",
-		"command",
-		"nanotrasen",
-		"admiral",
-		"centcom",
-		"comdom",
-		"condom"
-	],
-
-	"the supernatural": [
-		"chaplain",
-		"chappy",
-		"chapel",
-		"god",
-		"goddess",
-		"religion",
-		"cult",
-		"cultist",
-		"nar-sie",
-		"nar'sie",
-		"nar-nar",
-		"nar nar",
-		"ratvar",
-		"eldritch",
-		"rune",
-		"talisman",
-		"tome",
-		"ritual",
-		"clockwork",
-		"brass",
-		"sigil",
-		"wizard",
-		"wiz",
-		"magic",
-		"lich",
-		"ei nath"
-	],
-
-"aliens": [
-		"alien",
-		"xeno",
-		"abductor",
-		"xenomorph",
-		"ayys",
-		"ayy lmao",
-		"greys",
-		"resin",
-		"mothership",
-		"abductee",
-		"xenobiology",
-		"jelly",
-		"slime",
-		"facehugger",
-		"lusty"
-	],
-
-"strangers": [
-		"as (unknown)",
-		"unidentified",
-		"unknown",
-		"stranger"
-	],
+	"strangers": ["as (unknown)", "unidentified", "unknown", "stranger"],
 
 "birds": [
 		"birdemic",

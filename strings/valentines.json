@@ -1,15 +1,5 @@
 {
-    "valentines": [
-        "Roses are red / Violets are good / One day while Andy...",
-        "My love for you is like the singularity. It cannot be contained.",
-        "You make me lustier than a xenomorph maid.",
-        "We go together like the clown and the external airlock.",
-        "Roses are red / Liches are wizards / I love you more than a whole squad of lizards.",
-        "Be my valentine. Law 2.",
-        "You must be a mime, because you leave me speechless.",
-		"I love you like Ian loves the HoP.",
-		"You're hotter than a plasma fire in toxins.",
-		"We must have a wizard, because your face summoned magic.",
+	"valentines": [
 		"Are you a hull breach? Because you're taking my breath away.",
 		"I'm not the atmos tech, but I'm great at laying pipe.",
 		"Could I have all access... to your heart?",
@@ -87,15 +77,35 @@
 		"I don't need the chef's cooking when you're such a snack!",
 		"Does the Chaplain know there's a goddess on board?",
 		"The captain just ordered Build Your Own Shuttle -- guess you'll have to sit on my face.",
-		"Let's get to a pod and share our internals.",
-		"Stand still so I can set your face to Wanted.",
-		"Did you just go through the teleporter? Because you're looking pretty fly.",
-		"Nice jumpsuit. It'd look even better thrown down disposals.",
-		"Heat up 5 parts cream, 5 parts lizard wine, and 1 part strange reagent to 374K, and you'll know what I can do for you."
-    ],
+		"The floor is made of lava! Quick, get on my bed.",
+		"The virologist is rogue, and the only cure is a kiss from you.",
+		"There's no way you're rogue -- you're a fine piece of Asimov.",
+		"This must be the captain's office, because I see a fox.",
+		"Wanna make like a borg and do some heavy petting?",
+		"Wanna raid my tool storage?",
+		"We must have a wizard, because your face summoned magic.",
+		"You give me a positive moodlet.",
+		"You look as beautiful now as the last time you were cloned.",
+		"You must be a moth, because you set my heart aflutter.",
+		"You must be a silicon, because you've unbolted my heart.",
+		"You must be liquid dark matter, because you're pulling me closer.",
+		"You're always valid to my heart.",
+		"You're hotter than a plasma fire in ordnance.",
+		"You're more stunning than the entire armory.",
+		"You're the vomit to my goose.",
+		"Your beauty is rarer than an aurora caelus.",
+		"Your face gets me higher than omega weed.",
+		"Be my valentine. Law 2.",
+		"My love for you is like the singularity. It cannot be contained.",
+		"Roses are red / Liches are wizards / I love you more than a whole squad of lizards.",
+		"Roses are red / Violets are good / One day while Andy...",
+		"We go together like the clown and the external airlock.",
+		"You make me lustier than a xenomorph maid.",
+		"You must be a mime, because you leave me speechless."
+	],
 
-    "candyhearts": [
-        "A heart-shaped candy that reads: HONK ME",
+	"candyhearts": [
+		"A heart-shaped candy that reads: BOX OF HUGS",
 		"A heart-shaped candy that reads: BWOINK ME",
         "A heart-shaped candy that reads: ERP",
 		"A heart-shaped candy that reads: LEWD",
@@ -110,17 +120,8 @@
 		"A heart-shaped candy that reads: HAND CUFFS",
 		"A heart-shaped candy that reads: SHAFT MINER",
 		"A heart-shaped candy that reads: Y-YOU T-TOO",
-		"A heart-shaped candy that reads: SINGULOVE",
-		"A heart-shaped candy that reads: GOT WOOD",
-		"A heart-shaped candy that reads: TFW NO GF",
-		"A heart-shaped candy that reads: WAG MY TAIL",
-		"A heart-shaped candy that reads: PDA",
-		"A heart-shaped candy that reads: DEVILS KISS",
-		"A heart-shaped candy that reads: CHEMISTRY",
-		"A heart-shaped candy that reads: CLUSTERBANG",
-		"A heart-shaped candy that reads: OBSESSED",
-		"A heart-shaped candy that reads: ROMANTIC MOODLET",
-		"A heart-shaped candy that reads: WAIFU",
-		"A heart-shaped candy that reads: YOU'RE PURRFECT"
-    ]
+		"A heart-shaped candy that reads: YOU'RE PURRFECT",
+		"A heart-shaped candy that reads: ERP",
+		"A heart-shaped candy that reads: HONK ME"
+	]
 }

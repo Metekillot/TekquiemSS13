@@ -6,10 +6,7 @@
 		"a series of tiny chip marks"
 	],
 
-	"bluntsevere": [
-		"a series of faded hairline cracks",
-		"a small bone dent"
-	],
+	"bluntsevere": ["a series of faded hairline cracks", "a small bone dent"],
 
 	"bluntcritical": [
 		"large streaks of refilled cracks",
@@ -22,5 +19,4 @@
 		"has clearly been dropped recently",
 		"has a damaged socket"
 	]
-
 }

@@ -257,7 +257,8 @@
 			"summoncost": 2,
 			"cardtype": "Creature",
 			"cardsubtype": "Xenomorph",
-			"rarity": "rare"
+			"rarity": "rare",
+			"summon_icon_state": "xenoshrike"
 		},
 		{
 			"id": "bull",

@@ -18,8 +18,6 @@
 		"a cluster of calluses"
 	],
 
-
-
 	"slashmoderate": [
 		"light, faded lines",
 		"minor cut marks",
@@ -37,8 +35,6 @@
 		"a series of peaks and valleys along a gruesome line of cut scar tissue",
 		"a grotesque snake of indentations and stitching scars"
 	],
-
-
 
 	"piercemoderate": [
 		"a small, faded bruise",
@@ -58,8 +54,6 @@
 		"a gruesome multi-pronged puncture scar"
 	],
 
-
-
 	"burnmoderate": [
 		"small amoeba-shaped skinmarks",
 		"a faded streak of depressed skin"
@@ -77,11 +71,9 @@
 		"unmistakeable splotches of dead tissue from serious burns"
 	],
 
-
 	"dismember": [
 		"is several skintone shades paler than the rest of the body",
 		"is a gruesome patchwork of artificial flesh",
 		"has a large series of attachment scars at the articulation points"
 	]
-
 }
