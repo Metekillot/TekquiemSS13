@@ -97,7 +97,7 @@
 
 	if(last_bloodpool_restore+timing <= world.time)
 		last_bloodpool_restore = world.time
-		bloodpool = max(0, bloodpool-1)
+		adjustBloodPool(-1)
 
 	//Blood loss still happens in locker, floor stays clean
 	if(isturf(loc) && prob(sqrt(amt)*BLOOD_DRIP_RATE_MOD))
@@ -251,7 +251,7 @@
 		blood_data["donor"] = src
 		blood_data["viruses"] = list()
 
-		blood_data["potency"] = src.blood_potency
+		blood_data["potency"] = src.get_potency()
 		if(istype(src, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = src
 			if(H.clane)

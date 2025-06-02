@@ -64,7 +64,7 @@
 		if(CheckEyewitness(src, src, 7, FALSE))
 			AdjustMasquerade(-1)
 	if(do_after(src, 30, target = mob, timed_action_flags = NONE, progress = FALSE))
-		mob.bloodpool = max(0, mob.bloodpool-1)
+		mob.adjustBloodPool(-1)
 		suckbar.icon_state = "[round(14*(mob.bloodpool/mob.maxbloodpool))]"
 		if(ishuman(mob))
 			var/mob/living/carbon/human/H = mob
@@ -75,26 +75,52 @@
 				if(length(H.reagents.reagent_list))
 					if(prob(50))
 						H.reagents.trans_to(src, min(10, H.reagents.total_volume), transfered_by = mob, methods = VAMPIRE)
-		if(iskindred(mob))
+		
+		
+		if(!ishuman(mob) && vamp_rank > VAMP_RANK_NEONATE)
+			to_chat(src, "<span class='warning'>You drink the blood of the creature. Like sea water, it can be drank, but will not sustain you.</span>")
+		else if(iskindred(mob) || HAS_TRAIT(mob, TRAIT_HONEYPOT))
 			to_chat(src, "<span class='userlove'>[mob]'s blood tastes HEAVENLY...</span>")
+		else if(HAS_TRAIT(src, TRAIT_METHUSELAHS_THIRST) && !iskindred(mob))
+			to_chat(src, "<span class='warning'>You drink [mob]'s blood, but it is like eating air. It is not enough. You need the blood of your own kind; no other will do.</span>")
+		else
+			to_chat(src, "<span class='warning'>You sip some <b>BLOOD</b> from your victim. It feels good.</span>")
+		
+		
+		if(iskindred(mob))
 			adjustBruteLoss(-25, TRUE)
 			adjustFireLoss(-25, TRUE)
 			if(first_drink)
 				SScharacter_connection.add_connection(CONNECTION_BLOOD_BOND, src, mob)
-		else
-			to_chat(src, "<span class='warning'>You sip some <b>BLOOD</b> from your victim. It feels good.</span>")
-		bloodpool = min(maxbloodpool, bloodpool+1*max(1, mob.bloodquality-1))
-		adjustBruteLoss(-10, TRUE)
-		adjustFireLoss(-10, TRUE)
-		update_damage_overlays()
-		update_health_hud()
-		update_blood_hud()
+		
+
+		var/drink_mod = 1
+		if(!ishuman(mob) && vamp_rank > VAMP_RANK_NEONATE)
+			drink_mod = 0
+		if(HAS_TRAIT(src, TRAIT_METHUSELAHS_THIRST) && !iskindred(mob))
+			drink_mod = 0
+
+		if(HAS_TRAIT(src, TRAIT_HUNGRY))
+			drink_mod *= 0.5
+		if(vamp_rank == VAMP_RANK_ELDER && !iskindred(mob))
+			drink_mod *= 0.5
+		
+		if(HAS_TRAIT(mob, TRAIT_HONEYPOT))
+			drink_mod *= 2
+
+		if(drink_mod)
+			adjustBloodPool(drink_mod*max(1, mob.bloodquality-1))
+
+			adjustBruteLoss(-10, TRUE)
+			adjustFireLoss(-10, TRUE)
+			update_damage_overlays()
+			update_health_hud()
+			update_blood_hud()
+		
 		if(mob.bloodpool <= 0)
 			if(iskindred(mob))
 				var/mob/living/carbon/human/eaten_vampire = mob
 				if(iskindred(src))
-					var/datum/preferences/our_prefs = GLOB.preferences_datums[ckey(key)]
-
 					var/datum/preferences/victim_prefs = GLOB.preferences_datums[ckey(mob.key)]
 					if(victim_prefs)
 						victim_prefs.reason_of_death =  "Diablerized by [true_real_name ? true_real_name : real_name] ([time2text(world.timeofday, "YYYY-MM-DD hh:mm:ss")])."
@@ -102,13 +128,13 @@
 					AdjustHumanity(-1, 0)
 					adjustBruteLoss(-50, TRUE)
 					adjustFireLoss(-50, TRUE)
-					if(SSroll.storyteller_roll(src.humanity + src.get_resolve() - eaten_vampire.blood_potency, 4, list(src, eaten_vampire), eaten_vampire) <= 4)
+					if(SSroll.storyteller_roll(src.humanity + src.get_resolve() - eaten_vampire.get_potency(), 4, list(src, eaten_vampire), eaten_vampire) <= 4)
 						to_chat(src, span_warning("You fail to diablerize [eaten_vampire]."))
 						/*
 						to_chat(src, "<span class='userdanger'><b>[eaten_vampire]'s SOUL OVERCOMES YOURS AND GAINS CONTROL OF YOUR BODY.</b></span>")
 						message_admins("[ADMIN_LOOKUPFLW(src)] tried to Diablerize [ADMIN_LOOKUPFLW(mob)] and was overtaken.")
 						log_attack("[key_name(src)] tried to Diablerize [key_name(mob)] and was overtaken.")
-						blood_potency = eaten_vampire.blood_potency
+						blood_potency = eaten_vampire.get_potency()
 						recalculate_max_health()
 						if(our_prefs)
 							our_prefs.reason_of_death = "Failed the Diablerie ([time2text(world.timeofday, "YYYY-MM-DD hh:mm:ss")])."
@@ -121,14 +147,8 @@
 					else
 						message_admins("[ADMIN_LOOKUPFLW(src)] successfully Diablerized [ADMIN_LOOKUPFLW(mob)]")
 						log_attack("[key_name(src)] successfully Diablerized [key_name(mob)].")
-
-						blood_potency = eaten_vampire.blood_potency
-
-						diablerist = 1
-						if(key && our_prefs && !our_prefs.diablerist)
-							our_prefs.diablerist = 1
-							our_prefs.save_character()
-
+						set_potency(max(eaten_vampire.get_potency(), get_potency()))
+						ADD_TRAIT(src, TRAIT_DIABLERIE, eaten_vampire)
 						recalculate_max_health()
 						if(eaten_vampire.client)
 							var/datum/brain_trauma/special/imaginary_friend/trauma = gain_trauma(/datum/brain_trauma/special/imaginary_friend)

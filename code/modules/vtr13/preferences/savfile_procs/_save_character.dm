@@ -39,8 +39,9 @@
 	WRITE_FILE(S["job_preferences"], job_preferences)
 	WRITE_FILE(S["alt_titles_preferences"], alt_titles_preferences)
 
-	//Quirks
-	WRITE_FILE(S["all_quirks"], all_quirks)
+	//Merits
+	WRITE_FILE(S["all_merits"], all_merits)
+	WRITE_FILE(S["merit_custom_settings"], merit_custom_settings)
 
 	//STATS
 	WRITE_FILE(S["physique"], get_physique(FALSE))
@@ -49,6 +50,8 @@
 	WRITE_FILE(S["composure"], get_composure(FALSE))
 	WRITE_FILE(S["wits"], get_wits(FALSE))
 	WRITE_FILE(S["resolve"], get_resolve(FALSE))
+	WRITE_FILE(S["potency"], get_potency(FALSE))
+	
 
 	WRITE_FILE(S["equipped_gear"], equipped_gear)
 
@@ -61,7 +64,7 @@
 	WRITE_FILE(S["clan"], clane?.name)
 
 	WRITE_FILE(S["humanity"], humanity)
-	WRITE_FILE(S["diablerist"], diablerist)
+
 	WRITE_FILE(S["masquerade"], masquerade)
 	WRITE_FILE(S["clan_accessory"], clane_accessory)
 

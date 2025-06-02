@@ -21,11 +21,11 @@
 
 /datum/discipline_power/vtr/auspex/lay_open_the_mind/pre_activation_checks(mob/living/carbon/human/target)
 	var/mypower = owner.get_wits() + discipline.level
-	var/theirpower = target.get_resolve() + target.blood_potency
+	var/theirpower = target.get_resolve() + target.get_potency()
 
 	to_chat(owner, span_danger("You probe [target]'s mind..."))
-
-	if(!SSroll.opposed_roll(owner, target, mypower, theirpower, show_player_b = FALSE, alert_atom = target))
+	var/trait_bonus = (HAS_TRAIT(target, TRAIT_EMERSONIAN)?TRAIT_EMERSONIAN_MOD:0) + (HAS_TRAIT(target, TRAIT_PREGNABLE_MIND)?TRAIT_PREGNABLE_MIND_MOD:0)
+	if(!SSroll.opposed_roll(owner, target, mypower, theirpower+trait_bonus, show_player_b = FALSE, alert_atom = target))
 		do_cooldown(TRUE)
 		owner.update_action_buttons()
 		return FALSE
@@ -40,7 +40,7 @@
 
 /datum/discipline_power/vtr/auspex/lay_open_the_mind/proc/ask_diablerie(mob/living/carbon/human/target, var/question)
 	var/response = "You hear a response: "
-	if(target.diablerist)
+	if(HAS_TRAIT(target, TRAIT_DIABLERIE))
 		response = span_danger(response + "You can sense the depraived taint of diablerie on [target].")
 	else
 		response = span_notice(response + "You feel that [target] is not a diablerist.")

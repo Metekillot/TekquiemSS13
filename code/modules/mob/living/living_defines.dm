@@ -65,6 +65,7 @@
 	var/incorporeal_move = FALSE
 
 	var/list/roundstart_quirks = list()
+	var/list/roundstart_merits = list()
 
 	var/list/surgeries = list()	///a list of surgery datums. generally empty, they're added when the player wants them.
 
@@ -176,10 +177,7 @@
 
 	var/total_cleaned = 0
 
-	var/datum/attributes/stats
-
-	var/blood_potency = 0
-	var/additional_blood_potency = 0
+	var/datum/attributes/stats = new()
 
 	var/more_companions = 0
 	var/melee_professional = FALSE
@@ -216,7 +214,6 @@
 	var/elysium_checks = 0
 	var/bloodhunted = FALSE
 
-	var/hearing_ghosts = FALSE
 
 	var/stakeimmune = FALSE
 

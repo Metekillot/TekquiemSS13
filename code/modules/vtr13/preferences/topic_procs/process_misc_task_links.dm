@@ -298,6 +298,9 @@
 			character_connections = null
 
 		if("changeslot")
+			if(merit_sub_tab==PREFS_BANES_SUB_TAB)
+				merit_sub_tab = PREFS_MERITS_SUB_TAB
+			
 			if(!load_character(text2num(href_list["num"])))
 				reset_character()
 
@@ -306,6 +309,8 @@
 				current_tab = text2num(href_list["tab"])
 				if(current_tab == PREFS_LOADOUT_TAB)
 					show_loadout = TRUE
+			else if (href_list["merit_tab"])
+				merit_sub_tab = text2num(href_list["merit_tab"])
 
 		if("clear_heart")
 			hearted = FALSE
