@@ -2,8 +2,8 @@
 	name = "arcane tome"
 	desc = "The secrets of Blood Magic..."
 	icon_state = "arcane"
-	icon = 'code/modules/wod13/items.dmi'
-	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	icon = 'icons/wod13/items.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	is_magic = TRUE
 	var/list/rituals = list()
@@ -38,7 +38,7 @@
 /obj/ritualrune
 	name = "Tremere Rune"
 	desc = "Learn the secrets of blood, neonate..."
-	icon = 'code/modules/wod13/icons.dmi'
+	icon = 'icons/wod13/icons.dmi'
 	icon_state = "rune1"
 	color = rgb(128,0,0)
 	anchored = TRUE
@@ -126,7 +126,7 @@
 /mob/living/simple_animal/hostile/beastmaster/blood_guard
 	name = "blood guardian"
 	desc = "A clot of blood in humanoid form."
-	icon = 'code/modules/wod13/mobs.dmi'
+	icon = 'icons/wod13/mobs.dmi'
 	icon_state = "blood_guardian"
 	icon_living = "blood_guardian"
 	del_on_death = 1
@@ -195,7 +195,7 @@
 /obj/structure/bloodwall
 	name = "blood wall"
 	desc = "Wall from BLOOD."
-	icon = 'code/modules/wod13/icons.dmi'
+	icon = 'icons/wod13/icons.dmi'
 	icon_state = "bloodwall"
 	plane = GAME_PLANE
 	layer = ABOVE_MOB_LAYER
@@ -207,7 +207,7 @@
 /obj/structure/fleshwall
 	name = "flesh wall"
 	desc = "Wall from FLESH."
-	icon = 'code/modules/wod13/icons.dmi'
+	icon = 'icons/wod13/icons.dmi'
 	icon_state = "fleshwall"
 	plane = GAME_PLANE
 	layer = ABOVE_MOB_LAYER
@@ -379,46 +379,6 @@
 		if(A)
 			A.wash(CLEAN_WASH)
 	qdel(src)
-
-/obj/ritualrune/gargoyle
-	name = "Gargoyle Transformation"
-	desc = "Create a Gargoyle."
-	icon_state = "rune9"
-	word = "GRORRR'RRR"
-	thaumlevel = 4
-
-/obj/ritualrune/gargoyle/complete()
-	for(var/mob/living/carbon/human/H in loc)
-		if(H)
-			if(H.stat > SOFT_CRIT)
-				for(var/datum/action/A in H.actions)
-					if(A)
-						if(A.vampiric)
-							A.Remove(H)
-				H.revive(TRUE)
-				H.set_species(/datum/species/kindred)
-				H.clane = new /datum/vampireclane/gargoyle()
-				H.clane.on_gain(H)
-				H.clane.post_gain(H)
-				H.forceMove(get_turf(src))
-				if(!H.key)
-					var/list/mob/dead/observer/candidates = pollCandidatesForMob("Do you wish to play as Sentient Gargoyle?", null, null, null, 50, src)
-					for(var/mob/dead/observer/G in GLOB.player_list)
-						if(G.key)
-							to_chat(G, "<span class='ghostalert'>Gargoyle Transformation rune has been triggered.</span>")
-					if(LAZYLEN(candidates))
-						var/mob/dead/observer/C = pick(candidates)
-						H.key = C.key
-//					Y.key = C.key
-//					Y.my_creator = last_activator
-				playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
-				qdel(src)
-				return
-			else
-				playsound(loc, 'code/modules/wod13/sounds/thaum.ogg', 50, FALSE)
-				H.adjustBruteLoss(25)
-				H.emote("scream")
-				return
 
 //Deflection of the Wooden Doom ritual
 //Protects you from being staked for a single hit. Is it useful? Marginally. But it is a level 1 rite.

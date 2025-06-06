@@ -88,11 +88,6 @@
 
 	var/last_repainted_mark
 
-	//var/given_penis = FALSE
-
-	///Performs CPR on the target after a delay. //[Lucia] what does this mean?
-	var/last_cpr_exp = 0
-
 	var/dementia = FALSE
 
 	//[Lucia] I have no clue why this is necessary, TODO: remove
@@ -127,11 +122,6 @@
 	bloodquality = 2
 
 	var/soul_state = SOUL_PRESENT
-
-	yang_chi = 4
-	max_yang_chi = 4
-	yin_chi = 2
-	max_yin_chi = 2
 
 	///The Examine Panel TGUI.
 	var/datum/examine_panel/tgui = new() //create the datum

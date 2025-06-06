@@ -1,24 +1,3 @@
-/datum/vampireclane/tzimisce
-	name = "Tzimisce"
-	desc = "If someone were to call a Tzimisce inhuman and sadistic, the Tzimisce would probably commend them for their perspicacity, and then demonstrate that their mortal definition of sadism was laughably inadequate. The Tzimisce have left the human condition behind gladly, and now focus on transcending the limitations of the vampiric state. At a casual glance or a brief conversation, a Tzimisce appears to be one of the more pleasant vampires. Polite, intelligent, and inquisitive, they seem a stark contrast to the howling Sabbat mobs or even the apparently more humane Brujah or Nosferatu. However, upon closer inspection, it becomes clear that this is merely a mask hiding something alien and monstrous."
-	curse = "Grounded to material domain."
-//	alt_sprite = "tzi"
-//	no_hair = TRUE
-//	no_facial = TRUE	//FUCK WRONG RULEBOOK
-	clane_disciplines = list(
-		/datum/discipline/auspex,
-		/datum/discipline/animalism,
-		/datum/discipline/vicissitude
-	)
-	violating_appearance = FALSE
-	male_clothes = /obj/item/clothing/under/vampire/sport
-	female_clothes = /obj/item/clothing/under/vampire/red
-	enlightenment = TRUE
-	var/obj/item/heirl
-	current_accessory = "none"
-	accessories = list("spines", "spines_slim", "animal_skull", "none")
-	accessories_layers = list("spines" = UNICORN_LAYER, "spines_slim" = UNICORN_LAYER, "animal_skull" = UNICORN_LAYER, "none" = UNICORN_LAYER)
-
 
 /obj/effect/proc_holder/spell/targeted/shapeshift/tzimisce
 	name = "Tzimisce Form"
@@ -37,19 +16,6 @@
 	revert_on_death = TRUE
 	die_with_shapeshifted_form = FALSE
 	shapeshift_type = /mob/living/simple_animal/hostile/bloodcrawler
-
-/datum/vampireclane/tzimisce/post_gain(mob/living/carbon/human/H)
-	..()
-	var/obj/item/ground_heir/heirloom = new(get_turf(H))
-	var/list/slots = list(
-		LOCATION_LPOCKET = ITEM_SLOT_LPOCKET,
-		LOCATION_RPOCKET = ITEM_SLOT_RPOCKET,
-		LOCATION_BACKPACK = ITEM_SLOT_BACKPACK,
-		LOCATION_HANDS = ITEM_SLOT_HANDS
-	)
-	H.equip_in_one_of_slots(heirloom, slots, FALSE)
-	heirl = heirloom
-
 /datum/crafting_recipe/stake
 	name = "Stake"
 	time = 50
@@ -134,7 +100,7 @@
 
 /obj/effect/decal/gut_floor
 	name = "gut floor"
-	icon = 'code/modules/wod13/tiles.dmi'
+	icon = 'icons/wod13/tiles.dmi'
 	icon_state = "tzimisce_floor"
 
 /datum/movespeed_modifier/centipede
@@ -180,23 +146,23 @@
 	category = CAT_TZIMISCE
 
 /obj/structure/chair/old/tzimisce
-	icon = 'code/modules/wod13/props.dmi'
+	icon = 'icons/wod13/props.dmi'
 	icon_state = "tzimisce_stool"
 
 /obj/item/guts
 	name = "guts"
 	desc = "Just blood and guts..."
 	icon_state = "guts"
-	icon = 'code/modules/wod13/items.dmi'
-	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	icon = 'icons/wod13/items.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 
 /obj/item/spine
 	name = "spine"
 	desc = "If only I had control..."
 	icon_state = "spine"
-	icon = 'code/modules/wod13/items.dmi'
-	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	icon = 'icons/wod13/items.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 
 /datum/crafting_recipe/tzi_biter
@@ -226,7 +192,7 @@
 /mob/living/simple_animal/hostile/biter
 	name = "biter"
 	desc = "A ferocious, fang-bearing creature that resembles a spider."
-	icon = 'code/modules/wod13/mobs.dmi'
+	icon = 'icons/wod13/mobs.dmi'
 	icon_state = "biter"
 	icon_living = "biter"
 	icon_dead = "biter_dead"
@@ -284,7 +250,7 @@
 /mob/living/simple_animal/hostile/fister
 	name = "fister"
 	desc = "True abomination walking on both hands."
-	icon = 'code/modules/wod13/mobs.dmi'
+	icon = 'icons/wod13/mobs.dmi'
 	icon_state = "fister"
 	icon_living = "fister"
 	icon_dead = "fister_dead"
@@ -311,7 +277,7 @@
 /mob/living/simple_animal/hostile/tanker
 	name = "tanker"
 	desc = "The peak of abominations armor. Unbelievably undamagable..."
-	icon = 'code/modules/wod13/mobs.dmi'
+	icon = 'icons/wod13/mobs.dmi'
 	icon_state = "tanker"
 	icon_living = "tanker"
 	icon_dead = "tanker_dead"
@@ -337,7 +303,7 @@
 /mob/living/simple_animal/hostile/gangrel
 	name = "Gangrel Form"
 	desc = "The peak of abominations armor. Unbelievably undamagable..."
-	icon = 'code/modules/wod13/32x48.dmi'
+	icon = 'icons/wod13/32x48.dmi'
 	icon_state = "gangrel_f"
 	icon_living = "gangrel_f"
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
@@ -381,7 +347,7 @@
 /mob/living/simple_animal/hostile/gargoyle
 	name = "Gargoyle"
 	desc = "Stone-skinned..."
-	icon = 'code/modules/wod13/32x48.dmi'
+	icon = 'icons/wod13/32x48.dmi'
 	icon_state = "gargoyle_m"
 	icon_living = "gargoyle_m"
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
@@ -443,7 +409,7 @@
 /mob/living/simple_animal/hostile/tzimisce_beast
 	name = "Tzimisce Beast Form"
 	desc = "The peak of abominations armor. Unbelievably undamagable..."
-	icon = 'code/modules/wod13/64x64.dmi'
+	icon = 'icons/wod13/64x64.dmi'
 	icon_state = "weretzi"
 	icon_living = "weretzi"
 	pixel_w = -16
@@ -471,7 +437,7 @@
 /mob/living/simple_animal/hostile/bloodcrawler
 	name = "Tzimisce Blood Form"
 	desc = "The peak of abominations. Unbelievably undamagable..."
-	icon = 'code/modules/wod13/mobs.dmi'
+	icon = 'icons/wod13/mobs.dmi'
 	icon_state = "liquid"
 	icon_living = "liquid"
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
@@ -505,8 +471,8 @@
 	name = "bag of ground"
 	desc = "Boghatyrskaya sila taitsa zdies'..."
 	icon_state = "dirt"
-	icon = 'code/modules/wod13/icons.dmi'
-	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	icon = 'icons/wod13/icons.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 
 /obj/item/stack/human_flesh
@@ -514,7 +480,7 @@
 	desc = "What the fuck..."
 	singular_name = "human flesh"
 	icon_state = "human"
-	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	mats_per_unit = list(/datum/material/pizza = MINERAL_MATERIAL_AMOUNT)
 	merge_type = /obj/item/stack/human_flesh
 	max_amount = 50
@@ -541,7 +507,7 @@
 /obj/item/extra_arm
 	name = "extra arm installer"
 	desc = "Distantly related to the technology of the Man-Machine Interface, this state-of-the-art syndicate device adapts your nervous and circulatory system to the presence of an extra limb..."
-	icon = 'code/modules/wod13/icons.dmi'
+	icon = 'icons/wod13/icons.dmi'
 	icon_state = "vicissitude"
 	var/used = FALSE
 

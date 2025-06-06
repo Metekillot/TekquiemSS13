@@ -1,7 +1,7 @@
 /obj/structure/weedshit
 	name = "hydroponics"
 	desc = "Definitely not for the weed."
-	icon = 'code/modules/wod13/weed.dmi'
+	icon = 'icons/wod13/weed.dmi'
 	icon_state = "soil_dry0"
 	plane = GAME_PLANE
 	layer = ABOVE_ALL_MOB_LAYER
@@ -72,7 +72,6 @@
 			wet = TRUE
 			to_chat(user, "<span class='notice'>You fill [src] with water.</span>")
 			playsound(src, 'sound/effects/refill.ogg', 50, TRUE)
-			call_dharma("cleangrow", user)
 		else
 			to_chat(user, "<span class='warning'>[W] is empty!</span>")
 	if(istype(W, /obj/item/weedseed))

@@ -36,10 +36,6 @@
 			brain.organ_flags |= ORGAN_FAILING
 		SEND_SOUND(src, sound('code/modules/wod13/sounds/final_death.ogg', 0, 0, 50))
 
-		//annoying code that depends on clan doesn't work for Kuei-jin
-		if (iscathayan(src))
-			return
-
 		var/years_undead = chronological_age - age
 		switch (years_undead)
 			if (-INFINITY to 10) //normal corpse
@@ -67,8 +63,6 @@
 			if (200 to INFINITY)
 				if (iskindred(src))
 					playsound(src, 'code/modules/wod13/sounds/burning_death.ogg', 80, TRUE)
-				else if (iscathayan(src))
-					playsound(src, 'code/modules/wod13/sounds/vicissitude.ogg', 80, TRUE)
 				lying_fix()
 				dir = SOUTH
 				spawn(1 SECONDS)
@@ -87,7 +81,7 @@
 			hud_used.block_icon.icon_state = "act_block_on"
 		clear_parrying()
 		remove_overlay(FIGHT_LAYER)
-		var/mutable_appearance/block_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "block", -FIGHT_LAYER)
+		var/mutable_appearance/block_overlay = mutable_appearance('icons/wod13/icons.dmi', "block", -FIGHT_LAYER)
 		overlays_standing[FIGHT_LAYER] = block_overlay
 		apply_overlay(FIGHT_LAYER)
 		last_m_intent = m_intent
@@ -199,7 +193,7 @@
 		visible_message("<span class='warning'>[src] prepares to parry [M]'s next attack.</span>", "<span class='warning'>You prepare to parry [M]'s next attack.</span>")
 		playsound(src, 'code/modules/wod13/sounds/parry.ogg', 70, TRUE)
 		remove_overlay(FIGHT_LAYER)
-		var/mutable_appearance/parry_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "parry", -FIGHT_LAYER)
+		var/mutable_appearance/parry_overlay = mutable_appearance('icons/wod13/icons.dmi', "parry", -FIGHT_LAYER)
 		overlays_standing[FIGHT_LAYER] = parry_overlay
 		apply_overlay(FIGHT_LAYER)
 		parry_cd = world.time
@@ -219,7 +213,7 @@
 
 /atom/movable/screen/jump
 	name = "jump"
-	icon = 'code/modules/wod13/UI/buttons_wide.dmi'
+	icon = 'icons/wod13/UI/buttons_wide.dmi'
 	icon_state = "act_jump_off"
 	layer = HUD_LAYER
 	plane = HUD_PLANE
@@ -245,7 +239,7 @@
 
 /atom/movable/screen/block
 	name = "block"
-	icon = 'code/modules/wod13/UI/buttons_wide.dmi'
+	icon = 'icons/wod13/UI/buttons_wide.dmi'
 	icon_state = "act_block_off"
 	layer = HUD_LAYER
 	plane = HUD_PLANE
@@ -258,7 +252,7 @@
 
 /atom/movable/screen/vtm_zone
 	name = "zone"
-	icon = 'code/modules/wod13/48x48.dmi'
+	icon = 'icons/wod13/48x48.dmi'
 	icon_state = "masquerade"
 	layer = HUD_LAYER
 	plane = HUD_PLANE
@@ -266,7 +260,7 @@
 
 /atom/movable/screen/blood
 	name = "bloodpool"
-	icon = 'code/modules/wod13/UI/bloodpool.dmi'
+	icon = 'icons/wod13/UI/bloodpool.dmi'
 	icon_state = "blood0"
 	layer = HUD_LAYER
 	plane = HUD_PLANE
@@ -287,7 +281,7 @@
 
 /atom/movable/screen/drinkblood
 	name = "Drink Blood"
-	icon = 'code/modules/wod13/disciplines.dmi'
+	icon = 'icons/wod13/disciplines.dmi'
 //	icon_state = "drink"
 	layer = HUD_LAYER
 	plane = HUD_PLANE
@@ -303,7 +297,7 @@
 
 /atom/movable/screen/bloodpower
 	name = "Bloodpower"
-	icon = 'code/modules/wod13/disciplines.dmi'
+	icon = 'icons/wod13/disciplines.dmi'
 	icon_state = "bloodpower"
 	layer = HUD_LAYER
 	plane = HUD_PLANE
@@ -367,22 +361,22 @@
 /atom/movable/screen/disciplines/Initialize()
 	. = ..()
 	level2 = new(src)
-	level2.icon = 'code/modules/wod13/disciplines.dmi'
+	level2.icon = 'icons/wod13/disciplines.dmi'
 	level2.icon_state = "2"
 	level2.layer = ABOVE_HUD_LAYER+5
 	level2.plane = HUD_PLANE
 	level3 = new(src)
-	level3.icon = 'code/modules/wod13/disciplines.dmi'
+	level3.icon = 'icons/wod13/disciplines.dmi'
 	level3.icon_state = "3"
 	level3.layer = ABOVE_HUD_LAYER+5
 	level3.plane = HUD_PLANE
 	level4 = new(src)
-	level4.icon = 'code/modules/wod13/disciplines.dmi'
+	level4.icon = 'icons/wod13/disciplines.dmi'
 	level4.icon_state = "4"
 	level4.layer = ABOVE_HUD_LAYER+5
 	level4.plane = HUD_PLANE
 	level5 = new(src)
-	level5.icon = 'code/modules/wod13/disciplines.dmi'
+	level5.icon = 'icons/wod13/disciplines.dmi'
 	level5.icon_state = "5"
 	level5.layer = ABOVE_HUD_LAYER+5
 	level5.plane = HUD_PLANE
@@ -410,7 +404,7 @@
 	//update_auspex_hud_vtr()
 
 /mob/living/carbon/human/Life()
-	if(!iskindred(src) && !iscathayan(src))
+	if(!iskindred(src))
 		if(prob(5))
 			adjustCloneLoss(-5, TRUE)
 	update_blood_hud()
@@ -425,7 +419,7 @@
 /mob/living/Initialize()
 	. = ..()
 	gnosis = new(src)
-	gnosis.icon = 'code/modules/wod13/48x48.dmi'
+	gnosis.icon = 'icons/wod13/48x48.dmi'
 	gnosis.plane = ABOVE_HUD_PLANE
 	gnosis.layer = ABOVE_HUD_LAYER
 
@@ -467,7 +461,6 @@
 				if(!HAS_TRAIT(src, TRAIT_ELYSIUM))
 					ADD_TRAIT(src, TRAIT_ELYSIUM, "elysium")
 			else
-				elysium_checks = 0
 				if(HAS_TRAIT(src, TRAIT_ELYSIUM))
 					REMOVE_TRAIT(src, TRAIT_ELYSIUM, "elysium")
 

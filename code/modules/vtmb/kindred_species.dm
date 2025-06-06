@@ -80,16 +80,16 @@
 	name = "Blood Power"
 	desc = "Use vitae to gain supernatural abilities."
 	button_icon_state = "bloodpower"
-	button_icon = 'code/modules/wod13/UI/actions.dmi'
+	button_icon = 'icons/wod13/UI/actions.dmi'
 	background_icon_state = "discipline"
-	icon_icon = 'code/modules/wod13/UI/actions.dmi'
+	icon_icon = 'icons/wod13/UI/actions.dmi'
 	check_flags = AB_CHECK_HANDS_BLOCKED|AB_CHECK_IMMOBILE|AB_CHECK_LYING|AB_CHECK_CONSCIOUS
 	vampiric = TRUE
 
 /datum/action/blood_power/ApplyIcon(atom/movable/screen/movable/action_button/current_button, force = FALSE)
 	if(owner.mind)
-		button_icon = 'code/modules/wod13/UI/actions.dmi'
-		icon_icon = 'code/modules/wod13/UI/actions.dmi'
+		button_icon = 'icons/wod13/UI/actions.dmi'
+		icon_icon = 'icons/wod13/UI/actions.dmi'
 	. = ..()
 
 /datum/action/blood_power/Trigger()
@@ -214,18 +214,6 @@
 		if(clane)
 			clane.post_gain(src)
 
-	if((dna.species.id == "kuei-jin")) //only splats that have Disciplines qualify
-		var/list/datum/chi_discipline/adding_disciplines = list()
-
-		if (discipline_pref) //initialise character's own disciplines
-			for (var/i in 1 to client.prefs.discipline_types.len)
-				var/type_to_create = client.prefs.discipline_types[i]
-				var/datum/chi_discipline/discipline = new type_to_create
-				discipline.level = client.prefs.discipline_levels[i]
-				adding_disciplines += discipline
-
-		for (var/datum/chi_discipline/discipline in adding_disciplines)
-			give_chi_discipline(discipline)
 
 /**
  * Creates an action button and applies post_gain effects of the given Discipline.
@@ -239,13 +227,6 @@
 		action.Grant(src)
 	var/datum/species/kindred/species = dna.species
 	species.disciplines += discipline
-
-/mob/living/carbon/human/proc/give_chi_discipline(datum/chi_discipline/discipline)
-	if (discipline.level > 0)
-		var/datum/action/chi_discipline/action = new
-		action.discipline = discipline
-		action.Grant(src)
-	discipline.post_gain(src)
 
 /**
  * Accesses a certain Discipline that a Kindred has. Returns false if they don't.

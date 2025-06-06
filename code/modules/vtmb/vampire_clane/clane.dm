@@ -1,5 +1,3 @@
-//Additional game logic should be stored in the component
-GLOBAL_LIST_INIT(basic_disciplines, list(/datum/discipline/animalism)) //write here the main disciplines when I do them [Lucia] - god fucking damn it flavrius
 /*
 This datum stores a declarative description of clans, in order to make an instance of the clan component from this implementation in runtime
 And it also helps for the character set panel
@@ -34,13 +32,15 @@ And it also helps for the character set panel
 	var/current_accessory
 	var/clan_keys //Keys to your hideout
 
+	var/bane_trait
+
 /datum/vampireclane/proc/on_gain(var/mob/living/carbon/human/H)
 	SHOULD_CALL_PARENT(TRUE)
 
 	if(length(accessories))
 		if(current_accessory)
 			H.remove_overlay(accessories_layers[current_accessory])
-			var/mutable_appearance/acc_overlay = mutable_appearance('code/modules/wod13/icons.dmi', current_accessory, -accessories_layers[current_accessory])
+			var/mutable_appearance/acc_overlay = mutable_appearance('icons/wod13/icons.dmi', current_accessory, -accessories_layers[current_accessory])
 			H.overlays_standing[accessories_layers[current_accessory]] = acc_overlay
 			H.apply_overlay(accessories_layers[current_accessory])
 	if(alt_sprite)
@@ -50,6 +50,9 @@ And it also helps for the character set panel
 		H.update_body_parts()
 		H.update_body()
 		H.update_icon()
+	
+	if(bane_trait)
+		ADD_TRAIT(H, bane_trait, CLAN_BANE_TRAIT)
 
 /datum/vampireclane/proc/post_gain(var/mob/living/carbon/human/H)
 	SHOULD_CALL_PARENT(TRUE)

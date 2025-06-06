@@ -3,7 +3,7 @@
 	desc = "A hand-held emergency light."
 	custom_price = PAYCHECK_EASY
 	icon = 'icons/obj/lighting.dmi'
-	onflooricon = 'code/modules/wod13/onfloor.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	icon_state = "flashlight"
 	inhand_icon_state = "flashlight"
 	worn_icon_state = "flashlight"
@@ -39,11 +39,6 @@
 
 
 /obj/item/flashlight/attack_self(mob/user)
-	if(iskindred(user))
-		var/mob/living/carbon/human/H = user
-		if(H.clane)
-			if(H.clane.name == "Lasombra")
-				return
 	..()
 	on = !on
 	playsound(user, on ? 'sound/weapons/magin.ogg' : 'sound/weapons/magout.ogg', 40, TRUE)

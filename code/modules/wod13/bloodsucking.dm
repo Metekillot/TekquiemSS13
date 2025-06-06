@@ -1,6 +1,6 @@
 /mob/living/carbon/human/proc/add_bite_animation()
 	remove_overlay(BITE_LAYER)
-	var/mutable_appearance/bite_overlay = mutable_appearance('code/modules/wod13/icons.dmi', "bite", -BITE_LAYER)
+	var/mutable_appearance/bite_overlay = mutable_appearance('icons/wod13/icons.dmi', "bite", -BITE_LAYER)
 	overlays_standing[BITE_LAYER] = bite_overlay
 	apply_overlay(BITE_LAYER)
 	spawn(15)
@@ -21,7 +21,7 @@
 		client.images -= suckbar
 	qdel(suckbar)
 	suckbar_loc = mob
-	suckbar = image('code/modules/wod13/bloodcounter.dmi', suckbar_loc, "[round(14*(mob.bloodpool/mob.maxbloodpool))]", HUD_LAYER)
+	suckbar = image('icons/wod13/bloodcounter.dmi', suckbar_loc, "[round(14*(mob.bloodpool/mob.maxbloodpool))]", HUD_LAYER)
 	suckbar.pixel_z = 40
 	suckbar.plane = ABOVE_HUD_PLANE
 	suckbar.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
@@ -93,6 +93,8 @@
 			if(first_drink)
 				SScharacter_connection.add_connection(CONNECTION_BLOOD_BOND, src, mob)
 		
+		if(ishumanbasic(mob) && first_drink && HAS_TRAIT(src, TRAIT_WANTON_CURSE))
+			SScharacter_connection.add_connection(CONNECTION_DAEVA_ADDITION, src, mob)
 
 		var/drink_mod = 1
 		if(!ishuman(mob) && vamp_rank > VAMP_RANK_NEONATE)

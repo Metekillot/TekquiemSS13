@@ -3,31 +3,33 @@
 		return
 	if(!GLOB.canon_event)
 		return
-	if(!is_special_character(src) || forced)
+	if(!is_special_character(src))
 		var/mod = 1
 		if(clane)
 			mod = clane.humanitymod
+		var/new_humanity = humanity
 		if(value < 0)
 			if((humanity > limit) || forced)
 				if (forced)
-					humanity = max(0, humanity+(value * mod))
+					new_humanity = max(0, humanity+(value * mod))
 				else
-					humanity = max(limit, humanity+(value*mod))
-				SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_loss.ogg', 0, 0, 75))
-				to_chat(src, "<span class='userdanger'><b>HUMANITY DECREASED!</b></span>")
-				if(humanity == limit)
-					to_chat(src, "<span class='userdanger'><b>If I don't stop, I will succumb to the Beast.</b></span>")
-		if(value > 0)				  // so please, do not say about that, they're in safety after they're humanity drops to limit
+					new_humanity = max(limit, humanity+(value*mod))
+				if(humanity != new_humanity)
+					SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_loss.ogg', 0, 0, 75))
+					to_chat(src, "<span class='userdanger'><b>HUMANITY DECREASED!</b></span>")
+		if(value > 0)
 			if((humanity < limit) || forced)
 				if (forced)
-					humanity = min(10, humanity+(value * mod))
+					new_humanity = min(10, humanity+(value))
 				else
-					humanity = min(limit, humanity+(value*mod))
-				SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_gain.ogg', 0, 0, 75))
-				to_chat(src, "<span class='userhelp'><b>HUMANITY INCREASED!</b></span>")
+					new_humanity = min(limit, humanity+(value))
+				if(humanity != new_humanity)
+					SEND_SOUND(src, sound('code/modules/wod13/sounds/humanity_gain.ogg', 0, 0, 75))
+					to_chat(src, "<span class='userhelp'><b>HUMANITY INCREASED!</b></span>")
+		humanity = new_humanity
 
 /mob/living/carbon/human/proc/AdjustMasquerade(var/value, var/forced = FALSE)
-	if(!iskindred(src) && !isghoul(src) && !iscathayan(src))
+	if(!iskindred(src) && !isghoul(src))
 		return
 	if(!GLOB.canon_event)
 		return
@@ -49,8 +51,6 @@
 					to_chat(src, "<span class='userdanger'><b>MASQUERADE VIOLATION!</b></span>")
 				SSbad_guys_party.next_fire = max(world.time, SSbad_guys_party.next_fire - 2 MINUTES)
 			if(value > 0)
-				if(clane?.enlightenment && !forced)
-					AdjustHumanity(1, 10)
 				for(var/mob/living/carbon/human/H in GLOB.player_list)
 					H.voted_for -= dna.real_name
 				if(masquerade < 5)

@@ -22,6 +22,8 @@
 #define MAJESTY_2_TRAIT "majesty_2_trait"
 #define MAJESTY_5_TRAIT "majesty_5_trait"
 
+#define DISGUISE_TRAIT "disguise_trait"
+
 
 //frenzy traits
 #define TRAIT_IN_FRENZY "in_frenzy"
@@ -29,6 +31,8 @@
 //Discipline related traits
 //auspex trait
 #define TRAIT_USING_AUSPEX "using_auspex"
+
+
 
 //protean traits
 #define TRAIT_EYES_VIOLATING_MASQUERADE "eyes_violating_masquerade"
@@ -42,17 +46,18 @@
 #define TRAIT_ATTENDING_CARNIVAL "attending_carnival"
 
 //Majesty traits
-#define TRAIT_ENRAPTURED "dominate_enraptured"
+#define TRAIT_ENRAPTURED "majesty_enraptured"
 #define TRAIT_CHARMED "majesty_charmed"
 
 //A bunch of dominate compel/command traits
 //hex: Think about adding these to the master list
+#define TRAIT_DOMINATED "dominated"
 #define TRAIT_COMPEL_THINK_TWICE "compel_think_twice"
 #define TRAIT_COMMAND_FALL "command_fall"
 #define TRAIT_COMMAND_BE_QUIET "command_be_quiet"
 #define TRAIT_COMMAND_SIT_DOWN "command_sit_down"
 
-
+//merit traits
 #define TRAIT_EXPEDIENT "expedient"
 #define TRAIT_INDOMITABLE "indomitable"
 	#define TRAIT_INDOMITABLE_MOD 2
@@ -78,3 +83,18 @@
 #define TRAIT_FACE_OF_HUNGER "face_of_hunger"
 
 #define TRAIT_UGLY "ugly"
+
+
+
+//Clane Bane Traits
+#define CLAN_BANE_TRAIT "clan_bane"
+#define TRAIT_WANTON_CURSE "wanton_curse"
+#define TRAIT_LONELY_CURSE "lonely_curse"
+#define TRAIT_ALOOF_CURSE "aloof_curse"
+#define TRAIT_FERAL_CURSE "feral_curse"
+#define TRAIT_HALF_DAMNED_CURSE "half_damned_curse"
+
+
+//Temporary Humanity Traits
+#define HUMANITY_TRAIT "saved_life"
+#define TRAIT_SAVED_LIFE "saved_life"
