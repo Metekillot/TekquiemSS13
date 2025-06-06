@@ -3710,6 +3710,7 @@
 #include "code\modules\vtr13\discord\discord_link_record.dm"
 #include "code\modules\vtr13\discord\tgs_commands.dm"
 #include "code\modules\vtr13\discord\toggle_notify.dm"
+#include "code\modules\vtr13\effects\baalirune.dm"
 #include "code\modules\vtr13\effects\boris_barrier.dm"
 #include "code\modules\vtr13\effects\coastline.dm"
 #include "code\modules\vtr13\effects\grave_soil.dm"
