@@ -397,7 +397,7 @@
 
 			var/new_vamp_rank = tgui_input_list(user, "Choose a vampire rank:", "Character Preference", age_selection, age_selection[vamp_rank])
 
-			if(new_vamp_rank && check_vamp_rank_allowed(GLOB.vampire_rank_list[new_vamp_rank]))
+			if(new_vamp_rank)
 				vamp_rank = GLOB.vampire_rank_list[new_vamp_rank]
 			AddBanesUntilItIsDone()
 			adjust_blood_potency()
