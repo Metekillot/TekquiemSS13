@@ -53,19 +53,21 @@
 	var/mob/living/carbon/human/H = user
 	if(!H.is_holding_item_of_type(/obj/item/vamp/keys/hack))
 		return
+	if(!lock_id) //there's no lock to check
+		return
 	var/message //So the code isn't flooded with . +=, it's just a visual thing
-	var/difference = H.get_wits() - lockpick_difficulty
-	switch(difference)
-		if(-INFINITY to -6)
-			message = "<span class='warning'>This door looks extremely complicated. You figure you will have to be lucky to break it open."
-		if(-5 to -4)
-			message = "<span class='notice'>This door looks very complicated. You might need a few tries to lockpick it."
-		if(-3 to 0) //Only 3 numbers here instead of 4.
-			message = "<span class='notice'>This door looks mildly complicated. It shouldn't be too hard to lockpick it.</span>"
-		if(1 to 4) //Impossible to break the lockpick from here on because minimum rand(1,20) will always move the value to 2.
-			message = "<span class='nicegreen'>This door is somewhat simple. It should be pretty easy for you to lockpick it.</span>"
-		if(5 to INFINITY) //Becomes guaranteed to lockpick at 9.
-			message = "<span class='nicegreen'>This door is really simple to you. It should be very easy to lockpick it.</span>"
+	if(H.get_wits() < 3) //you gotta be good at lockpicking to figure it
+		message = "You can't really tell how hard this would be to get open."
+	else
+		switch(lockpick_difficulty)
+			if(7 to INFINITY) //ultra-hard doors that you should probably be finding another way around
+				message = "<span class='warning'>This door looks extremely difficult. It will require skill, patience, and luck in tandem to open."
+			if(6)
+				message = "<span class='warning'>This door looks very difficult. It will require an expert to open."
+			if(4 to 5)
+				message = "<span class='notice'>This door looks somewhat difficult. A skilled hand should open it.</span>"
+			if(-INFINITY to 3)
+				message = "<span class='nicegreen'>This door looks simple. It should be easy enough to open.</span>"
 	. += "[message]"
 
 /obj/structure/vampdoor/MouseDrop_T(atom/dropping, mob/user, params)
@@ -171,15 +173,15 @@
 				if(P)
 					P.Aggro(user)
 			if(do_mob(user, src, max((lockpick_timer - user.get_wits() * 3), 2) SECONDS))
-				switch(SSroll.storyteller_roll(user.get_wits() * 2 - lockpick_difficulty, 2, list(user), src))
-					if(0)
-						to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
-						qdel(W)
-					if(1)
-						to_chat(user, "<span class='warning'>You failed to pick the lock.</span>")
-					else
-						to_chat(user, "<span class='notice'>You pick the lock.</span>")
-						locked = FALSE
+				var/lockpick_roll = SSroll.storyteller_roll(user.get_wits() * 2, lockpick_difficulty, list(user), src)
+				if(lockpick_roll == 0)
+					to_chat(user, "<span class='warning'>Your lockpick broke!</span>")
+					qdel(W)
+				else if(lockpick_roll < lockpick_difficulty)
+					to_chat(user, "<span class='warning'>You failed to pick the lock.</span>")
+				else
+					to_chat(user, "<span class='notice'>You pick the lock.</span>")
+					locked = FALSE
 				hacking = FALSE
 				return
 			else
