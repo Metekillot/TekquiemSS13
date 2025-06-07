@@ -21716,7 +21716,7 @@
 	pixel_y = 32
 	},
 /obj/transfer_point_vamp{
-	icon = 'code/modules/wod13/48x32weapons.dmi';
+	icon = 'icons/wod13/48x32weapons.dmi';
 	icon_state = "b_sarcophagus";
 	id = "church";
 	pixel_x = -8;
