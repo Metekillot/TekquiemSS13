@@ -1092,6 +1092,36 @@
 /obj/effect/decal/wallpaper/gold/low
 	icon_state = "wallpaper-gold_low"
 
+/obj/effect/decal/wallpaper/papers
+	name = "papers"
+	plane = GAME_PLANE
+	layer = CAR_LAYER
+	anchored = TRUE
+
+/obj/effect/decal/wallpaper/papers/one
+	icon_state = "wall_papers1"
+
+/obj/effect/decal/wallpaper/papers/two
+	icon_state = "wall_papers2"
+
+/obj/effect/decal/wallpaper/papers/three
+	icon_state = "wall_papers3"
+
+/obj/effect/decal/wallpaper/papers/four
+	icon_state = "wall_papers4"
+
+/obj/effect/decal/wallpaper/papers/five
+	icon_state = "wall_papers5"
+
+/obj/effect/decal/wallpaper/papers/six
+	icon_state = "wall_papers6"
+
+/obj/effect/decal/wallpaper/papers/seven
+	icon_state = "wall_papers7"
+
+/obj/effect/decal/wallpaper/papers/eight
+	icon_state = "wall_papers8"
+
 /turf/open/floor/plating/vampwood
 	gender = PLURAL
 	name = "wood"
