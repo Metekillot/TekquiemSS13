@@ -250,5 +250,14 @@
 		"director",
 		"house",
 		"apartment",
-		"shop"
+		"shop",
+		"room11",
+		"room12",
+		"room13",
+		"room14",
+		"room21",
+		"room22",
+		"room23",
+		"room24",
+		"room25"
 	)
