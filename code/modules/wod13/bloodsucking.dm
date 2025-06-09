@@ -77,11 +77,11 @@
 						H.reagents.trans_to(src, min(10, H.reagents.total_volume), transfered_by = mob, methods = VAMPIRE)
 		
 		
-		if(!ishuman(mob) && vamp_rank > VAMP_RANK_NEONATE)
+		if(!ishuman(mob) && get_potency() > 1)
 			to_chat(src, "<span class='warning'>You drink the blood of the creature. Like sea water, it can be drank, but will not sustain you.</span>")
-		else if(iskindred(mob) || HAS_TRAIT(mob, TRAIT_HONEYPOT))
+		else if(iskindred(mob) || (!HAS_TRAIT(src, TRAIT_METHUSELAHS_THIRST) && HAS_TRAIT(mob, TRAIT_HONEYPOT)))
 			to_chat(src, "<span class='userlove'>[mob]'s blood tastes HEAVENLY...</span>")
-		else if(HAS_TRAIT(src, TRAIT_METHUSELAHS_THIRST) && !iskindred(mob))
+		else if(HAS_TRAIT(src, TRAIT_METHUSELAHS_THIRST))
 			to_chat(src, "<span class='warning'>You drink [mob]'s blood, but it is like eating air. It is not enough. You need the blood of your own kind; no other will do.</span>")
 		else
 			to_chat(src, "<span class='warning'>You sip some <b>BLOOD</b> from your victim. It feels good.</span>")
@@ -97,16 +97,18 @@
 			SScharacter_connection.add_connection(CONNECTION_DAEVA_ADDITION, src, mob)
 
 		var/drink_mod = 1
-		if(!ishuman(mob) && vamp_rank > VAMP_RANK_NEONATE)
+		if(!ishuman(mob) && get_potency() > 1)
 			drink_mod = 0
+		
 		if(HAS_TRAIT(src, TRAIT_METHUSELAHS_THIRST) && !iskindred(mob))
 			drink_mod = 0
 
 		if(HAS_TRAIT(src, TRAIT_HUNGRY))
 			drink_mod *= 0.5
-		if(vamp_rank == VAMP_RANK_ELDER && !iskindred(mob))
-			drink_mod *= 0.5
 		
+		if(get_potency() >= 4 && !iskindred(mob))
+			drink_mod *= 0.5
+
 		if(HAS_TRAIT(mob, TRAIT_HONEYPOT))
 			drink_mod *= 2
 
