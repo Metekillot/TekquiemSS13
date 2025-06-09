@@ -16,9 +16,9 @@
 	for(var/c in 1 to leftover_circles)
 		dat += "<font size=5>○</font>"
 	
+	if(get_potency(FALSE) != max_blood_potency)
+		dat += "<a href='byond://?_src_=prefs;preference=increase_potency;task=input'>+</a> "
 	if(get_potency(FALSE) > 1)
 		dat += "<a href='byond://?_src_=prefs;preference=decrease_potency;task=input'>-</a>"
-	if(get_potency(FALSE) != max_blood_potency)
-		dat += "<a href='byond://?_src_=prefs;preference=increase_potency;task=input'>+</a>"
 
 	dat += "<br><i>[POTENCY_DESCRIPTION]</i><br>"

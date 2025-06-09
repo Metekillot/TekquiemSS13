@@ -13,10 +13,10 @@
 	for(var/c in 1 to leftover_circles)
 		dat += "<font size=5>○</font>"
 	dat += "  "
+	if (character_dots && (score < ATTRIBUTE_BASE_LIMIT))
+		dat += "<a href='byond://?_src_=prefs;preference=increase_stat;attribute=[FAST_REF(attribute)];task=input'>+</a> "
 	if (score > 1)
 		dat += "<a href='byond://?_src_=prefs;preference=decrease_stat;attribute=[FAST_REF(attribute)];task=input'>-</a>"
-	if (character_dots && (score < ATTRIBUTE_BASE_LIMIT))
-		dat += "<a href='byond://?_src_=prefs;preference=increase_stat;attribute=[FAST_REF(attribute)];task=input'>+</a>"
 
 	dat += "<br>"
 	return dat

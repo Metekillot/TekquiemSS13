@@ -77,20 +77,6 @@ Dancer
 	gain_text = "<span class='notice'>You feel tough.</span>"
 	lose_text = "<span class='warning'>You feel fragile again.</span>"
 
-/datum/movespeed_modifier/slowpoke
-	multiplicative_slowdown = 1
-
-/datum/quirk/slowpoke
-	name = "Slowpoke"
-	desc = "You move slower."
-	value = -3
-	gain_text = "<span class='warning'>You feel slo-o-o-o-o-o-o-o-o-o-o-o-ow.</span>"
-	lose_text = "<span class='notice'>You can feel a normal speed again.</span>"
-
-/datum/quirk/slowpoke/on_spawn()
-	var/mob/living/carbon/H = quirk_holder
-	H.add_movespeed_modifier(/datum/movespeed_modifier/slowpoke)
-
 /datum/quirk/bloody_sucker
 	name = "Addicted"
 	desc = "You just can't stop sucking, before your victim dies."
