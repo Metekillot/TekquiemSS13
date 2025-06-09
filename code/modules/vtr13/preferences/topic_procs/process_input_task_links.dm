@@ -391,11 +391,11 @@
 
 			var/new_vamp_rank
 			if(SSwhitelists.is_whitelisted(parent.ckey, "Elder"))
-				new_vamp_rank = tgui_input_list(user, "Choose a vampire rank:", "Character Preference", GLOB.vampire_rank_list, GLOB.vampire_rank_list[vamp_rank])
+				new_vamp_rank = tgui_input_list(user, "Choose a vampire rank:", "Character Preference", GLOB.vampire_rank_list, GLOB.vampire_rank_names[vamp_rank])
 			else
 				if(vamp_rank == VAMP_RANK_ELDER)
 					vamp_rank = VAMP_RANK_ANCILLAE
-				new_vamp_rank = tgui_input_list(user, "Choose a vampire rank:", "Character Preference", GLOB.vampire_rank_list_unwhitelisted, GLOB.vampire_rank_list_unwhitelisted[vamp_rank])
+				new_vamp_rank = tgui_input_list(user, "Choose a vampire rank:", "Character Preference", GLOB.vampire_rank_list_unwhitelisted, GLOB.vampire_rank_names[vamp_rank])
 
 			if(new_vamp_rank)
 				vamp_rank = GLOB.vampire_rank_list[new_vamp_rank]
