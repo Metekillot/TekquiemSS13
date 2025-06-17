@@ -199,23 +199,18 @@ Turf and target are separate in case you want to teleport some distance from a t
 	var/loop = 1
 	var/safety = 0
 
-	var/banned = C ? is_banned_from(C.ckey, "Appearance") : null
-
 	while(loop && safety < 5)
-		if(C?.prefs.custom_names[role] && !safety && !banned)
-			newname = C.prefs.custom_names[role]
-		else
-			switch(role)
-				if("human")
-					newname = random_unique_name(gender)
-				if("clown")
-					newname = pick(GLOB.clown_names)
-				if("mime")
-					newname = pick(GLOB.mime_names)
-				if("ai")
-					newname = pick(GLOB.ai_names)
-				else
-					return FALSE
+		switch(role)
+			if("human")
+				newname = random_unique_name(gender)
+			if("clown")
+				newname = pick(GLOB.clown_names)
+			if("mime")
+				newname = pick(GLOB.mime_names)
+			if("ai")
+				newname = pick(GLOB.ai_names)
+			else
+				return FALSE
 
 		for(var/mob/living/M in GLOB.player_list)
 			if(M == src)
@@ -327,17 +322,6 @@ Turf and target are separate in case you want to teleport some distance from a t
 	for(var/mob/M in mobs)
 		if(M.ckey == key)
 			return M
-
-//Returns the atom sitting on the turf.
-//For example, using this on a disk, which is in a bag, on a mob, will return the mob because it's on the turf.
-//Optional arg 'type' to stop once it reaches a specific type instead of a turf.
-/proc/get_atom_on_turf(atom/movable/M, stop_type)
-	var/atom/loc = M
-	while(loc?.loc && !isturf(loc.loc))
-		loc = loc.loc
-		if(stop_type && istype(loc, stop_type))
-			break
-	return loc
 
 // returns the turf located at the map edge in the specified direction relative to A
 // used for mass driver
@@ -470,11 +454,11 @@ Turf and target are separate in case you want to teleport some distance from a t
 	for(var/area/A in world)
 		GLOB.sortedAreas.Add(A)
 
-	sortTim(GLOB.sortedAreas, /proc/cmp_name_asc)
+	sortTim(GLOB.sortedAreas, GLOBAL_PROC_REF(cmp_name_asc))
 
 /area/proc/addSorted()
 	GLOB.sortedAreas.Add(src)
-	sortTim(GLOB.sortedAreas, /proc/cmp_name_asc)
+	sortTim(GLOB.sortedAreas, GLOBAL_PROC_REF(cmp_name_asc))
 
 //Takes: Area type as a text string from a variable.
 //Returns: Instance for the area in the world.
@@ -549,24 +533,25 @@ Turf and target are separate in case you want to teleport some distance from a t
 	return (rand(1,value)==value)
 
 /proc/parse_zone(zone)
-	if(zone == BODY_ZONE_PRECISE_R_HAND)
-		return "right hand"
-	else if (zone == BODY_ZONE_PRECISE_L_HAND)
-		return "left hand"
-	else if (zone == BODY_ZONE_L_ARM)
-		return "left arm"
-	else if (zone == BODY_ZONE_R_ARM)
-		return "right arm"
-	else if (zone == BODY_ZONE_L_LEG)
-		return "left leg"
-	else if (zone == BODY_ZONE_R_LEG)
-		return "right leg"
-	else if (zone == BODY_ZONE_PRECISE_L_FOOT)
-		return "left foot"
-	else if (zone == BODY_ZONE_PRECISE_R_FOOT)
-		return "right foot"
-	else
-		return zone
+	switch(zone)
+		if(BODY_ZONE_PRECISE_R_HAND)
+			return "right hand"
+		if (BODY_ZONE_PRECISE_L_HAND)
+			return "left hand"
+		if (BODY_ZONE_L_ARM)
+			return "left arm"
+		if (BODY_ZONE_R_ARM)
+			return "right arm"
+		if (BODY_ZONE_L_LEG)
+			return "left leg"
+		if (BODY_ZONE_R_LEG)
+			return "right leg"
+		if (BODY_ZONE_PRECISE_L_FOOT)
+			return "left foot"
+		if (BODY_ZONE_PRECISE_R_FOOT)
+			return "right foot"
+		else
+			return zone
 
 /*
 
@@ -645,7 +630,7 @@ GLOBAL_LIST_INIT(WALLITEMS, typecacheof(list(
 	/obj/machinery/computer/security/telescreen, /obj/machinery/embedded_controller/radio/simple_vent_controller,
 	/obj/item/storage/secure/safe, /obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth,
 	/obj/structure/mirror, /obj/structure/fireaxecabinet, /obj/machinery/computer/security/telescreen/entertainment,
-	/obj/structure/sign/picture_frame, /obj/machinery/bounty_board
+	/obj/structure/sign/picture_frame
 	)))
 
 GLOBAL_LIST_INIT(WALLITEMS_EXTERNAL, typecacheof(list(
@@ -685,9 +670,6 @@ GLOBAL_LIST_INIT(WALLITEMS_INVERSE, typecacheof(list(
 			if(O.pixel_x == 0 && O.pixel_y == 0)
 				return TRUE
 	return FALSE
-
-/proc/format_text(text)
-	return replacetext(replacetext(text,"\proper ",""),"\improper ","")
 
 /proc/check_target_facings(mob/living/initator, mob/living/target)
 	/*This can be used to add additional effects on interactions between mobs depending on how the mobs are facing each other, such as adding a crit damage to blows to the back of a guy's head.
@@ -1072,29 +1054,6 @@ GLOBAL_REAL_VAR(list/stack_trace_storage)
 	. = stack_trace_storage
 	stack_trace_storage = null
 
-//Key thing that stops lag. Cornerstone of performance in ss13, Just sitting here, in unsorted.dm.
-
-//Increases delay as the server gets more overloaded,
-//as sleeps aren't cheap and sleeping only to wake up and sleep again is wasteful
-#define DELTA_CALC max(((max(TICK_USAGE, world.cpu) / 100) * max(Master.sleep_delta-1,1)), 1)
-
-//returns the number of ticks slept
-/proc/stoplag(initial_delay)
-	if (!Master || !(Master.current_runlevel & RUNLEVELS_DEFAULT))
-		sleep(world.tick_lag)
-		return 1
-	if (!initial_delay)
-		initial_delay = world.tick_lag
-	. = 0
-	var/i = DS2TICKS(initial_delay)
-	do
-		. += CEILING(i*DELTA_CALC, 1)
-		sleep(i*world.tick_lag*DELTA_CALC)
-		i *= 2
-	while (TICK_USAGE > min(TICK_LIMIT_TO_RUN, Master.current_ticklimit))
-
-#undef DELTA_CALC
-
 /proc/flash_color(mob_or_client, flash_color="#960000", flash_time=20)
 	var/client/C
 	if(ismob(mob_or_client))
@@ -1229,8 +1188,6 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 				return FALSE
 	return TRUE
 
-#define UNTIL(X) while(!(X)) stoplag()
-
 /proc/pass(...)
 	return
 
@@ -1276,20 +1233,6 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 
 	return "{[time_high]-[time_mid]-[GUID_VERSION][time_low]-[GUID_VARIANT][time_clock]-[node_id]}"
 
-// \ref behaviour got changed in 512 so this is necesary to replicate old behaviour.
-// If it ever becomes necesary to get a more performant REF(), this lies here in wait
-// #define REF(thing) (thing && istype(thing, /datum) && (thing:datum_flags & DF_USE_TAG) && thing:tag ? "[thing:tag]" : "\ref[thing]")
-/proc/REF(input)
-	if(istype(input, /datum))
-		var/datum/thing = input
-		if(thing.datum_flags & DF_USE_TAG)
-			if(!thing.tag)
-				stack_trace("A ref was requested of an object with DF_USE_TAG set but no tag: [thing]")
-				thing.datum_flags &= ~DF_USE_TAG
-			else
-				return "\[[url_encode(thing.tag)]\]"
-	return "\ref[input]"
-
 // Makes a call in the context of a different usr
 // Use sparingly
 /world/proc/PushUsr(mob/M, datum/callback/CB, ...)
@@ -1301,12 +1244,9 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 		. = CB.Invoke()
 	usr = temp
 
-//datum may be null, but it does need to be a typed var
-#define NAMEOF(datum, X) (#X || ##datum.##X)
-
-#define VARSET_LIST_CALLBACK(target, var_name, var_value) CALLBACK(GLOBAL_PROC, /proc/___callbackvarset, ##target, ##var_name, ##var_value)
+#define VARSET_LIST_CALLBACK(target, var_name, var_value) CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(___callbackvarset), ##target, ##var_name, ##var_value)
 //dupe code because dm can't handle 3 level deep macros
-#define VARSET_CALLBACK(datum, var, var_value) CALLBACK(GLOBAL_PROC, /proc/___callbackvarset, ##datum, NAMEOF(##datum, ##var), ##var_value)
+#define VARSET_CALLBACK(datum, var, var_value) CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(___callbackvarset), ##datum, NAMEOF(##datum, ##var), ##var_value)
 
 /proc/___callbackvarset(list_or_datum, var_name, var_value)
 	if(length(list_or_datum))
@@ -1318,8 +1258,8 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	else
 		D.vars[var_name] = var_value
 
-#define	TRAIT_CALLBACK_ADD(target, trait, source) CALLBACK(GLOBAL_PROC, /proc/___TraitAdd, ##target, ##trait, ##source)
-#define	TRAIT_CALLBACK_REMOVE(target, trait, source) CALLBACK(GLOBAL_PROC, /proc/___TraitRemove, ##target, ##trait, ##source)
+#define	TRAIT_CALLBACK_ADD(target, trait, source) CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(___TraitAdd), ##target, ##trait, ##source)
+#define	TRAIT_CALLBACK_REMOVE(target, trait, source) CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(___TraitRemove), ##target, ##trait, ##source)
 
 ///DO NOT USE ___TraitAdd OR ___TraitRemove as a replacement for ADD_TRAIT / REMOVE_TRAIT defines. To be used explicitly for callback.
 /proc/___TraitAdd(target,trait,source)

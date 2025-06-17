@@ -1,3 +1,6 @@
+#define JUMP_DELAY 40
+#define MAX_JUMP_DISTANCE 1
+
 /mob/living/carbon/Initialize(mapload)
 	. = ..()
 	create_reagents(1000)
@@ -9,7 +12,7 @@
 
 	GLOB.carbon_list += src
 	if(!mapload)  //I don't want no gas leaks on my space ruin you hear?
-		RegisterSignal(src, COMSIG_LIVING_DEATH, .proc/attach_rot)
+		RegisterSignal(src, COMSIG_LIVING_DEATH, PROC_REF(attach_rot))
 
 /mob/living/carbon/Destroy()
 	//This must be done first, so the mob ghosts correctly before DNA etc is nulled
@@ -93,10 +96,10 @@
 		hurt = !throwingdatum.gentle
 	if(hurt && hit_atom.density)
 		if(isturf(hit_atom))
-			Paralyze(2 SECONDS)
+//			Paralyze(2 SECONDS)
 			take_bodypart_damage(10 + 5 * extra_speed, check_armor = TRUE, wound_bonus = extra_speed * 5)
 		else if(isstructure(hit_atom) && extra_speed)
-			Paralyze(1 SECONDS)
+//			Paralyze(1 SECONDS)
 			take_bodypart_damage(5 + 5 * extra_speed, check_armor = TRUE, wound_bonus = extra_speed * 5)
 		else if(!iscarbon(hit_atom) && extra_speed)
 			take_bodypart_damage(5 * extra_speed, check_armor = TRUE, wound_bonus = extra_speed * 5)
@@ -107,8 +110,8 @@
 		if(hurt)
 			victim.take_bodypart_damage(10 + 5 * extra_speed, check_armor = TRUE, wound_bonus = extra_speed * 5)
 			take_bodypart_damage(10 + 5 * extra_speed, check_armor = TRUE, wound_bonus = extra_speed * 5)
-			victim.Paralyze(2 SECONDS)
-			Paralyze(2 SECONDS)
+			victim.Paralyze(1 SECONDS)
+			Paralyze(1 SECONDS)
 			visible_message("<span class='danger'>[src] crashes into [victim][extra_speed ? " really hard" : ""], knocking them both over!</span>",\
 				"<span class='userdanger'>You violently crash into [victim][extra_speed ? " extra hard" : ""]!</span>")
 		playsound(src,'sound/weapons/punch1.ogg',50,TRUE)
@@ -184,6 +187,74 @@
 		newtonian_move(get_dir(target, src))
 		thrown_thing.safe_throw_at(target, thrown_thing.throw_range, thrown_thing.throw_speed + power_throw, src, null, null, null, move_force)
 
+/mob/proc/jump(atom/target) //[Lucifernix] - This is where all the code for jumping is located.
+	SEND_SIGNAL(src, COMSIG_MOB_THROW, target)
+	return
+
+/mob/living/carbon/jump(atom/target)
+	. = ..()
+	if(!target || !isturf(loc))
+		return
+	if(istype(target, /atom/movable/screen))
+		return
+	if(lying_angle != STANDING_UP)
+		return
+
+	var/mob/living/carbon/H = src
+
+	if(HAS_TRAIT(H, TRAIT_IMMOBILIZED) || H.legcuffed)
+		return
+	if(pulledby && H.pulledby.grab_state >= GRAB_PASSIVE)
+		return
+
+	var/current_time = world.time
+
+	var/adjusted_jump_delay = max(JUMP_DELAY - (1.4 * H.get_stamina()), 0)
+	if(current_time - last_jump_time < adjusted_jump_delay)
+		to_chat(src, "<span class='notice'>You can't jump so soon!")
+		return
+
+	var/adjusted_jump_range = MAX_JUMP_DISTANCE
+	if(HAS_TRAIT(src, TRAIT_SUPERNATURAL_DEXTERITY))
+		adjusted_jump_range = 11
+	else
+		var/success_count = SSroll.storyteller_roll(
+			dice = get_wits() + get_physique(),
+			difficulty = 1,
+			mobs_to_show_output = list(src),
+			alert_atom = src)
+		switch(success_count)
+			if(0)
+				visible_message("<span class='danger'>[src] tries to a jump, but stumbles and eats \the [loc] like a chump.</span>", \
+							"<span class='userdanger'>You embarass yourself jumping by falling to the floor.</span>")
+				Knockdown(50)
+				return
+			if (1)
+				visible_message("<span class='notice'>[src] tries to a jump, but stumbles.</span>", \
+							"<span class='notice'>You stumble while trying to jump.</span>")
+				return
+			else
+				adjusted_jump_range = clamp(success_count * 2, 2, 7)
+
+	var/distance = get_dist(loc, target)
+	var/turf/adjusted_target = target
+	if(distance > adjusted_jump_range)
+		var/dx = target.x - loc.x
+		var/dy = target.y - loc.y
+		var/scale = adjusted_jump_range / distance
+		adjusted_target = locate(loc.x + round(dx * scale), loc.y + round(dy * scale), loc.z)
+	playsound(loc, 'code/modules/wod13/sounds/jump_neutral.ogg', 50, TRUE)
+
+	SEND_SIGNAL(src, COMSIG_MOB_LIVING_JUMP, adjusted_target, distance)
+
+	var/turf/start_T = get_turf(loc) //Get the start and target tile for the descriptors
+	var/turf/end_T = get_turf(adjusted_target)
+	if(start_T && end_T)
+		log_combat(src, adjusted_target, "jumped", addition="from tile in [AREACOORD(start_T)] towards tile at [AREACOORD(end_T)]")
+	newtonian_move(get_dir(adjusted_target, src))
+	src.safe_throw_at(adjusted_target, src.throw_range, src.throw_speed, src, null, null, null, move_force, spin = FALSE)
+	visible_message("<span class='danger'>[src] jumps towards [adjusted_target].</span>")
+	last_jump_time = current_time
 
 /mob/living/carbon/proc/canBeHandcuffed()
 	return FALSE
@@ -198,31 +269,31 @@
 	dat += "<table>"
 	for(var/i in 1 to held_items.len)
 		var/obj/item/I = get_item_for_held_index(i)
-		dat += "<tr><td><B>[get_held_index_name(i)]:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_HANDS];hand_index=[i]'>[(I && !(I.item_flags & ABSTRACT)) ? I : "<font color=grey>Empty</font>"]</a></td></tr>"
+		dat += "<tr><td><B>[get_held_index_name(i)]:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_HANDS];hand_index=[i]'>[(I && !(I.item_flags & ABSTRACT)) ? I : "<font color=grey>Empty</font>"]</a></td></tr>"
 	dat += "<tr><td>&nbsp;</td></tr>"
 
-	dat += "<tr><td><B>Back:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_BACK]'>[(back && !(back.item_flags & ABSTRACT)) ? back : "<font color=grey>Empty</font>"]</A>"
-	if(has_breathable_mask && istype(back, /obj/item/tank))
-		dat += "&nbsp;<A href='?src=[REF(src)];internal=[ITEM_SLOT_BACK]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
+	dat += "<tr><td><B>Back:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_BACK]'>[(back && !(back.item_flags & ABSTRACT)) ? back : "<font color=grey>Empty</font>"]</A>"
+	if(has_breathable_mask && istype(back, /obj/item))
+		dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_BACK]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 
 	dat += "</td></tr><tr><td>&nbsp;</td></tr>"
 
-	dat += "<tr><td><B>Head:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_HEAD]'>[(head && !(head.item_flags & ABSTRACT)) ? head : "<font color=grey>Empty</font>"]</A></td></tr>"
+	dat += "<tr><td><B>Head:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_HEAD]'>[(head && !(head.item_flags & ABSTRACT)) ? head : "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(obscured & ITEM_SLOT_MASK)
 		dat += "<tr><td><font color=grey><B>Mask:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Mask:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_MASK]'>[(wear_mask && !(wear_mask.item_flags & ABSTRACT)) ? wear_mask : "<font color=grey>Empty</font>"]</A></td></tr>"
+		dat += "<tr><td><B>Mask:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_MASK]'>[(wear_mask && !(wear_mask.item_flags & ABSTRACT)) ? wear_mask : "<font color=grey>Empty</font>"]</A></td></tr>"
 
-	dat += "<tr><td><B>Neck:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_NECK]'>[(wear_neck && !(wear_neck.item_flags & ABSTRACT)) ? wear_neck : "<font color=grey>Empty</font>"]</A></td></tr>"
+	dat += "<tr><td><B>Neck:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_NECK]'>[(wear_neck && !(wear_neck.item_flags & ABSTRACT)) ? wear_neck : "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(handcuffed)
-		dat += "<tr><td><B>Handcuffed:</B> <A href='?src=[REF(src)];item=[ITEM_SLOT_HANDCUFFED]'>Remove</A></td></tr>"
+		dat += "<tr><td><B>Handcuffed:</B> <A href='byond://?src=[REF(src)];item=[ITEM_SLOT_HANDCUFFED]'>Remove</A></td></tr>"
 	if(legcuffed)
-		dat += "<tr><td><B>Legcuffed:</B> <A href='?src=[REF(src)];item=[ITEM_SLOT_LEGCUFFED]'>Remove</A></td></tr>"
+		dat += "<tr><td><B>Legcuffed:</B> <A href='byond://?src=[REF(src)];item=[ITEM_SLOT_LEGCUFFED]'>Remove</A></td></tr>"
 
 	dat += {"</table>
-	<A href='?src=[REF(user)];mach_close=mob[REF(src)]'>Close</A>
+	<A href='byond://?src=[REF(user)];mach_close=mob[REF(src)]'>Close</A>
 	"}
 
 	var/datum/browser/popup = new(user, "mob[REF(src)]", "[src]", 440, 510)
@@ -235,7 +306,7 @@
 	if(href_list["internal"] && usr.canUseTopic(src, BE_CLOSE, NO_DEXTERITY))
 		var/slot = text2num(href_list["internal"])
 		var/obj/item/ITEM = get_item_by_slot(slot)
-		if(ITEM && istype(ITEM, /obj/item/tank) && wear_mask && (wear_mask.clothing_flags & MASKINTERNALS))
+		if(ITEM && istype(ITEM, /obj/item) && wear_mask && (wear_mask.clothing_flags & MASKINTERNALS))
 			visible_message("<span class='danger'>[usr] tries to [internal ? "close" : "open"] the valve on [src]'s [ITEM.name].</span>", \
 							"<span class='userdanger'>[usr] tries to [internal ? "close" : "open"] the valve on your [ITEM.name].</span>", null, null, usr)
 			to_chat(usr, "<span class='notice'>You try to [internal ? "close" : "open"] the valve on [src]'s [ITEM.name]...</span>")
@@ -243,7 +314,7 @@
 				if(internal)
 					internal = null
 					update_internals_hud_icon(0)
-				else if(ITEM && istype(ITEM, /obj/item/tank))
+				else if(ITEM && istype(ITEM, /obj/item))
 					if((wear_mask && (wear_mask.clothing_flags & MASKINTERNALS)) || getorganslot(ORGAN_SLOT_BREATHING_TUBE))
 						internal = ITEM
 						update_internals_hud_icon(1)
@@ -264,7 +335,8 @@
 
 /mob/living/carbon/on_fall()
 	. = ..()
-	loc.handle_fall(src)//it's loc so it doesn't call the mob's handle_fall which does nothing
+	if(loc)
+		loc.handle_fall(src)//it's loc so it doesn't call the mob's handle_fall which does nothing
 
 /mob/living/carbon/is_muzzled()
 	return(istype(src.wear_mask, /obj/item/clothing/mask/muzzle))
@@ -426,7 +498,7 @@
 
 	switch(rand(1,100)+modifier) //91-100=Nothing special happens
 		if(-INFINITY to 0) //attack yourself
-			INVOKE_ASYNC(I, /obj/item.proc/attack, src, src)
+			INVOKE_ASYNC(I, TYPE_PROC_REF(/obj/item, attack), src, src)
 		if(1 to 30) //throw it at yourself
 			I.throw_impact(src)
 		if(31 to 60) //Throw object in facing direction
@@ -634,6 +706,10 @@
 		sight |= (SEE_TURFS|SEE_MOBS|SEE_OBJS)
 		see_in_dark = max(see_in_dark, 8)
 
+	if(HAS_TRAIT(src, TRAIT_NIGHT_VISION))
+		lighting_alpha = min(lighting_alpha, LIGHTING_PLANE_ALPHA_NV_TRAIT)
+		see_in_dark = max(see_in_dark, 8)
+
 	if(see_override)
 		see_invisible = see_override
 	. = ..()
@@ -755,6 +831,8 @@
 
 	//Fire and Brute damage overlay (BSSR)
 	var/hurtdamage = getBruteLoss() + getFireLoss() + damageoverlaytemp
+	//Now adjust the damage in proportion to actual maxHealth, 20 damage is considered 10 damage on a mob with a maxHealth of 200
+	hurtdamage = hurtdamage * 100/(max(maxHealth, 1)) //No dividing with 0 in case maxHealth somehow becomes 0.
 	if(hurtdamage)
 		var/severity = 0
 		switch(hurtdamage)
@@ -800,8 +878,7 @@
 			hud_used.healths.icon_state = "health7"
 
 /mob/living/carbon/proc/update_internals_hud_icon(internal_state = 0)
-	if(hud_used?.internals)
-		hud_used.internals.icon_state = "internal[internal_state]"
+	return
 
 /mob/living/carbon/proc/update_spacesuit_hud_icon(cell_state = "empty")
 	if(hud_used?.spacesuit)
@@ -822,14 +899,23 @@
 		else if(health > HEALTH_THRESHOLD_NEARDEATH)
 			REMOVE_TRAIT(src, TRAIT_SIXTHSENSE, "near-death")
 
-
 /mob/living/carbon/update_stat()
 	if(status_flags & GODMODE)
 		return
 	if(stat != DEAD)
-		if(health <= HEALTH_THRESHOLD_DEAD && !HAS_TRAIT(src, TRAIT_NODEATH))
-			death()
-			return
+		//special death handling for vampires, who don't die until -200 health
+		if (iskindred(src))
+			if(health <= HEALTH_THRESHOLD_VAMPIRE_DEAD && !HAS_TRAIT(src, TRAIT_NODEATH))
+				death()
+				return
+			if((health <= HEALTH_THRESHOLD_VAMPIRE_TORPOR) && !HAS_TRAIT(src, TRAIT_TORPOR))
+				spawn()
+					torpor("damage")
+		else
+			if(health <= HEALTH_THRESHOLD_DEAD && !HAS_TRAIT(src, TRAIT_NODEATH))
+				death()
+				return
+
 		if(health <= hardcrit_threshold && !HAS_TRAIT(src, TRAIT_NOHARDCRIT))
 			set_stat(HARD_CRIT)
 		else if(HAS_TRAIT(src, TRAIT_KNOCKEDOUT))
@@ -1083,7 +1169,7 @@
 		for(var/i in artpaths)
 			var/datum/martial_art/M = i
 			artnames[initial(M.name)] = M
-		var/result = input(usr, "Choose the martial art to teach","JUDO CHOP") as null|anything in sortList(artnames, /proc/cmp_typepaths_asc)
+		var/result = input(usr, "Choose the martial art to teach","JUDO CHOP") as null|anything in sortList(artnames, GLOBAL_PROC_REF(cmp_typepaths_asc))
 		if(!usr)
 			return
 		if(QDELETED(src))
@@ -1099,7 +1185,7 @@
 		if(!check_rights(NONE))
 			return
 		var/list/traumas = subtypesof(/datum/brain_trauma)
-		var/result = input(usr, "Choose the brain trauma to apply","Traumatize") as null|anything in sortList(traumas, /proc/cmp_typepaths_asc)
+		var/result = input(usr, "Choose the brain trauma to apply","Traumatize") as null|anything in sortList(traumas, GLOBAL_PROC_REF(cmp_typepaths_asc))
 		if(!usr)
 			return
 		if(QDELETED(src))
@@ -1121,7 +1207,7 @@
 		if(!check_rights(NONE))
 			return
 		var/list/hallucinations = subtypesof(/datum/hallucination)
-		var/result = input(usr, "Choose the hallucination to apply","Send Hallucination") as null|anything in sortList(hallucinations, /proc/cmp_typepaths_asc)
+		var/result = input(usr, "Choose the hallucination to apply","Send Hallucination") as null|anything in sortList(hallucinations, GLOBAL_PROC_REF(cmp_typepaths_asc))
 		if(!usr)
 			return
 		if(QDELETED(src))
@@ -1333,3 +1419,6 @@
 
 /mob/living/carbon/proc/attach_rot(mapload)
 	AddComponent(/datum/component/rot/corpse)
+
+#undef JUMP_DELAY
+#undef MAX_JUMP_DISTANCE

@@ -63,10 +63,13 @@
 							"<span class='userdanger'>You catch [I] in mid-air!</span>")
 			throw_mode_off()
 			return TRUE
+	do_rage_from_attack()
 	return ..()
 
 
 /mob/living/carbon/attacked_by(obj/item/I, mob/living/user)
+	if(I.force)
+		do_rage_from_attack(user)
 	var/obj/item/bodypart/affecting
 	if(user == src)
 		affecting = get_bodypart(check_zone(user.zone_selected)) //we're self-mutilating! yay!
@@ -141,6 +144,9 @@
 
 //ATTACK HAND IGNORING PARENT RETURN VALUE
 /mob/living/carbon/attack_hand(mob/living/carbon/human/user)
+
+	if(user.a_intent == INTENT_HARM)
+		do_rage_from_attack(user)
 
 	if(SEND_SIGNAL(src, COMSIG_ATOM_ATTACK_HAND, user) & COMPONENT_CANCEL_ATTACK_CHAIN)
 		. = TRUE
@@ -244,7 +250,15 @@
  * Will shove the target mob back, and drop them if they're in front of something dense
  * or another carbon.
 */
+
+/mob/living/carbon/proc/do_rage_from_attack(var/mob/living/target)
+	if(isgarou(src) || iswerewolf(src))
+		if(last_rage_from_attack == 0 || last_rage_from_attack+50 < world.time)
+			last_rage_from_attack = world.time
+			adjust_rage(1, src, TRUE)
+
 /mob/living/carbon/proc/disarm(mob/living/carbon/target)
+	target.do_rage_from_attack(src)
 	if(zone_selected == BODY_ZONE_PRECISE_MOUTH)
 		var/target_on_help_and_unarmed = target.a_intent == INTENT_HELP && !target.get_active_held_item()
 		if(target_on_help_and_unarmed || HAS_TRAIT(target, TRAIT_RESTRAINED))
@@ -292,7 +306,7 @@
 		target.visible_message("<span class='danger'>[name] kicks [target.name] onto [target.p_their()] side!</span>",
 						"<span class='userdanger'>You're kicked onto your side by [name]!</span>", "<span class='hear'>You hear aggressive shuffling followed by a loud thud!</span>", COMBAT_MESSAGE_RANGE, src)
 		to_chat(src, "<span class='danger'>You kick [target.name] onto [target.p_their()] side!</span>")
-		addtimer(CALLBACK(target, /mob/living/proc/SetKnockdown, 0), SHOVE_CHAIN_PARALYZE)
+		addtimer(CALLBACK(target, TYPE_PROC_REF(/mob/living, SetKnockdown), 0), SHOVE_CHAIN_PARALYZE)
 		log_combat(src, target, "kicks", "onto their side (paralyzing)")
 
 	if(shove_blocked && !target.is_shove_knockdown_blocked() && !target.buckled)
@@ -348,7 +362,7 @@
 			if(target_held_item)
 				target.visible_message("<span class='danger'>[target.name]'s grip on \the [target_held_item] loosens!</span>",
 					"<span class='warning'>Your grip on \the [target_held_item] loosens!</span>", null, COMBAT_MESSAGE_RANGE)
-			addtimer(CALLBACK(target, /mob/living/carbon/proc/clear_shove_slowdown), SHOVE_SLOWDOWN_LENGTH)
+			addtimer(CALLBACK(target, TYPE_PROC_REF(/mob/living/carbon, clear_shove_slowdown)), SHOVE_SLOWDOWN_LENGTH)
 		else if(target_held_item)
 			target.dropItemToGround(target_held_item)
 			knocked_item = TRUE
@@ -394,6 +408,7 @@
 	. = ..()
 	if(!.)
 		return
+	do_rage_from_attack()
 	//Propagation through pulling, fireman carry
 	if(!(flags & SHOCK_ILLUSION))
 		var/list/shocking_queue = list()
@@ -418,7 +433,7 @@
 	jitteriness += 1000
 	do_jitter_animation(jitteriness)
 	stuttering += 2
-	addtimer(CALLBACK(src, .proc/secondary_shock, should_stun), 20)
+	addtimer(CALLBACK(src, PROC_REF(secondary_shock), should_stun), 20)
 	return shock_damage
 
 ///Called slightly after electrocute act to reduce jittering and apply a secondary stun.
@@ -450,7 +465,7 @@
 					null, "<span class='hear'>You hear a soft patter.</span>", DEFAULT_MESSAGE_RANGE, list(M, src))
 		to_chat(M, "<span class='notice'>You give [src] a pat on the head to make [p_them()] feel better!</span>")
 		to_chat(src, "<span class='notice'>[M] gives you a pat on the head to make you feel better! </span>")
-		
+
 		if(HAS_TRAIT(src, TRAIT_BADTOUCH))
 			to_chat(M, "<span class='warning'>[src] looks visibly upset as you pat [p_them()] on the head.</span>")
 
@@ -492,7 +507,7 @@
 				SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "friendly_hug", /datum/mood_event/besthug, M)
 			else if (hugger_mood.sanity >= SANITY_DISTURBED)
 				SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "friendly_hug", /datum/mood_event/betterhug, M)
-		
+
 		if(HAS_TRAIT(src, TRAIT_BADTOUCH))
 			to_chat(M, "<span class='warning'>[src] looks visibly upset as you hug [p_them()].</span>")
 
@@ -530,9 +545,9 @@
 				visible_message("<span class='notice'>[src] examines [p_them()]self.</span>", \
 					"<span class='notice'>You check yourself for shrapnel.</span>")
 			if(I.isEmbedHarmless())
-				to_chat(src, "\t <a href='?src=[REF(src)];embedded_object=[REF(I)];embedded_limb=[REF(LB)]' class='warning'>There is \a [I] stuck to your [LB.name]!</a>")
+				to_chat(src, "\t <a href='byond://?src=[REF(src)];embedded_object=[REF(I)];embedded_limb=[REF(LB)]' class='warning'>There is \a [I] stuck to your [LB.name]!</a>")
 			else
-				to_chat(src, "\t <a href='?src=[REF(src)];embedded_object=[REF(I)];embedded_limb=[REF(LB)]' class='warning'>There is \a [I] embedded in your [LB.name]!</a>")
+				to_chat(src, "\t <a href='byond://?src=[REF(src)];embedded_object=[REF(I)];embedded_limb=[REF(LB)]' class='warning'>There is \a [I] embedded in your [LB.name]!</a>")
 
 	return embeds
 
@@ -669,6 +684,7 @@
 			. += (limb.brute_dam * limb.body_damage_coeff) + (limb.burn_dam * limb.body_damage_coeff)
 
 /mob/living/carbon/grabbedby(mob/living/carbon/user, supress_message = FALSE)
+	do_rage_from_attack(user)
 	if(user != src)
 		return ..()
 
@@ -685,7 +701,7 @@
 		to_chat(src, "<span class='danger'>You fail to grasp your [grasped_part.name].</span>")
 		return
 
-	var/obj/item/self_grasp/grasp = new
+	var/obj/item/hand_item/self_grasp/grasp = new
 	if(starting_hand_index != active_hand_index || !put_in_active_hand(grasp))
 		to_chat(src, "<span class='danger'>You fail to grasp your [grasped_part.name].</span>")
 		QDEL_NULL(grasp)
@@ -693,13 +709,11 @@
 	grasp.grasp_limb(grasped_part)
 
 /// an abstract item representing you holding your own limb to staunch the bleeding, see [/mob/living/carbon/proc/grabbedby] will probably need to find somewhere else to put this.
-/obj/item/self_grasp
+/obj/item/hand_item/self_grasp
 	name = "self-grasp"
 	desc = "Sometimes all you can do is slow the bleeding."
 	icon_state = "latexballon"
 	inhand_icon_state = "nothing"
-	force = 0
-	throwforce = 0
 	slowdown = 1
 	item_flags = DROPDEL | ABSTRACT | NOBLUDGEON | SLOWS_WHILE_IN_HAND | HAND_ITEM
 	/// The bodypart we're staunching bleeding on, which also has a reference to us in [/obj/item/bodypart/var/grasped_by]
@@ -707,7 +721,7 @@
 	/// The carbon who owns all of this mess
 	var/mob/living/carbon/user
 
-/obj/item/self_grasp/Destroy()
+/obj/item/hand_item/self_grasp/Destroy()
 	if(user)
 		to_chat(user, "<span class='warning'>You stop holding onto your[grasped_part ? " [grasped_part.name]" : "self"].</span>")
 		UnregisterSignal(user, COMSIG_PARENT_QDELETING)
@@ -719,11 +733,11 @@
 	return ..()
 
 /// The limb or the whole damn person we were grasping got deleted or dismembered, so we don't care anymore
-/obj/item/self_grasp/proc/qdel_void()
+/obj/item/hand_item/self_grasp/proc/qdel_void()
 	qdel(src)
 
 /// We've already cleared that the bodypart in question is bleeding in [the place we create this][/mob/living/carbon/proc/grabbedby], so set up the connections
-/obj/item/self_grasp/proc/grasp_limb(obj/item/bodypart/grasping_part)
+/obj/item/hand_item/self_grasp/proc/grasp_limb(obj/item/bodypart/grasping_part)
 	user = grasping_part.owner
 	if(!istype(user))
 		stack_trace("[src] attempted to try_grasp() with [istype(user, /datum) ? user.type : isnull(user) ? "null" : user] user")
@@ -732,8 +746,8 @@
 
 	grasped_part = grasping_part
 	grasped_part.grasped_by = src
-	RegisterSignal(user, COMSIG_PARENT_QDELETING, .proc/qdel_void)
-	RegisterSignal(grasped_part, list(COMSIG_CARBON_REMOVE_LIMB, COMSIG_PARENT_QDELETING), .proc/qdel_void)
+	RegisterSignal(user, COMSIG_PARENT_QDELETING, PROC_REF(qdel_void))
+	RegisterSignal(grasped_part, list(COMSIG_CARBON_REMOVE_LIMB, COMSIG_PARENT_QDELETING), PROC_REF(qdel_void))
 
 	user.visible_message("<span class='danger'>[user] grasps at [user.p_their()] [grasped_part.name], trying to stop the bleeding.</span>", "<span class='notice'>You grab hold of your [grasped_part.name] tightly.</span>", vision_distance=COMBAT_MESSAGE_RANGE)
 	playsound(get_turf(src), 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)

@@ -210,6 +210,7 @@
 
 /mob/living/simple_animal/Life()
 	. = ..()
+	update_health_hud()
 	if(staminaloss > 0)
 		adjustStaminaLoss(-stamina_recovery, FALSE, TRUE)
 
@@ -726,10 +727,16 @@
 /mob/living/simple_animal/relaymove(mob/living/user, direction)
 	if(user.incapacitated())
 		return
+	if(IsStun())
+		return
+	if(IsKnockdown())
+		return
+	if(IsImmobilized())
+		return
 	return relaydrive(user, direction)
 
 /mob/living/simple_animal/deadchat_plays(mode = ANARCHY_MODE, cooldown = 12 SECONDS)
-	. = AddComponent(/datum/component/deadchat_control/cardinal_movement, mode, list(), cooldown, CALLBACK(src, .proc/stop_deadchat_plays))
+	. = AddComponent(/datum/component/deadchat_control/cardinal_movement, mode, list(), cooldown, CALLBACK(src, PROC_REF(stop_deadchat_plays)))
 
 	if(. == COMPONENT_INCOMPATIBLE)
 		return

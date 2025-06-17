@@ -28,14 +28,13 @@
 	armor = 25
 	punchdamagelow = 10
 	punchdamagehigh = 19
-	punchstunthreshold = 14 //about 50% chance to stun
 	disguise_fail_health = 50
 	changesource_flags = MIRROR_BADMIN | WABBAJACK
 
 /datum/species/synth/on_species_gain(mob/living/carbon/human/H, datum/species/old_species)
 	..()
 	assume_disguise(old_species, H)
-	RegisterSignal(H, COMSIG_MOB_SAY, .proc/handle_speech)
+	RegisterSignal(H, COMSIG_MOB_SAY, PROC_REF(handle_speech))
 	H.set_safe_hunger_level()
 
 /datum/species/synth/on_species_loss(mob/living/carbon/human/H)

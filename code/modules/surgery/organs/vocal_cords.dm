@@ -129,6 +129,9 @@
 	if(!user || !user.can_speak() || user.stat)
 		return 0 //no cooldown
 
+	//patch up an RCE exploit by sanitizing input
+	message = trim(copytext_char(sanitize(message), 1, MAX_MESSAGE_LEN))
+
 	var/log_message = uppertext(message)
 	if(!span_list || !span_list.len)
 		if(iscultist(user))
@@ -148,6 +151,8 @@
 				var/mob/living/carbon/human/H = L
 				if(istype(H.ears, /obj/item/clothing/ears/earmuffs))
 					continue
+			if(L.resistant_to_disciplines)
+				continue
 			listeners += L
 
 	if(!listeners.len)
@@ -156,6 +161,8 @@
 
 	var/power_multiplier = base_multiplier
 
+	//not applicable to WoD13
+	/*
 	if(user.mind)
 		//Chaplains are very good at speaking with the voice of god
 		if(user.mind.assigned_role == "Chaplain")
@@ -167,9 +174,11 @@
 		if(user.mind.assigned_role == "Mime")
 			power_multiplier *= 0.5
 
+
 	//Cultists are closer to their gods and are more powerful, but they'll give themselves away
 	if(iscultist(user))
 		power_multiplier *= 2
+	*/
 
 	//Try to check if the speaker specified a name or a job to focus on
 	var/list/specific_listeners = list()
@@ -200,25 +209,26 @@
 		power_multiplier *= (1 + (1/specific_listeners.len)) //2x on a single guy, 1.5x on two and so on
 		message = copytext(message, length(found_string) + 1)
 
-	var/static/regex/stun_words = regex("stop|wait|stand still|hold on|halt")
+	//removed some keywords as they don't fit mental domination
+	var/static/regex/stun_words = regex("stop|wait|stand still|hold on|halt|cease")
 	var/static/regex/knockdown_words = regex("drop|fall|trip|knockdown")
 	var/static/regex/sleep_words = regex("sleep|slumber|rest")
-	var/static/regex/vomit_words = regex("vomit|throw up|sick")
+	//var/static/regex/vomit_words = regex("vomit|throw up|sick")
 	var/static/regex/silence_words = regex("shut up|silence|be silent|ssh|quiet|hush")
-	var/static/regex/hallucinate_words = regex("see the truth|hallucinate")
+	//var/static/regex/hallucinate_words = regex("see the truth|hallucinate")
 	var/static/regex/wakeup_words = regex("wake up|awaken")
-	var/static/regex/heal_words = regex("live|heal|survive|mend|life|heroes never die")
-	var/static/regex/hurt_words = regex("die|suffer|hurt|pain|death")
-	var/static/regex/bleed_words = regex("bleed|there will be blood")
-	var/static/regex/burn_words = regex("burn|ignite")
-	var/static/regex/hot_words = regex("heat|hot|hell")
-	var/static/regex/cold_words = regex("cold|cool down|chill|freeze")
+	//var/static/regex/heal_words = regex("live|heal|survive|mend|life|heroes never die")
+	//var/static/regex/hurt_words = regex("die|suffer|hurt|pain|death")
+	//var/static/regex/bleed_words = regex("bleed|there will be blood")
+	//var/static/regex/burn_words = regex("burn|ignite")
+	//var/static/regex/hot_words = regex("heat|hot|hell")
+	//var/static/regex/cold_words = regex("cold|cool down|chill|freeze")
 	var/static/regex/repulse_words = regex("shoo|go away|leave me alone|begone|flee|fus ro dah|get away|repulse")
 	var/static/regex/attract_words = regex("come here|come to me|get over here|attract")
 	var/static/regex/whoareyou_words = regex("who are you|say your name|state your name|identify")
 	var/static/regex/saymyname_words = regex("say my name|who am i|whoami")
 	var/static/regex/knockknock_words = regex("knock knock")
-	var/static/regex/statelaws_words = regex("state laws|state your laws")
+	//var/static/regex/statelaws_words = regex("state laws|state your laws")
 	var/static/regex/move_words = regex("move|walk")
 	var/static/regex/left_words = regex("left|west|port")
 	var/static/regex/right_words = regex("right|east|starboard")
@@ -266,10 +276,12 @@
 			C.Sleeping(40 * power_multiplier)
 
 	//VOMIT
+	/*
 	else if((findtext(message, vomit_words)))
 		cooldown = COOLDOWN_STUN
 		for(var/mob/living/carbon/C in listeners)
 			C.vomit(10 * power_multiplier, distance = power_multiplier)
+	*/
 
 	//SILENCE
 	else if((findtext(message, silence_words)))
@@ -280,10 +292,12 @@
 			C.silent += (10 * power_multiplier)
 
 	//HALLUCINATE
+	/*
 	else if((findtext(message, hallucinate_words)))
 		cooldown = COOLDOWN_MEME
 		for(var/mob/living/carbon/C in listeners)
 			new /datum/hallucination/delusion(C, TRUE, null,150 * power_multiplier,0)
+	*/
 
 	//WAKE UP
 	else if((findtext(message, wakeup_words)))
@@ -293,47 +307,59 @@
 			L.SetSleeping(0)
 
 	//HEAL
+	/*
 	else if((findtext(message, heal_words)))
 		cooldown = COOLDOWN_DAMAGE
 		for(var/V in listeners)
 			var/mob/living/L = V
 			L.heal_overall_damage(10 * power_multiplier, 10 * power_multiplier)
+	*/
 
 	//BRUTE DAMAGE
+	/*
 	else if((findtext(message, hurt_words)))
 		cooldown = COOLDOWN_DAMAGE
 		for(var/V in listeners)
 			var/mob/living/L = V
 			L.apply_damage(15 * power_multiplier, def_zone = BODY_ZONE_CHEST, wound_bonus=CANT_WOUND)
+	*/
 
 	//BLEED
+	/*
 	else if((findtext(message, bleed_words)))
 		cooldown = COOLDOWN_DAMAGE
 		for(var/mob/living/carbon/human/H in listeners)
 			var/obj/item/bodypart/BP = pick(H.bodyparts)
 			BP.generic_bleedstacks += 5
+	*/
 
 	//FIRE
+	/*
 	else if((findtext(message, burn_words)))
 		cooldown = COOLDOWN_DAMAGE
 		for(var/V in listeners)
 			var/mob/living/L = V
 			L.adjust_fire_stacks(1 * power_multiplier)
 			L.IgniteMob()
+	*/
 
 	//HOT
+	/*
 	else if((findtext(message, hot_words)))
 		cooldown = COOLDOWN_DAMAGE
 		for(var/V in listeners)
 			var/mob/living/L = V
 			L.adjust_bodytemperature(50 * power_multiplier)
+	*/
 
 	//COLD
+	/*
 	else if((findtext(message, cold_words)))
 		cooldown = COOLDOWN_DAMAGE
 		for(var/V in listeners)
 			var/mob/living/L = V
 			L.adjust_bodytemperature(-50 * power_multiplier)
+	*/
 
 	//REPULSE
 	else if((findtext(message, repulse_words)))
@@ -355,7 +381,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /atom/movable/proc/say, L.real_name), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/atom/movable, say), L.real_name), 5 * i)
 			i++
 
 	//SAY MY NAME
@@ -363,7 +389,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /atom/movable/proc/say, user.name), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/atom/movable, say), user.name), 5 * i)
 			i++
 
 	//KNOCK KNOCK
@@ -371,14 +397,16 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /atom/movable/proc/say, "Who's there?"), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/atom/movable, say), "Who's there?"), 5 * i)
 			i++
 
 	//STATE LAWS
+	/*
 	else if((findtext(message, statelaws_words)))
 		cooldown = COOLDOWN_STUN
 		for(var/mob/living/silicon/S in listeners)
 			S.statelaws(force = 1)
+	*/
 
 	//MOVE
 	else if((findtext(message, move_words)))
@@ -395,7 +423,7 @@
 		for(var/iter in 1 to 5 * power_multiplier)
 			for(var/V in listeners)
 				var/mob/living/L = V
-				addtimer(CALLBACK(GLOBAL_PROC, .proc/_step, L, direction? direction : pick(GLOB.cardinals)), 10 * (iter - 1))
+				addtimer(CALLBACK(GLOBAL_PROC, PROC_REF(_step), L, direction? direction : pick(GLOB.cardinals)), 10 * (iter - 1))
 
 	//WALK
 	else if((findtext(message, walk_words)))
@@ -418,7 +446,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/mob/living/carbon/human/H in listeners)
 			addtimer(CALLBACK(H, /mob/verb/a_intent_change, INTENT_HELP), i * 2)
-			addtimer(CALLBACK(H, /mob/proc/click_random_mob), i * 2)
+			addtimer(CALLBACK(H, TYPE_PROC_REF(/mob, click_random_mob)), i * 2)
 			i++
 
 	//DISARM INTENT
@@ -426,7 +454,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/mob/living/carbon/human/H in listeners)
 			addtimer(CALLBACK(H, /mob/verb/a_intent_change, INTENT_DISARM), i * 2)
-			addtimer(CALLBACK(H, /mob/proc/click_random_mob), i * 2)
+			addtimer(CALLBACK(H, TYPE_PROC_REF(/mob, click_random_mob)), i * 2)
 			i++
 
 	//GRAB INTENT
@@ -434,7 +462,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/mob/living/carbon/human/H in listeners)
 			addtimer(CALLBACK(H, /mob/verb/a_intent_change, INTENT_GRAB), i * 2)
-			addtimer(CALLBACK(H, /mob/proc/click_random_mob), i * 2)
+			addtimer(CALLBACK(H, TYPE_PROC_REF(/mob, click_random_mob)), i * 2)
 			i++
 
 	//HARM INTENT
@@ -442,7 +470,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/mob/living/carbon/human/H in listeners)
 			addtimer(CALLBACK(H, /mob/verb/a_intent_change, INTENT_HARM), i * 2)
-			addtimer(CALLBACK(H, /mob/proc/click_random_mob), i * 2)
+			addtimer(CALLBACK(H, TYPE_PROC_REF(/mob, click_random_mob)), i * 2)
 			i++
 
 	//THROW/CATCH
@@ -463,7 +491,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /atom/movable/proc/say, pick_list_replacements(BRAIN_DAMAGE_FILE, "brain_damage")), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/atom/movable, say), pick_list_replacements(BRAIN_DAMAGE_FILE, "brain_damage")), 5 * i)
 			i++
 
 	//GET UP
@@ -496,7 +524,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /mob/living/.proc/emote, "dance"), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/mob/living/, emote), "dance"), 5 * i)
 			i++
 
 	//JUMP
@@ -505,8 +533,8 @@
 		for(var/V in listeners)
 			var/mob/living/L = V
 			if(prob(25))
-				addtimer(CALLBACK(L, /atom/movable/proc/say, "HOW HIGH?!!"), 5 * i)
-			addtimer(CALLBACK(L, /mob/living/.proc/emote, "jump"), 5 * i)
+				addtimer(CALLBACK(L, TYPE_PROC_REF(/atom/movable, say), "HOW HIGH?!!"), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/mob/living/, emote), "jump"), 5 * i)
 			i++
 
 	//SALUTE
@@ -514,7 +542,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /mob/living/.proc/emote, "salute"), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/mob/living/, emote), "salute"), 5 * i)
 			i++
 
 	//PLAY DEAD
@@ -522,7 +550,7 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /mob/living/.proc/emote, "deathgasp"), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/mob/living/, emote), "deathgasp"), 5 * i)
 			i++
 
 	//PLEASE CLAP
@@ -530,13 +558,13 @@
 		cooldown = COOLDOWN_MEME
 		for(var/V in listeners)
 			var/mob/living/L = V
-			addtimer(CALLBACK(L, /mob/living/.proc/emote, "clap"), 5 * i)
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/mob/living/, emote), "clap"), 5 * i)
 			i++
 
 	//HONK
 	else if((findtext(message, honk_words)))
 		cooldown = COOLDOWN_MEME
-		addtimer(CALLBACK(GLOBAL_PROC, .proc/playsound, get_turf(user), 'sound/items/bikehorn.ogg', 300, 1), 25)
+		addtimer(CALLBACK(GLOBAL_PROC, PROC_REF(playsound), get_turf(user), 'sound/items/bikehorn.ogg', 300, 1), 25)
 		if(user.mind && user.mind.assigned_role == "Clown")
 			for(var/mob/living/carbon/C in listeners)
 				C.slip(140 * power_multiplier)

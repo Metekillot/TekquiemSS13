@@ -34,6 +34,7 @@ GLOBAL_LIST_INIT(bibleitemstates, list("bible", "koran", "scrapbook", "burning",
 	name = "bible"
 	desc = "Apply to head repeatedly."
 	icon = 'icons/obj/storage.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	icon_state = "bible"
 	inhand_icon_state = "bible"
 	worn_icon_state = "bible"
@@ -46,6 +47,7 @@ GLOBAL_LIST_INIT(bibleitemstates, list("bible", "koran", "scrapbook", "burning",
 /obj/item/storage/book/bible/Initialize()
 	. = ..()
 	AddComponent(/datum/component/anti_magic, FALSE, TRUE)
+	AddComponent(/datum/component/sanctified)
 
 /obj/item/storage/book/bible/suicide_act(mob/user)
 	user.visible_message("<span class='suicide'>[user] is offering [user.p_them()]self to [deity_name]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
@@ -62,7 +64,7 @@ GLOBAL_LIST_INIT(bibleitemstates, list("bible", "koran", "scrapbook", "burning",
 		var/image/bible_image = image(icon = 'icons/obj/storage.dmi', icon_state = GLOB.biblestates[i])
 		skins += list("[GLOB.biblenames[i]]" = bible_image)
 
-	var/choice = show_radial_menu(user, src, skins, custom_check = CALLBACK(src, .proc/check_menu, user), radius = 40, require_near = TRUE)
+	var/choice = show_radial_menu(user, src, skins, custom_check = CALLBACK(src, PROC_REF(check_menu), user), radius = 40, require_near = TRUE)
 	if(!choice)
 		return FALSE
 	var/bible_index = GLOB.biblenames.Find(choice)

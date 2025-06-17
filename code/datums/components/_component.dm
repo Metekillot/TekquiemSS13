@@ -159,12 +159,7 @@
 /datum/component/proc/UnregisterFromParent()
 	return
 
-/**
- * Register to listen for a signal from the passed in target
- *
- * This sets up a listening relationship such that when the target object emits a signal
- * the source datum this proc is called upon, will receive a callback to the given proctype
- * Return values from procs registered must be a bitfield
+/* Return values from procs registered must be a bitfield
  *
  * Arguments:
  * * datum/target The target to listen for signals from
@@ -216,6 +211,8 @@
  * * sig_typeor_types Signal string key or list of signal keys to stop listening to specifically
  */
 /datum/proc/UnregisterSignal(datum/target, sig_type_or_types)
+	if(!target || istext(target))
+		return
 	var/list/lookup = target.comp_lookup
 	if(!signal_procs || !signal_procs[target] || !lookup)
 		return
@@ -354,8 +351,10 @@
  */
 /datum/proc/GetExactComponent(datum/component/c_type)
 	RETURN_TYPE(c_type)
+	/* VTR EDIT - You call this yourself, component system. Get your shit in order!
 	if(initial(c_type.dupe_mode) == COMPONENT_DUPE_ALLOWED || initial(c_type.dupe_mode) == COMPONENT_DUPE_SELECTIVE)
 		stack_trace("GetComponent was called to get a component of which multiple copies could be on an object. This can easily break and should be changed. Type: \[[c_type]\]")
+	*/
 	var/list/dc = datum_components
 	if(!dc)
 		return null

@@ -113,7 +113,7 @@
 	if(usr.client.prefs.tgui_fancy) //some browsers (IE8) have trouble with unsupported css3 elements and DOM methods that break the panel's functionality, so we won't load those if a user is in no frills tgui mode since that's for similar compatability support
 		panel.add_stylesheet("admin_panelscss3", 'html/admin/admin_panels_css3.css')
 		panel.add_script("banpaneljs", 'html/admin/banpanel.js')
-	var/list/output = list("<form method='get' action='?src=[REF(src)]'>[HrefTokenFormField()]")
+	var/list/output = list("<form method='get' action='byond://?src=[REF(src)]'>[HrefTokenFormField()]")
 	output += {"<input type='hidden' name='src' value='[REF(src)]'>
 	<label class='inputlabel checkbox'>Key:
 	<input type='checkbox' id='keycheck' name='keycheck' value='1'[player_key ? " checked": ""]>
@@ -232,70 +232,18 @@
 				banned_from += query_get_banned_roles.item[1]
 			qdel(query_get_banned_roles)
 		var/break_counter = 0
-		output += "<div class='row'><div class='column'><label class='rolegroup command'><input type='checkbox' name='Command' class='hidden' [usr.client.prefs.tgui_fancy ? " onClick='toggle_checkboxes(this, \"_dep\")'" : ""]>Command</label><div class='content'>"
-		//all heads are listed twice so have a javascript call to toggle both their checkboxes when one is pressed
-		//for simplicity this also includes the captain even though it doesn't do anything
-		for(var/job in GLOB.command_positions)
-			if(break_counter > 0 && (break_counter % 3 == 0))
-				output += "<br>"
-			output += {"<label class='inputlabel checkbox'>[job]
-						<input type='checkbox' id='[job]_com' name='[job]' class='Command' value='1'[usr.client.prefs.tgui_fancy ? " onClick='toggle_head(this, \"_dep\")'" : ""]>
-						<div class='inputbox[(job in banned_from) ? " banned" : ""]'></div></label>
-			"}
-			break_counter++
-		output += "</div></div>"
-		//standard departments all have identical handling
-		var/list/job_lists = list("Security" = GLOB.security_positions,
-							"Engineering" = GLOB.engineering_positions,
-							"Medical" = GLOB.medical_positions,
-							"Science" = GLOB.science_positions,
-							"Supply" = GLOB.supply_positions)
+		var/list/job_lists = list("Invictus" = GLOB.command_positions,
+							"Lancea et Sanctum" = GLOB.lancea_positions,
+							"Ordo Dracul" = GLOB.ordo_positions,
+							"Circle of the Crone" = GLOB.crone_positions,
+							"Carthian Movement" = GLOB.carthian_positions,
+							"Law Enforcement" = GLOB.police_positions,
+							"Other" = GLOB.citizen_positions + GLOB.services_positions + GLOB.clinic_positions)
 		for(var/department in job_lists)
-			//the first element is the department head so they need the same javascript call as above
-			output += "<div class='column'><label class='rolegroup [ckey(department)]'><input type='checkbox' name='[department]' class='hidden' [usr.client.prefs.tgui_fancy ? " onClick='toggle_checkboxes(this, \"_com\")'" : ""]>[department]</label><div class='content'>"
-			output += {"<label class='inputlabel checkbox'>[job_lists[department][1]]
-						<input type='checkbox' id='[job_lists[department][1]]_dep' name='[job_lists[department][1]]' class='[department]' value='1'[usr.client.prefs.tgui_fancy ? " onClick='toggle_head(this, \"_com\")'" : ""]>
-						<div class='inputbox[(job_lists[department][1] in banned_from) ? " banned" : ""]'></div></label>
-			"}
-			break_counter = 1
-			for(var/job in job_lists[department] - job_lists[department][1]) //skip the first element since it's already been done
-				if(break_counter % 3 == 0)
-					output += "<br>"
-				output += {"<label class='inputlabel checkbox'>[job]
-							<input type='checkbox' name='[job]' class='[department]' value='1'>
-							<div class='inputbox[(job in banned_from) ? " banned" : ""]'></div></label>
-				"}
-				break_counter++
-			output += "</div></div>"
-		//departments/groups that don't have command staff would throw a javascript error since there's no corresponding reference for toggle_head()
-		var/list/headless_job_lists = list("Silicon" = GLOB.nonhuman_positions,
-										"Abstract" = list("Appearance", "Emote", "Deadchat", "OOC"))
-		for(var/department in headless_job_lists)
 			output += "<div class='column'><label class='rolegroup [ckey(department)]'><input type='checkbox' name='[department]' class='hidden' [usr.client.prefs.tgui_fancy ? " onClick='toggle_checkboxes(this, \"_com\")'" : ""]>[department]</label><div class='content'>"
 			break_counter = 0
-			for(var/job in headless_job_lists[department])
+			for(var/job in job_lists[department])
 				if(break_counter > 0 && (break_counter % 3 == 0))
-					output += "<br>"
-				output += {"<label class='inputlabel checkbox'>[job]
-							<input type='checkbox' name='[job]' class='[department]' value='1'>
-							<div class='inputbox[(job in banned_from) ? " banned" : ""]'></div></label>
-				"}
-				break_counter++
-			output += "</div></div>"
-		var/list/long_job_lists = list("Service" = GLOB.service_positions,
-									"Ghost and Other Roles" = list(ROLE_BRAINWASHED, ROLE_DEATHSQUAD, ROLE_DRONE, ROLE_LAVALAND, ROLE_MIND_TRANSFER, ROLE_POSIBRAIN, ROLE_SENTIENCE),
-									"Antagonist Positions" = list(ROLE_ABDUCTOR, ROLE_ALIEN, ROLE_BLOB,
-									ROLE_BROTHER, ROLE_CHANGELING, ROLE_CULTIST,
-									ROLE_INTERNAL_AFFAIRS, ROLE_MALF,
-									ROLE_MONKEY, ROLE_NINJA, ROLE_OPERATIVE,
-									ROLE_OVERTHROW, ROLE_REV, ROLE_REVENANT,
-									ROLE_REV_HEAD, ROLE_SYNDICATE,
-									ROLE_TRAITOR, ROLE_WIZARD, ROLE_HIVE , ROLE_HERETIC)) //ROLE_REV_HEAD is excluded from this because rev jobbans are handled by ROLE_REV
-		for(var/department in long_job_lists)
-			output += "<div class='column'><label class='rolegroup long [ckey(department)]'><input type='checkbox' name='[department]' class='hidden' [usr.client.prefs.tgui_fancy ? " onClick='toggle_checkboxes(this, \"_com\")'" : ""]>[department]</label><div class='content'>"
-			break_counter = 0
-			for(var/job in long_job_lists[department])
-				if(break_counter > 0 && (break_counter % 10 == 0))
 					output += "<br>"
 				output += {"<label class='inputlabel checkbox'>[job]
 							<input type='checkbox' name='[job]' class='[department]' value='1'>
@@ -531,6 +479,7 @@
 	var/msg = "has created a [isnull(duration) ? "permanent" : "temporary [time_message]"] [applies_to_admins ? "admin " : ""][roles_to_ban[1] == "Server" ? "server ban" : "role ban from [roles_to_ban.len] roles"] for [target]."
 	log_admin_private("[kn] [msg][roles_to_ban[1] == "Server" ? "" : " Roles: [roles_to_ban.Join(", ")]"] Reason: [reason]")
 	message_admins("[kna] [msg][roles_to_ban[1] == "Server" ? "" : " Roles: [roles_to_ban.Join("\n")]"]\nReason: [reason]")
+	SSoverwatch.record_action(usr, "[kn] [msg][roles_to_ban[1] == "Server" ? "" : " Roles: [roles_to_ban.Join(", ")]"] Reason: [reason]")
 	if(applies_to_admins)
 		send2adminchat("BAN ALERT","[kn] [msg]")
 	if(player_ckey)
@@ -567,7 +516,7 @@
 	var/datum/browser/unban_panel = new(usr, "unbanpanel", "Unbanning Panel", 850, 600)
 	unban_panel.add_stylesheet("unbanpanelcss", 'html/admin/unbanpanel.css')
 	var/list/output = list("<div class='searchbar'>")
-	output += {"<form method='get' action='?src=[REF(src)]'>[HrefTokenFormField()]
+	output += {"<form method='get' action='byond://?src=[REF(src)]'>[HrefTokenFormField()]
 	<input type='hidden' name='src' value='[REF(src)]'>
 	Key:<input type='text' name='searchunbankey' size='18' value='[player_key]'>
 	Admin Key:<input type='text' name='searchunbanadminkey' size='18' value='[admin_key]'>
@@ -607,7 +556,7 @@
 			var/pagecount = 1
 			var/list/pagelist = list()
 			while(bancount > 0)
-				pagelist += "<a href='?_src_=holder;[HrefToken()];unbanpagecount=[pagecount - 1];unbankey=[player_key];unbanadminkey=[admin_key];unbanip=[player_ip];unbancid=[player_cid]'>[pagecount == page ? "<b>\[[pagecount]\]</b>" : "\[[pagecount]\]"]</a>"
+				pagelist += "<a href='byond://?_src_=holder;[HrefToken()];unbanpagecount=[pagecount - 1];unbankey=[player_key];unbanadminkey=[admin_key];unbanip=[player_ip];unbancid=[player_cid]'>[pagecount == page ? "<b>\[[pagecount]\]</b>" : "\[[pagecount]\]"]</a>"
 				bancount -= bansperpage
 				pagecount++
 			output += pagelist.Join(" | ")
@@ -667,7 +616,7 @@
 			var/ban_round_id  = query_unban_search_bans.item[3]
 			var/role = query_unban_search_bans.item[4]
 			//make the href for unban here so only the search parameters are passed
-			var/unban_href = "<a href='?_src_=holder;[HrefToken()];unbanid=[ban_id];unbankey=[player_key];unbanadminkey=[admin_key];unbanip=[player_ip];unbancid=[player_cid];unbanrole=[role];unbanpage=[page]'>Unban</a>"
+			var/unban_href = "<a href='byond://?_src_=holder;[HrefToken()];unbanid=[ban_id];unbankey=[player_key];unbanadminkey=[admin_key];unbanip=[player_ip];unbancid=[player_cid];unbanrole=[role];unbanpage=[page]'>Unban</a>"
 			var/expiration_time = query_unban_search_bans.item[5]
 			//we don't cast duration as num because if the duration is large enough to be converted to scientific notation by byond then the + character gets lost when passed through href causing SQL to interpret '4.321e 007' as '4'
 			var/duration = query_unban_search_bans.item[6]
@@ -692,9 +641,9 @@
 				output += "<br>Unbanned by <b>[unban_key]</b> on <b>[unban_datetime]</b> during round <b>#[unban_round_id]</b>."
 			output += "</div><div class='container'><div class='reason'>[reason]</div><div class='edit'>"
 			if(!expired && !unban_datetime)
-				output += "<a href='?_src_=holder;[HrefToken()];editbanid=[ban_id];editbankey=[player_key];editbanip=[player_ip];editbancid=[player_cid];editbanrole=[role];editbanduration=[duration];editbanadmins=[applies_to_admins];editbanreason=[url_encode(reason)];editbanpage=[page];editbanadminkey=[admin_key]'>Edit</a><br>[unban_href]"
+				output += "<a href='byond://?_src_=holder;[HrefToken()];editbanid=[ban_id];editbankey=[player_key];editbanip=[player_ip];editbancid=[player_cid];editbanrole=[role];editbanduration=[duration];editbanadmins=[applies_to_admins];editbanreason=[url_encode(reason)];editbanpage=[page];editbanadminkey=[admin_key]'>Edit</a><br>[unban_href]"
 			if(edits)
-				output += "<br><a href='?_src_=holder;[HrefToken()];unbanlog=[ban_id]'>Edit log</a>"
+				output += "<br><a href='byond://?_src_=holder;[HrefToken()];unbanlog=[ban_id]'>Edit log</a>"
 			output += "</div></div></div>"
 		qdel(query_unban_search_bans)
 		output += "</div>"

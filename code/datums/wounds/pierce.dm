@@ -29,25 +29,28 @@
 /datum/wound/pierce/receive_damage(wounding_type, wounding_dmg, wound_bonus)
 	if(victim.stat == DEAD || wounding_dmg < 5)
 		return
-	if(victim.blood_volume && prob(internal_bleeding_chance + wounding_dmg))
+	if(victim.bloodpool && prob(internal_bleeding_chance + wounding_dmg))
 		if(limb.current_gauze && limb.current_gauze.splint_factor)
 			wounding_dmg *= (1 - limb.current_gauze.splint_factor)
 		var/blood_bled = rand(1, wounding_dmg * internal_bleeding_coefficient) // 12 brute toolbox can cause up to 15/18/21 bloodloss on mod/sev/crit
 		switch(blood_bled)
 			if(1 to 6)
 				victim.bleed(blood_bled, TRUE)
+				victim.add_splatter_floor(get_step(victim.loc, victim.dir))
 			if(7 to 13)
 				victim.visible_message("<span class='smalldanger'>Blood droplets fly from the hole in [victim]'s [limb.name].</span>", "<span class='danger'>You cough up a bit of blood from the blow to your [limb.name].</span>", vision_distance=COMBAT_MESSAGE_RANGE)
 				victim.bleed(blood_bled, TRUE)
+				victim.add_splatter_floor(get_step(victim.loc, victim.dir), null)
 			if(14 to 19)
 				victim.visible_message("<span class='smalldanger'>A small stream of blood spurts from the hole in [victim]'s [limb.name]!</span>", "<span class='danger'>You spit out a string of blood from the blow to your [limb.name]!</span>", vision_distance=COMBAT_MESSAGE_RANGE)
 				new /obj/effect/temp_visual/dir_setting/bloodsplatter(victim.loc, victim.dir)
 				victim.bleed(blood_bled)
+				victim.add_splatter_floor(get_step(victim.loc, victim.dir), null)
 			if(20 to INFINITY)
 				victim.visible_message("<span class='danger'>A spray of blood streams from the gash in [victim]'s [limb.name]!</span>", "<span class='danger'><b>You choke up on a spray of blood from the blow to your [limb.name]!</b></span>", vision_distance=COMBAT_MESSAGE_RANGE)
 				victim.bleed(blood_bled)
 				new /obj/effect/temp_visual/dir_setting/bloodsplatter(victim.loc, victim.dir)
-				victim.add_splatter_floor(get_step(victim.loc, victim.dir))
+				victim.add_splatter_floor(get_step(victim.loc, victim.dir), null)
 
 /datum/wound/pierce/get_bleed_rate_of_change()
 	if(HAS_TRAIT(victim, TRAIT_BLOODY_MESS))
@@ -101,7 +104,7 @@
 /datum/wound/pierce/proc/suture(obj/item/stack/medical/suture/I, mob/user)
 	var/self_penalty_mult = (user == victim ? 1.4 : 1)
 	user.visible_message("<span class='notice'>[user] begins stitching [victim]'s [limb.name] with [I]...</span>", "<span class='notice'>You begin stitching [user == victim ? "your" : "[victim]'s"] [limb.name] with [I]...</span>")
-	if(!do_after(user, base_treat_time * self_penalty_mult, target=victim, extra_checks = CALLBACK(src, .proc/still_exists)))
+	if(!do_after(user, base_treat_time * self_penalty_mult, target=victim, extra_checks = CALLBACK(src, PROC_REF(still_exists))))
 		return
 	user.visible_message("<span class='green'>[user] stitches up some of the bleeding on [victim].</span>", "<span class='green'>You stitch up some of the bleeding on [user == victim ? "yourself" : "[victim]"].</span>")
 	var/blood_sutured = I.stop_bleeding / self_penalty_mult
@@ -120,7 +123,7 @@
 	var/self_penalty_mult = (user == victim ? 1.5 : 1) // 50% longer and less effective if you do it to yourself
 
 	user.visible_message("<span class='danger'>[user] begins cauterizing [victim]'s [limb.name] with [I]...</span>", "<span class='warning'>You begin cauterizing [user == victim ? "your" : "[victim]'s"] [limb.name] with [I]...</span>")
-	if(!do_after(user, base_treat_time * self_penalty_mult * improv_penalty_mult, target=victim, extra_checks = CALLBACK(src, .proc/still_exists)))
+	if(!do_after(user, base_treat_time * self_penalty_mult * improv_penalty_mult, target=victim, extra_checks = CALLBACK(src, PROC_REF(still_exists))))
 		return
 
 	user.visible_message("<span class='green'>[user] cauterizes some of the bleeding on [victim].</span>", "<span class='green'>You cauterize some of the bleeding on [victim].</span>")

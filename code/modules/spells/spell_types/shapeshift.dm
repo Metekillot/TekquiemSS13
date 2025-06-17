@@ -11,6 +11,8 @@
 	invocation_type = INVOCATION_SHOUT
 	action_icon_state = "shapeshift"
 
+	var/mob/living/myshape
+
 	var/revert_on_death = TRUE
 	var/die_with_shapeshifted_form = TRUE
 	var/convert_damage = TRUE //If you want to convert the caster's health and blood to the shift, and vice versa.
@@ -40,7 +42,7 @@
 				var/image/animal_image = image(icon = initial(animal.icon), icon_state = initial(animal.icon_state))
 				display_animals += list(initial(animal.name) = animal_image)
 			sortList(display_animals)
-			var/new_shapeshift_type = show_radial_menu(M, M, display_animals, custom_check = CALLBACK(src, .proc/check_menu, user), radius = 38, require_near = TRUE)
+			var/new_shapeshift_type = show_radial_menu(M, M, display_animals, custom_check = CALLBACK(src, PROC_REF(check_menu), user), radius = 38, require_near = TRUE)
 			if(shapeshift_type)
 				return
 			shapeshift_type = new_shapeshift_type
@@ -96,6 +98,10 @@
 		return
 
 	var/mob/living/shape = new shapeshift_type(caster.loc)
+	myshape = shape
+	if(istype(shape, /mob/living/simple_animal/hostile))
+		var/mob/living/simple_animal/hostile/hostile = shape
+		hostile.my_creator = caster
 	H = new(shape,src,caster)
 
 	clothes_req = FALSE
@@ -147,10 +153,9 @@
 		var/damapply = damage_percent * shape.maxHealth;
 
 		shape.apply_damage(damapply, source.convert_damage_type, forced = TRUE, wound_bonus=CANT_WOUND);
-		shape.blood_volume = stored.blood_volume;
 
-	RegisterSignal(shape, list(COMSIG_PARENT_QDELETING, COMSIG_LIVING_DEATH), .proc/shape_death)
-	RegisterSignal(stored, list(COMSIG_PARENT_QDELETING, COMSIG_LIVING_DEATH), .proc/caster_death)
+	RegisterSignal(shape, list(COMSIG_PARENT_QDELETING, COMSIG_LIVING_DEATH), PROC_REF(shape_death))
+	RegisterSignal(stored, list(COMSIG_PARENT_QDELETING, COMSIG_LIVING_DEATH), PROC_REF(caster_death))
 
 /obj/shapeshift_holder/Destroy()
 	// Restore manages signal unregistering. If restoring is TRUE, we've already unregistered the signals and we're here
@@ -206,12 +211,11 @@
 	else if(source.convert_damage)
 		stored.revive(full_heal = TRUE, admin_revive = FALSE)
 
-		var/damage_percent = (shape.maxHealth - shape.health)/shape.maxHealth;
-		var/damapply = stored.maxHealth * damage_percent
+		var/damage_percent = (shape.maxHealth - shape.health)
 
-		stored.apply_damage(damapply, source.convert_damage_type, forced = TRUE, wound_bonus=CANT_WOUND)
-	if(source.convert_damage)
-		stored.blood_volume = shape.blood_volume;
+		stored.apply_damage(damage_percent, source.convert_damage_type, forced = TRUE, wound_bonus=CANT_WOUND)
+//	if(source.convert_damage)
+//		stored.blood_volume = shape.blood_volume;
 
 	// This guard is important because restore() can also be called on COMSIG_PARENT_QDELETING for shape, as well as on death.
 	// This can happen in, for example, [/proc/wabbajack] where the mob hit is qdel'd.

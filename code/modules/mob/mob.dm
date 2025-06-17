@@ -86,6 +86,17 @@
 /mob/GenerateTag()
 	tag = "mob_[next_mob_id++]"
 
+/mob/serialize_list(list/options, list/semvers)
+	. = ..()
+
+	.["tag"] = tag
+	.["name"] = name
+	.["ckey"] = ckey
+	.["key"] = key
+
+	SET_SERIALIZATION_SEMVER(semvers, "1.0.0")
+	return .
+
 /**
  * Prepare the huds for this atom
  *
@@ -140,28 +151,33 @@
 
 	msg = copytext_char(msg, 1, MAX_MESSAGE_LEN)
 
+	// Return TRUE if we sent the original msg, otherwise return FALSE
+	. = TRUE
 	if(type)
 		if(type & MSG_VISUAL && is_blind() )//Vision related
 			if(!alt_msg)
-				return
+				return FALSE
 			else
 				msg = alt_msg
 				type = alt_type
+				. = FALSE
 
 		if(type & MSG_AUDIBLE && !can_hear())//Hearing related
 			if(!alt_msg)
-				return
+				return FALSE
 			else
 				msg = alt_msg
 				type = alt_type
+				. = FALSE
 				if(type & MSG_VISUAL && is_blind())
 					return
 	// voice muffling
 	if(stat == UNCONSCIOUS || stat == HARD_CRIT)
 		if(type & MSG_AUDIBLE) //audio
 			to_chat(src, "<I>... You can almost hear something ...</I>")
-		return
+		return FALSE
 	to_chat(src, msg, avoid_highlighting = avoid_highlighting)
+	return .
 
 /**
  * Generate a visible message from this atom
@@ -195,7 +211,7 @@
 
 	var/raw_msg = message
 	if(visible_message_flags & EMOTE_MESSAGE)
-		message = "<span class='emote'><b>[src]</b> [message]</span>"
+		message = span_emote("<b>[src]</b> [message]")
 
 	for(var/mob/M in hearers)
 		if(!M.client)
@@ -203,26 +219,46 @@
 
 		//This entire if/else chain could be in two lines but isn't for readibilties sake.
 		var/msg = message
-		if(M.see_invisible < invisibility)//if src is invisible to M
+		var/msg_type = MSG_VISUAL
+
+		if(M.see_invisible < invisibility) //if src is invisible to M
 			msg = blind_message
+			msg_type = MSG_AUDIBLE
 		else if(T != loc && T != src) //if src is inside something and not a turf.
-			msg = blind_message
+			if(M != loc) // Only give the blind message to hearers that aren't the location
+				msg = blind_message
+				msg_type = MSG_AUDIBLE
 		else if(T.lighting_object && T.lighting_object.invisibility <= M.see_invisible && T.is_softly_lit() && !in_range(T,M)) //if it is too dark, unless we're right next to them.
 			msg = blind_message
+			msg_type = MSG_AUDIBLE
 		if(!msg)
 			continue
 
 		if(visible_message_flags & EMOTE_MESSAGE && runechat_prefs_check(M, visible_message_flags) && !M.is_blind())
 			M.create_chat_message(src, raw_message = raw_msg, runechat_flags = visible_message_flags)
 
-		M.show_message(msg, MSG_VISUAL, blind_message, MSG_AUDIBLE)
+		M.show_message(msg, msg_type, blind_message, MSG_AUDIBLE)
 
 
 ///Adds the functionality to self_message.
 /mob/visible_message(message, self_message, blind_message, vision_distance = DEFAULT_MESSAGE_RANGE, list/ignored_mobs, visible_message_flags = NONE)
 	. = ..()
-	if(self_message)
-		show_message(self_message, MSG_VISUAL, blind_message, MSG_AUDIBLE)
+	if(!self_message)
+		return
+	var/raw_self_message = self_message
+	var/self_runechat = FALSE
+	if(visible_message_flags & EMOTE_MESSAGE)
+		self_message = span_emote("<b>[src]</b> [self_message]") // May make more sense as "You do x"
+
+	if(visible_message_flags & ALWAYS_SHOW_SELF_MESSAGE)
+		to_chat(src, self_message)
+		self_runechat = TRUE
+
+	else
+		self_runechat = show_message(self_message, MSG_VISUAL, blind_message, MSG_AUDIBLE)
+
+	if(self_runechat && (visible_message_flags & EMOTE_MESSAGE) && runechat_prefs_check(src, visible_message_flags))
+		create_chat_message(src, raw_message = raw_self_message, runechat_flags = visible_message_flags)
 
 /**
  * Show a message to all mobs in earshot of this atom
@@ -240,7 +276,7 @@
 		hearers -= src
 	var/raw_msg = message
 	if(audible_message_flags & EMOTE_MESSAGE)
-		message = "<span class='emote'><b>[src]</b> [message]</span>"
+		message = span_emote("<b>[src]</b> [message]")
 	for(var/mob/M in hearers)
 		if(audible_message_flags & EMOTE_MESSAGE && runechat_prefs_check(M, audible_message_flags) && M.can_hear())
 			M.create_chat_message(src, raw_message = raw_msg, runechat_flags = audible_message_flags)
@@ -259,8 +295,20 @@
  */
 /mob/audible_message(message, deaf_message, hearing_distance = DEFAULT_MESSAGE_RANGE, self_message, audible_message_flags = NONE)
 	. = ..()
-	if(self_message)
-		show_message(self_message, MSG_AUDIBLE, deaf_message, MSG_VISUAL)
+	if(!self_message)
+		return
+	var/raw_self_message = self_message
+	var/self_runechat = FALSE
+	if(audible_message_flags & EMOTE_MESSAGE)
+		self_message = span_emote("<b>[src]</b> [self_message]")
+	if(audible_message_flags & ALWAYS_SHOW_SELF_MESSAGE)
+		to_chat(src, self_message)
+		self_runechat = TRUE
+	else
+		self_runechat = show_message(self_message, MSG_AUDIBLE, deaf_message, MSG_VISUAL)
+
+	if(self_runechat && (audible_message_flags & EMOTE_MESSAGE) && runechat_prefs_check(src, audible_message_flags))
+		create_chat_message(src, raw_message = raw_self_message, runechat_flags = audible_message_flags)
 
 
 ///Returns the client runechat visible messages preference according to the message type.
@@ -441,6 +489,12 @@
 	set name = "Examine"
 	set category = "IC"
 
+	if(ishuman(src))
+		if(ishuman(A) || isitem(A))
+			var/mob/living/carbon/human/ueban = src
+			if(!do_mob(src, src, max(1, 15-ueban.get_composure()*3)))
+				return
+
 	if(isturf(A) && !(sight & SEE_TURFS) && !(A in view(client ? client.view : world.view, src)))
 		// shift-click catcher may issue examinate() calls for out-of-sight turfs
 		return
@@ -455,8 +509,8 @@
 		if(isnull(client.recent_examines[A]) || client.recent_examines[A] < world.time)
 			result = A.examine(src)
 			client.recent_examines[A] = world.time + EXAMINE_MORE_TIME // set the value to when the examine cooldown ends
-			RegisterSignal(A, COMSIG_PARENT_QDELETING, .proc/clear_from_recent_examines, override=TRUE) // to flush the value if deleted early
-			addtimer(CALLBACK(src, .proc/clear_from_recent_examines, A), EXAMINE_MORE_TIME)
+			RegisterSignal(A, COMSIG_PARENT_QDELETING, PROC_REF(clear_from_recent_examines), override=TRUE) // to flush the value if deleted early
+			addtimer(CALLBACK(src, PROC_REF(clear_from_recent_examines), A), EXAMINE_MORE_TIME)
 			handle_eye_contact(A)
 		else
 			result = A.examine_more(src)
@@ -548,11 +602,11 @@
 	// check to see if their face is blocked or, if not, a signal blocks it
 	if(examined_mob.is_face_visible() && SEND_SIGNAL(src, COMSIG_MOB_EYECONTACT, examined_mob, TRUE) != COMSIG_BLOCK_EYECONTACT)
 		var/msg = "<span class='smallnotice'>You make eye contact with [examined_mob].</span>"
-		addtimer(CALLBACK(GLOBAL_PROC, .proc/to_chat, src, msg), 3) // so the examine signal has time to fire and this will print after
+		addtimer(CALLBACK(GLOBAL_PROC, PROC_REF(to_chat), src, msg), 3) // so the examine signal has time to fire and this will print after
 
 	if(is_face_visible() && SEND_SIGNAL(examined_mob, COMSIG_MOB_EYECONTACT, src, FALSE) != COMSIG_BLOCK_EYECONTACT)
 		var/msg = "<span class='smallnotice'>[src] makes eye contact with you.</span>"
-		addtimer(CALLBACK(GLOBAL_PROC, .proc/to_chat, examined_mob, msg), 3)
+		addtimer(CALLBACK(GLOBAL_PROC, PROC_REF(to_chat), examined_mob, msg), 3)
 
 /**
  * Point at an atom
@@ -699,7 +753,31 @@
 		to_chat(usr, "<span class='boldnotice'>You must be dead to use this!</span>")
 		return
 
-	log_game("[key_name(usr)] used abandon mob.")
+//	if(SSmasquerade.total_level <= 250)
+//		to_chat(usr, "<span class='boldnotice'>Global Masquerade level is too low!</span>")
+//		if(check_rights_for(usr.client, R_ADMIN))
+//			if(alert(usr, "Do you want to respawn faster than usual player? (only admins can)", "Respawn", "Yes", "No") != "Yes")
+//				return
+//		else
+//			return
+
+	if(!usr.can_respawn())
+		if(istype(usr.client.mob, /mob/dead/observer))
+			var/mob/dead/observer/obs = usr.client.mob
+			if(obs.auspex_ghosted)
+				to_chat(usr, "<span class='notice'>You cannot respawn while astrally projecting!</span>")
+				return
+
+		to_chat(usr, "<span class='notice'>You need to wait [DisplayTimeText(GLOB.respawn_timers[usr.client.ckey] + 10 MINUTES - world.time)] before you can respawn.</span>")
+
+		if(check_rights_for(usr.client, R_ADMIN))
+			if(alert(usr, "Do you want to respawn faster than usual player? (only admins can)", "Respawn", "Yes", "No") != "Yes")
+				return
+			GLOB.respawn_timers[usr.client.ckey] = 0
+		else
+			return
+
+	log_game("[key_name(usr)] respawned.")
 
 	to_chat(usr, "<span class='boldnotice'>Please roleplay correctly!</span>")
 
@@ -742,6 +820,7 @@
 	set hidden = TRUE
 	set category = null
 	return
+
 /**
  * Topic call back for any mob
  *
@@ -770,8 +849,14 @@
 			if(what)
 				if(!(what.item_flags & ABSTRACT))
 					user.stripPanelUnequip(what,src,slot)
+					if(isnpc(src))
+						var/mob/living/carbon/human/npc/N = src
+						N.Aggro(usr, TRUE)
 			else
 				user.stripPanelEquip(what,src,slot)
+				if(isnpc(src))
+					var/mob/living/carbon/human/npc/N = src
+					N.Aggro(usr, TRUE)
 
 		if(user.machine == src)
 			if(Adjacent(user))
@@ -970,7 +1055,7 @@
 			LAZYREMOVE(mob_spell_list, S)
 			qdel(S)
 	if(client)
-		client << output(null, "statbrowser:check_spells")
+		client.stat_panel.send_message("check_spells")
 
 ///Return any anti magic atom on this mob that matches the magic type
 /mob/proc/anti_magic_check(magic = TRUE, holy = FALSE, tinfoil = FALSE, chargecost = 1, self = FALSE)
@@ -1161,8 +1246,17 @@
 	if (!client)
 		return
 	client.mouse_pointer_icon = initial(client.mouse_pointer_icon)
+	var/shootahell = FALSE
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if(istype(H.get_active_held_item(), /obj/item/gun))
+			shootahell = TRUE
 	if(examine_cursor_icon && client.keys_held["Shift"]) //mouse shit is hardcoded, make this non hard-coded once we make mouse modifiers bindable
 		client.mouse_pointer_icon = examine_cursor_icon
+	else if(discipline_targeting)
+		client.mouse_pointer_icon = discipline_cursor_icon
+	else if(shootahell)
+		client.mouse_pointer_icon = pvp_cursor_icon
 	else if (ismecha(loc))
 		var/obj/vehicle/sealed/mecha/M = loc
 		if(M.mouse_pointer)
@@ -1173,17 +1267,63 @@
 			client.mouse_pointer_icon = E.mouse_pointer
 
 
-///This mob is abile to read books
+/// This mob is abile to read books
 /mob/proc/is_literate()
 	return FALSE
-///Can this mob read (is literate and not blind)
+
+/**
+ * Proc that returns TRUE if the mob can write using the writing_instrument, FALSE otherwise.
+ *
+ * This proc a side effect, outputting a message to the mob's chat with a reason if it returns FALSE.
+ * Unless silent_if_not_writing_tool is TRUE. In that case it'll be silent if it isn't a writing implement/tool/instrument w/e.
+ */
+/mob/proc/can_write(obj/item/writing_instrument, silent_if_not_writing_tool = FALSE)
+	if(!writing_instrument)
+		return FALSE
+
+	var/pen_info = writing_instrument.get_writing_implement_details()
+	if(!pen_info || (pen_info["interaction_mode"] != MODE_WRITING))
+		if(!silent_if_not_writing_tool)
+			to_chat(src, span_warning("You can't write with the [writing_instrument]!"))
+		return FALSE
+
+	if(!is_literate())
+		to_chat(src, span_warning("You try to write, but don't know how to spell anything!"))
+		return FALSE
+
+	if(!has_light_nearby() && !HAS_TRAIT(src, TRAIT_NIGHT_VISION))
+		to_chat(src, span_warning("It's too dark in here to write anything!"))
+		return FALSE
+
+	if(has_gravity())
+		return TRUE
+
+	return TRUE
+
+/**
+ * Checks if there is enough light where the mob is located
+ *
+ * Args:
+ *  light_amount (optional) - A decimal amount between 1.0 through 0.0 (default is 0.2)
+**/
+/mob/proc/has_light_nearby(light_amount = LIGHTING_TILE_IS_DARK)
+	var/turf/mob_location = get_turf(src)
+	return mob_location.get_lumcount() > light_amount
+
+/// Can this mob read
 /mob/proc/can_read(obj/O)
 	if(is_blind())
-		to_chat(src, "<span class='warning'>As you are trying to read [O], you suddenly feel very stupid!</span>")
-		return
+		to_chat(src, span_warning("You are blind and can't read anything!"))
+		return FALSE
+
 	if(!is_literate())
-		to_chat(src, "<span class='notice'>You try to read [O], but can't comprehend any of it.</span>")
-		return
+		to_chat(src, span_warning("You try to read [O], but can't comprehend any of it."))
+		return FALSE
+
+	if(!has_light_nearby() && !HAS_TRAIT(src, TRAIT_NIGHT_VISION))
+		to_chat(src, span_warning("It's too dark in here to read!"))
+		return FALSE
+
 	return TRUE
 
 /**

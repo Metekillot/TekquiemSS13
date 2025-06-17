@@ -19,7 +19,7 @@
  * Intended Difficulty: Very Hard
  */
 /mob/living/simple_animal/hostile/megafauna/colossus
-	name = "colossus"
+	name = "Unknown Antediluvian"
 	desc = "A monstrous creature protected by heavy shielding."
 	health = 2500
 	maxHealth = 2500
@@ -32,11 +32,11 @@
 	health_doll_icon = "eva"
 	friendly_verb_continuous = "stares down"
 	friendly_verb_simple = "stare down"
-	icon = 'icons/mob/lavaland/96x96megafauna.dmi'
+	icon = 'icons/mob/32x64.dmi'
 	speak_emote = list("roars")
-	armour_penetration = 40
-	melee_damage_lower = 40
-	melee_damage_upper = 40
+	armour_penetration = 100
+	melee_damage_lower = 100
+	melee_damage_upper = 100
 	speed = 10
 	move_to_delay = 10
 	ranged = TRUE
@@ -47,8 +47,8 @@
 	achievement_type = /datum/award/achievement/boss/colossus_kill
 	crusher_achievement_type = /datum/award/achievement/boss/colossus_crusher
 	score_achievement_type = /datum/award/score/colussus_score
-	crusher_loot = list(/obj/structure/closet/crate/necropolis/colossus/crusher)
-	loot = list(/obj/structure/closet/crate/necropolis/colossus)
+	crusher_loot = list()
+	loot = list()
 	deathmessage = "disintegrates, leaving a glowing core in its wake."
 	deathsound = 'sound/magic/demon_dies.ogg'
 	attack_action_types = list(/datum/action/innate/megafauna_attack/spiral_attack,
@@ -107,7 +107,17 @@
 
 	if(enrage(target))
 		if(move_to_delay == initial(move_to_delay))
-			visible_message("<span class='colossus'>\"<b>You can't dodge.</b>\"</span>")
+			var/tip = pick(1, 3)
+			switch(tip)
+				if(1)
+					visible_message("<span class='colossus'>\"<b>Judgement.</b>\"</span>")
+					playsound(get_turf(src), 'code/modules/wod13/sounds/mp_judgement.ogg', 100, TRUE)
+				if(2)
+					visible_message("<span class='colossus'>\"<b>Die.</b>\"</span>")
+					playsound(get_turf(src), 'code/modules/wod13/sounds/mp_die.ogg', 100, TRUE)
+				if(3)
+					visible_message("<span class='colossus'>\"<b>Thy end is now.</b>\"</span>")
+					playsound(get_turf(src), 'code/modules/wod13/sounds/mp_end.ogg', 100, TRUE)
 		ranged_cooldown = world.time + 30
 		telegraph()
 		dir_shots(GLOB.alldirs)
@@ -150,15 +160,35 @@
 	icon_state = "eva_attack"
 	if(health < maxHealth/3)
 		return double_spiral()
-	visible_message("<span class='colossus'>\"<b>Judgement.</b>\"</span>")
+	var/tip = pick(1, 3)
+	switch(tip)
+		if(1)
+			visible_message("<span class='colossus'>\"<b>Judgement.</b>\"</span>")
+			playsound(get_turf(src), 'code/modules/wod13/sounds/mp_judgement.ogg', 100, TRUE)
+		if(2)
+			visible_message("<span class='colossus'>\"<b>Die.</b>\"</span>")
+			playsound(get_turf(src), 'code/modules/wod13/sounds/mp_die.ogg', 100, TRUE)
+		if(3)
+			visible_message("<span class='colossus'>\"<b>Thy end is now.</b>\"</span>")
+			playsound(get_turf(src), 'code/modules/wod13/sounds/mp_end.ogg', 100, TRUE)
 	return spiral_shoot()
 
 /mob/living/simple_animal/hostile/megafauna/colossus/proc/double_spiral()
-	visible_message("<span class='colossus'>\"<b>Die.</b>\"</span>")
+	var/tip = pick(1, 3)
+	switch(tip)
+		if(1)
+			visible_message("<span class='colossus'>\"<b>Judgement.</b>\"</span>")
+			playsound(get_turf(src), 'code/modules/wod13/sounds/mp_judgement.ogg', 100, TRUE)
+		if(2)
+			visible_message("<span class='colossus'>\"<b>Die.</b>\"</span>")
+			playsound(get_turf(src), 'code/modules/wod13/sounds/mp_die.ogg', 100, TRUE)
+		if(3)
+			visible_message("<span class='colossus'>\"<b>Thy end is now.</b>\"</span>")
+			playsound(get_turf(src), 'code/modules/wod13/sounds/mp_end.ogg', 100, TRUE)
 
 	SLEEP_CHECK_DEATH(10)
-	INVOKE_ASYNC(src, .proc/spiral_shoot, FALSE)
-	INVOKE_ASYNC(src, .proc/spiral_shoot, TRUE)
+	INVOKE_ASYNC(src, PROC_REF(spiral_shoot), FALSE)
+	INVOKE_ASYNC(src, PROC_REF(spiral_shoot), TRUE)
 
 /mob/living/simple_animal/hostile/megafauna/colossus/proc/spiral_shoot(negative = pick(TRUE, FALSE), counter_start = 8)
 	var/turf/start_turf = get_step(src, pick(GLOB.alldirs))
@@ -173,7 +203,7 @@
 		if(counter < 1)
 			counter = 16
 		shoot_projectile(start_turf, counter * 22.5)
-		playsound(get_turf(src), 'sound/magic/clockwork/invoke_general.ogg', 20, TRUE)
+//		playsound(get_turf(src), 'sound/magic/clockwork/invoke_general.ogg', 20, TRUE)
 		SLEEP_CHECK_DEATH(1)
 	icon_state = initial(icon_state)
 
@@ -191,7 +221,7 @@
 /mob/living/simple_animal/hostile/megafauna/colossus/proc/random_shots()
 	ranged_cooldown = world.time + 30
 	var/turf/U = get_turf(src)
-	playsound(U, 'sound/magic/clockwork/invoke_general.ogg', 300, TRUE, 5)
+//	playsound(U, 'sound/magic/clockwork/invoke_general.ogg', 300, TRUE, 5)
 	for(var/T in RANGE_TURFS(12, U) - U)
 		if(prob(5))
 			shoot_projectile(T)
@@ -199,7 +229,7 @@
 /mob/living/simple_animal/hostile/megafauna/colossus/proc/blast(set_angle)
 	ranged_cooldown = world.time + 20
 	var/turf/target_turf = get_turf(target)
-	playsound(src, 'sound/magic/clockwork/invoke_general.ogg', 200, TRUE, 2)
+//	playsound(src, 'sound/magic/clockwork/invoke_general.ogg', 200, TRUE, 2)
 	newtonian_move(get_dir(target_turf, src))
 	var/angle_to_target = Get_Angle(src, target_turf)
 	if(isnum(set_angle))
@@ -211,7 +241,7 @@
 /mob/living/simple_animal/hostile/megafauna/colossus/proc/dir_shots(list/dirs)
 	if(!islist(dirs))
 		dirs = GLOB.alldirs.Copy()
-	playsound(src, 'sound/magic/clockwork/invoke_general.ogg', 200, TRUE, 2)
+//	playsound(src, 'sound/magic/clockwork/invoke_general.ogg', 200, TRUE, 2)
 	for(var/d in dirs)
 		var/turf/E = get_step(src, d)
 		shoot_projectile(E)
@@ -242,7 +272,7 @@
 /obj/effect/temp_visual/at_shield/Initialize(mapload, new_target)
 	. = ..()
 	target = new_target
-	INVOKE_ASYNC(src, /atom/movable/proc/orbit, target, 0, FALSE, 0, 0, FALSE, TRUE)
+	INVOKE_ASYNC(src, TYPE_PROC_REF(/atom/movable, orbit), target, 0, FALSE, 0, 0, FALSE, TRUE)
 
 /mob/living/simple_animal/hostile/megafauna/colossus/bullet_act(obj/projectile/P)
 	if(!stat)
@@ -257,7 +287,7 @@
 /obj/projectile/colossus
 	name ="death bolt"
 	icon_state= "chronobolt"
-	damage = 25
+	damage = 100
 	armour_penetration = 100
 	speed = 2
 	eyeblur = 0
@@ -616,7 +646,7 @@
 	if(..() && !ready_to_deploy)
 		AddElement(/datum/element/point_of_interest)
 		ready_to_deploy = TRUE
-		notify_ghosts("An anomalous crystal has been activated in [get_area(src)]! This crystal can always be used by ghosts hereafter.", enter_link = "<a href=?src=[REF(src)];ghostjoin=1>(Click to enter)</a>", ghost_sound = 'sound/effects/ghost2.ogg', source = src, action = NOTIFY_ATTACK, header = "Anomalous crystal activated")
+		notify_ghosts("An anomalous crystal has been activated in [get_area(src)]! This crystal can always be used by ghosts hereafter.", enter_link = "<a href=byond://?src=[REF(src)];ghostjoin=1>(Click to enter)</a>", ghost_sound = 'sound/effects/ghost2.ogg', source = src, action = NOTIFY_ATTACK, header = "Anomalous crystal activated")
 
 /obj/machinery/anomalous_crystal/helpers/attack_ghost(mob/dead/observer/user)
 	. = ..()

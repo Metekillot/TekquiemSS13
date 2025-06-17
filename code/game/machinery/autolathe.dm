@@ -48,7 +48,7 @@
 							)
 
 /obj/machinery/autolathe/Initialize()
-	AddComponent(/datum/component/material_container, SSmaterials.materials_by_category[MAT_CATEGORY_ITEM_MATERIAL], 0, MATCONTAINER_EXAMINE, _after_insert = CALLBACK(src, .proc/AfterMaterialInsert))
+	AddComponent(/datum/component/material_container, SSmaterials.materials_by_category[MAT_CATEGORY_ITEM_MATERIAL], 0, MATCONTAINER_EXAMINE, _after_insert = CALLBACK(src, PROC_REF(AfterMaterialInsert)))
 	. = ..()
 
 	wires = new /datum/wires/autolathe(src)
@@ -182,7 +182,7 @@
 						if(materials.materials[i] > 0)
 							list_to_show += i
 
-					used_material = input("Choose [used_material]", "Custom Material") as null|anything in sortList(list_to_show, /proc/cmp_typepaths_asc)
+					used_material = input("Choose [used_material]", "Custom Material") as null|anything in sortList(list_to_show, GLOBAL_PROC_REF(cmp_typepaths_asc))
 					if(!used_material)
 						return //Didn't pick any material, so you can't build shit either.
 					custom_materials[used_material] += amount_needed
@@ -194,7 +194,7 @@
 				use_power(power)
 				icon_state = "autolathe_n"
 				var/time = is_stack ? 32 : (32 * coeff * multiplier) ** 0.8
-				addtimer(CALLBACK(src, .proc/make_item, power, materials_used, custom_materials, multiplier, coeff, is_stack, usr), time)
+				addtimer(CALLBACK(src, PROC_REF(make_item), power, materials_used, custom_materials, multiplier, coeff, is_stack, usr), time)
 			else
 				to_chat(usr, "<span class=\"alert\">Not enough materials for this operation.</span>")
 
@@ -262,7 +262,7 @@
 	var/dat = "<div class='statusDisplay'><h3>Autolathe Menu:</h3><br>"
 	dat += materials_printout()
 
-	dat += "<form name='search' action='?src=[REF(src)]'>\
+	dat += "<form name='search' action='byond://?src=[REF(src)]'>\
 	<input type='hidden' name='src' value='[REF(src)]'>\
 	<input type='hidden' name='search' value='to_search'>\
 	<input type='hidden' name='menu' value='[AUTOLATHE_SEARCH_MENU]'>\
@@ -278,14 +278,14 @@
 			dat += "</tr><tr>"
 			line_length = 1
 
-		dat += "<td><A href='?src=[REF(src)];category=[C];menu=[AUTOLATHE_CATEGORY_MENU]'>[C]</A></td>"
+		dat += "<td><A href='byond://?src=[REF(src)];category=[C];menu=[AUTOLATHE_CATEGORY_MENU]'>[C]</A></td>"
 		line_length++
 
 	dat += "</tr></table></div>"
 	return dat
 
 /obj/machinery/autolathe/proc/category_win(mob/user,selected_category)
-	var/dat = "<A href='?src=[REF(src)];menu=[AUTOLATHE_MAIN_MENU]'>Return to main menu</A>"
+	var/dat = "<A href='byond://?src=[REF(src)];menu=[AUTOLATHE_MAIN_MENU]'>Return to main menu</A>"
 	dat += "<div class='statusDisplay'><h3>Browsing [selected_category]:</h3><br>"
 	dat += materials_printout()
 
@@ -297,7 +297,7 @@
 		if(disabled || !can_build(D))
 			dat += "<span class='linkOff'>[D.name]</span>"
 		else
-			dat += "<a href='?src=[REF(src)];make=[D.id];multiplier=1'>[D.name]</a>"
+			dat += "<a href='byond://?src=[REF(src)];make=[D.id];multiplier=1'>[D.name]</a>"
 
 		if(ispath(D.build_path, /obj/item/stack))
 			var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
@@ -305,16 +305,16 @@
 			for(var/datum/material/mat in D.materials)
 				max_multiplier = min(D.maxstack, round(materials.get_material_amount(mat)/D.materials[mat]))
 			if (max_multiplier>10 && !disabled)
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
 			if (max_multiplier>25 && !disabled)
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=25'>x25</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=25'>x25</a>"
 			if(max_multiplier > 0 && !disabled)
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=[max_multiplier]'>x[max_multiplier]</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=[max_multiplier]'>x[max_multiplier]</a>"
 		else
 			if(!disabled && can_build(D, 5))
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=5'>x5</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=5'>x5</a>"
 			if(!disabled && can_build(D, 10))
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
 
 		dat += "[get_design_cost(D)]<br>"
 
@@ -322,7 +322,7 @@
 	return dat
 
 /obj/machinery/autolathe/proc/search_win(mob/user)
-	var/dat = "<A href='?src=[REF(src)];menu=[AUTOLATHE_MAIN_MENU]'>Return to main menu</A>"
+	var/dat = "<A href='byond://?src=[REF(src)];menu=[AUTOLATHE_MAIN_MENU]'>Return to main menu</A>"
 	dat += "<div class='statusDisplay'><h3>Search results:</h3><br>"
 	dat += materials_printout()
 
@@ -331,7 +331,7 @@
 		if(disabled || !can_build(D))
 			dat += "<span class='linkOff'>[D.name]</span>"
 		else
-			dat += "<a href='?src=[REF(src)];make=[D.id];multiplier=1'>[D.name]</a>"
+			dat += "<a href='byond://?src=[REF(src)];make=[D.id];multiplier=1'>[D.name]</a>"
 
 		if(ispath(D.build_path, /obj/item/stack))
 			var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
@@ -339,16 +339,16 @@
 			for(var/datum/material/mat in D.materials)
 				max_multiplier = min(D.maxstack, round(materials.get_material_amount(mat)/D.materials[mat]))
 			if (max_multiplier>10 && !disabled)
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
 			if (max_multiplier>25 && !disabled)
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=25'>x25</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=25'>x25</a>"
 			if(max_multiplier > 0 && !disabled)
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=[max_multiplier]'>x[max_multiplier]</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=[max_multiplier]'>x[max_multiplier]</a>"
 		else
 			if(!disabled && can_build(D, 5))
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=5'>x5</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=5'>x5</a>"
 			if(!disabled && can_build(D, 10))
-				dat += " <a href='?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
+				dat += " <a href='byond://?src=[REF(src)];make=[D.id];multiplier=10'>x10</a>"
 
 		dat += "[get_design_cost(D)]<br>"
 

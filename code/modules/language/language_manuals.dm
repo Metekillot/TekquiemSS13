@@ -4,7 +4,7 @@
 	/// Number of charges the book has, limits the number of times it can be used.
 	var/charges = 1
 	/// Path to a language datum that the book teaches.
-	var/datum/language/language = /datum/language/common
+	var/datum/language/language = /datum/language/english
 	/// Flavour text to display when the language is successfully learned.
 	var/flavour_text = "suddenly your mind is filled with codewords and responses"
 
@@ -46,14 +46,6 @@
 		T.visible_message("<span class='warning'>The cover and contents of [src] start shifting and changing!</span>")
 
 		qdel(src)
-		var/obj/item/book/manual/random/book = new(T)
-		user.put_in_active_hand(book)
-
-/obj/item/language_manual/codespeak_manual
-	name = "codespeak manual"
-	desc = "The book's cover reads: \"Codespeak(tm) - Secure your communication with metaphors so elaborate, they seem randomly generated!\""
-	language = /datum/language/codespeak
-	flavour_text = "suddenly your mind is filled with codewords and responses"
 
 /obj/item/language_manual/codespeak_manual/unlimited
 	name = "deluxe codespeak manual"
@@ -64,11 +56,10 @@
 /obj/item/language_manual/roundstart_species/Initialize()
 	. = ..()
 	language = pick( \
-		/datum/language/voltaic, \
-		/datum/language/nekomimetic, \
-		/datum/language/draconic, \
-		/datum/language/moffic, \
-		/datum/language/calcic \
+		/datum/language/japanese, \
+		/datum/language/mandarin, \
+		/datum/language/russian, \
+
 	)
 	name = "[initial(language.name)] manual"
 	desc = "The book's cover reads: \"[initial(language.name)] for Xenos - Learn common galactic tongues in seconds.\""
@@ -88,13 +79,6 @@
 	. = ..()
 	name = "extended [initial(language.name)] manual"
 
-// So drones can teach borgs and AI dronespeak. For best effect, combine with mother drone lawset.
-/obj/item/language_manual/dronespeak_manual
-	name = "dronespeak manual"
-	desc = "The book's cover reads: \"Understanding Dronespeak - An exercise in futility.\" The book is written entirely in binary, non-silicons probably won't understand it."
-	language = /datum/language/drone
-	flavour_text = "suddenly the drone chittering makes sense"
-	charges = INFINITY
 
 /obj/item/language_manual/dronespeak_manual/attack(mob/living/M, mob/living/user)
 	// If they are not drone or silicon, we don't want them to learn this language.

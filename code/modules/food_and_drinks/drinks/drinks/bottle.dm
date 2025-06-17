@@ -202,12 +202,6 @@
 	foodtype = NONE
 	age_restricted = FALSE
 
-/obj/item/reagent_containers/food/drinks/bottle/patron
-	name = "Wrapp Artiste Patron"
-	desc = "Silver laced tequila, served in space night clubs across the galaxy."
-	icon_state = "patronbottle"
-	list_reagents = list(/datum/reagent/consumable/ethanol/patron = 100)
-
 /obj/item/reagent_containers/food/drinks/bottle/rum
 	name = "Captain Pete's Cuban spiced rum"
 	desc = "This isn't just rum, oh no. It's practically GRIFF in a bottle."
@@ -243,12 +237,6 @@
 	icon_state = "kahluabottle"
 	list_reagents = list(/datum/reagent/consumable/ethanol/kahlua = 100)
 	foodtype = VEGETABLES
-
-/obj/item/reagent_containers/food/drinks/bottle/goldschlager
-	name = "College Girl goldschlager"
-	desc = "Because they are the only ones who will drink 100 proof cinnamon schnapps."
-	icon_state = "goldschlagerbottle"
-	list_reagents = list(/datum/reagent/consumable/ethanol/goldschlager = 100)
 
 /obj/item/reagent_containers/food/drinks/bottle/cognac
 	name = "Chateau de Baton premium cognac"
@@ -490,31 +478,6 @@
 	isGlass = TRUE
 	list_reagents = list(/datum/reagent/consumable/ethanol/champagne = 100)
 
-/obj/item/reagent_containers/food/drinks/bottle/blazaam
-	name = "Ginbad's Blazaam"
-	desc = "You feel like you should give the bottle a good rub before opening."
-	icon_state = "blazaambottle"
-	list_reagents = list(/datum/reagent/consumable/ethanol/blazaam = 100)
-
-/obj/item/reagent_containers/food/drinks/bottle/trappist
-	name = "Mont de Requin Trappistes Bleu"
-	desc = "Brewed in space-Belgium. Fancy!"
-	icon_state = "trappistbottle"
-	volume = 50
-	list_reagents = list(/datum/reagent/consumable/ethanol/trappist = 50)
-
-/obj/item/reagent_containers/food/drinks/bottle/hooch
-	name = "hooch bottle"
-	desc = "A bottle of rotgut. Its owner has applied some street wisdom to cleverly disguise it as a brown paper bag."
-	icon_state = "hoochbottle"
-	list_reagents = list(/datum/reagent/consumable/ethanol/hooch = 100)
-
-/obj/item/reagent_containers/food/drinks/bottle/moonshine
-	name = "moonshine jug"
-	desc = "It is said that the ancient Applalacians used these stoneware jugs to capture lightning in a bottle."
-	icon_state = "moonshinebottle"
-	list_reagents = list(/datum/reagent/consumable/ethanol/moonshine = 100)
-
 ////////////////////////// MOLOTOV ///////////////////////
 /obj/item/reagent_containers/food/drinks/bottle/molotov
 	name = "molotov cocktail"
@@ -556,7 +519,7 @@
 		to_chat(user, "<span class='info'>You light [src] on fire.</span>")
 		add_overlay(custom_fire_overlay ? custom_fire_overlay : GLOB.fire_overlay)
 		if(!isGlass)
-			addtimer(CALLBACK(src, .proc/explode), 5 SECONDS)
+			addtimer(CALLBACK(src, PROC_REF(explode)), 5 SECONDS)
 
 /obj/item/reagent_containers/food/drinks/bottle/molotov/proc/explode()
 	if(!active)
@@ -591,7 +554,7 @@
 
 /obj/item/reagent_containers/food/drinks/bottle/pruno/Initialize()
 	. = ..()
-	RegisterSignal(src, COMSIG_MOVABLE_MOVED, .proc/check_fermentation)
+	RegisterSignal(src, COMSIG_MOVABLE_MOVED, PROC_REF(check_fermentation))
 
 /obj/item/reagent_containers/food/drinks/bottle/pruno/Destroy()
 	UnregisterSignal(src, COMSIG_MOVABLE_MOVED)
@@ -611,7 +574,7 @@
 		return
 	if(!fermentation_time_remaining)
 		fermentation_time_remaining = fermentation_time
-	fermentation_timer = addtimer(CALLBACK(src, .proc/do_fermentation), fermentation_time_remaining, TIMER_UNIQUE|TIMER_STOPPABLE)
+	fermentation_timer = addtimer(CALLBACK(src, PROC_REF(do_fermentation)), fermentation_time_remaining, TIMER_UNIQUE|TIMER_STOPPABLE)
 	fermentation_time_remaining = null
 
 // actually ferment

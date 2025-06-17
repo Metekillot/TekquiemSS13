@@ -132,7 +132,7 @@
 	pixel_y = -20
 
 /obj/structure/flora/tree/jungle/Initialize()
-	icon_state = "[icon_state][rand(1, 6)]"
+	icon_state = "tree[rand(1, 6)]"
 	. = ..()
 
 /obj/structure/flora/tree/jungle/small
@@ -300,6 +300,39 @@
 	icon_state = "fullgrass_[rand(1, 3)]"
 	. = ..()
 
+/obj/structure/flora/ausbushes/tallgrass
+	icon_state = "tallgrass_1"
+	icon = 'icons/wod13/32x48.dmi'
+	var/dry = FALSE
+
+/obj/structure/flora/ausbushes/tallgrass/dry
+	icon_state = "dry_tallgrass_1"
+	dry = TRUE
+
+/obj/structure/flora/ausbushes/tallgrass/Initialize()
+	if (!dry)
+		icon_state = "tallgrass_[rand(1, 4)]"
+	else
+		icon_state = "drytallgrass_[rand(1, 4)]"
+	. = ..()
+
+/obj/structure/flora/ausbushes/shortgrass
+	icon_state = "grass_1"
+	icon = 'icons/wod13/32x48.dmi'
+
+/obj/structure/flora/ausbushes/shortgrass/Initialize()
+	icon_state = "grass_[rand(1, 4)]"
+	. = ..()
+
+/obj/structure/flora/ausbushes/redflower
+	icon_state = "redplant_1"
+	icon = 'icons/wod13/32x48.dmi'
+
+/obj/structure/flora/ausbushes/redflower/Initialize()
+	icon_state = "redplant_[rand(1, 4)]"
+	. = ..()
+
+
 /obj/item/kirbyplants
 	name = "potted plant"
 	icon = 'icons/obj/flora/plants.dmi'
@@ -351,14 +384,9 @@
 
 /obj/item/kirbyplants/proc/generate_states()
 	random_plant_states = list()
-	for(var/i in 1 to 25)
-		var/number
-		if(i < 10)
-			number = "0[i]"
-		else
-			number = "[i]"
-		random_plant_states += "plant-[number]"
-	random_plant_states += "applebush"
+	for(var/i in 1 to 5)
+		random_plant_states += "plant[i]"
+	random_plant_states += "plant0"
 
 
 /obj/item/kirbyplants/dead

@@ -1,6 +1,7 @@
 /obj/item/gun/ballistic/revolver
-	name = "\improper .357 revolver"
-	desc = "A suspicious revolver. Uses .357 ammo." //usually used by syndicates
+	name = "\improper revolver"
+	desc = "Old, but might."
+	icon = 'icons/wod13/weapons.dmi'
 	icon_state = "revolver"
 	mag_type = /obj/item/ammo_box/magazine/internal/cylinder
 	fire_sound = 'sound/weapons/gun/revolver/shot_alt.ogg'
@@ -50,7 +51,7 @@
 		playsound(usr, "revolver_spin", 30, FALSE)
 		usr.visible_message("<span class='notice'>[usr] spins [src]'s chamber.</span>", "<span class='notice'>You spin [src]'s chamber.</span>")
 	else
-		verbs -= /obj/item/gun/ballistic/revolver/verb/spin
+		verbs -= TYPE_VERB_REF(/obj/item/gun/ballistic/revolver, spin)
 
 /obj/item/gun/ballistic/revolver/proc/do_spin()
 	var/obj/item/ammo_box/magazine/internal/cylinder/C = magazine
@@ -87,7 +88,7 @@
 	can_modify_ammo = TRUE
 	alternative_ammo_misfires = TRUE
 	can_misfire = FALSE
-	misfire_probability = 0 
+	misfire_probability = 0
 	misfire_percentage_increment = 25 //about 1 in 4 rounds, which increases rapidly every shot
 	obj_flags = UNIQUE_RENAME
 	unique_reskin = list("Default" = "detective",

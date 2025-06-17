@@ -491,6 +491,8 @@ GLOBAL_LIST_EMPTY(vending_products)
 					freebie(user, 2)
 				if(16 to 25)
 					freebie(user, 1)
+				if(26 to 75)
+					//nothing!
 				if(76 to 90)
 					tilt(user)
 				if(91 to 100)
@@ -1141,10 +1143,10 @@ GLOBAL_LIST_EMPTY(vending_products)
 			say("\The [src] has been linked to [C].")
 
 	if(compartmentLoadAccessCheck(user))
-		if(istype(I, /obj/item/pen))
-			name = stripped_input(user,"Set name","Name", name, 20)
-			desc = stripped_input(user,"Set description","Description", desc, 60)
-			slogan_list += stripped_input(user,"Set slogan","Slogan","Epic", 60)
+		if(IS_WRITING_UTENSIL(I))
+			name = tgui_input_text(user, "Set name", "Name", name, 20)
+			desc = tgui_input_text(user, "Set description", "Description", desc, 60)
+			slogan_list += tgui_input_text(user, "Set slogan", "Slogan", "Epic", 60)
 			last_slogan = world.time + rand(0, slogan_delay)
 			return
 

@@ -5,14 +5,14 @@ Difficulty: Hard
 */
 
 /mob/living/simple_animal/hostile/megafauna/wendigo
-	name = "wendigo"
-	desc = "A mythological man-eating legendary creature, you probably aren't going to survive this."
+	name = "Unknown Antediluvian"
+	desc = "A mythological legendary kindred, you probably aren't going to survive this."
 	health = 2500
 	maxHealth = 2500
-	icon_state = "wendigo"
-	icon_living = "wendigo"
-	icon_dead = "wendigo_dead"
-	icon = 'icons/mob/icemoon/64x64megafauna.dmi'
+	icon_state = "eva"
+	icon_living = "eva"
+	icon_dead = "eva_dead"
+	icon = 'icons/mob/32x64.dmi'
 	attack_verb_continuous = "claws"
 	attack_verb_simple = "claw"
 	attack_sound = 'sound/magic/demon_attack1.ogg'
@@ -32,8 +32,8 @@ Difficulty: Hard
 	base_pixel_x = -16
 	loot = list()
 	butcher_results = list()
-	guaranteed_butcher_results = list(/obj/item/wendigo_blood = 1)
-	crusher_loot = list(/obj/item/crusher_trophy/demon_claws)
+	guaranteed_butcher_results = list()
+	crusher_loot = list()
 	wander = FALSE
 	del_on_death = FALSE
 	blood_volume = BLOOD_VOLUME_NORMAL
@@ -133,7 +133,7 @@ Difficulty: Hard
 	. = ..()
 	stored_move_dirs &= ~direct
 	if(!stored_move_dirs)
-		INVOKE_ASYNC(src, .proc/ground_slam, stomp_range, 1)
+		INVOKE_ASYNC(src, PROC_REF(ground_slam), stomp_range, 1)
 
 /// Slams the ground around the wendigo throwing back enemies caught nearby
 /mob/living/simple_animal/hostile/megafauna/wendigo/proc/ground_slam(range, delay)
@@ -179,7 +179,7 @@ Difficulty: Hard
 /mob/living/simple_animal/hostile/megafauna/wendigo/proc/disorienting_scream()
 	can_move = FALSE
 	last_scream = world.time
-	playsound(src, 'sound/magic/demon_dies.ogg', 600, FALSE, 10)
+	playsound(src, pick('code/modules/wod13/sounds/mp_judgement.ogg', 'code/modules/wod13/sounds/mp_die.ogg', 'code/modules/wod13/sounds/mp_end.ogg'), 600, FALSE, 10)
 	animate(src, pixel_z = rand(5, 15), time = 1, loop = 6)
 	animate(pixel_z = 0, time = 1)
 	for(var/mob/living/L in get_hearers_in_view(7, src) - src)

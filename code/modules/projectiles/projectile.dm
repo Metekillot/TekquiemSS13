@@ -42,6 +42,7 @@
 	var/ignore_source_check = FALSE
 	/// We are flagged PHASING temporarily to not stop moving when we Bump something but want to keep going anyways.
 	var/temporary_unstoppable_movement = FALSE
+	var/probed_to_crit = FALSE
 
 	/** PROJECTILE PIERCING
 	  * WARNING:
@@ -249,9 +250,27 @@
 		return BULLET_ACT_HIT
 
 	var/mob/living/L = target
+	if(isliving(firer))
+		var/mob/living/living_firer = firer
+		var/successes = SSroll.opposed_roll(
+			player_a = firer,
+			player_b = L,
+			dice_a = living_firer.get_wits() + 2,
+			dice_b = L.get_resolve() + (HAS_TRAIT(L, TRAIT_SUPERNATURAL_DEXTERITY) ? 3 : 0),
+			show_player_a = TRUE,
+			show_player_b = TRUE,
+			alert_atom = L,
+			draw_goes_to_b = TRUE,
+			numerical = TRUE)
+		if(successes <= 0)
+			L.visible_message("<span class='danger'>[L] narrowly dodges \a [src]!</span>", \
+				"<span class='userdanger'>You're narrowly dodge \a [src]!</span>", null, COMBAT_MESSAGE_RANGE)
+			return BULLET_ACT_FORCE_PIERCE
+		else
+			damage = 1*successes
 
 	if(blocked != 100) // not completely blocked
-		if(damage && L.blood_volume && damage_type == BRUTE)
+		if(damage && L.bloodpool && damage_type == BRUTE)
 			var/splatter_dir = dir
 			if(starting)
 				splatter_dir = get_dir(starting, target_loca)
@@ -569,6 +588,7 @@
 	. = ..()
 	if(!fired)
 		return
+
 	if(temporary_unstoppable_movement)
 		temporary_unstoppable_movement = FALSE
 		movement_type &= ~PHASING
@@ -703,7 +723,7 @@
 	if(fired && hitscan && isloc(loc) && (loc != last_angle_set_hitscan_store))
 		last_angle_set_hitscan_store = loc
 		var/datum/point/pcache = new (src)
-		var/list/coordinates = trajectory.return_coordinates() 
+		var/list/coordinates = trajectory.return_coordinates()
 		pcache.initialize_location(coordinates[1], coordinates[2], coordinates[3]) // Take the center of the hitscan collision tile, so it looks good on reflector boxes and the like
 		trajectory.initialize_location(coordinates[1], coordinates[2], coordinates[3]) // Sets the trajectory to it as well, to prevent a strange visual bug
 		store_hitscan_collision(pcache)
@@ -844,10 +864,14 @@
 
 	if(isliving(source) && params)
 		var/list/calculated = calculate_projectile_angle_and_pixel_offsets(source, params)
-		p_x = calculated[2]
-		p_y = calculated[3]
-
-		setAngle(calculated[1] + spread)
+		if(calculated)
+			p_x = calculated[2]
+			p_y = calculated[3]
+			setAngle(calculated[1] + spread)
+		else
+			yo = targloc.y - curloc.y
+			xo = targloc.x - curloc.x
+			setAngle(Get_Angle(src, targloc) + spread)
 	else if(targloc)
 		yo = targloc.y - curloc.y
 		xo = targloc.x - curloc.x
@@ -878,12 +902,17 @@
 		var/y = text2num(screen_loc_Y[1]) * 32 + text2num(screen_loc_Y[2]) - 32
 
 		//Calculate the "resolution" of screen based on client's view and world's icon size. This will work if the user can view more tiles than average.
-		var/list/screenview = getviewsize(user.client.view)
+		var/list/screenview = getviewsize(world.view)
+		if(user.client)
+			screenview = getviewsize(user.client.view)
 		var/screenviewX = screenview[1] * world.icon_size
 		var/screenviewY = screenview[2] * world.icon_size
 
-		var/ox = round(screenviewX/2) - user.client.pixel_x //"origin" x
-		var/oy = round(screenviewY/2) - user.client.pixel_y //"origin" y
+		var/ox = round(screenviewX/2)
+		var/oy = round(screenviewY/2)
+		if(user.client)
+			ox = ox-user.client.pixel_x
+			oy = oy-user.client.pixel_y
 		angle = ATAN2(y - oy, x - ox)
 	return list(angle, p_x, p_y)
 

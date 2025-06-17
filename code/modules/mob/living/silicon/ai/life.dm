@@ -146,7 +146,7 @@
 				sleep(50)
 				to_chat(src, "<span class='notice'>Receiving control information from APC.</span>")
 				sleep(2)
-				to_chat(src, "<A HREF=?src=[REF(src)];emergencyAPC=[TRUE]>APC ready for connection.</A>")
+				to_chat(src, "<A HREF=byond://?src=[REF(src)];emergencyAPC=[TRUE]>APC ready for connection.</A>")
 				apc_override = theAPC
 				apc_override.ui_interact(src)
 				setAiRestorePowerRoutine(POWER_RESTORATION_APC_FOUND)
@@ -172,4 +172,4 @@
 	blind_eyes(1)
 	update_sight()
 	to_chat(src, "<span class='alert'>You've lost power!</span>")
-	addtimer(CALLBACK(src, .proc/start_RestorePowerRoutine), 20)
+	addtimer(CALLBACK(src, PROC_REF(start_RestorePowerRoutine)), 20)

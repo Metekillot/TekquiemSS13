@@ -123,15 +123,15 @@
 	minimum_distance = 0
 	set_varspeed(0)
 	charging = TRUE
-	addtimer(CALLBACK(src, .proc/reset_charge), 60)
+	addtimer(CALLBACK(src, PROC_REF(reset_charge)), 60)
 	var/mob/living/L = target
 	if(!istype(L) || L.stat != DEAD) //I know, weird syntax, but it just works.
-		addtimer(CALLBACK(src, .proc/throw_thyself), 20)
+		addtimer(CALLBACK(src, PROC_REF(throw_thyself)), 20)
 
 ///This is the proc that actually does the throwing. Charge only adds a timer for this.
 /mob/living/simple_animal/hostile/megafauna/legion/proc/throw_thyself()
 	playsound(src, 'sound/weapons/sonic_jackhammer.ogg', 50, TRUE)
-	throw_at(target, 7, 1.1, src, FALSE, FALSE, CALLBACK(GLOBAL_PROC, .proc/playsound, src, 'sound/effects/meteorimpact.ogg', 50 * size, TRUE, 2), INFINITY)
+	throw_at(target, 7, 1.1, src, FALSE, FALSE, CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(playsound), src, 'sound/effects/meteorimpact.ogg', 50 * size, TRUE, 2), INFINITY)
 
 ///Deals some extra damage on throw impact.
 /mob/living/simple_animal/hostile/megafauna/legion/throw_impact(mob/living/hit_atom, datum/thrownthing/throwingdatum)
@@ -202,7 +202,6 @@
 			last_legion = FALSE
 			break
 	if(last_legion)
-		loot = list(/obj/item/staff/storm)
 		elimination = FALSE
 	else if(prob(20)) //20% chance for sick lootz.
 		loot = list(/obj/structure/closet/crate/necropolis/tendril)
@@ -252,70 +251,6 @@
 
 //Loot
 
-/obj/item/staff/storm
-	name = "staff of storms"
-	desc = "An ancient staff retrieved from the remains of Legion. The wind stirs as you move it."
-	icon_state = "staffofstorms"
-	inhand_icon_state = "staffofstorms"
-	icon = 'icons/obj/guns/magic.dmi'
-	slot_flags = ITEM_SLOT_BACK
-	w_class = WEIGHT_CLASS_BULKY
-	force = 25
-	damtype = BURN
-	hitsound = 'sound/weapons/sear.ogg'
-	wound_bonus = -40
-	bare_wound_bonus = 20
-	var/storm_type = /datum/weather/ash_storm
-	var/storm_nextuse = 0
-	var/staff_cooldown = 20 SECONDS // The minimum time between uses.
-	var/storm_telegraph_duration = 10 SECONDS
-	var/storm_duration = 10 SECONDS
-	var/static/list/excluded_areas = list()
-
-/obj/item/staff/storm/attack_self(mob/user)
-	if(storm_nextuse > world.time)
-		to_chat(user, "<span class='warning'>The staff is still recharging!</span>")
-		return
-
-	var/area/user_area = get_area(user)
-	var/turf/user_turf = get_turf(user)
-	if(!user_area || !user_turf || (user_area.type in excluded_areas))
-		to_chat(user, "<span class='warning'>Something is preventing you from using the staff here.</span>")
-		return
-	var/datum/weather/A
-	for(var/V in SSweather.processing)
-		var/datum/weather/W = V
-		if((user_turf.z in W.impacted_z_levels) && W.area_type == user_area.type)
-			A = W
-			break
-
-	if(A)
-		if(A.stage != END_STAGE)
-			if(A.stage == WIND_DOWN_STAGE)
-				to_chat(user, "<span class='warning'>The storm is already ending! It would be a waste to use the staff now.</span>")
-				return
-			user.visible_message("<span class='warning'>[user] holds [src] skywards as an orange beam travels into the sky!</span>", \
-			"<span class='notice'>You hold [src] skyward, dispelling the storm!</span>")
-			playsound(user, 'sound/magic/staff_change.ogg', 200, FALSE)
-			A.wind_down()
-			log_game("[user] ([key_name(user)]) has dispelled a storm at [AREACOORD(user_turf)]")
-			return
-	else
-		A = new storm_type(list(user_turf.z))
-		A.name = "staff storm"
-		log_game("[user] ([key_name(user)]) has summoned [A] at [AREACOORD(user_turf)]")
-		if (is_special_character(user))
-			message_admins("[A] has been summoned in [ADMIN_VERBOSEJMP(user_turf)] by [ADMIN_LOOKUPFLW(user)], a non-antagonist")
-		A.area_type = user_area.type
-		A.telegraph_duration = storm_telegraph_duration
-		A.end_duration = storm_duration
-
-	user.visible_message("<span class='warning'>[user] holds [src] skywards as red lightning crackles into the sky!</span>", \
-	"<span class='notice'>You hold [src] skyward, calling down a terrible storm!</span>")
-	playsound(user, 'sound/magic/staff_change.ogg', 200, FALSE)
-	A.telegraph()
-	storm_nextuse = world.time + staff_cooldown
-
 ///A basic turret that shoots at nearby mobs. Intended to be used for the legion megafauna.
 /obj/structure/legionturret
 	name = "\improper Legion sentinel"
@@ -341,7 +276,7 @@
 
 /obj/structure/legionturret/Initialize()
 	. = ..()
-	addtimer(CALLBACK(src, .proc/set_up_shot), initial_firing_time)
+	addtimer(CALLBACK(src, PROC_REF(set_up_shot)), initial_firing_time)
 
 ///Handles an extremely basic AI
 /obj/structure/legionturret/proc/set_up_shot()
@@ -365,7 +300,7 @@
 	var/datum/point/vector/V = new(T1.x, T1.y, T1.z, 0, 0, angle)
 	generate_tracer_between_points(V, V.return_vector_after_increments(6), /obj/effect/projectile/tracer/legion/tracer, 0, shot_delay, 0, 0, 0, null)
 	playsound(src, 'sound/machines/airlockopen.ogg', 100, TRUE)
-	addtimer(CALLBACK(src, .proc/fire_beam, angle), shot_delay)
+	addtimer(CALLBACK(src, PROC_REF(fire_beam), angle), shot_delay)
 
 ///Called shot_delay after the turret shot the tracer. Shoots a projectile into the same direction.
 /obj/structure/legionturret/proc/fire_beam(angle)

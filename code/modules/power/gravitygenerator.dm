@@ -162,7 +162,7 @@ GLOBAL_LIST_EMPTY(gravity_generators) // We will keep track of this by adding ne
 		part.main_part = src
 		parts += part
 		part.update_icon()
-		part.RegisterSignal(src, COMSIG_ATOM_UPDATED_ICON, /atom/proc/update_icon)
+		part.RegisterSignal(src, COMSIG_ATOM_UPDATED_ICON, TYPE_PROC_REF(/atom, update_icon))
 
 /obj/machinery/gravity_generator/main/proc/connected_parts()
 	return parts.len == 8
@@ -402,7 +402,7 @@ GLOBAL_LIST_EMPTY(gravity_generators) // We will keep track of this by adding ne
 
 /obj/item/paper/guides/jobs/engi/gravity_gen
 	name = "paper- 'Generate your own gravity!'"
-	info = {"<h1>Gravity Generator Instructions For Dummies</h1>
+	default_raw_text = {"<h1>Gravity Generator Instructions For Dummies</h1>
 	<p>Surprisingly, gravity isn't that hard to make! All you have to do is inject deadly radioactive minerals into a ball of
 	energy and you have yourself gravity! You can turn the machine on or off when required but you must remember that the generator
 	will EMIT RADIATION when charging or discharging, you can tell it is charging or discharging by the noise it makes, so please WEAR PROTECTIVE CLOTHING.</p>

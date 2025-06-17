@@ -441,7 +441,7 @@
 /obj/structure/closet/decay/Initialize()
 	. = ..()
 	if(auto_destroy)
-		addtimer(CALLBACK(src, .proc/bust_open), 5 MINUTES)
+		addtimer(CALLBACK(src, PROC_REF(bust_open)), 5 MINUTES)
 
 /obj/structure/closet/decay/after_weld(weld_state)
 	if(weld_state)
@@ -450,7 +450,7 @@
 ///Fade away into nothing
 /obj/structure/closet/decay/proc/decay()
 	animate(src, alpha = 0, time = 30)
-	addtimer(CALLBACK(GLOBAL_PROC, .proc/qdel, src), 30)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(qdel), src), 30)
 
 /obj/structure/closet/decay/open(mob/living/user, force = FALSE)
 	. = ..()
@@ -462,7 +462,7 @@
 	icon_state = weakened_icon
 	update_icon()
 
-	addtimer(CALLBACK(src, .proc/decay), 15 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(decay)), 15 SECONDS)
 
 /obj/projectile/magic/flying
 	name = "bolt of flying"
@@ -658,7 +658,7 @@
 	name = "bolt of fireball"
 	icon_state = "fireball"
 	damage = 10
-	damage_type = BRUTE
+	damage_type = BURN
 	nodamage = FALSE
 
 	//explosion values
@@ -675,9 +675,13 @@
 			visible_message("<span class='warning'>[src] vanishes into smoke on contact with [target]!</span>")
 			return BULLET_ACT_BLOCK
 		M.take_overall_damage(0,10) //between this 10 burn, the 10 brute, the explosion brute, and the onfire burn, your at about 65 damage if you stop drop and roll immediately
-	var/turf/T = get_turf(target)
-	explosion(T, -1, exp_heavy, exp_light, exp_flash, 0, flame_range = exp_fire)
+//	var/turf/T = get_turf(target)
+//	explosion(T, -1, exp_heavy, exp_light, exp_flash, 0, flame_range = 0)
+	var/obj/effect/fire/R = new(get_turf(target))
+	R.color = color
 
+/obj/projectile/magic/aoe/fireball/baali
+	color = "#2dff00"
 
 //still magic related, but a different path
 

@@ -87,13 +87,13 @@
 	var/obj/machinery/paystand/my_store
 	var/uses_overlays = TRUE
 	var/icon/cached_flat_icon
-	var/registered_age = 13 // default age for ss13 players
+	var/registered_age = 24 // default age for ss13 players
 
 /obj/item/card/id/Initialize(mapload)
 	. = ..()
 	if(mapload && access_txt)
 		access = text2access(access_txt)
-	RegisterSignal(src, COMSIG_ATOM_UPDATED_ICON, .proc/update_in_wallet)
+	RegisterSignal(src, COMSIG_ATOM_UPDATED_ICON, PROC_REF(update_in_wallet))
 
 /obj/item/card/id/Destroy()
 	if (registered_account)
@@ -221,6 +221,9 @@
 	return
 
 /obj/item/card/id/AltClick(mob/living/user)
+	return
+	//[Lucia] - defunct code below commented out for error cleaning
+	/*
 	if(!alt_click_can_use_id(user))
 		return
 
@@ -248,6 +251,7 @@
 	else
 		var/difference = amount_to_remove - registered_account.account_balance
 		registered_account.bank_card_talk("<span class='warning'>ERROR: The linked account requires [difference] more credit\s to perform that withdrawal.</span>", TRUE)
+	*/
 
 /obj/item/card/id/examine(mob/user)
 	. = ..()
@@ -330,7 +334,7 @@ update_label()
 
 /obj/item/card/id/proc/update_label()
 	var/blank = !registered_name
-	name = "[blank ? id_type_name : "[registered_name]'s ID Card"][(!assignment) ? "" : " ([assignment])"]"
+	name = "[blank ? id_type_name : "[registered_name]'s"] [initial(name)]"
 	update_icon()
 
 /obj/item/card/id/silver

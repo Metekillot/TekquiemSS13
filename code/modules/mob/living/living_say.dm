@@ -92,6 +92,22 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	return new_msg
 
 /mob/living/say(message, bubble_type,list/spans = list(), sanitize = TRUE, datum/language/language = null, ignore_spam = FALSE, forced = null)
+	if(length(message) >= 2 && message[1] == "." && message[2] == "r")
+		var/obj/item/p25radio/radio = null
+		if(istype(get_item_by_slot(ITEM_SLOT_BELT), /obj/item/p25radio))
+			radio = get_item_by_slot(ITEM_SLOT_BELT)
+		else if(istype(get_item_by_slot(ITEM_SLOT_EARS), /obj/item/p25radio))
+			radio = get_item_by_slot(ITEM_SLOT_EARS)
+		else if(istype(get_active_held_item(), /obj/item/p25radio))
+			radio = get_active_held_item()
+		else if(istype(get_inactive_held_item(), /obj/item/p25radio))
+			radio = get_inactive_held_item()
+
+		if(radio)
+			var/p25_message = trim(copytext(message, 3))
+			radio.p25_talk_into(src, p25_message, null, spans, language)
+			return FALSE
+
 	var/ic_blocked = FALSE
 	if(client && !forced && CHAT_FILTER_CHECK(message))
 		//The filter doesn't act on the sanitized message, but the raw message.
@@ -100,32 +116,33 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	if(sanitize)
 		message = trim(copytext_char(sanitize(message), 1, MAX_MESSAGE_LEN))
 	if(!message || message == "")
-		return
+		return FALSE
 
 	if(ic_blocked)
 		//The filter warning message shows the sanitized message though.
 		to_chat(src, "<span class='warning'>That message contained a word prohibited in IC chat! Consider reviewing the server rules.\n<span replaceRegex='show_filtered_ic_chat'>\"[message]\"</span></span>")
 		SSblackbox.record_feedback("tally", "ic_blocked_words", 1, lowertext(config.ic_filter_regex.match))
 		return
+
 	var/list/message_mods = list()
 	var/original_message = message
 	message = get_message_mods(message, message_mods)
 	var/datum/saymode/saymode = SSradio.saymodes[message_mods[RADIO_KEY]]
 
 	if(!message)
-		return
+		return FALSE
 
 	if(message_mods[RADIO_EXTENSION] == MODE_ADMIN)
 		client?.cmd_admin_say(message)
-		return
+		return TRUE
 
 	if(message_mods[RADIO_EXTENSION] == MODE_DEADMIN)
 		client?.dsay(message)
-		return
+		return TRUE
 
 	// dead is the only state you can never emote
 	if(stat != DEAD && check_emote(original_message, forced))
-		return
+		return FALSE
 
 	// Checks if the saymode or channel extension can be used even if not totally conscious.
 	var/say_radio_or_mode = saymode || message_mods[RADIO_EXTENSION]
@@ -139,16 +156,16 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 		if(SOFT_CRIT)
 			message_mods[WHISPER_MODE] = MODE_WHISPER
 		if(UNCONSCIOUS)
-			return
+			return FALSE
 		if(HARD_CRIT)
 			if(!message_mods[WHISPER_MODE])
-				return
+				return FALSE
 		if(DEAD)
 			say_dead(original_message)
-			return
+			return TRUE
 
 	if(!can_speak_basic(original_message, ignore_spam, forced))
-		return
+		return FALSE
 
 	language = message_mods[LANGUAGE_EXTENSION]
 
@@ -158,10 +175,10 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	if(!can_speak_vocal(message))
 		if (HAS_TRAIT(src, TRAIT_SIGN_LANG) && H.mind.miming)
 			to_chat(src, "<span class='warning'>You stop yourself from signing in favor of the artform of mimery!</span>")
-			return
+			return FALSE
 		else
 			to_chat(src, "<span class='warning'>You find yourself unable to speak!</span>")
-			return
+			return FALSE
 
 	var/message_range = 7
 
@@ -181,13 +198,14 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 			succumbed = TRUE
 	else
 		log_talk(message, LOG_SAY, forced_by=forced)
+		last_words = message
 
 	message = treat_message(message) // unfortunately we still need this
 	var/sigreturn = SEND_SIGNAL(src, COMSIG_MOB_SAY, args)
 	if (sigreturn & COMPONENT_UPPERCASE_SPEECH)
 		message = uppertext(message)
 	if(!message)
-		return
+		return FALSE
 
 	spans |= speech_span
 
@@ -202,7 +220,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 
 	//This is before anything that sends say a radio message, and after all important message type modifications, so you can scumb in alien chat or something
 	if(saymode && !saymode.handle_message(src, message, language))
-		return
+		return FALSE
 	var/radio_message = message
 	if(message_mods[WHISPER_MODE])
 		// radios don't pick up whispers very well
@@ -216,7 +234,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 		if(!message_mods[WHISPER_MODE])
 			message_mods[WHISPER_MODE] = MODE_WHISPER
 	if(radio_return & NOPASS)
-		return 1
+		return TRUE
 
 	//No screams in space, unless you're next to someone.
 	var/turf/T = get_turf(src)
@@ -234,7 +252,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 		succumb(1)
 		to_chat(src, compose_message(src, language, message, , spans, message_mods))
 
-	return 1
+	return TRUE
 
 /mob/living/Hear(message, atom/movable/speaker, datum/language/message_language, raw_message, radio_freq, list/spans, list/message_mods = list())
 	SEND_SIGNAL(src, COMSIG_MOVABLE_HEAR, args)
@@ -275,6 +293,18 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	// Create map text prior to modifying message for goonchat
 	if (client?.prefs.chat_on_map && !(stat == UNCONSCIOUS || stat == HARD_CRIT) && (client.prefs.see_chat_non_mob || ismob(speaker)) && can_hear())
 		create_chat_message(speaker, message_language, raw_message, spans)
+
+	if(stat != DEAD && key && client)
+		if(ishuman(speaker))
+			var/mob/living/carbon/human/EX = speaker
+			if(EX.key && EX.client)
+				if(EX.last_message != message)
+					EX.last_message = message
+//					var/datum/preferences/P = GLOB.preferences_datums[ckey(EX.key)]
+//					if(P)
+//						P.exper = min(calculate_mob_max_exper(EX), P.exper+kal)
+//						P.save_preferences()
+//						P.save_character()
 
 	// Recompose message for AI hrefs, language incomprehension.
 	message = compose_message(speaker, message_language, raw_message, radio_freq, spans, message_mods)
@@ -344,7 +374,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 			speech_bubble_recipients.Add(M.client)
 	var/image/I = image('icons/mob/talk.dmi', src, "[bubble_type][say_test(message)]", FLY_LAYER)
 	I.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
-	INVOKE_ASYNC(GLOBAL_PROC, /.proc/flick_overlay, I, speech_bubble_recipients, 30)
+	INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(flick_overlay), I, speech_bubble_recipients, 30)
 
 /mob/proc/binarycheck()
 	return FALSE

@@ -62,6 +62,7 @@
 	///If the mob is charging, how long will it stun it's target on success, and itself on failure?
 	var/knockdown_time = 3 SECONDS
 	///Declares a cooldown for potential charges right off the bat.
+	var/mob/living/carbon/human/my_creator
 	COOLDOWN_DECLARE(charge_cooldown)
 
 /mob/living/simple_animal/hostile/Initialize()
@@ -100,7 +101,7 @@
 /mob/living/simple_animal/hostile/handle_automated_movement()
 	. = ..()
 	if(dodging && target && in_melee && isturf(loc) && isturf(target.loc))
-		var/datum/cb = CALLBACK(src,.proc/sidestep)
+		var/datum/cb = CALLBACK(src, PROC_REF(sidestep))
 		if(sidestep_per_cycle > 1) //For more than one just spread them equally - this could changed to some sensible distribution later
 			var/sidestep_delay = SSnpcpool.wait / sidestep_per_cycle
 			for(var/i in 1 to sidestep_per_cycle)
@@ -223,6 +224,8 @@
 					return FALSE
 				if(L.stat > stat_attack)
 					return FALSE
+				if ((stat_attack < DEAD) && HAS_TRAIT(the_target, TRAIT_DEATHCOMA))
+					return FALSE
 				if(L in friends)
 					return FALSE
 			else
@@ -263,7 +266,7 @@
 //What we do after closing in
 /mob/living/simple_animal/hostile/proc/MeleeAction(patience = TRUE)
 	if(rapid_melee > 1)
-		var/datum/callback/cb = CALLBACK(src, .proc/CheckAndAttack)
+		var/datum/callback/cb = CALLBACK(src, PROC_REF(CheckAndAttack))
 		var/delay = SSnpcpool.wait / rapid_melee
 		for(var/i in 1 to rapid_melee)
 			addtimer(cb, (i - 1)*delay)
@@ -403,7 +406,7 @@
 
 
 	if(rapid > 1)
-		var/datum/callback/cb = CALLBACK(src, .proc/Shoot, A)
+		var/datum/callback/cb = CALLBACK(src, PROC_REF(Shoot), A)
 		for(var/i in 1 to rapid)
 			addtimer(cb, (i - 1)*rapid_fire_delay)
 	else
@@ -440,6 +443,12 @@
 
 
 /mob/living/simple_animal/hostile/Move(atom/newloc, dir , step_x , step_y)
+	if(client)
+		for(var/mob/living/L in newloc)
+			if(L)
+				if(CanAttack(L))
+					ClickOn(L)
+					return
 	if(dodging && approaching_target && prob(dodge_prob) && moving_diagonally == 0 && isturf(loc) && isturf(newloc))
 		return dodge(newloc,dir)
 	else
@@ -537,7 +546,7 @@
 /mob/living/simple_animal/hostile/proc/GainPatience()
 	if(lose_patience_timeout)
 		LosePatience()
-		lose_patience_timer_id = addtimer(CALLBACK(src, .proc/LoseTarget), lose_patience_timeout, TIMER_STOPPABLE)
+		lose_patience_timer_id = addtimer(CALLBACK(src, PROC_REF(LoseTarget)), lose_patience_timeout, TIMER_STOPPABLE)
 
 
 /mob/living/simple_animal/hostile/proc/LosePatience()
@@ -548,7 +557,7 @@
 /mob/living/simple_animal/hostile/proc/LoseSearchObjects()
 	search_objects = 0
 	deltimer(search_objects_timer_id)
-	search_objects_timer_id = addtimer(CALLBACK(src, .proc/RegainSearchObjects), search_objects_regain_time, TIMER_STOPPABLE)
+	search_objects_timer_id = addtimer(CALLBACK(src, PROC_REF(RegainSearchObjects)), search_objects_regain_time, TIMER_STOPPABLE)
 
 
 /mob/living/simple_animal/hostile/proc/RegainSearchObjects(value)
@@ -607,14 +616,14 @@
 	if(!(COOLDOWN_FINISHED(src, charge_cooldown)) || !has_gravity() || !target.has_gravity())
 		return FALSE
 	Shake(15, 15, 1 SECONDS)
-	addtimer(CALLBACK(src, .proc/handle_charge_target, target), 1.5 SECONDS, TIMER_STOPPABLE)
+	addtimer(CALLBACK(src, PROC_REF(handle_charge_target), target), 1.5 SECONDS, TIMER_STOPPABLE)
 
 /**
  * Proc that throws the mob at the target after the windup.
  */
 /mob/living/simple_animal/hostile/proc/handle_charge_target(atom/target)
 	charge_state = TRUE
-	throw_at(target, charge_distance, 1, src, FALSE, TRUE, callback = CALLBACK(src, .proc/charge_end))
+	throw_at(target, charge_distance, 1, src, FALSE, TRUE, callback = CALLBACK(src, PROC_REF(charge_end)))
 	COOLDOWN_START(src, charge_cooldown, charge_frequency)
 	return TRUE
 

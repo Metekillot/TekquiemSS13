@@ -321,7 +321,7 @@
 	min_val = -1
 
 /datum/config_entry/string/overflow_job
-	config_entry_value = "Assistant"
+	config_entry_value = "Citizen"
 
 /datum/config_entry/flag/starlight
 /datum/config_entry/flag/grey_assistants
@@ -400,3 +400,6 @@
 	min_val = 0
 
 /datum/config_entry/flag/dynamic_config_enabled
+
+/datum/config_entry/string/json_conversion_path
+	protection = CONFIG_ENTRY_LOCKED | CONFIG_ENTRY_HIDDEN

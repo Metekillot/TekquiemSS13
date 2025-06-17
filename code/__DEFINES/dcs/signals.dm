@@ -56,6 +56,8 @@
 // /atom signals
 ///from base of atom/proc/Initialize(): sent any time a new atom is created
 #define COMSIG_ATOM_CREATED "atom_created"
+///from base of atom/examine(): (/mob, list/examine_text)
+#define COMSIG_ATOM_EXAMINE "atom_examine"
 //from SSatoms InitAtom - Only if the  atom was not deleted or failed initialization
 #define COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZE "atom_init_success"
 ///from base of atom/attackby(): (/obj/item, /mob/living, params)
@@ -84,6 +86,7 @@
 #define COMSIG_ATOM_UPDATE_OVERLAYS "atom_update_overlays"
 ///from base of atom/update_icon(): (signalOut, did_anything)
 #define COMSIG_ATOM_UPDATED_ICON "atom_updated_icon"
+#define COMSIG_ATOM_SET_SMOOTHED_ICON_STATE "set_smoothed_icon_state"
 ///from base of atom/Entered(): (atom/movable/entering, /atom)
 #define COMSIG_ATOM_ENTERED "atom_entered"
 ///from base of atom/Exit(): (/atom/movable/exiting, /atom/newloc)
@@ -127,6 +130,7 @@
 ///from base of atom/set_light(): (l_range, l_power, l_color, l_on)
 #define COMSIG_ATOM_SET_LIGHT "atom_set_light"
 ///from base of atom/setDir(): (old_dir, new_dir). Called before the direction changes.
+#define COMSIG_KB_HUMAN_BLOCK "keybinding_human_block_down"
 #define COMSIG_ATOM_DIR_CHANGE "atom_dir_change"
 ///from base of atom/handle_atom_del(): (atom/deleted)
 #define COMSIG_ATOM_CONTENTS_DEL "atom_contents_del"
@@ -237,6 +241,15 @@
 #define COMSIG_ATOM_SINGULARITY_TRY_MOVE "atom_singularity_try_move"
 	/// When returned from `COMSIG_ATOM_SINGULARITY_TRY_MOVE`, the singularity will move to that turf
 	#define SINGULARITY_TRY_MOVE_BLOCK (1 << 0)
+
+// From /atom/proc/set_density(new_value) for when an atom changes density
+#define COMSIG_ATOM_DENSITY_CHANGED "atom_density_change"
+
+#define COMSIG_MOVABLE_PULLED "movable_pulled"						//! signal sent out by an atom when it is being pulled by something else : (atom/puller)
+#define COMSIG_MOVABLE_NO_LONGER_PULLED "movable_no_longer_pulled"	//! signal sent out by an atom when it is no longer being pulled by something else : (atom/puller)
+
+///From living/set_resting(): (new_resting, silent, instant)
+#define COMSIG_LIVING_RESTING "living_resting"
 
 /////////////////
 
@@ -381,11 +394,17 @@
 ///from base of mob/create_mob_hud(): ()
 #define COMSIG_MOB_HUD_CREATED "mob_hud_created"
 
+///from base of /obj/item/toy/crayon/spraycan/afterattack() (mob/user, atom/target)
+#define COMSIG_MOB_USING_SPAYPRAINT "mob_using_spraypaint"
+
 ///from base of /mob/living/proc/apply_damage(): (damage, damagetype, def_zone)
 #define COMSIG_MOB_APPLY_DAMGE	"mob_apply_damage"
 ///from base of /mob/throw_item(): (atom/target)
 #define COMSIG_MOB_THROW "mob_throw"
-///from base of /mob/verb/examinate(): (atom/target)
+///from base of /atom/movable/proc/throw_at(atom/target, range, speed, mob/thrower, spin = TRUE, diagonals_first = FALSE, datum/callback/callback, force = MOVE_FORCE_STRONG, gentle = FALSE, quickstart = TRUE)
+//SEND_SIGNAL(thrower, COMSIG_MOB_THREW_MOVABLE, target, TT)
+#define COMSIG_MOB_THREW_MOVABLE "mob_threw_movable"
+///from base of TYPE_VERB_REF(/mob, examinate)(): (atom/target)
 #define COMSIG_MOB_EXAMINATE "mob_examinate"
 ///from /mob/living/handle_eye_contact(): (mob/living/other_mob)
 #define COMSIG_MOB_EYECONTACT "mob_eyecontact"
@@ -408,13 +427,22 @@
 ///from /mob/say_dead(): (mob/speaker, message)
 #define COMSIG_MOB_DEADSAY "mob_deadsay"
 	#define MOB_DEADSAY_SIGNAL_INTERCEPT (1<<0)
+
 ///from /mob/living/emote(): ()
 #define COMSIG_MOB_EMOTE "mob_emote"
+///Mob is trying to emote, from /datum/emote/proc/run_emote(): (key, params, type_override, intentional, emote)
+#define COMSIG_MOB_PRE_EMOTED "mob_pre_emoted"
+	#define COMPONENT_CANT_EMOTE (1<<0)
+#define COMSIG_MOB_EMOTED(emote_key) "mob_emoted_[emote_key]"
+
 ///from base of mob/swap_hand(): (obj/item)
 #define COMSIG_MOB_SWAP_HANDS "mob_swap_hands"
 	#define COMPONENT_BLOCK_SWAP (1<<0)
 ///from /obj/structure/door/crush(): (mob/living/crushed, /obj/machinery/door/crushing_door)
 #define COMSIG_LIVING_DOORCRUSHED "living_doorcrush"
+
+/// From base of /client/Move()
+#define COMSIG_MOB_CLIENT_MOVED "mob_client_moved"
 
 ///from base of mob/living/resist() (/mob/living)
 #define COMSIG_LIVING_RESIST "living_resist"
@@ -446,6 +474,16 @@
 ///from base of mob/living/death(): (gibbed)
 #define COMSIG_LIVING_DEATH "living_death"
 
+///from /obj/item/hand_item/slapper/attack_atom(): (source=mob/living/slammer, obj/structure/table/slammed_table)
+#define COMSIG_LIVING_SLAM_TABLE "living_slam_table"
+///from /obj/item/hand_item/slapper/attack(): (source=mob/living/slapper, mob/living/slapped)
+#define COMSIG_LIVING_SLAP_MOB "living_slap_mob"
+///from /obj/item/hand_item/slapper/attack(): (source=mob/living/slapper, mob/living/slapped)
+#define COMSIG_LIVING_SLAPPED "living_slapped"
+
+///from /obj/item/hand_item/slapper/attack_atom(): (source=obj/structure/table/slammed_table, mob/living/slammer)
+#define COMSIG_TABLE_SLAMMED "table_slammed"
+
 ///sent from borg recharge stations: (amount, repairs)
 #define COMSIG_PROCESS_BORGCHARGER_OCCUPANT "living_charge"
 ///sent when a mob/login() finishes: (client)
@@ -471,6 +509,13 @@
 ///from base of /mob/living/can_track(): (mob/user)
 #define COMSIG_LIVING_CAN_TRACK "mob_cantrack"
 	#define COMPONENT_CANT_TRACK (1<<0)
+
+/// From /mob/living/proc/stop_leaning()
+#define COMSIG_LIVING_STOPPED_LEANING "living_stopped_leaning"
+
+/// Called when a living mob has its resting updated: (resting_state)
+#define COMSIG_LIVING_RESTING_UPDATED "resting_updated"
+
 
 ///From /datum/component/creamed/Initialize()
 #define COMSIG_MOB_CREAMED "mob_creamed"
@@ -611,6 +656,15 @@
 #define COMSIG_GRILL_COMPLETED "item_grill_completed"
 ///Called when an armor plate is successfully applied to an object
 #define COMSIG_ARMOR_PLATED "armor_plated"
+
+///Called when an item is being offered, from [/obj/item/proc/on_offered(mob/living/carbon/offerer)]
+#define COMSIG_ITEM_OFFERING "item_offering"
+	///Interrupts the offer proc
+	#define COMPONENT_OFFER_INTERRUPT (1<<0)
+///Called when an someone tries accepting an offered item, from [/obj/item/proc/on_offer_taken(mob/living/carbon/offerer, mob/living/carbon/taker)]
+#define COMSIG_ITEM_OFFER_TAKEN "item_offer_taken"
+	///Interrupts the offer acceptance
+	#define COMPONENT_OFFER_TAKE_INTERRUPT (1<<0)
 
 ///from base of [/obj/item/proc/tool_check_callback]: (mob/living/user)
 #define COMSIG_TOOL_IN_USE "tool_in_use"
@@ -982,8 +1036,20 @@
 #define COMSIG_ITEM_AFTERATTACK "item_afterattack"
 ///from base of obj/item/attack_qdeleted(): (atom/target, mob/user, params)
 #define COMSIG_ITEM_ATTACK_QDELETED "item_attack_qdeleted"
+///from base of /mob/proc/melee_swing()
+#define COMSIG_MOB_MELEE_SWING "mob_melee_swing"
+///from base of /mob/living/attackby(obj/item/I, mob/living/user, params)
+///	SEND_SIGNAL(src, COMSIG_MOB_ATTACKED_BY_MELEE, /*attacker =*/user, /*item =*/I, /*params =*/params)
+#define COMSIG_MOB_ATTACKED_BY_MELEE "mob_attacked_by_melee"
+///	SEND_SIGNAL(user, COMSIG_MOB_ATTACKING_MELEE, /*target =*/src, /*item =*/I, params)
+#define COMSIG_MOB_ATTACKING_MELEE "mob_attacking_melee"
 ///from base of atom/attack_hand(): (mob/user)
 #define COMSIG_MOB_ATTACK_HAND "mob_attack_hand"
+///from base of /mob/living/attack_hand(mob/living/carbon/human/user)
+///SEND_SIGNAL(user, COMSIG_MOB_LIVING_ATTACK_HAND, /*target =*/src)
+#define COMSIG_MOB_LIVING_ATTACK_HAND "mob_living_attack_hand"
+///SEND_SIGNAL(src, COMSIG_MOB_ATTACKED_HAND, /*attacker =*/user)
+#define COMSIG_MOB_ATTACKED_HAND "mob_attacked_hand"
 ///from base of /obj/item/attack(): (mob/M, mob/user)
 #define COMSIG_MOB_ITEM_ATTACK "mob_item_attack"
 ///from base of obj/item/afterattack(): (atom/target, mob/user, proximity_flag, click_parameters)
@@ -998,7 +1064,6 @@
 #define COMSIG_HUMAN_EARLY_UNARMED_ATTACK "human_early_unarmed_attack"
 ///from mob/living/carbon/human/UnarmedAttack(): (atom/target, proximity)
 #define COMSIG_HUMAN_MELEE_UNARMED_ATTACK "human_melee_unarmed_attack"
-
 
 // Aquarium related signals
 #define COMSIG_AQUARIUM_BEFORE_INSERT_CHECK "aquarium_about_to_be_inserted"

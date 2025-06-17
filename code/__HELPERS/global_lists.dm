@@ -2,6 +2,12 @@
 /////Initial Building/////
 //////////////////////////
 
+GLOBAL_LIST_EMPTY(clanes_list)	//>:3
+
+GLOBAL_LIST_EMPTY(auspices_list)
+
+GLOBAL_LIST_EMPTY(factions_list)
+
 /proc/make_datum_references_lists()
 	//hair
 	init_sprite_accessory_subtypes(/datum/sprite_accessory/hair, GLOB.hairstyles_list, GLOB.hairstyles_male_list, GLOB.hairstyles_female_list)
@@ -39,12 +45,32 @@
 	for(var/spath in subtypesof(/datum/species))
 		var/datum/species/S = new spath()
 		GLOB.species_list[S.id] = spath
-	sortList(GLOB.species_list, /proc/cmp_typepaths_asc)
+	sortList(GLOB.species_list, GLOBAL_PROC_REF(cmp_typepaths_asc))
+
+	for(var/spath in subtypesof(/datum/vtr_faction))
+		var/datum/vtr_faction/faction = new spath()
+		GLOB.factions_list[faction.name] = spath
+	sortList(GLOB.factions_list, GLOBAL_PROC_REF(cmp_typepaths_asc))
+
+	for(var/spath in subtypesof(/datum/vampireclane/vtr))
+		var/datum/vampireclane/vtr/S = new spath()
+		GLOB.clanes_list[S.name] = spath
+	sortList(GLOB.clanes_list, GLOBAL_PROC_REF(cmp_typepaths_asc))
+
+	for(var/spath in subtypesof(/datum/auspice))
+		var/datum/auspice/S = new spath()
+		GLOB.auspices_list[S.name] = spath
+	sortList(GLOB.auspices_list, GLOBAL_PROC_REF(cmp_typepaths_asc))
 
 	//Surgeries
 	for(var/path in subtypesof(/datum/surgery))
 		GLOB.surgeries_list += new path()
-	sortList(GLOB.surgeries_list, /proc/cmp_typepaths_asc)
+	sortList(GLOB.surgeries_list, GLOBAL_PROC_REF(cmp_typepaths_asc))
+
+	// Hair Gradients - Initialise all /datum/sprite_accessory/gradient into an list indexed by gradient-style name
+	for(var/path in subtypesof(/datum/sprite_accessory/gradient))
+		var/datum/sprite_accessory/gradient/H = new path()
+		GLOB.gradients_list[H.name] = H
 
 	// Keybindings
 	init_keybindings()
@@ -57,7 +83,7 @@
 /proc/init_crafting_recipes(list/crafting_recipes)
 	for(var/path in subtypesof(/datum/crafting_recipe))
 		var/datum/crafting_recipe/recipe = new path()
-		recipe.reqs = sortList(recipe.reqs, /proc/cmp_crafting_req_priority)
+		recipe.reqs = sortList(recipe.reqs, GLOBAL_PROC_REF(cmp_crafting_req_priority))
 		crafting_recipes += recipe
 	return crafting_recipes
 

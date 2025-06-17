@@ -173,7 +173,7 @@
 	playsound(src, 'sound/machines/buzz-sigh.ogg', 50, FALSE)
 	safety_mode = TRUE
 	update_icon()
-	addtimer(CALLBACK(src, .proc/reboot), SAFETY_COOLDOWN)
+	addtimer(CALLBACK(src, PROC_REF(reboot)), SAFETY_COOLDOWN)
 
 /obj/machinery/recycler/proc/reboot()
 	playsound(src, 'sound/machines/ping.ogg', 50, FALSE)
@@ -205,11 +205,11 @@
 /obj/machinery/recycler/deathtrap
 	name = "dangerous old crusher"
 	obj_flags = CAN_BE_HIT | EMAGGED
-	crush_damage = 120
+	crush_damage = 999999
 	flags_1 = NODECONSTRUCT_1
 
 /obj/item/paper/guides/recycler
 	name = "paper - 'garbage duty instructions'"
-	info = "<h2>New Assignment</h2> You have been assigned to collect garbage from trash bins, located around the station. The crewmembers will put their trash into it and you will collect the said trash.<br><br>There is a recycling machine near your closet, inside maintenance; use it to recycle the trash for a small chance to get useful minerals. Then deliver these minerals to cargo or engineering. You are our last hope for a clean station, do not screw this up!"
+	default_raw_text = "<h2>New Assignment</h2> You have been assigned to collect garbage from trash bins, located around the station. The crewmembers will put their trash into it and you will collect the said trash.<br><br>There is a recycling machine near your closet, inside maintenance; use it to recycle the trash for a small chance to get useful minerals. Then deliver these minerals to cargo or engineering. You are our last hope for a clean station, do not screw this up!"
 
 #undef SAFETY_COOLDOWN

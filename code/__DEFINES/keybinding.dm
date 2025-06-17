@@ -29,17 +29,23 @@
 #define COMSIG_KB_CLIENT_GETHELP_DOWN "keybinding_client_gethelp_down"
 #define COMSIG_KB_CLIENT_SCREENSHOT_DOWN "keybinding_client_screenshot_down"
 #define COMSIG_KB_CLIENT_MINIMALHUD_DOWN "keybinding_client_minimalhud_down"
+#define COMSIG_KB_CLIENT_FULLSCREEN_DOWN "keybinding_client_fullscreen_down"
 
 //Communication
-#define COMSIG_KB_CLIENT_OOC_DOWN "keybinding_client_ooc_down"
+
 #define COMSIG_KB_CLIENT_SAY_DOWN "keybinding_client_say_down"
+#define COMSIG_KB_CLIENT_RADIO_DOWN "keybinding_client_radio_down"
 #define COMSIG_KB_CLIENT_ME_DOWN "keybinding_client_me_down"
+#define COMSIG_KB_CLIENT_OOC_DOWN "keybinding_client_ooc_down"
+#define COMSIG_KB_CLIENT_LOOC_DOWN "keybinding_client_looc_down"
+#define COMSIG_KB_CLIENT_WHISPER_DOWN "keybinding_client_whisper_down"
 
 //Human
 #define COMSIG_KB_HUMAN_QUICKEQUIP_DOWN "keybinding_human_quickequip_down"
 #define COMSIG_KB_HUMAN_QUICKEQUIPBELT_DOWN "keybinding_human_quickequipbelt_down"
 #define COMSIG_KB_HUMAN_BAGEQUIP_DOWN "keybinding_human_bagequip_down"
 #define COMSIG_KB_HUMAN_SUITEQUIP_DOWN "keybinding_human_suitequip_down"
+#define COMSIG_KB_HUMAN_BITE_DOWN "keybinding_human_bite_down"
 
 //Living
 #define COMSIG_KB_LIVING_RESIST_DOWN "keybinding_living_resist_down"
@@ -56,6 +62,7 @@
 #define COMSIG_KB_MOB_CYCLEINTENTRIGHT_DOWN "keybinding_mob_cycleintentright_down"
 #define COMSIG_KB_MOB_CYCLEINTENTLEFT_DOWN "keybinding_mob_cycleintentleft_down"
 #define COMSIG_KB_MOB_SWAPHANDS_DOWN "keybinding_mob_swaphands_down"
+#define COMSIG_KB_MOB_JUMP_DOWN "keybinding_mob_jump_down"
 #define COMSIG_KB_MOB_ACTIVATEINHAND_DOWN "keybinding_mob_activateinhand_down"
 #define COMSIG_KB_MOB_DROPITEM_DOWN "keybinding_mob_dropitem_down"
 #define COMSIG_KB_MOB_TOGGLEMOVEINTENT_DOWN "keybinding_mob_togglemoveintent_down"
@@ -70,6 +77,7 @@
 #define COMSIG_KB_MOB_TARGETBODYGROIN_DOWN "keybinding_mob_targetbodygroin_down"
 #define COMSIG_KB_MOB_TARGETLEFTLEG_DOWN "keybinding_mob_targetleftleg_down"
 #define COMSIG_KB_MOB_BLOCKMOVEMENT_DOWN "keybinding_mob_blockmovement_down"
+#define COMSIG_KB_MOB_PIXELSHIFT "keybinding_mob_pixelshift"
 
 //Robot
 #define COMSIG_KB_SILICON_TOGGLEMODULEONE_DOWN "keybinding_silicon_togglemoduleone_down"

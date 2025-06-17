@@ -80,7 +80,7 @@
 
 		if(prob(1))
 			manual_emote(pick("dances around.","chases its tail!"))
-			INVOKE_ASYNC(GLOBAL_PROC, .proc/dance_rotate, src)
+			INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(dance_rotate), src)
 
 //Corgis and pugs are now under one dog subtype
 
@@ -192,11 +192,11 @@
 	var/list/dat = list()
 
 	dat += "<table>"
-	dat += "<tr><td><B>Head:</B></td><td><A href='?src=[REF(src)];[inventory_head ? "remove_inv=head'>[inventory_head]" : "add_inv=head'><font color=grey>Empty</font>"]</A></td></tr>"
-	dat += "<tr><td><B>Back:</B></td><td><A href='?src=[REF(src)];[inventory_back ? "remove_inv=back'>[inventory_back]" : "add_inv=back'><font color=grey>Empty</font>"]</A></td></tr>"
-	dat += "<tr><td><B>Collar:</B></td><td><A href='?src=[REF(src)];[pcollar ? "remove_inv=collar'>[pcollar]" : "add_inv=collar'><font color=grey>Empty</font>"]</A></td></tr>"
+	dat += "<tr><td><B>Head:</B></td><td><A href='byond://?src=[REF(src)];[inventory_head ? "remove_inv=head'>[inventory_head]" : "add_inv=head'><font color=grey>Empty</font>"]</A></td></tr>"
+	dat += "<tr><td><B>Back:</B></td><td><A href='byond://?src=[REF(src)];[inventory_back ? "remove_inv=back'>[inventory_back]" : "add_inv=back'><font color=grey>Empty</font>"]</A></td></tr>"
+	dat += "<tr><td><B>Collar:</B></td><td><A href='byond://?src=[REF(src)];[pcollar ? "remove_inv=collar'>[pcollar]" : "add_inv=collar'><font color=grey>Empty</font>"]</A></td></tr>"
 	dat += {"</table>
-	<A href='?src=[REF(user)];mach_close=mob[REF(src)]'>Close</A>
+	<A href='byond://?src=[REF(user)];mach_close=mob[REF(src)]'>Close</A>
 	"}
 
 	var/datum/browser/popup = new(user, "mob[REF(src)]", "[src]", 440, 510)
@@ -346,7 +346,7 @@
 /mob/living/simple_animal/pet/dog/corgi/proc/place_on_head(obj/item/item_to_add, mob/user)
 
 	if(istype(item_to_add, /obj/item/grenade/c4)) // last thing he ever wears, I guess
-		INVOKE_ASYNC(item_to_add, /obj/item.proc/afterattack, src, user, 1)
+		INVOKE_ASYNC(item_to_add, TYPE_PROC_REF(/obj/item, afterattack), src, user, 1)
 		return
 
 	if(inventory_head)

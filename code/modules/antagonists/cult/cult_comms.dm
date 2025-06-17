@@ -29,7 +29,7 @@
 	var/my_message
 	if(!message)
 		return
-	user.whisper("O bidai nabora se[pick("'","`")]sma!", language = /datum/language/common)
+	user.whisper("O bidai nabora se[pick("'","`")]sma!", language = /datum/language/english)
 	user.whisper(html_decode(message))
 	var/title = "Acolyte"
 	var/span = "cult italic"
@@ -190,7 +190,7 @@
 									S.release_shades(owner)
 								B.current.setDir(SOUTH)
 								new /obj/effect/temp_visual/cult/blood(final)
-								addtimer(CALLBACK(B.current, /mob/.proc/reckon, final), 10)
+								addtimer(CALLBACK(B.current, TYPE_PROC_REF(/mob, reckon), final), 10)
 		else
 			return
 	antag.cult_team.reckoning_complete = TRUE
@@ -203,15 +203,15 @@
 /datum/action/innate/cult/master/finalreck/proc/chant(chant_number)
 	switch(chant_number)
 		if(1)
-			owner.say("C'arta forbici!", language = /datum/language/common, forced = "cult invocation")
+			owner.say("C'arta forbici!", language = /datum/language/english, forced = "cult invocation")
 		if(2)
-			owner.say("Pleggh e'ntrath!", language = /datum/language/common, forced = "cult invocation")
+			owner.say("Pleggh e'ntrath!", language = /datum/language/english, forced = "cult invocation")
 			playsound(get_turf(owner),'sound/magic/clockwork/narsie_attack.ogg', 50, TRUE)
 		if(3)
-			owner.say("Barhah hra zar'garis!", language = /datum/language/common, forced = "cult invocation")
+			owner.say("Barhah hra zar'garis!", language = /datum/language/english, forced = "cult invocation")
 			playsound(get_turf(owner),'sound/magic/clockwork/narsie_attack.ogg', 75, TRUE)
 		if(4)
-			owner.say("N'ath reth sh'yro eth d'rekkathnor!!!", language = /datum/language/common, forced = "cult invocation")
+			owner.say("N'ath reth sh'yro eth d'rekkathnor!!!", language = /datum/language/english, forced = "cult invocation")
 			playsound(get_turf(owner),'sound/magic/clockwork/narsie_attack.ogg', 100, TRUE)
 
 /datum/action/innate/cult/master/cultmark
@@ -257,7 +257,7 @@
 	else
 		add_ranged_ability(user, "<span class='cult'>You prepare to mark a target for your cult...</span>")
 
-/obj/effect/proc_holder/cultmark/InterceptClickOn(mob/living/caller, params, atom/target)
+/obj/effect/proc_holder/cultmark/InterceptClickOn(mob/living/clicker, params, atom/target)
 	if(..())
 		return
 	if(ranged_ability_user.incapacitated())
@@ -267,7 +267,7 @@
 	if(!isturf(T))
 		return FALSE
 
-	var/datum/antagonist/cult/C = caller.mind.has_antag_datum(/datum/antagonist/cult,TRUE)
+	var/datum/antagonist/cult/C = clicker.mind.has_antag_datum(/datum/antagonist/cult,TRUE)
 
 	if(target in view(7, get_turf(ranged_ability_user)))
 		if(C.cult_team.blood_target)
@@ -276,7 +276,7 @@
 		C.cult_team.blood_target = target
 		var/area/A = get_area(target)
 		attached_action.cooldown = world.time + attached_action.base_cooldown
-		addtimer(CALLBACK(attached_action.owner, /mob.proc/update_action_buttons_icon), attached_action.base_cooldown)
+		addtimer(CALLBACK(attached_action.owner, TYPE_PROC_REF(/mob, update_action_buttons_icon)), attached_action.base_cooldown)
 		C.cult_team.blood_target_image = image('icons/effects/mouse_pointers/cult_target.dmi', target, "glow", ABOVE_MOB_LAYER)
 		C.cult_team.blood_target_image.appearance_flags = RESET_COLOR
 		C.cult_team.blood_target_image.pixel_x = -target.pixel_x
@@ -288,7 +288,7 @@
 				B.current.client.images += C.cult_team.blood_target_image
 		attached_action.owner.update_action_buttons_icon()
 		remove_ranged_ability("<span class='cult'>The marking rite is complete! It will last for 90 seconds.</span>")
-		C.cult_team.blood_target_reset_timer = addtimer(CALLBACK(GLOBAL_PROC, .proc/reset_blood_target,C.cult_team), 900, TIMER_STOPPABLE)
+		C.cult_team.blood_target_reset_timer = addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(reset_blood_target),C.cult_team), 900, TIMER_STOPPABLE)
 		return TRUE
 	return FALSE
 
@@ -355,7 +355,7 @@
 	C.cult_team.blood_target = target
 	var/area/A = get_area(target)
 	cooldown = world.time + base_cooldown
-	addtimer(CALLBACK(owner, /mob.proc/update_action_buttons_icon), base_cooldown)
+	addtimer(CALLBACK(owner, TYPE_PROC_REF(/mob, update_action_buttons_icon)), base_cooldown)
 	C.cult_team.blood_target_image = image('icons/effects/mouse_pointers/cult_target.dmi', target, "glow", ABOVE_MOB_LAYER)
 	C.cult_team.blood_target_image.appearance_flags = RESET_COLOR
 	C.cult_team.blood_target_image.pixel_x = -target.pixel_x
@@ -372,8 +372,8 @@
 	desc = "Remove the Blood Mark you previously set."
 	button_icon_state = "emp"
 	owner.update_action_buttons_icon()
-	C.cult_team.blood_target_reset_timer = addtimer(CALLBACK(GLOBAL_PROC, .proc/reset_blood_target,C.cult_team), base_cooldown, TIMER_STOPPABLE)
-	addtimer(CALLBACK(src, .proc/reset_button), base_cooldown)
+	C.cult_team.blood_target_reset_timer = addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(reset_blood_target),C.cult_team), base_cooldown, TIMER_STOPPABLE)
+	addtimer(CALLBACK(src, PROC_REF(reset_button)), base_cooldown)
 
 
 //////// ELDRITCH PULSE /////////
@@ -432,7 +432,7 @@
 	else
 		add_ranged_ability(user, "<span class='cult'>You prepare to tear through the fabric of reality...</span>")
 
-/obj/effect/proc_holder/pulse/InterceptClickOn(mob/living/caller, params, atom/target)
+/obj/effect/proc_holder/pulse/InterceptClickOn(mob/living/clicker, params, atom/target)
 	if(..())
 		return
 	if(ranged_ability_user.incapacitated())
@@ -442,7 +442,7 @@
 	if(!isturf(T))
 		return FALSE
 	if(target in view(7, get_turf(ranged_ability_user)))
-		if((!(iscultist(target) || istype(target, /obj/structure/destructible/cult)) || target == caller) && !(attached_action.throwing))
+		if((!(iscultist(target) || istype(target, /obj/structure/destructible/cult)) || target == clicker) && !(attached_action.throwing))
 			return
 		if(!attached_action.throwing)
 			attached_action.throwing = TRUE
@@ -462,5 +462,5 @@
 			attached_action.throwing = FALSE
 			attached_action.cooldown = world.time + attached_action.base_cooldown
 			remove_ranged_ability("<span class='cult'>A pulse of blood magic surges through you as you shift [attached_action.throwee] through time and space.</span>")
-			caller.update_action_buttons_icon()
-			addtimer(CALLBACK(caller, /mob.proc/update_action_buttons_icon), attached_action.base_cooldown)
+			clicker.update_action_buttons_icon()
+			addtimer(CALLBACK(clicker, TYPE_PROC_REF(/mob, update_action_buttons_icon)), attached_action.base_cooldown)

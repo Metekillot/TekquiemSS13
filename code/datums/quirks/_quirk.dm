@@ -14,6 +14,8 @@
 	var/hardcore_value = 0
 	var/mob/living/quirk_holder
 
+	var/list/allowed_species = list()
+
 /datum/quirk/New(mob/living/quirk_mob, spawn_effects)
 	..()
 	if(!quirk_mob || (human_only && !ishuman(quirk_mob)) || quirk_mob.has_quirk(type))
@@ -32,7 +34,7 @@
 	if(quirk_holder.client)
 		post_add()
 	else
-		RegisterSignal(quirk_holder, COMSIG_MOB_LOGIN, .proc/on_quirk_holder_first_login)
+		RegisterSignal(quirk_holder, COMSIG_MOB_LOGIN, PROC_REF(on_quirk_holder_first_login))
 
 
 /**

@@ -165,6 +165,13 @@
 	. = ..()
 	recursive_organ_check(src)
 
+/obj/structure/closet/crate/freezer/fridge
+	name = "fridge"
+	desc = "Store food or bodyparts here."
+	icon = 'icons/wod13/props.dmi'
+	icon_state = "fridge"
+	anchored = TRUE
+
 
 
 /obj/structure/closet/crate/freezer/blood
@@ -176,12 +183,11 @@
 	new /obj/item/reagent_containers/blood(src)
 	new /obj/item/reagent_containers/blood(src)
 	new /obj/item/reagent_containers/blood/a_minus(src)
+	new /obj/item/reagent_containers/blood/a_plus(src)
 	new /obj/item/reagent_containers/blood/b_minus(src)
 	new /obj/item/reagent_containers/blood/b_plus(src)
 	new /obj/item/reagent_containers/blood/o_minus(src)
 	new /obj/item/reagent_containers/blood/o_plus(src)
-	new /obj/item/reagent_containers/blood/lizard(src)
-	new /obj/item/reagent_containers/blood/ethereal(src)
 	for(var/i in 1 to 3)
 		new /obj/item/reagent_containers/blood/random(src)
 
@@ -199,6 +205,24 @@
 	new /obj/item/bodypart/l_leg/robot/surplus(src)
 	new /obj/item/bodypart/r_leg/robot/surplus(src)
 	new /obj/item/bodypart/r_leg/robot/surplus(src)
+
+/obj/structure/closet/crate/freezer/surplus_limbs/organs
+	name = "organ freezer"
+	desc = "A crate containing a variety of spare limbs and organs."
+
+/obj/structure/closet/crate/freezer/surplus_limbs/organs/PopulateContents()
+	. = ..()
+	new /obj/item/organ/stomach(src)
+	new /obj/item/organ/stomach(src)
+	new /obj/item/organ/lungs(src)
+	new /obj/item/organ/liver(src)
+	new /obj/item/organ/liver(src)
+	new /obj/item/organ/eyes(src)
+	new /obj/item/organ/eyes(src)
+	new /obj/item/organ/heart(src)
+	new /obj/item/organ/heart(src)
+	new /obj/item/organ/ears(src)
+	new /obj/item/organ/ears(src)
 
 /obj/structure/closet/crate/radiation
 	desc = "A crate with a radiation sign on it."

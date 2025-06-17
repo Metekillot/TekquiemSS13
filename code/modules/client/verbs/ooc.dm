@@ -59,10 +59,6 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 	if(prefs.hearted)
 		var/datum/asset/spritesheet/sheet = get_asset_datum(/datum/asset/spritesheet/chat)
 		keyname = "[sheet.icon_tag("emoji-heart")][keyname]"
-	if(prefs.unlock_content)
-		if(prefs.toggles & MEMBER_PUBLIC)
-			keyname = "<font color='[prefs.ooccolor ? prefs.ooccolor : GLOB.normal_ooc_colour]'>[icon2html('icons/member_content.dmi', world, "blag")][keyname]</font>"
-	//The linkify span classes and linkify=TRUE below make ooc text get clickable chat href links if you pass in something resembling a url
 	for(var/client/C in GLOB.clients)
 		if(C.prefs.chat_toggles & CHAT_OOC)
 			if(holder?.fakekey in C.prefs.ignoring)
@@ -84,6 +80,60 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 					to_chat(C, "<font color='[GLOB.OOC_COLOR]'><b><span class='prefix'>OOC:</span> <EM>[keyname]:</EM> <span class='message linkify'>[msg]</span></b></font>")
 				else
 					to_chat(C, "<span class='ooc'><span class='prefix'>OOC:</span> <EM>[keyname]:</EM> <span class='message linkify'>[msg]</span></span>")
+
+/client/verb/looc(msg as text)
+	set name = "LOOC" //Gave this shit a shorter name so you only have to time out "ooc" rather than "ooc message" to use it --NeoFite
+	set category = "OOC"
+
+	if(GLOB.say_disabled)	//This is here to try to identify lag problems
+		to_chat(usr, "<span class='danger'>Speech is currently admin-disabled.</span>")
+		return
+
+	if(!mob)
+		return
+
+	if(!holder)
+		if(!GLOB.ooc_allowed)
+			to_chat(src, "<span class='danger'>OOC is globally muted.</span>")
+			return
+		if(!GLOB.dooc_allowed && (mob.stat == DEAD))
+			to_chat(usr, "<span class='danger'>OOC for dead mobs has been turned off.</span>")
+			return
+		if(prefs.muted & MUTE_OOC)
+			to_chat(src, "<span class='danger'>You cannot use OOC (muted).</span>")
+			return
+	if(is_banned_from(ckey, "OOC"))
+		to_chat(src, "<span class='danger'>You have been banned from OOC.</span>")
+		return
+	if(QDELETED(src))
+		return
+
+	msg = copytext_char(sanitize(msg), 1, MAX_MESSAGE_LEN)
+	var/raw_msg = msg
+
+	if(!msg)
+		return
+
+	msg = emoji_parse(msg)
+
+	if(!holder)
+		if(handle_spam_prevention(msg,MUTE_OOC))
+			return
+		if(findtext(msg, "byond://"))
+			to_chat(src, "<B>Advertising other servers is not allowed.</B>")
+			log_admin("[key_name(src)] has attempted to advertise in OOC: [msg]")
+			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]")
+			return
+
+	if(!(prefs.chat_toggles & CHAT_OOC))
+		to_chat(src, "<span class='danger'>You have OOC muted.</span>")
+		return
+
+	mob.log_talk(raw_msg, LOG_OOC)
+	for(var/mob/L in viewers(9, mob))
+		if(L.client)
+			if(L.client.prefs.chat_toggles & CHAT_OOC)
+				to_chat(L, "<span class='notice'><b><span class='prefix'>LOOC:</span> <EM>[mob.name]:</EM> [msg]</b></span>")
 
 /proc/toggle_ooc(toggle = null)
 	if(toggle != null) //if we're specifically en/disabling ooc
@@ -146,8 +196,7 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 	set category = "Preferences"
 
 	if(!holder || !check_rights_for(src, R_ADMIN))
-		if(!is_content_unlocked())
-			return
+		return
 
 	var/new_ooccolor = input(src, "Please select your OOC color.", "OOC color", prefs.ooccolor) as color|null
 	if(isnull(new_ooccolor))
@@ -164,11 +213,10 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 	set category = "Preferences"
 
 	if(!holder || !check_rights_for(src, R_ADMIN))
-		if(!is_content_unlocked())
-			return
+		return
 
-		prefs.ooccolor = initial(prefs.ooccolor)
-		prefs.save_preferences()
+	prefs.ooccolor = initial(prefs.ooccolor)
+	prefs.save_preferences()
 
 //Checks admin notice
 /client/verb/admin_notice()
@@ -355,6 +403,7 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 
 	// Fetch aspect ratio
 	var/view_size = getviewsize(view)
+	view_size[1] += 4
 	var/aspect_ratio = view_size[1] / view_size[2]
 
 	// Calculate desired pixel width using window size and aspect ratio
@@ -430,6 +479,15 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 		policytext += "No related rules found."
 
 	usr << browse(policytext.Join(""),"window=policy")
+
+/client/verb/toggle_fullscreen()
+	set name = "Toggle Fullscreen"
+	set category = "OOC"
+
+	fullscreen = !fullscreen
+
+	winset(src, "mainwindow", "menu=;is-fullscreen=[fullscreen ? "true" : "false"]")
+	//attempt_auto_fit_viewport()
 
 /client/verb/fix_stat_panel()
 	set name = "Fix Stat Panel"

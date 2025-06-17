@@ -3,6 +3,7 @@
 	desc = "A large wooden barrel. You can ferment fruits and such inside it, or just use it to hold liquid."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "barrel"
+	resistance_flags = FLAMMABLE
 	density = TRUE
 	anchored = FALSE
 	pressure_resistance = 2 * ONE_ATMOSPHERE
@@ -48,7 +49,7 @@
 			to_chat(user, "<span class='warning'>[I] is stuck to your hand!</span>")
 			return TRUE
 		to_chat(user, "<span class='notice'>You place [I] into [src] to start the fermentation process.</span>")
-		addtimer(CALLBACK(src, .proc/makeWine, fruit), rand(80, 120) * speed_multiplier)
+		addtimer(CALLBACK(src, PROC_REF(makeWine), fruit), rand(80, 120) * speed_multiplier)
 		return TRUE
 	if(I)
 		if(I.is_refillable())

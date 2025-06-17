@@ -800,73 +800,6 @@
 	crate_name = "huge portable scrubber crate"
 	crate_type = /obj/structure/closet/crate/large
 
-/datum/supply_pack/engineering/bsa
-	name = "Bluespace Artillery Parts"
-	desc = "The pride of Nanotrasen Naval Command. The legendary Bluespace Artillery Cannon is a devastating feat of human engineering and testament to wartime determination. Highly advanced research is required for proper construction. "
-	cost = CARGO_CRATE_VALUE * 30
-	special = TRUE
-	access_view = ACCESS_HEADS
-	contains = list(/obj/item/circuitboard/machine/bsa/front,
-					/obj/item/circuitboard/machine/bsa/middle,
-					/obj/item/circuitboard/machine/bsa/back,
-					/obj/item/circuitboard/computer/bsa_control
-					)
-	crate_name= "bluespace artillery parts crate"
-
-/datum/supply_pack/engineering/dna_vault
-	name = "DNA Vault Parts"
-	desc = "Secure the longevity of the current state of humanity within this massive library of scientific knowledge, capable of granting superhuman powers and abilities. Highly advanced research is required for proper construction. Also contains five DNA probes."
-	cost = CARGO_CRATE_VALUE * 24
-	special = TRUE
-	access_view = ACCESS_HEADS
-	contains = list(
-					/obj/item/circuitboard/machine/dna_vault,
-					/obj/item/dna_probe,
-					/obj/item/dna_probe,
-					/obj/item/dna_probe,
-					/obj/item/dna_probe,
-					/obj/item/dna_probe
-					)
-	crate_name= "dna vault parts crate"
-
-/datum/supply_pack/engineering/dna_probes
-	name = "DNA Vault Samplers"
-	desc = "Contains five DNA probes for use in the DNA vault."
-	cost = CARGO_CRATE_VALUE * 6
-	special = TRUE
-	access_view = ACCESS_HEADS
-	contains = list(/obj/item/dna_probe,
-					/obj/item/dna_probe,
-					/obj/item/dna_probe,
-					/obj/item/dna_probe,
-					/obj/item/dna_probe
-					)
-	crate_name= "dna samplers crate"
-
-
-/datum/supply_pack/engineering/shield_sat
-	name = "Shield Generator Satellite"
-	desc = "Protect the very existence of this station with these Anti-Meteor defenses. Contains three Shield Generator Satellites."
-	cost = CARGO_CRATE_VALUE * 6
-	special = TRUE
-	access_view = ACCESS_HEADS
-	contains = list(
-					/obj/machinery/satellite/meteor_shield,
-					/obj/machinery/satellite/meteor_shield,
-					/obj/machinery/satellite/meteor_shield
-					)
-	crate_name= "shield sat crate"
-
-
-/datum/supply_pack/engineering/shield_sat_control
-	name = "Shield System Control Board"
-	desc = "A control system for the Shield Generator Satellite system."
-	cost = CARGO_CRATE_VALUE * 10
-	special = TRUE
-	access_view = ACCESS_HEADS
-	contains = list(/obj/item/circuitboard/computer/sat_control)
-	crate_name= "shield control board crate"
-
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////// Engine Construction /////////////////////////////////
@@ -1523,8 +1456,6 @@
 	cost = CARGO_CRATE_VALUE * 5
 	contains = list(/obj/item/storage/box/drinkingglasses,
 					/obj/item/reagent_containers/food/drinks/shaker,
-					/obj/item/reagent_containers/food/drinks/bottle/patron,
-					/obj/item/reagent_containers/food/drinks/bottle/goldschlager,
 					/obj/item/reagent_containers/food/drinks/ale,
 					/obj/item/reagent_containers/food/drinks/ale,
 					/obj/item/storage/cans/sixbeer,
@@ -1794,7 +1725,7 @@
 				anomalous_box_provided = TRUE
 				log_game("An anomalous pizza box was provided in a pizza crate at during cargo delivery")
 				if(prob(50))
-					addtimer(CALLBACK(src, .proc/anomalous_pizza_report), rand(300, 1800))
+					addtimer(CALLBACK(src, PROC_REF(anomalous_pizza_report)), rand(300, 1800))
 				else
 					message_admins("An anomalous pizza box was silently created with no command report in a pizza crate delivery.")
 				break
@@ -2334,8 +2265,7 @@
 	name = "Aquarium Kit"
 	desc = "Everything you need to start your own aquarium. Contains aquarium construction kit, fish catalog, feed can and three freshwater fish from our collection."
 	cost = CARGO_CRATE_VALUE * 10
-	contains = list(/obj/item/book/fish_catalog,
-					/obj/item/storage/fish_case/random/freshwater,
+	contains = list(/obj/item/storage/fish_case/random/freshwater,
 					/obj/item/storage/fish_case/random/freshwater,
 					/obj/item/storage/fish_case/random/freshwater,
 					/obj/item/fish_feed,
@@ -2381,9 +2311,6 @@
 	cost = CARGO_CRATE_VALUE * 3
 	access_view = ACCESS_LIBRARY
 	contains = list(/obj/item/book/codex_gigas,
-					/obj/item/book/manual/random/,
-					/obj/item/book/manual/random/,
-					/obj/item/book/manual/random/,
 					/obj/item/book/random,
 					/obj/item/book/random,
 					/obj/item/book/random)
@@ -2439,8 +2366,8 @@
 	cost = CARGO_CRATE_VALUE * 1.6
 	access_view = ACCESS_CHAPEL_OFFICE
 	contains = list(/obj/item/clothing/under/misc/burial,
-					/obj/item/food/grown/harebell,
-					/obj/item/food/grown/poppy/geranium)
+					/obj/item/food/grown/flower/harebell,
+					/obj/item/food/grown/flower/geranium)
 	crate_name = "coffin"
 	crate_type = /obj/structure/closet/crate/coffin
 

@@ -9,6 +9,9 @@
 	var/labelled = 0
 	fill_icon_thresholds = list(10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
 
+/obj/item/reagent_containers/blood/canconsume(mob/eater, mob/user)
+	return FALSE
+
 /obj/item/reagent_containers/blood/Initialize()
 	. = ..()
 	if(blood_type != null)
@@ -68,7 +71,7 @@
 	blood_type = "U"
 
 /obj/item/reagent_containers/blood/attackby(obj/item/I, mob/user, params)
-	if (istype(I, /obj/item/pen) || istype(I, /obj/item/toy/crayon))
+	if (IS_WRITING_UTENSIL(I))
 		if(!user.is_literate())
 			to_chat(user, "<span class='notice'>You scribble illegibly on the label of [src]!</span>")
 			return
@@ -78,8 +81,10 @@
 		if(user.get_active_held_item() != I)
 			return
 		if(t)
-			labelled = 1
+			labelled = TRUE
 			name = "blood pack - [t]"
+			playsound(src, SFX_WRITING_PEN, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE, SOUND_FALLOFF_EXPONENT + 3, ignore_walls = FALSE)
+			balloon_alert(user, "new label set")
 		else
 			labelled = 0
 			update_pack_name()

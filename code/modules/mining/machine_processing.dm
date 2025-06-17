@@ -24,7 +24,7 @@
 /obj/machinery/mineral/proc/register_input_turf()
 	input_turf = get_step(src, input_dir)
 	if(input_turf) // make sure there is actually a turf
-		RegisterSignal(input_turf, list(COMSIG_ATOM_CREATED, COMSIG_ATOM_ENTERED), .proc/pickup_item)
+		RegisterSignal(input_turf, list(COMSIG_ATOM_CREATED, COMSIG_ATOM_ENTERED), PROC_REF(pickup_item))
 
 /// Unregisters signals that are registered the machine's input turf, if it has one.
 /obj/machinery/mineral/proc/unregister_input_turf()
@@ -175,7 +175,7 @@
 		if (selected_material == M)
 			dat += " <i>Smelting</i>"
 		else
-			dat += " <A href='?src=[REF(CONSOLE)];material=[REF(M)]'><b>Not Smelting</b></A> "
+			dat += " <A href='byond://?src=[REF(CONSOLE)];material=[REF(M)]'><b>Not Smelting</b></A> "
 		dat += "<br>"
 
 	dat += "<br><br>"
@@ -187,16 +187,16 @@
 		if (selected_alloy == D.id)
 			dat += " <i>Smelting</i>"
 		else
-			dat += " <A href='?src=[REF(CONSOLE)];alloy=[D.id]'><b>Not Smelting</b></A> "
+			dat += " <A href='byond://?src=[REF(CONSOLE)];alloy=[D.id]'><b>Not Smelting</b></A> "
 		dat += "<br>"
 
 	dat += "<br><br>"
 	//On or off
 	dat += "Machine is currently "
 	if (on)
-		dat += "<A href='?src=[REF(CONSOLE)];set_on=off'>On</A> "
+		dat += "<A href='byond://?src=[REF(CONSOLE)];set_on=off'>On</A> "
 	else
-		dat += "<A href='?src=[REF(CONSOLE)];set_on=on'>Off</A> "
+		dat += "<A href='byond://?src=[REF(CONSOLE)];set_on=on'>Off</A> "
 
 	return dat
 

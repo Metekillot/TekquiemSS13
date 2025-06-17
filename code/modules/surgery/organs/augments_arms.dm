@@ -58,8 +58,8 @@
 	var/side = zone == BODY_ZONE_R_ARM? RIGHT_HANDS : LEFT_HANDS
 	hand = owner.hand_bodyparts[side]
 	if(hand)
-		RegisterSignal(hand, COMSIG_ITEM_ATTACK_SELF, .proc/ui_action_click) //If the limb gets an attack-self, open the menu. Only happens when hand is empty
-		RegisterSignal(M, COMSIG_KB_MOB_DROPITEM_DOWN, .proc/dropkey) //We're nodrop, but we'll watch for the drop hotkey anyway and then stow if possible.
+		RegisterSignal(hand, COMSIG_ITEM_ATTACK_SELF, PROC_REF(ui_action_click)) //If the limb gets an attack-self, open the menu. Only happens when hand is empty
+		RegisterSignal(M, COMSIG_KB_MOB_DROPITEM_DOWN, PROC_REF(dropkey)) //We're nodrop, but we'll watch for the drop hotkey anyway and then stow if possible.
 
 /obj/item/organ/cyberimp/arm/Remove(mob/living/carbon/M, special = 0)
 	Retract()
@@ -224,6 +224,7 @@
 	name = "integrated medical beamgun"
 	desc = "A cybernetic implant that allows the user to project a healing beam from their hand."
 	contents = newlist(/obj/item/gun/medbeam)
+	zone = BODY_ZONE_L_ARM
 
 
 /obj/item/organ/cyberimp/arm/flash
@@ -263,6 +264,6 @@
 		F.I = src
 
 /obj/item/organ/cyberimp/arm/surgery
-	name = "surgical toolset implant"
-	desc = "A set of surgical tools hidden behind a concealed panel on the user's arm."
+	name = "surgical bones"
+	desc = "A set of surgical tools hidden behind a concealed flesh on the user's arm."
 	contents = newlist(/obj/item/retractor/augment, /obj/item/hemostat/augment, /obj/item/cautery/augment, /obj/item/surgicaldrill/augment, /obj/item/scalpel/augment, /obj/item/circular_saw/augment, /obj/item/surgical_drapes)

@@ -10,10 +10,6 @@
 	icon_state = "command"
 	build_path = /obj/machinery/computer/upload/borg
 
-/obj/item/circuitboard/computer/bsa_control
-	name = "Bluespace Artillery Controls (Computer Board)"
-	build_path = /obj/machinery/computer/bsa_control
-
 /obj/item/circuitboard/computer/card
 	name = "ID Console (Computer Board)"
 	icon_state = "command"
@@ -217,11 +213,6 @@
 	icon_state = "engineering"
 	build_path = /obj/machinery/computer/monitor/secret
 
-/obj/item/circuitboard/computer/sat_control
-	name = "Satellite Network Control (Computer Board)"
-	icon_state = "engineering"
-	build_path = /obj/machinery/computer/sat_control
-
 /obj/item/circuitboard/computer/solar_control
 	name = "Solar Control (Computer Board)"  //name fixed 250810
 	icon_state = "engineering"
@@ -268,18 +259,20 @@
 	name = "Library Visitor Console (Computer Board)"
 	build_path = /obj/machinery/computer/libraryconsole
 
-/obj/item/circuitboard/computer/libraryconsole/attackby(obj/item/I, mob/user, params)
-	if(I.tool_behaviour == TOOL_SCREWDRIVER)
-		if(build_path == /obj/machinery/computer/bookmanagement)
-			name = "Library Visitor Console (Computer Board)"
-			build_path = /obj/machinery/computer/libraryconsole
-			to_chat(user, "<span class='notice'>Defaulting access protocols.</span>")
-		else
-			name = "Book Inventory Management Console (Computer Board)"
-			build_path = /obj/machinery/computer/bookmanagement
-			to_chat(user, "<span class='notice'>Access protocols successfully updated.</span>")
+/obj/item/circuitboard/computer/libraryconsole/bookconsole
+	name =  "Book Inventory Management Console (Machine Board)"
+	build_path = /obj/machinery/computer/libraryconsole/bookmanagement
+
+/obj/item/circuitboard/computer/libraryconsole/screwdriver_act(mob/living/user, obj/item/tool)
+	if(build_path == /obj/machinery/computer/libraryconsole/bookmanagement)
+		name = "Library Visitor Console (Computer Board)"
+		build_path = /obj/machinery/computer/libraryconsole
+		to_chat(user, span_notice("Defaulting access protocols."))
 	else
-		return ..()
+		name = "Book Inventory Management Console (Computer Board)"
+		build_path = /obj/machinery/computer/libraryconsole/bookmanagement
+		to_chat(user, span_notice("Access protocols successfully updated."))
+	return TRUE
 
 /obj/item/circuitboard/computer/monastery_shuttle
 	name = "Monastery Shuttle (Computer Board)"
@@ -295,11 +288,6 @@
 	name = "Massdriver control (Computer Board)"
 	icon_state = "generic"
 	build_path = /obj/machinery/computer/pod
-
-/obj/item/circuitboard/computer/slot_machine
-	name = "Slot Machine (Computer Board)"
-	icon_state = "generic"
-	build_path = /obj/machinery/computer/slot_machine
 
 /obj/item/circuitboard/computer/swfdoor
 	name = "Magix (Computer Board)"
@@ -557,7 +545,7 @@
 	build_path = /obj/machinery/computer/security/mining
 
 /obj/item/circuitboard/computer/mining_shuttle
-	name = "Mining Shuttle (Computer Board)"
+	name = "Elevator (Computer Board)"
 	icon_state = "supply"
 	build_path = /obj/machinery/computer/shuttle/mining
 

@@ -376,7 +376,7 @@
 	display_name = "Arcade Games"
 	description = "For the slackers on the station."
 	prereq_ids = list("comptech")
-	design_ids = list("arcade_battle", "arcade_orion", "slotmachine")
+	design_ids = list("arcade_battle", "arcade_orion")
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 1000)
 
 /datum/techweb_node/comp_recordkeeping
@@ -384,7 +384,7 @@
 	display_name = "Computerized Recordkeeping"
 	description = "Organized record databases and how they're used."
 	prereq_ids = list("comptech")
-	design_ids = list("secdata", "med_data", "prisonmanage", "vendor", "automated_announcement", "accounting")
+	design_ids = list("secdata", "med_data", "prisonmanage", "vendor", "automated_announcement")
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 1000)
 
 /datum/techweb_node/telecomms

@@ -29,19 +29,20 @@ GLOBAL_VAR(restart_counter)
  *			All atoms in both compiled and uncompiled maps are initialized()
  */
 /world/New()
-	var/extools = world.GetConfig("env", "EXTOOLS_DLL") || (world.system_type == MS_WINDOWS ? "./byond-extools.dll" : "./libbyond-extools.so")
-	if (fexists(extools))
-		call(extools, "maptick_initialize")()
+	// Write everything to this log file until we get to SetupLogs() later
+	_initialize_log_files("data/logs/config_error.[GUID()].log")
+
 	enable_debugger()
 #ifdef REFERENCE_TRACKING
 	enable_reference_tracking()
 #endif
 
+	// Create the logger
+	logger = new
+
 	log_world("World loaded at [time_stamp()]!")
 
 	make_datum_references_lists()	//initialises global lists for referencing frequently used datums (so that we only ever do it once)
-
-	GLOB.config_error_log = GLOB.world_manifest_log = GLOB.world_pda_log = GLOB.world_job_debug_log = GLOB.sql_error_log = GLOB.world_href_log = GLOB.world_runtime_log = GLOB.world_attack_log = GLOB.world_game_log = GLOB.world_econ_log = GLOB.world_shuttle_log = "data/logs/config_error.[GUID()].log" //temporary file used to record errors with loading config, moved to log directory once logging is set bl
 
 	GLOB.revdata = new
 
@@ -55,7 +56,6 @@ GLOBAL_VAR(restart_counter)
 	//DB schema and set RoundID if we can
 	SSdbcore.CheckSchemaVersion()
 	SSdbcore.SetRoundID()
-	SetupLogs()
 	load_poll_data()
 
 #ifndef USE_CUSTOM_ERROR_HANDLER
@@ -78,6 +78,8 @@ GLOBAL_VAR(restart_counter)
 	if(NO_INIT_PARAMETER in params)
 		return
 
+	SetupLogs()
+
 	Master.Initialize(10, FALSE, TRUE)
 
 	#ifdef UNIT_TESTS
@@ -95,20 +97,28 @@ GLOBAL_VAR(restart_counter)
 	CONFIG_SET(number/round_end_countdown, 0)
 	var/datum/callback/cb
 #ifdef UNIT_TESTS
-	cb = CALLBACK(GLOBAL_PROC, /proc/RunUnitTests)
+	cb = CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(RunUnitTests))
 #else
 	cb = VARSET_CALLBACK(SSticker, force_ending, TRUE)
 #endif
-	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, /proc/_addtimer, cb, 10 SECONDS))
+	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(_addtimer), cb, 10 SECONDS))
 
+/// Returns a list of data about the world state, don't clutter
+/world/proc/get_world_state_for_logging()
+	var/data = list()
+	data["tick_usage"] = world.tick_usage
+	data["tick_lag"] = world.tick_lag
+	data["time"] = world.time
+	data["timestamp"] = logger.unix_timestamp_string()
+	return data
 
 /world/proc/SetupLogs()
 	var/override_dir = params[OVERRIDE_LOG_DIRECTORY_PARAMETER]
 	if(!override_dir)
 		var/realtime = world.realtime
-		var/texttime = time2text(realtime, "YYYY/MM/DD")
+		var/texttime = time2text(realtime, "YYYY/MM/DD", 0)
 		GLOB.log_directory = "data/logs/[texttime]/round-"
-		GLOB.picture_logging_prefix = "L_[time2text(realtime, "YYYYMMDD")]_"
+		GLOB.picture_logging_prefix = "L_[time2text(realtime, "YYYYMMDD", 0)]_"
 		GLOB.picture_log_directory = "data/picture_logs/[texttime]/round-"
 		if(GLOB.round_id)
 			GLOB.log_directory += "[GLOB.round_id]"
@@ -124,52 +134,10 @@ GLOBAL_VAR(restart_counter)
 		GLOB.picture_logging_prefix = "O_[override_dir]_"
 		GLOB.picture_log_directory = "data/picture_logs/[override_dir]"
 
-	GLOB.world_game_log = "[GLOB.log_directory]/game.log"
-	GLOB.world_mecha_log = "[GLOB.log_directory]/mecha.log"
-	GLOB.world_virus_log = "[GLOB.log_directory]/virus.log"
-	GLOB.world_cloning_log = "[GLOB.log_directory]/cloning.log"
-	GLOB.world_asset_log = "[GLOB.log_directory]/asset.log"
-	GLOB.world_attack_log = "[GLOB.log_directory]/attack.log"
-	GLOB.world_econ_log = "[GLOB.log_directory]/econ.log"
-	GLOB.world_pda_log = "[GLOB.log_directory]/pda.log"
-	GLOB.world_uplink_log = "[GLOB.log_directory]/uplink.log"
-	GLOB.world_telecomms_log = "[GLOB.log_directory]/telecomms.log"
-	GLOB.world_manifest_log = "[GLOB.log_directory]/manifest.log"
-	GLOB.world_href_log = "[GLOB.log_directory]/hrefs.log"
-	GLOB.sql_error_log = "[GLOB.log_directory]/sql.log"
-	GLOB.world_qdel_log = "[GLOB.log_directory]/qdel.log"
-	GLOB.world_map_error_log = "[GLOB.log_directory]/map_errors.log"
-	GLOB.world_runtime_log = "[GLOB.log_directory]/runtime.log"
-	GLOB.query_debug_log = "[GLOB.log_directory]/query_debug.log"
-	GLOB.world_job_debug_log = "[GLOB.log_directory]/job_debug.log"
-	GLOB.world_paper_log = "[GLOB.log_directory]/paper.log"
-	GLOB.tgui_log = "[GLOB.log_directory]/tgui.log"
-	GLOB.world_shuttle_log = "[GLOB.log_directory]/shuttle.log"
+	logger.init_logging()
 
-	GLOB.demo_log = "[GLOB.log_directory]/demo.log"
-
-#ifdef UNIT_TESTS
-	GLOB.test_log = "[GLOB.log_directory]/tests.log"
-	start_log(GLOB.test_log)
-#endif
-	start_log(GLOB.world_game_log)
-	start_log(GLOB.world_attack_log)
-	start_log(GLOB.world_econ_log)
-	start_log(GLOB.world_pda_log)
-	start_log(GLOB.world_uplink_log)
-	start_log(GLOB.world_telecomms_log)
-	start_log(GLOB.world_manifest_log)
-	start_log(GLOB.world_href_log)
-	start_log(GLOB.world_qdel_log)
-	start_log(GLOB.world_runtime_log)
-	start_log(GLOB.world_job_debug_log)
-	start_log(GLOB.tgui_log)
-	start_log(GLOB.world_shuttle_log)
-
-	GLOB.changelog_hash = md5('html/changelog.html') //for telling if the changelog has changed recently
-	if(fexists(GLOB.config_error_log))
-		fcopy(GLOB.config_error_log, "[GLOB.log_directory]/config_error.log")
-		fdel(GLOB.config_error_log)
+	var/latest_changelog = file("[global.config.directory]/../html/changelogs/archive/" + time2text(world.timeofday, "YYYY-MM", 0) + ".yml")
+	GLOB.changelog_hash = fexists(latest_changelog) ? md5(latest_changelog) : 0 //for telling if the changelog has changed recently
 
 	if(GLOB.round_id)
 		log_game("Round ID: [GLOB.round_id]")
@@ -178,6 +146,13 @@ GLOBAL_VAR(restart_counter)
 	// but those are both private, so let's put the commit info in the runtime
 	// log which is ultimately public.
 	log_runtime(GLOB.revdata.get_log_message())
+
+#ifndef USE_CUSTOM_ERROR_HANDLER
+	world.log = file("[GLOB.log_directory]/dd.log")
+#else
+	if (TgsAvailable()) // why
+		world.log = file("[GLOB.log_directory]/dd.log") //not all runtimes trigger world/Error, so this is the only way to ensure we can see all of them.
+#endif
 
 /world/Topic(T, addr, master, key)
 	TGS_TOPIC	//redirect to server tools if necessary
@@ -281,50 +256,43 @@ GLOBAL_VAR(restart_counter)
 
 	var/list/features = list()
 
-	if(GLOB.master_mode)
-		features += GLOB.master_mode
+//	if(GLOB.master_mode)
+//		features += GLOB.master_mode
 
-	if (!GLOB.enter_allowed)
-		features += "closed"
+//	if (!GLOB.enter_allowed)
+//		features += "closed"
 
 	var/s = ""
 	var/hostedby
 	if(config)
 		var/server_name = CONFIG_GET(string/servername)
 		if (server_name)
-			s += "<b>[server_name]</b> &#8212; "
-		features += "[CONFIG_GET(flag/norespawn) ? "no " : ""]respawn"
-		if(CONFIG_GET(flag/allow_vote_mode))
-			features += "vote"
-		if(CONFIG_GET(flag/allow_ai))
-			features += "AI allowed"
+			s += "<a href=\"https://discord.gg/invite/WU92NG2Me8\"><b>[server_name] &#8212; Werewolf-Friendly</b></a>"
 		hostedby = CONFIG_GET(string/hostedby)
-
-	s += "<b>[station_name()]</b>";
-	s += " ("
-	s += "<a href=\"http://\">" //Change this to wherever you want the hub to link to.
-	s += "Default"  //Replace this with something else. Or ever better, delete it and uncomment the game version.
-	s += "</a>"
-	s += ")"
+	s += "<br>Persistent roleplaying server in the World of Darkness."
+	s += "<br>Active development, pretty art, and a gothic atmosphere."
 
 	var/players = GLOB.clients.len
 
+	/*
 	var/popcaptext = ""
 	var/popcap = max(CONFIG_GET(number/extreme_popcap), CONFIG_GET(number/hard_popcap), CONFIG_GET(number/soft_popcap))
 	if (popcap)
 		popcaptext = "/[popcap]"
 
+
 	if (players > 1)
 		features += "[players][popcaptext] players"
 	else if (players > 0)
 		features += "[players][popcaptext] player"
+	*/
 
 	game_state = (CONFIG_GET(number/extreme_popcap) && players >= CONFIG_GET(number/extreme_popcap)) //tells the hub if we are full
 
 	if (!host && hostedby)
 		features += "hosted by <b>[hostedby]</b>"
 
-	if (features)
+	if (features.len)
 		s += ": [jointext(features, ", ")]"
 
 	status = s
@@ -366,3 +334,36 @@ GLOBAL_VAR(restart_counter)
 
 /world/proc/on_tickrate_change()
 	SStimer?.reset_buckets()
+
+/world/proc/convert_saves_to_json(path_to_save)
+	// Determine the path variables to use based on our host OS
+	var/regex/trimmer
+	var/shell_command
+	var/path_char
+	if(world.system_type == UNIX)
+		trimmer = regex("data/player_saves/.*")
+		shell_command = "find data/player_saves/ -type f"
+		path_char = "/"
+	else // We're on Windows
+		trimmer = regex("data\\\\player_saves\\\\.*")
+		shell_command = "dir /A-D /b /s data\\player_saves\\"
+		path_char = "\\"
+	var/untrimmed_file_list = splittext(world.shelleo("[shell_command]")[2], "\n")
+	// Just in case the whole path gets returned instead of the relative
+	var/list/file_list = list()
+	for(var/file_path in untrimmed_file_list)
+		trimmer.Find(file_path)
+		if(trimmer.match)
+			file_list += trimmer.match
+		trimmer.match = null
+	for(var/trimmed_path in file_list)
+		var/datum/json_savefile/json_son = new
+		var/savefile/S = new(trimmed_path)
+		json_son.import_byond_savefile(S)
+		var/list/split_path = splittext(trimmed_path, path_char)
+		var/dir_name = split_path[split_path.len - 1]
+		var/file_name = replacetext(split_path[split_path.len], ".sav", ".json")
+		// Path to save, first_char as a directory, path separator, file_name
+		// IE: path_to_save/a/apple.json
+		json_son.path = (path_to_save + dir_name[1] + path_char + dir_name + path_char + file_name)
+		json_son.save()

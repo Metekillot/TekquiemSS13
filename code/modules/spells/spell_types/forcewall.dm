@@ -22,7 +22,6 @@
 		new wall_type(get_step(user, NORTH),user)
 		new wall_type(get_step(user, SOUTH),user)
 
-
 /obj/effect/forcefield/wizard
 	var/mob/wizard
 

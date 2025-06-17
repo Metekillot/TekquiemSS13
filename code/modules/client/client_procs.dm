@@ -83,7 +83,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(href_list["reload_tguipanel"])
 		nuke_chat()
 	if(href_list["reload_statbrowser"])
-		src << browse(file('html/statbrowser.html'), "window=statbrowser")
+		stat_panel.reinitialize()
 	// Log all hrefs
 	log_href("[src] (usr:[usr]\[[COORD(usr)]\]) : [hsrc ? "[hsrc] " : ""][href]")
 
@@ -99,6 +99,10 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	// Admin PM
 	if(href_list["priv_msg"])
 		cmd_admin_pm(href_list["priv_msg"],null)
+		return
+	// TGUIless adminhelp
+	if(href_list["tguiless_adminhelp"])
+		no_tgui_adminhelp(input(src, "Enter your ahelp", "Ahelp") as null|message)
 		return
 
 	switch(href_list["_src_"])
@@ -126,11 +130,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	..()	//redirect to hsrc.Topic()
 
-/client/proc/is_content_unlocked()
-	if(!prefs.unlock_content)
-		to_chat(src, "Become a BYOND member to access member-perks and features, as well as support the engine that makes this game possible. Only 10 bucks for 3 months! <a href=\"https://secure.byond.com/membership\">Click Here to find out more</a>.")
-		return FALSE
-	return TRUE
 /*
  * Call back proc that should be checked in all paths where a client can send messages
  *
@@ -208,11 +207,23 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	GLOB.clients += src
 	GLOB.directory[ckey] = src
 
+	if(byond_version >= 516)
+		winset(src, null, list("browser-options" = "find,refresh,byondstorage"))
+
+	// Instantiate stat panel
+	stat_panel = new(src, "statbrowser")
+	stat_panel.subscribe(src, PROC_REF(on_stat_panel_message))
+
 	// Instantiate tgui panel
-	tgui_panel = new(src)
+	tgui_panel = new(src, "browseroutput")
+
+	tgui_say = new(src, "tgui_say")
+
+	set_right_click_menu_mode(TRUE)
 
 	GLOB.ahelp_tickets.ClientLogin(src)
 	GLOB.interviews.client_login(src)
+	GLOB.requests.client_login(src)
 	var/connecting_admin = FALSE //because de-admined admins connecting should be treated like admins.
 	//Admin Authorisation
 	holder = GLOB.admin_datums[ckey]
@@ -319,14 +330,28 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(SSinput.initialized)
 		set_macros()
 
+	// Initialize stat panel
+	stat_panel.initialize(
+		inline_html = file2text('html/statbrowser.html'),
+		inline_js = file2text('html/statbrowser.js'),
+		inline_css = file2text('html/statbrowser.css'),
+	)
+	addtimer(CALLBACK(src, PROC_REF(check_panel_loaded)), 30 SECONDS)
+
 	// Initialize tgui panel
-	src << browse(file('html/statbrowser.html'), "window=statbrowser")
-	addtimer(CALLBACK(src, .proc/check_panel_loaded), 30 SECONDS)
 	tgui_panel.initialize()
 
-	if(alert_mob_dupe_login)
-		spawn()
-			alert(mob, "You have logged in already with another key this round, please log out of this one NOW or risk being banned!")
+	tgui_say.initialize()
+
+	if(alert_mob_dupe_login && !holder)
+		var/dupe_login_message = "Your ComputerID has already logged in with another key this round, please log out of this one NOW or risk being banned!"
+		dupe_login_message += "\nAdmins have been informed."
+		message_admins(span_danger("<B>MULTIKEYING: </B></span><span class='notice'>[key_name_admin(src)] has a matching CID+IP with another player and is clearly multikeying. They have been warned to leave the server or risk getting banned."))
+		log_admin_private("MULTIKEYING: [key_name(src)] has a matching CID+IP with another player and is clearly multikeying. They have been warned to leave the server or risk getting banned.")
+		spawn(0.5 SECONDS) //needs to run during world init, do not convert to add timer
+			alert(mob, dupe_login_message) //players get banned if they don't see this message, do not convert to tgui_alert (or even tg_alert) please.
+			to_chat(mob, span_danger(dupe_login_message))
+
 
 	connection_time = world.time
 	connection_realtime = world.realtime
@@ -353,7 +378,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			msg += "Your version: [byond_version]<br>"
 			msg += "Required version to remove this message: [cwv] or later<br>"
 			msg += "Visit <a href=\"https://secure.byond.com/download\">BYOND's website</a> to get the latest version of BYOND.<br>"
-			src << browse(msg, "window=warning_popup")
+			src << browse(HTML_SKELETON(msg), "window=warning_popup")
 		else
 			to_chat(src, "<span class='danger'><b>Your version of byond may be getting out of date:</b></span>")
 			to_chat(src, CONFIG_GET(string/client_warn_message))
@@ -464,6 +489,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	log_access("Logout: [key_name(src)]")
 	GLOB.ahelp_tickets.ClientLogout(src)
 	GLOB.interviews.client_logout(src)
+	GLOB.requests.client_logout(src)
 	SSserver_maint.UpdateHubStatus()
 	if(credits)
 		QDEL_LIST(credits)
@@ -543,19 +569,35 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(!query_client_in_db.Execute())
 		qdel(query_client_in_db)
 		return
-
+	/*
 	//If we aren't an admin, and the flag is set
-	if(CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey])
-		var/living_recs = CONFIG_GET(number/panic_bunker_living)
-		//Relies on pref existing, but this proc is only called after that occurs, so we're fine.
-		var/minutes = get_exp_living(pure_numeric = TRUE)
-		if(minutes <= living_recs && !CONFIG_GET(flag/panic_bunker_interview))
-			var/reject_message = "Failed Login: [key] - Account attempting to connect during panic bunker, but they do not have the required living time [minutes]/[living_recs]"
-			log_access(reject_message)
-			message_admins("<span class='adminnotice'>[reject_message]</span>")
-			var/message = CONFIG_GET(string/panic_bunker_message)
-			message = replacetext(message, "%minutes%", living_recs)
-			to_chat(src, message)
+	if(CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey] && !bunker_bypass_check())
+		var/reject_message = "Failed Login: [key] - New account attempting to connect during panic bunker"
+		log_access(reject_message)
+		message_admins("<span class='adminnotice'>[reject_message]</span>")
+		var/message = CONFIG_GET(string/panic_bunker_message)
+		to_chat(src, message)
+		var/list/connectiontopic_a = params2list(connectiontopic)
+		var/list/panic_addr = CONFIG_GET(string/panic_server_address)
+		if(panic_addr && !connectiontopic_a["redirect"])
+			var/panic_name = CONFIG_GET(string/panic_server_name)
+			to_chat(src, "<span class='notice'>Sending you to [panic_name ? panic_name : panic_addr].</span>")
+			winset(src, null, "command=.options")
+			src << link("[panic_addr]?redirect=1")
+		qdel(query_client_in_db)
+		qdel(src)
+		return
+	// TFN EDIT END
+	*/
+
+	var/client_is_in_db = query_client_in_db.NextRow()
+	// TFN EDIT ADDITION START: code borrowed from bubberstation & skyrat
+	if(!client_is_in_db)
+		if (CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey] && !(ckey in GLOB.bunker_passthrough))
+			log_access("Failed Login: [key] - [address] - New account attempting to connect during panic bunker")
+			message_admins("<span class='adminnotice'>Failed Login: [key] - [address] - New account attempting to connect during panic bunker</span>")
+			var/forumurl = CONFIG_GET(string/forumurl)
+			to_chat_immediate(src, {"<span class='notice'>Hi! This server is whitelist-enabled. <br> <br> To join our community, apply through the Discord: <a href=' [forumurl] '>[forumurl]</a></span>"})
 			var/list/connectiontopic_a = params2list(connectiontopic)
 			var/list/panic_addr = CONFIG_GET(string/panic_server_address)
 			if(panic_addr && !connectiontopic_a["redirect"])
@@ -566,7 +608,8 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			qdel(query_client_in_db)
 			qdel(src)
 			return
-
+	// TFN EDIT ADDITION END
+	/*
 	if(!query_client_in_db.NextRow())
 		new_player = 1
 		account_join_date = findJoinDate()
@@ -582,6 +625,11 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		if(!account_join_date)
 			account_join_date = "Error"
 			account_age = -1
+		// TFN EDIT ADDITION START: code borrowed from bubberstation & skyrat
+		else if(ckey in GLOB.bunker_passthrough)
+			GLOB.bunker_passthrough -= ckey
+		// TFN EDIT ADDITION END
+	*/
 	qdel(query_client_in_db)
 	var/datum/db_query/query_get_client_age = SSdbcore.NewQuery(
 		"SELECT firstseen, DATEDIFF(Now(),firstseen), accountjoindate, DATEDIFF(Now(),accountjoindate) FROM [format_table_name("player")] WHERE ckey = :ckey",
@@ -613,22 +661,16 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 					qdel(query_datediff)
 	qdel(query_get_client_age)
 	if(!new_player)
-		var/datum/db_query/query_log_player = SSdbcore.NewQuery(
+		SSdbcore.FireAndForget(
 			"UPDATE [format_table_name("player")] SET lastseen = Now(), lastseen_round_id = :round_id, ip = INET_ATON(:ip), computerid = :computerid, lastadminrank = :admin_rank, accountjoindate = :account_join_date WHERE ckey = :ckey",
 			list("round_id" = GLOB.round_id, "ip" = address, "computerid" = computer_id, "admin_rank" = admin_rank, "account_join_date" = account_join_date || null, "ckey" = ckey)
 		)
-		if(!query_log_player.Execute())
-			qdel(query_log_player)
-			return
-		qdel(query_log_player)
 	if(!account_join_date)
 		account_join_date = "Error"
-	var/datum/db_query/query_log_connection = SSdbcore.NewQuery({"
+	SSdbcore.FireAndForget({"
 		INSERT INTO `[format_table_name("connection_log")]` (`id`,`datetime`,`server_ip`,`server_port`,`round_id`,`ckey`,`ip`,`computerid`)
 		VALUES(null,Now(),INET_ATON(:internet_address),:port,:round_id,:ckey,INET_ATON(:ip),:computerid)
 	"}, list("internet_address" = world.internet_address || "0", "port" = world.port, "round_id" = GLOB.round_id, "ckey" = ckey, "ip" = address, "computerid" = computer_id))
-	query_log_connection.Execute()
-	qdel(query_log_connection)
 
 	SSserver_maint.UpdateHubStatus()
 
@@ -855,12 +897,11 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	if (prefs.hotkeys)
 		// If hotkey mode is enabled, then clicking the map will automatically
-		// unfocus the text bar. This removes the red color from the text bar
-		// so that the visual focus indicator matches reality.
-		winset(src, null, "input.background-color=[COLOR_INPUT_DISABLED]")
+		// unfocus the text bar.
+		winset(src, null, "input.focus=false")
 
 	else
-		winset(src, null, "input.focus=true input.background-color=[COLOR_INPUT_ENABLED]")
+		winset(src, null, "input.focus=true")
 
 	..()
 
@@ -898,9 +939,12 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		//load info on what assets the client has
 		src << browse('code/modules/asset_cache/validate_assets.html', "window=asset_cache_browser")
 
+		//Cool fonts for cool vampires
+		src << browse_rsc('percolator.ttf', "percolator.ttf")
+
 		//Precache the client with all other assets slowly, so as to not block other browse() calls
 		if (CONFIG_GET(flag/asset_simple_preload))
-			addtimer(CALLBACK(SSassets.transport, /datum/asset_transport.proc/send_assets_slow, src, SSassets.transport.preload), 5 SECONDS)
+			addtimer(CALLBACK(SSassets.transport, TYPE_PROC_REF(/datum/asset_transport, send_assets_slow), src, SSassets.transport.preload), 5 SECONDS)
 
 		#if (PRELOAD_RSC == 0)
 		for (var/name in GLOB.vox_sounds)
@@ -936,7 +980,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
  *
  * Handles adding macros for the keys that need it
  * And adding movement keys to the clients movement_keys list
- * At the time of writing this, communication(OOC, Say, IC) require macros
+ * At the time of writing this, communication(OOC, Say, IC, ASAY) require macros
  * Arguments:
  * * direct_prefs - the preference we're going to get keybinds from
  */
@@ -956,12 +1000,12 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 					movement_keys[key] = WEST
 				if("South")
 					movement_keys[key] = SOUTH
-				if("Say")
-					winset(src, "default-[REF(key)]", "parent=default;name=[key];command=say")
-				if("OOC")
-					winset(src, "default-[REF(key)]", "parent=default;name=[key];command=ooc")
-				if("Me")
-					winset(src, "default-[REF(key)]", "parent=default;name=[key];command=me")
+				if(ADMIN_CHANNEL)
+					if(holder)
+						var/asay = tgui_say_create_open_command(ADMIN_CHANNEL)
+						winset(src, "default-[REF(key)]", "parent=default;name=[key];command=[asay]")
+					else
+						winset(src, "default-[REF(key)]", "parent=default;name=[key];command=")
 
 /client/proc/change_view(new_size)
 	if (isnull(new_size))
@@ -974,7 +1018,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		var/mob/living/M = mob
 		M.update_damage_hud()
 	if (prefs.auto_fit_viewport)
-		addtimer(CALLBACK(src,.verb/fit_viewport,10)) //Delayed to avoid wingets from Login calls.
+		addtimer(CALLBACK(src,VERB_REF(fit_viewport),10)) //Delayed to avoid wingets from Login calls.
 
 /client/proc/generate_clickcatcher()
 	if(!void)
@@ -1037,12 +1081,10 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	var/list/verbstoprocess = verbs.Copy()
 	if(mob)
 		verbstoprocess += mob.verbs
-		for(var/AM in mob.contents)
-			var/atom/movable/thing = AM
+		for(var/atom/movable/thing as anything in mob.contents)
 			verbstoprocess += thing.verbs
 	panel_tabs.Cut() // panel_tabs get reset in init_verbs on JS side anyway
-	for(var/thing in verbstoprocess)
-		var/procpath/verb_to_init = thing
+	for(var/procpath/verb_to_init as anything in verbstoprocess)
 		if(!verb_to_init)
 			continue
 		if(verb_to_init.hidden)
@@ -1051,12 +1093,12 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			continue
 		panel_tabs |= verb_to_init.category
 		verblist[++verblist.len] = list(verb_to_init.category, verb_to_init.name)
-	src << output("[url_encode(json_encode(panel_tabs))];[url_encode(json_encode(verblist))]", "statbrowser:init_verbs")
+	src.stat_panel.send_message("init_verbs", list(panel_tabs = panel_tabs, verblist = verblist))
 
 /client/proc/check_panel_loaded()
-	if(statbrowser_ready)
+	if(stat_panel.is_ready())
 		return
-	to_chat(src, "<span class='userdanger'>Statpanel failed to load, click <a href='?src=[REF(src)];reload_statbrowser=1'>here</a> to reload the panel </span>")
+	to_chat(src, "<span class='userdanger'>Statpanel failed to load, click <a href='byond://?src=[REF(src)];reload_statbrowser=1'>here</a> to reload the panel </span>")
 
 /**
  * Initializes dropdown menus on client
@@ -1087,3 +1129,77 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(holder)
 		holder.filteriffic = new /datum/filter_editor(in_atom)
 		holder.filteriffic.ui_interact(mob)
+
+/client/proc/set_right_click_menu_mode(shift_only)
+	if(shift_only)
+		winset(src, "mapwindow.map", "right-click=true")
+		winset(src, "ShiftUp", "is-disabled=false")
+		winset(src, "Shift", "is-disabled=false")
+	else
+		winset(src, "mapwindow.map", "right-click=false")
+		winset(src, "default.Shift", "is-disabled=true")
+		winset(src, "default.ShiftUp", "is-disabled=true")
+
+/*
+/client/proc/update_ambience_pref()
+	if(prefs.toggles & SOUND_AMBIENCE)
+		if(SSambience.ambience_listening_clients[src] > world.time)
+			return // If already properly set we don't want to reset the timer.
+		SSambience.ambience_listening_clients[src] = world.time + 10 SECONDS //Just wait 10 seconds before the next one aight mate? cheers.
+	else
+		SSambience.remove_ambience_client(src)
+*/
+
+/**
+ * Handles incoming messages from the stat-panel TGUI.
+ */
+/client/proc/on_stat_panel_message(type, payload)
+	switch(type)
+		if("Update-Verbs")
+			init_verbs()
+		if("Remove-Tabs")
+			panel_tabs -= payload["tab"]
+		if("Send-Tabs")
+			panel_tabs |= payload["tab"]
+		if("Reset-Tabs")
+			panel_tabs = list()
+		if("Set-Tab")
+			stat_tab = payload["tab"]
+			SSstatpanels.immediate_send_stat_data(src)
+
+/// Checks if this client has met the days requirement passed in, or if
+/// they are exempt from it.
+/// Returns the number of days left, or 0.
+/client/proc/get_remaining_days(days_needed)
+	if(!CONFIG_GET(flag/use_age_restriction_for_jobs))
+		return 0
+
+	if(!isnum(player_age))
+		return 0 //This is only a number if the db connection is established, otherwise it is text: "Requires database", meaning these restrictions cannot be enforced
+
+	if(!isnum(days_needed))
+		return 0
+
+	return max(0, days_needed - player_age)
+
+/// Attempts to make the client orbit the given object, for administrative purposes.
+/// If they are not an observer, will try to aghost them.
+/client/proc/admin_follow(atom/movable/target)
+	var/can_ghost = TRUE
+
+	if (!isobserver(mob))
+		can_ghost = admin_ghost()
+
+	if(!can_ghost)
+		return FALSE
+
+	var/mob/dead/observer/observer = mob
+	observer.ManualFollow(target)
+
+/client/verb/stop_client_sounds()
+	set name = "Stop Sounds"
+	set category = "OOC"
+	set desc = "Stop Current Sounds"
+	SEND_SOUND(usr, sound(null))
+	tgui_panel?.stop_music()
+	SSblackbox.record_feedback("nested tally", "preferences_verb", 1, list("Stop Self Sounds"))

@@ -208,12 +208,12 @@ GLOBAL_LIST_INIT(medicine_reagents, build_medicine_reagents())
 	if(SSpersistence.initialized)
 		UpdateInfo()
 	else
-		SSticker.OnRoundstart(CALLBACK(src,.proc/UpdateInfo))
+		SSticker.OnRoundstart(CALLBACK(src, PROC_REF(UpdateInfo)))
 
 /obj/item/paper/secretrecipe/proc/UpdateInfo()
 	var/datum/chemical_reaction/recipe = get_chemical_reaction(recipe_id)
 	if(!recipe)
-		info = "This recipe is illegible."
+		default_raw_text = "This recipe is illegible."
 		return
 	var/list/dat = list("<ul>")
 	for(var/rid in recipe.required_reagents)
@@ -236,5 +236,5 @@ GLOBAL_LIST_INIT(medicine_reagents, build_medicine_reagents())
 		else
 			dat += " above [recipe.required_temp] degrees"
 	dat += "."
-	info = dat.Join("")
+	default_raw_text = dat.Join("")
 	update_icon()

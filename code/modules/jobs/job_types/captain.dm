@@ -11,7 +11,7 @@
 	minimal_player_age = 14
 	exp_requirements = 180
 	exp_type = EXP_TYPE_CREW
-	exp_type_department = EXP_TYPE_COMMAND
+	exp_type_department = EXP_TYPE_CAMARILLIA
 
 	outfit = /datum/outfit/job/captain
 
@@ -22,14 +22,14 @@
 
 	liver_traits = list(TRAIT_ROYAL_METABOLISM)
 
-	display_order = JOB_DISPLAY_ORDER_CAPTAIN
+//	display_order = JOB_DISPLAY_ORDER_CAPTAIN
 
 /datum/job/captain/get_access()
 	return get_all_accesses()
 
 /datum/job/captain/announce(mob/living/carbon/human/H)
 	..()
-	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, .proc/minor_announce, "Captain [H.real_name] on deck!"))
+	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(minor_announce), "Captain [H.real_name] on deck!"))
 
 /datum/outfit/job/captain
 	name = "Captain"

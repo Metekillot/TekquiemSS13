@@ -16,6 +16,7 @@
 	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 	throw_speed = 3
 	throw_range = 7
+	component_type = /datum/component/storage/concrete/vtm/firstaid
 	var/empty = FALSE
 	var/damagetype_healed //defines damage type of the medkit. General ones stay null. Used for medibot healing bonuses
 
@@ -63,9 +64,9 @@
 /obj/item/storage/firstaid/medical/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_w_class = WEIGHT_CLASS_NORMAL //holds the same equipment as a medibelt
-	STR.max_items = 12
-	STR.max_combined_w_class = 24
+//	STR.max_w_class = WEIGHT_CLASS_NORMAL //holds the same equipment as a medibelt
+//	STR.max_items = 12
+//	STR.max_combined_w_class = 24
 	STR.set_holdable(list(
 		/obj/item/healthanalyzer,
 		/obj/item/dnainjector,
@@ -274,10 +275,10 @@
 	icon_state = "bezerk"
 	damagetype_healed = "all"
 
-/obj/item/storage/firstaid/tactical/ComponentInitialize()
-	. = ..()
-	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_w_class = WEIGHT_CLASS_NORMAL
+//obj/item/storage/firstaid/tactical/ComponentInitialize()
+//	. = ..()
+//	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+//	STR.max_w_class = WEIGHT_CLASS_NORMAL
 
 /obj/item/storage/firstaid/tactical/PopulateContents()
 	if(empty)
@@ -290,6 +291,21 @@
 	new /obj/item/reagent_containers/pill/patch/aiuri(src)
 	new /obj/item/reagent_containers/pill/patch/aiuri(src)
 	new /obj/item/clothing/glasses/hud/health/night(src)
+
+/obj/item/storage/firstaid/ifak
+	name = "IFAK"
+	desc = "An Individual First Aid Kit. Standard issue to duty belts."
+	icon_state = "ifak"
+	component_type = /datum/component/storage/concrete/vtm/firstaid/ifak
+
+/obj/item/storage/firstaid/ifak/PopulateContents()
+	if(empty)
+		return
+	var/static/items_inside = list(
+		/obj/item/reagent_containers/hypospray/medipen/ifak = 3,
+		/obj/item/stack/medical/gauze = 1,
+		/obj/item/healthanalyzer = 1)
+	generate_items_inside(items_inside,src)
 
 //medibot assembly
 /obj/item/storage/firstaid/attackby(obj/item/bodypart/S, mob/user, params)
@@ -328,6 +344,7 @@
 	desc = "It's an airtight container for storing medication."
 	icon_state = "pill_canister"
 	icon = 'icons/obj/chemical.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	inhand_icon_state = "contsolid"
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
@@ -448,7 +465,7 @@
 		new /obj/item/reagent_containers/pill/happy(src)
 
 /obj/item/storage/pill_bottle/lsd
-	name = "suspicious pill bottle"
+	name = "LSD pill bottle"
 	desc = "There is a crude drawing which could be either a mushroom, or a deformed moon."
 
 /obj/item/storage/pill_bottle/lsd/PopulateContents()
@@ -545,8 +562,8 @@
 /obj/item/storage/organbox/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_w_class = WEIGHT_CLASS_BULKY /// you have to remove it from your bag before opening it but I think that's fine
-	STR.max_combined_w_class = 21
+//	STR.max_w_class = WEIGHT_CLASS_BULKY /// you have to remove it from your bag before opening it but I think that's fine
+//	STR.max_combined_w_class = 21
 	STR.set_holdable(list(
 		/obj/item/organ,
 		/obj/item/bodypart,
@@ -556,8 +573,8 @@
 /obj/item/storage/organbox/Initialize()
 	. = ..()
 	create_reagents(100, TRANSPARENT)
-	RegisterSignal(src, COMSIG_ATOM_ENTERED, .proc/freeze)
-	RegisterSignal(src, COMSIG_TRY_STORAGE_TAKE, .proc/unfreeze)
+	RegisterSignal(src, COMSIG_ATOM_ENTERED, PROC_REF(freeze))
+	RegisterSignal(src, COMSIG_TRY_STORAGE_TAKE, PROC_REF(unfreeze))
 	START_PROCESSING(SSobj, src)
 
 /obj/item/storage/organbox/process(delta_time)

@@ -187,14 +187,14 @@
 	else
 		user.visible_message("<span class='suicide'>[user] decided life was worth living.</span>")
 		return MANUAL_SUICIDE_NONLETHAL
-
+/*
 //spray tan
 /obj/item/reagent_containers/spray/spraytan
 	name = "spray tan"
 	volume = 50
 	desc = "Gyaro brand spray tan. Do not spray near eyes or other orifices."
 	list_reagents = list(/datum/reagent/spraytan = 50)
-
+*/
 
 //pepperspray
 /obj/item/reagent_containers/spray/pepper
@@ -358,7 +358,7 @@
 
 // Plant-B-Gone
 /obj/item/reagent_containers/spray/plantbgone // -- Skie
-	name = "Plant-B-Gone"
+	name = "Scour™"
 	desc = "Kills those pesky weeds!"
 	icon = 'icons/obj/hydroponics/equipment.dmi'
 	icon_state = "plantbgone"

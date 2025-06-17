@@ -384,8 +384,8 @@
 /obj/item/virgin_mary/suicide_act(mob/living/user)
 	user.visible_message("<span class='suicide'>[user] starts saying their Hail Mary's at a terrifying pace! It looks like [user.p_theyre()] trying to enter the afterlife!</span>")
 	user.say("Hail Mary, full of grace, the Lord is with thee. Blessed are thou amongst women, and blessed is the fruit of thy womb, Jesus. Holy Mary, mother of God, pray for us sinners, now and at the hour of our death. Amen. ", forced = /obj/item/virgin_mary)
-	addtimer(CALLBACK(src, .proc/manual_suicide, user), 75)
-	addtimer(CALLBACK(user, /atom/movable/proc/say, "O my Mother, preserve me this day from mortal sin..."), 50)
+	addtimer(CALLBACK(src, PROC_REF(manual_suicide), user), 75)
+	addtimer(CALLBACK(user, TYPE_PROC_REF(/atom/movable, say), "O my Mother, preserve me this day from mortal sin..."), 50)
 	return MANUAL_SUICIDE
 
 /obj/item/virgin_mary/proc/manual_suicide(mob/living/user)
@@ -395,9 +395,13 @@
 // Bouquets
 /obj/item/bouquet
 	name = "mixed bouquet"
-	desc = "A bouquet of sunflowers, lilies, and geraniums. How delightful."
+	desc = "A bouquet of mixed flowers. How delightful!"
 	icon = 'icons/obj/items_and_weapons.dmi'
 	icon_state = "mixedbouquet"
+
+/obj/item/bouquet/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling, 100, "bouquet", FALSE)
 
 /obj/item/bouquet/sunflower
 	name = "sunflower bouquet"

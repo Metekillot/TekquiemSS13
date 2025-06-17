@@ -62,7 +62,7 @@
 /obj/effect/mob_spawn/Initialize(mapload)
 	. = ..()
 	if(instant || (roundstart && (mapload || (SSticker && SSticker.current_state > GAME_STATE_SETTING_UP))))
-		INVOKE_ASYNC(src, .proc/create)
+		INVOKE_ASYNC(src, PROC_REF(create))
 	else if(ghost_usable)
 		AddElement(/datum/element/point_of_interest)
 		LAZYADD(GLOB.mob_spawners[name], src)
@@ -108,6 +108,19 @@
 	M.adjustFireLoss(burn_damage)
 	M.color = mob_color
 	equip(M)
+	if(!random)
+		if(ishuman(M))
+			var/mob/living/carbon/human/H = M
+			var/datum/preferences/P = GLOB.preferences_datums[ckey]
+			if(P)
+				H.hairstyle = P.hairstyle
+				H.facial_hairstyle = P.facial_hairstyle
+				H.hair_color = P.hair_color
+				H.facial_hair_color = P.facial_hair_color
+				H.skin_tone = P.skin_tone
+				H.base_body_mod = ""
+				H.update_hair()
+				H.update_body()
 
 	if(ckey)
 		M.ckey = ckey
@@ -238,24 +251,25 @@
 			if(istype(C))
 				C.sensor_mode = NO_SENSORS
 
-	var/obj/item/card/id/W = H.wear_id
-	if(W)
-		if(H.age)
-			W.registered_age = H.age
-		if(id_access)
-			for(var/jobtype in typesof(/datum/job))
-				var/datum/job/J = new jobtype
-				if(J.title == id_access)
-					W.access = J.get_access()
-					break
-		if(id_access_list)
-			if(!islist(W.access))
-				W.access = list()
-			W.access |= id_access_list
-		if(id_job)
-			W.assignment = id_job
-		W.registered_name = H.real_name
-		W.update_label()
+	if(istype(H.wear_id, /obj/item/card/id))
+		var/obj/item/card/id/W = H.wear_id
+		if(W)
+			if(H.age)
+				W.registered_age = H.age
+			if(id_access)
+				for(var/jobtype in typesof(/datum/job))
+					var/datum/job/J = new jobtype
+					if(J.title == id_access)
+						W.access = J.get_access()
+						break
+			if(id_access_list)
+				if(!islist(W.access))
+					W.access = list()
+				W.access |= id_access_list
+			if(id_job)
+				W.assignment = id_job
+			W.registered_name = H.real_name
+			W.update_label()
 
 //Instant version - use when spawning corpses during runtime
 /obj/effect/mob_spawn/human/corpse

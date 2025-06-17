@@ -39,7 +39,7 @@
 				bite_consumption = bite_consumption,\
 				microwaved_type = microwaved_type,\
 				junkiness = junkiness,\
-				check_liked = CALLBACK(src, .proc/check_liked))
+				check_liked = CALLBACK(src, PROC_REF(check_liked)))
 
 /obj/item/food/donut/proc/decorate_donut()
 	if(is_decorated || !decorated_icon)
@@ -92,10 +92,10 @@
 	decorated_icon = "donut_homer"
 
 /obj/item/food/donut/trumpet
-	name = "spaceman's donut"
-	desc = "Goes great with a cold beaker of malk."
+	name = "Purple donut"
+	desc = "Goes great with a cold glass of milk."
 	icon_state = "donut_purple"
-	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/sugar = 3, /datum/reagent/medicine/polypyr = 3, /datum/reagent/consumable/sprinkles = 1)
+	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/sugar = 3, /datum/reagent/consumable/sprinkles = 1)
 	tastes = list("donut" = 3, "violets" = 1)
 	is_decorated = TRUE
 
@@ -186,10 +186,10 @@
 	decorated_icon = "jelly_homer"
 
 /obj/item/food/donut/jelly/trumpet
-	name = "spaceman's jelly donut"
-	desc = "Goes great with a cold beaker of malk."
+	name = "purple jelly donut"
+	desc = "Goes great with a cold glass of milk."
 	icon_state = "jelly_purple"
-	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/sugar = 3, /datum/reagent/medicine/polypyr = 3, /datum/reagent/consumable/sprinkles = 1, /datum/reagent/consumable/nutriment/vitamin = 1)
+	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/sugar = 3, /datum/reagent/consumable/sprinkles = 1, /datum/reagent/consumable/nutriment/vitamin = 1)
 	tastes = list("jelly" = 1, "donut" = 3, "violets" = 1)
 	is_decorated = TRUE
 

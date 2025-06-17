@@ -6,7 +6,7 @@
 	slot = ORGAN_SLOT_HEART
 
 	healing_factor = STANDARD_ORGAN_HEALING
-	decay_factor = 2.5 * STANDARD_ORGAN_DECAY		//designed to fail around 6 minutes after death
+	decay_factor = 1.25 * STANDARD_ORGAN_DECAY		//designed to fail around 12 minutes after death
 
 	low_threshold_passed = "<span class='info'>Prickles of pain appear then die out from within your chest...</span>"
 	high_threshold_passed = "<span class='warning'>Something inside your chest hurts, and the pain isn't subsiding. You notice yourself breathing far faster than before.</span>"
@@ -22,6 +22,10 @@
 	var/failed = FALSE		//to prevent constantly running failing code
 	var/operated = FALSE	//whether the heart's been operated on to fix some of its damages
 
+/obj/item/organ/heart/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling/organ, 750, "organ", TRUE, -1, 0)
+
 /obj/item/organ/heart/update_icon_state()
 	if(beating)
 		icon_state = "[icon_base]-on"
@@ -31,7 +35,7 @@
 /obj/item/organ/heart/Remove(mob/living/carbon/M, special = 0)
 	..()
 	if(!special)
-		addtimer(CALLBACK(src, .proc/stop_if_unowned), 120)
+		addtimer(CALLBACK(src, PROC_REF(stop_if_unowned)), 120)
 
 /obj/item/organ/heart/proc/stop_if_unowned()
 	if(!owner)
@@ -43,7 +47,7 @@
 		user.visible_message("<span class='notice'>[user] squeezes [src] to \
 			make it beat again!</span>","<span class='notice'>You squeeze [src] to make it beat again!</span>")
 		Restart()
-		addtimer(CALLBACK(src, .proc/stop_if_unowned), 80)
+		addtimer(CALLBACK(src, PROC_REF(stop_if_unowned)), 80)
 
 /obj/item/organ/heart/proc/Stop()
 	beating = 0
@@ -226,7 +230,7 @@
 		Stop()
 		owner.visible_message("<span class='danger'>[owner] clutches at [owner.p_their()] chest as if [owner.p_their()] heart is stopping!</span>", \
 						"<span class='userdanger'>You feel a terrible pain in your chest, as if your heart has stopped!</span>")
-		addtimer(CALLBACK(src, .proc/Restart), 10 SECONDS)
+		addtimer(CALLBACK(src, PROC_REF(Restart)), 10 SECONDS)
 
 /obj/item/organ/heart/cybernetic/on_life()
 	. = ..()

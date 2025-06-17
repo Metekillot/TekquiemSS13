@@ -20,22 +20,26 @@
 	slot_flags = ITEM_SLOT_BACK	//ERROOOOO
 	resistance_flags = NONE
 	max_integrity = 300
+	onflooricon = 'icons/wod13/onfloor.dmi'
+	worn_icon = 'icons/wod13/worn.dmi'
+	component_type = /datum/component/storage/concrete/vtm/backpack
+	body_worn = TRUE
 
-/obj/item/storage/backpack/ComponentInitialize()
-	. = ..()
-	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_combined_w_class = 21
-	STR.max_w_class = WEIGHT_CLASS_NORMAL
-	STR.max_items = 21
+//obj/item/storage/backpack/ComponentInitialize()
+//	. = ..()
+//	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+//	STR.max_combined_w_class = 21
+//	STR.max_w_class = WEIGHT_CLASS_NORMAL
+//	STR.max_items = 21
 
 /*
  * Backpack Types
  */
 
-/obj/item/storage/backpack/old/ComponentInitialize()
-	. = ..()
-	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_combined_w_class = 12
+//obj/item/storage/backpack/old/ComponentInitialize()
+//	. = ..()
+//	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+//	STR.max_combined_w_class = 12
 
 /obj/item/bag_of_holding_inert
 	name = "inert bag of holding"
@@ -96,7 +100,7 @@
 	return (OXYLOSS)
 
 /obj/item/storage/backpack/santabag/proc/regenerate_presents()
-	addtimer(CALLBACK(src, .proc/regenerate_presents), 30 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(regenerate_presents)), 30 SECONDS)
 
 	var/mob/M = get(loc, /mob)
 	if(!istype(M))
@@ -230,6 +234,18 @@
 	desc = "A trendy looking satchel."
 	icon_state = "satchel-norm"
 	inhand_icon_state = "satchel-norm"
+	component_type = /datum/component/storage/concrete/vtm/satchel
+	var/icon_hidden = FALSE
+
+/obj/item/storage/backpack/satchel/AltClick(mob/user)
+	if(!ishuman(user) || !user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY, FALSE, TRUE))
+		return ..()
+	var/mob/living/carbon/human/H = user
+	if(src == H.back && H.w_uniform)
+		icon_hidden = !icon_hidden
+		worn_icon_state = icon_hidden ? "blank" : initial(worn_icon_state)
+		to_chat(H, "<span class='notice'>You [icon_hidden ? "conceal" : "reveal"] your [src].</span>")
+		H.update_inv_back()
 
 /obj/item/storage/backpack/satchel/leather
 	name = "leather satchel"
@@ -343,12 +359,15 @@
 	desc = "A large duffel bag for holding extra things."
 	icon_state = "duffel"
 	inhand_icon_state = "duffel"
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	slowdown = 1
+	component_type = /datum/component/storage/concrete/vtm/duffel
 
-/obj/item/storage/backpack/duffelbag/ComponentInitialize()
-	. = ..()
-	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_combined_w_class = 30
+//obj/item/storage/backpack/duffelbag/ComponentInitialize()
+//	. = ..()
+//	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+//	STR.max_w_class = WEIGHT_CLASS_BULKY
+//	STR.max_combined_w_class = 30
 
 /obj/item/storage/backpack/duffelbag/cursed
 	name = "living duffel bag"
@@ -363,7 +382,7 @@
 
 /obj/item/storage/backpack/duffelbag/cursed/examine(mob/user)
 	. = ..()
-	
+
 	if(hunger > 25)
 		. += "<span class='danger'>The bag is growling for food...</span>"
 
@@ -431,28 +450,34 @@
 	desc = "A large duffel bag for holding extra medical supplies."
 	icon_state = "duffel-med"
 	inhand_icon_state = "duffel-med"
+	onflooricon = 'icons/wod13/onfloor.dmi'
+
 
 /obj/item/storage/backpack/duffelbag/med/surgery
 	name = "surgical duffel bag"
 	desc = "A large duffel bag for holding extra medical supplies - this one seems to be designed for holding surgical tools."
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/explorer
 	name = "explorator's duffel bag"
 	desc = "A large duffel bag for holding extra exotic treasures."
 	icon_state = "duffel-explorer"
 	inhand_icon_state = "duffel-explorer"
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/hydroponics
 	name = "hydroponic's duffel bag"
 	desc = "A large duffel bag for holding extra gardening tools."
 	icon_state = "duffel-hydroponics"
 	inhand_icon_state = "duffel-hydroponics"
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/chemistry
 	name = "chemistry duffel bag"
 	desc = "A large duffel bag for holding extra chemical substances."
 	icon_state = "duffel-chemistry"
 	inhand_icon_state = "duffel-chemistry"
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/storage/backpack/duffelbag/genetics
 	name = "geneticist's duffel bag"

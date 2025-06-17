@@ -37,7 +37,7 @@ Note: Must be placed within 3 tiles of the R&D Console
 		loaded_item = O
 		to_chat(user, "<span class='notice'>You add the [O.name] to the [src.name]!</span>")
 		flick("d_analyzer_la", src)
-		addtimer(CALLBACK(src, .proc/finish_loading), 10)
+		addtimer(CALLBACK(src, PROC_REF(finish_loading)), 10)
 		updateUsrDialog()
 
 /obj/machinery/rnd/destructive_analyzer/proc/finish_loading()
@@ -56,7 +56,7 @@ Note: Must be placed within 3 tiles of the R&D Console
 	if(!innermode)
 		flick("d_analyzer_process", src)
 		busy = TRUE
-		addtimer(CALLBACK(src, .proc/reset_busy), 24)
+		addtimer(CALLBACK(src, PROC_REF(reset_busy)), 24)
 		use_power(250)
 		if(thing == loaded_item)
 			loaded_item = null
@@ -139,7 +139,7 @@ Note: Must be placed within 3 tiles of the R&D Console
 		l += "<div class='statusDisplay'>No item loaded. Standing-by...</div>"
 	else
 		l += "<div class='statusDisplay'>[RDSCREEN_NOBREAK]"
-		l += "<table><tr><td>[icon2html(loaded_item, usr)]</td><td><b>[loaded_item.name]</b> <A href='?src=[REF(src)];eject_item=1'>Eject</A></td></tr></table>[RDSCREEN_NOBREAK]"
+		l += "<table><tr><td>[icon2html(loaded_item, usr)]</td><td><b>[loaded_item.name]</b> <A href='byond://?src=[REF(src)];eject_item=1'>Eject</A></td></tr></table>[RDSCREEN_NOBREAK]"
 		l += "Select a node to boost by deconstructing this item. This item can boost:"
 
 		var/anything = FALSE
@@ -155,7 +155,7 @@ Note: Must be placed within 3 tiles of the R&D Console
 				l += "This node has already been researched."
 			else if(!length(worth))  // reveal only
 				if (stored_research.hidden_nodes[N.id])
-					l += "<A href='?src=[REF(src)];deconstruct=[N.id]'>[N.display_name]</A>"
+					l += "<A href='byond://?src=[REF(src)];deconstruct=[N.id]'>[N.display_name]</A>"
 					l += "This node will be revealed."
 				else
 					l += "<span class='linkOff'>[N.display_name]</span>"
@@ -169,7 +169,7 @@ Note: Must be placed within 3 tiles of the R&D Console
 					if(amt > 0)
 						differences[i] = amt
 				if (length(differences))
-					l += "<A href='?src=[REF(src)];deconstruct=[N.id]'>[N.display_name]</A>"
+					l += "<A href='byond://?src=[REF(src)];deconstruct=[N.id]'>[N.display_name]</A>"
 					l += "This node will be boosted with the following:<BR>[techweb_point_display_generic(differences)]"
 				else
 					l += "<span class='linkOff'>[N.display_name]</span>"
@@ -184,12 +184,12 @@ Note: Must be placed within 3 tiles of the R&D Console
 				l += "<span class='linkOff'>Point Deconstruction</span>"
 				l += "This item's points have already been claimed."
 			else
-				l += "<A href='?src=[REF(src)];deconstruct=[RESEARCH_MATERIAL_DESTROY_ID]'>Point Deconstruction</A>"
+				l += "<A href='byond://?src=[REF(src)];deconstruct=[RESEARCH_MATERIAL_DESTROY_ID]'>Point Deconstruction</A>"
 				l += "This item is worth: <BR>[techweb_point_display_generic(point_values)]!"
 			l += "</div>[RDSCREEN_NOBREAK]"
 
 		if(!(loaded_item.resistance_flags & INDESTRUCTIBLE))
-			l += "<div class='statusDisplay'><A href='?src=[REF(src)];deconstruct=[RESEARCH_MATERIAL_DESTROY_ID]'>Destroy Item</A>"
+			l += "<div class='statusDisplay'><A href='byond://?src=[REF(src)];deconstruct=[RESEARCH_MATERIAL_DESTROY_ID]'>Destroy Item</A>"
 			l += "</div>[RDSCREEN_NOBREAK]"
 			anything = TRUE
 

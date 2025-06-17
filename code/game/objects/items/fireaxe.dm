@@ -3,8 +3,8 @@
  */
 /obj/item/fireaxe  // DEM AXES MAN, marker -Agouri
 	icon_state = "fireaxe0"
-	lefthand_file = 'icons/mob/inhands/weapons/axes_lefthand.dmi'
-	righthand_file = 'icons/mob/inhands/weapons/axes_righthand.dmi'
+	lefthand_file = 'icons/wod13/righthand.dmi'
+	righthand_file = 'icons/wod13/lefthand.dmi'
 	name = "fire axe"
 	desc = "Truly, the weapon of a madman. Who would think to fight fire with an axe?"
 	force = 5
@@ -24,8 +24,8 @@
 
 /obj/item/fireaxe/Initialize()
 	. = ..()
-	RegisterSignal(src, COMSIG_TWOHANDED_WIELD, .proc/on_wield)
-	RegisterSignal(src, COMSIG_TWOHANDED_UNWIELD, .proc/on_unwield)
+	RegisterSignal(src, COMSIG_TWOHANDED_WIELD, PROC_REF(on_wield))
+	RegisterSignal(src, COMSIG_TWOHANDED_UNWIELD, PROC_REF(on_unwield))
 
 /obj/item/fireaxe/ComponentInitialize()
 	. = ..()

@@ -19,6 +19,7 @@
     text-align: center;
     outline: none;
     display: inline-block;
+	font-weight: bold;
 }
 
 .long {
@@ -71,4 +72,33 @@
 
 .antagonistpositions {
     background-color: #6d3f40;
+}
+
+.invictus {
+	background-color: #00008B
+}
+
+.lanceaetsanctum{
+	background-color: #FF8C00
+}
+
+.carthianmovement {
+	background-color: #B22222
+}
+
+.circleofthecrone {
+	background-image: linear-gradient(to right, #009246,white,#CE2B37);
+	color: black
+}
+
+.other {
+    background-color: #6eaa2c;
+}
+
+.ordodracul {
+	background-color: #6d2d77
+}
+
+.lawenforcement {
+	background-color: #009fd4
 }

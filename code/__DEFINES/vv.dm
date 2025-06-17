@@ -44,7 +44,7 @@
 #define GET_VV_VAR_TARGET href_list[VV_HK_VARNAME]
 
 //Helper for getting something to vv_do_topic in general
-#define VV_TOPIC_LINK(datum, href_key, text) "<a href='?_src_=vars;[HrefToken()];[href_key]=TRUE;target=[REF(datum)]'>text</a>"
+#define VV_TOPIC_LINK(datum, href_key, text) "<a href='byond://?_src_=vars;[HrefToken()];[href_key]=TRUE;target=[REF(datum)]'>text</a>"
 
 //Helpers for vv_get_dropdown()
 #define VV_DROPDOWN_OPTION(href_key, name) . += "<option value='?_src_=vars;[HrefToken()];[href_key]=TRUE;target=[REF(src)]'>[name]</option>"
@@ -122,6 +122,7 @@
 #define VV_HK_COPY_OUTFIT "copy_outfit"
 #define VV_HK_MOD_MUTATIONS "quirkmut"
 #define VV_HK_MOD_QUIRKS "quirkmod"
+#define VV_HK_MOD_MERITS "meritmod"
 #define VV_HK_MAKE_MONKEY "human_monkify"
 #define VV_HK_MAKE_CYBORG "human_cyborgify"
 #define VV_HK_MAKE_SLIME "human_slimeify"

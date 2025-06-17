@@ -170,11 +170,11 @@
 		to_chat(user, "<span class='warning'>These items don't possess the required fingerprints or DNA.</span>")
 		return FALSE
 
-	var/chosen_mob = input("Select the person you wish to curse","Your target") as null|anything in sortList(compiled_list, /proc/cmp_mob_realname_dsc)
+	var/chosen_mob = input("Select the person you wish to curse","Your target") as null|anything in sortList(compiled_list, GLOBAL_PROC_REF(cmp_mob_realname_dsc))
 	if(!chosen_mob)
 		return FALSE
 	curse(compiled_list[chosen_mob])
-	addtimer(CALLBACK(src, .proc/uncurse, compiled_list[chosen_mob]),timer)
+	addtimer(CALLBACK(src, PROC_REF(uncurse), compiled_list[chosen_mob]),timer)
 	return TRUE
 
 /datum/eldritch_knowledge/curse/proc/curse(mob/living/chosen_mob)
@@ -303,7 +303,7 @@
 	desc = "Allows you to create additional living hearts, using a heart, a pool of blood and a poppy. Living hearts when used on a transmutation rune will grant you a person to hunt and sacrifice on the rune. Every sacrifice gives you an additional charge in the book."
 	gain_text = "The Gates of Mansus open up to your mind."
 	cost = 0
-	required_atoms = list(/obj/item/organ/heart,/obj/effect/decal/cleanable/blood,/obj/item/food/grown/poppy)
+	required_atoms = list(/obj/item/organ/heart,/obj/effect/decal/cleanable/blood,/obj/item/food/grown/flower/poppy)
 	result_atoms = list(/obj/item/living_heart)
 	route = "Start"
 

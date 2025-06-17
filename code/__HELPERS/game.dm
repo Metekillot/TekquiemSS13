@@ -343,6 +343,10 @@
 	O.screen_loc = screen_loc
 	return O
 
+/// Removes an image from a client's `.images`. Useful as a callback.
+/proc/remove_image_from_client(image/image_to_remove, client/remove_from)
+	remove_from?.images -= image_to_remove
+
 /proc/remove_images_from_clients(image/I, list/show_to)
 	for(var/client/C in show_to)
 		C.images -= I
@@ -350,7 +354,7 @@
 /proc/flick_overlay(image/I, list/show_to, duration)
 	for(var/client/C in show_to)
 		C.images += I
-	addtimer(CALLBACK(GLOBAL_PROC, /proc/remove_images_from_clients, I, show_to), duration, TIMER_CLIENT_TIME)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(remove_images_from_clients), I, show_to), duration, TIMER_CLIENT_TIME)
 
 /proc/flick_overlay_view(image/I, atom/target, duration) //wrapper for the above, flicks to everyone who can see the target atom
 	var/list/viewing = list()
@@ -416,7 +420,8 @@
 		return candidates
 
 	for(var/mob/dead/observer/G in GLOB.player_list)
-		candidates += G
+		if(!G.auspex_ghosted) //No Auspex ghosts as candidates.
+			candidates += G
 
 	return pollCandidates(Question, jobbanType, gametypeCheck, be_special_flag, poll_time, ignore_category, flashwindow, candidates)
 
@@ -518,10 +523,13 @@
 		return
 	if((character.mind.assigned_role == "Cyborg") || (character.mind.assigned_role == character.mind.special_role))
 		return
-
+	// TFN EDIT START: alt job titles
+	var/displayed_rank = rank
+	if(character?.client?.prefs?.alt_titles_preferences[rank])
+		displayed_rank = character.client.prefs.alt_titles_preferences[rank]
 	var/obj/machinery/announcement_system/announcer = pick(GLOB.announcement_systems)
-	announcer.announce("ARRIVAL", character.real_name, rank, list()) //make the list empty to make it announce it in common
-
+	announcer.announce("ARRIVAL", character.real_name, displayed_rank, list()) //make the list empty to make it announce it in common
+	// TFN EDIT END
 /proc/lavaland_equipment_pressure_check(turf/T)
 	. = FALSE
 	if(!istype(T))

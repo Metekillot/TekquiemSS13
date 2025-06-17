@@ -52,6 +52,7 @@
 
 	seed.prepare_result(src)
 	transform *= TRANSFORM_USING_VARIABLE(seed.potency, 100) + 0.5 //Makes the resulting produce's sprite larger or smaller based on potency!
+	AddComponent(/datum/component/selling, 20, "produce", FALSE)
 
 /obj/item/food/grown/MakeEdible()
 	AddComponent(/datum/component/edible,\
@@ -65,7 +66,7 @@
 				bite_consumption = bite_consumption_mod ? 1 + round(max_volume / bite_consumption_mod) : bite_consumption,\
 				microwaved_type = microwaved_type,\
 				junkiness = junkiness,\
-				on_consume = CALLBACK(src, .proc/OnConsume))
+				on_consume = CALLBACK(src, PROC_REF(OnConsume)))
 
 
 /obj/item/food/grown/proc/make_dryable()
@@ -111,7 +112,7 @@
 
 /obj/item/food/grown/MakeLeaveTrash()
 	if(trash_type)
-		AddElement(/datum/element/food_trash, trash_type, FOOD_TRASH_OPENABLE, /obj/item/food/grown/.proc/generate_trash)
+		AddElement(/datum/element/food_trash, trash_type, FOOD_TRASH_OPENABLE, TYPE_PROC_REF(/obj/item/food/grown, generate_trash))
 	return
 
 // Various gene procs

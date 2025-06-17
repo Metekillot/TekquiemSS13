@@ -35,16 +35,17 @@
 
 	return ..()
 
-/datum/dna/proc/transfer_identity(mob/living/carbon/destination, transfer_SE = 0)
+/datum/dna/proc/transfer_identity(mob/living/carbon/destination, transfer_SE = FALSE, superficial = FALSE)
 	if(!istype(destination))
 		return
 	destination.dna.unique_enzymes = unique_enzymes
 	destination.dna.uni_identity = uni_identity
-	destination.dna.blood_type = blood_type
-	destination.set_species(species.type, icon_update=0)
 	destination.dna.features = features.Copy()
 	destination.dna.real_name = real_name
-	destination.dna.temporary_mutations = temporary_mutations.Copy()
+	if (!superficial)
+		destination.dna.blood_type = blood_type
+		destination.set_species(species.type, icon_update=0)
+		destination.dna.temporary_mutations = temporary_mutations.Copy()
 	if(transfer_SE)
 		destination.dna.mutation_index = mutation_index
 		destination.dna.default_mutation_genes = default_mutation_genes
@@ -108,7 +109,9 @@
 			init_sprite_accessory_subtypes(/datum/sprite_accessory/facial_hair, GLOB.facial_hairstyles_list, GLOB.facial_hairstyles_male_list, GLOB.facial_hairstyles_female_list)
 		L[DNA_FACIAL_HAIRSTYLE_BLOCK] = construct_block(GLOB.facial_hairstyles_list.Find(H.facial_hairstyle), GLOB.facial_hairstyles_list.len)
 		L[DNA_FACIAL_HAIR_COLOR_BLOCK] = sanitize_hexcolor(H.facial_hair_color)
-		L[DNA_SKIN_TONE_BLOCK] = construct_block(GLOB.skin_tones.Find(H.skin_tone), GLOB.skin_tones.len)
+		//Hex - keeping note of what the code was, because the rebase might break this badly
+		//L[DNA_SKIN_TONE_BLOCK] = construct_block(GLOB.skin_tones.Find(H.skin_tone), GLOB.skin_tones.len)
+		L[DNA_SKIN_TONE_BLOCK] = sanitize_hexcolor(H.skin_tone)
 		L[DNA_EYE_COLOR_BLOCK] = sanitize_hexcolor(H.eye_color)
 
 	for(var/i=1, i<=DNA_UNI_IDENTITY_BLOCKS, i++)
@@ -180,7 +183,9 @@
 		if(DNA_FACIAL_HAIR_COLOR_BLOCK)
 			setblock(uni_identity, blocknumber, sanitize_hexcolor(H.facial_hair_color))
 		if(DNA_SKIN_TONE_BLOCK)
-			setblock(uni_identity, blocknumber, construct_block(GLOB.skin_tones.Find(H.skin_tone), GLOB.skin_tones.len))
+			//Hex - keeping note of what the code was, because the rebase might break this badly
+			//setblock(uni_identity, blocknumber, construct_block(GLOB.skin_tones.Find(H.skin_tone), GLOB.skin_tones.len))
+			setblock(uni_identity, blocknumber, sanitize_hexcolor(H.skin_tone))
 		if(DNA_EYE_COLOR_BLOCK)
 			setblock(uni_identity, blocknumber, sanitize_hexcolor(H.eye_color))
 		if(DNA_GENDER_BLOCK)
@@ -377,7 +382,7 @@
 /mob/living/carbon/proc/create_dna()
 	dna = new /datum/dna(src)
 	if(!dna.species)
-		var/rando_race = pick(GLOB.roundstart_races)
+		var/rando_race = pick(get_roundstart_species())
 		dna.species = new rando_race()
 
 //proc used to update the mob's appearance after its dna UI has been changed
@@ -398,7 +403,9 @@
 	var/structure = dna.uni_identity
 	hair_color = sanitize_hexcolor(getblock(structure, DNA_HAIR_COLOR_BLOCK))
 	facial_hair_color = sanitize_hexcolor(getblock(structure, DNA_FACIAL_HAIR_COLOR_BLOCK))
-	skin_tone = GLOB.skin_tones[deconstruct_block(getblock(structure, DNA_SKIN_TONE_BLOCK), GLOB.skin_tones.len)]
+	//Hex - keeping note of what the code was, because the rebase might break this badly
+	//skin_tone = GLOB.skin_tones[deconstruct_block(getblock(structure, DNA_SKIN_TONE_BLOCK), GLOB.skin_tones.len)]
+	skin_tone = sanitize_hexcolor(getblock(structure, DNA_SKIN_TONE_BLOCK))
 	eye_color = sanitize_hexcolor(getblock(structure, DNA_EYE_COLOR_BLOCK))
 	facial_hairstyle = GLOB.facial_hairstyles_list[deconstruct_block(getblock(structure, DNA_FACIAL_HAIRSTYLE_BLOCK), GLOB.facial_hairstyles_list.len)]
 	hairstyle = GLOB.hairstyles_list[deconstruct_block(getblock(structure, DNA_HAIRSTYLE_BLOCK), GLOB.hairstyles_list.len)]
@@ -652,10 +659,10 @@
 				spawn_gibs()
 				set_species(/datum/species/skeleton)
 				if(prob(90))
-					addtimer(CALLBACK(src, .proc/death), 30)
+					addtimer(CALLBACK(src, PROC_REF(death)), 30)
 			if(5)
 				to_chat(src, "<span class='phobia'>LOOK UP!</span>")
-				addtimer(CALLBACK(src, .proc/something_horrible_mindmelt), 30)
+				addtimer(CALLBACK(src, PROC_REF(something_horrible_mindmelt)), 30)
 
 
 /mob/living/carbon/human/proc/something_horrible_mindmelt()
@@ -666,4 +673,4 @@
 		eyes.Remove(src)
 		qdel(eyes)
 		visible_message("<span class='notice'>[src] looks up and their eyes melt away!</span>", "<span class>='userdanger'>I understand now.</span>")
-		addtimer(CALLBACK(src, .proc/adjustOrganLoss, ORGAN_SLOT_BRAIN, 200), 20)
+		addtimer(CALLBACK(src, PROC_REF(adjustOrganLoss), ORGAN_SLOT_BRAIN, 200), 20)

@@ -5,10 +5,10 @@
  * ## USAGE
  *
  * ```
- * var/datum/callback/C = new(object|null, /proc/type/path|"procstring", arg1, arg2, ... argn)
+ * var/datum/callback/C = new(object|null, GLOBAL_PROC_REF(type)/path|"procstring", arg1, arg2, ... argn)
  * var/timerid = addtimer(C, time, timertype)
  * you can also use the compiler define shorthand
- * var/timerid = addtimer(CALLBACK(object|null, /proc/type/path|procstring, arg1, arg2, ... argn), time, timertype)
+ * var/timerid = addtimer(CALLBACK(object|null, GLOBAL_PROC_REF(type)/path|procstring, arg1, arg2, ... argn), time, timertype)
  * ```
  *
  * Note: proc strings can only be given for datum proc calls, global procs must be proc paths
@@ -37,14 +37,14 @@
  * `CALLBACK(src, .some_proc_here)`
  *
  * ### when the above doesn't apply:
- *.proc/procname
+ *PROC_REF(procname)
  *
- * `CALLBACK(src, .proc/some_proc_here)`
+ * `CALLBACK(src, PROC_REF(some_proc_here))`
  *
  *
  * proc defined on a parent of a some type
  *
- * `/some/type/.proc/some_proc_here`
+ * `TYPE_PROC_REF(/some/type, some_proc_here)`
  *
  * Otherwise you must always provide the full typepath of the proc (/type/of/thing/proc/procname)
  */
@@ -75,26 +75,6 @@
 		arguments = args.Copy(3)
 	if(usr)
 		user = WEAKREF(usr)
-/**
- * Immediately Invoke proctocall on thingtocall, with waitfor set to false
- *
- * Arguments:
- * * thingtocall Object to call on
- * * proctocall Proc to call on that object
- * * ... optional list of arguments to pass as arguments to the proc being called
- */
-/world/proc/ImmediateInvokeAsync(thingtocall, proctocall, ...)
-	set waitfor = FALSE
-
-	if (!thingtocall)
-		return
-
-	var/list/calling_arguments = length(args) > 2 ? args.Copy(3) : null
-
-	if (thingtocall == GLOBAL_PROC)
-		call(proctocall)(arglist(calling_arguments))
-	else
-		call(thingtocall, proctocall)(arglist(calling_arguments))
 
 /**
  * Invoke this callback

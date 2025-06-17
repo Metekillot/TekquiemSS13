@@ -25,5 +25,6 @@
 		station_goals += G
 		G.on_report()
 
-/datum/game_mode/extended/announced/send_intercept(report = 0)
-	priority_announce("Thanks to the tireless efforts of our security and intelligence divisions, there are currently no credible threats to [station_name()]. All station construction projects have been authorized. Have a secure shift!", "Security Report", 'sound/ai/commandreport.ogg')
+/datum/game_mode/extended/check_finished(force_ending)
+	if(force_ending)
+		return TRUE

@@ -4,8 +4,8 @@
 	icon = 'icons/obj/doors/blastdoor.dmi'
 	icon_state = "closed"
 	var/id = 1
-	layer = BLASTDOOR_LAYER
-	closingLayer = CLOSED_BLASTDOOR_LAYER
+	layer = ABOVE_ALL_MOB_LAYER
+	closingLayer = ABOVE_ALL_MOB_LAYER
 	sub_door = TRUE
 	explosion_block = 3
 	heat_proof = TRUE
@@ -20,6 +20,15 @@
 
 /obj/machinery/door/poddoor/attackby(obj/item/W, mob/user, params)
 	. = ..()
+
+	if(istype(W,/obj/item/vamp/keys))
+		var/obj/item/vamp/keys/key = W
+		if(key.accesslocks.Find(id))
+			var/area/current_area = get_area(src)
+			for(var/obj/machinery/button/door/door_button in current_area)
+				door_button.device.pulsed()
+				break
+
 	if(ertblast && W.tool_behaviour == TOOL_SCREWDRIVER) // This makes it so ERT members cannot cheese by opening their blast doors.
 		to_chat(user, "<span class='warning'>This shutter has a different kind of screw, you cannot unscrew the panel open.</span>")
 		return
@@ -37,7 +46,7 @@
 			var/change_id = input("Set the shutters/blast door/blast door controllers ID. It must be a number between 1 and 100.", "ID", id) as num|null
 			if(change_id)
 				id = clamp(round(change_id, 1), 1, 100)
-				to_chat(user, "<span class='notice'>You change the ID to [id].</span>")	
+				to_chat(user, "<span class='notice'>You change the ID to [id].</span>")
 
 		if(W.tool_behaviour == TOOL_CROWBAR && deconstruction == INTACT)
 			to_chat(user, "<span class='notice'>You start to remove the airlock electronics.</span>")
@@ -86,9 +95,9 @@
 /obj/machinery/door/poddoor/shuttledock/proc/check()
 	var/turf/T = get_step(src, checkdir)
 	if(!istype(T, turftype))
-		INVOKE_ASYNC(src, .proc/open)
+		INVOKE_ASYNC(src, PROC_REF(open))
 	else
-		INVOKE_ASYNC(src, .proc/close)
+		INVOKE_ASYNC(src, PROC_REF(close))
 
 /obj/machinery/door/poddoor/incinerator_toxmix
 	name = "combustion chamber vent"

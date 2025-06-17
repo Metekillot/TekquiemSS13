@@ -12,7 +12,7 @@
 	minimal_player_age = 7
 	exp_requirements = 180
 	exp_type = EXP_TYPE_CREW
-	exp_type_department = EXP_TYPE_MEDICAL
+	exp_type_department = EXP_TYPE_NEUTRALS
 
 	outfit = /datum/outfit/job/cmo
 
@@ -27,7 +27,7 @@
 
 	liver_traits = list(TRAIT_MEDICAL_METABOLISM, TRAIT_ROYAL_METABOLISM)
 
-	display_order = JOB_DISPLAY_ORDER_CHIEF_MEDICAL_OFFICER
+//	display_order = JOB_DISPLAY_ORDER_CHIEF_MEDICAL_OFFICER
 	bounty_types = CIV_JOB_MED
 
 /datum/outfit/job/cmo

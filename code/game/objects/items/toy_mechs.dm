@@ -179,7 +179,7 @@
 		to_chat(user, "<span class='notice'>You offer battle to [target.name]!</span>")
 		to_chat(target, "<span class='notice'><b>[user.name] wants to battle with [user.p_their()] [name]!</b> <i>Attack them with a toy mech to initiate combat.</i></span>")
 		wants_to_battle = TRUE
-		addtimer(CALLBACK(src, .proc/withdraw_offer, user), 6 SECONDS)
+		addtimer(CALLBACK(src, PROC_REF(withdraw_offer), user), 6 SECONDS)
 		return
 
 	..()
@@ -266,7 +266,7 @@
 /**
  * Override the say proc if they're mute
  */
-/obj/item/toy/prize/say()
+/obj/item/toy/prize/say(message, bubble_type, list/spans = list(), sanitize = TRUE, datum/language/language = null, ignore_spam = FALSE, forced = null)
 	if(!quiet)
 		. = ..()
 
@@ -446,19 +446,19 @@
 /obj/item/toy/prize/proc/check_battle_start(mob/living/carbon/user, obj/item/toy/prize/attacker, mob/living/carbon/target)
 	if(attacker?.in_combat)
 		to_chat(user, "<span class='notice'>[target?target.p_their() : "Your" ] [attacker.name] is in combat.</span>")
-		target?.to_chat(target, "<span class='notice'>Your [attacker.name] is in combat.</span>")
+		to_chat(target, "<span class='notice'>Your [attacker.name] is in combat.</span>")
 		return FALSE
 	if(in_combat)
 		to_chat(user, "<span class='notice'>Your [name] is in combat.</span>")
-		target?.to_chat(target, "<span class='notice'>[target.p_their()] [name] is in combat.</span>")
+		to_chat(target, "<span class='notice'>[target.p_their()] [name] is in combat.</span>")
 		return FALSE
 	if(attacker && attacker.timer > world.time)
 		to_chat(user, "<span class='notice'>[target?target.p_their() : "Your" ] [attacker.name] isn't ready for battle.</span>")
-		target?.to_chat(target, "<span class='notice'>Your [attacker.name] isn't ready for battle.</span>")
+		to_chat(target, "<span class='notice'>Your [attacker.name] isn't ready for battle.</span>")
 		return FALSE
 	if(timer > world.time)
 		to_chat(user, "<span class='notice'>Your [name] isn't ready for battle.</span>")
-		target?.to_chat(target, "<span class='notice'>[target.p_their()] [name] isn't ready for battle.</span>")
+		to_chat(target, "<span class='notice'>[target.p_their()] [name] isn't ready for battle.</span>")
 		return FALSE
 
 	return TRUE

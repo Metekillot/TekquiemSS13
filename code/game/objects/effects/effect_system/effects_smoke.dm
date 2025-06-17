@@ -42,7 +42,7 @@
 
 /obj/effect/particle_effect/smoke/proc/kill_smoke()
 	STOP_PROCESSING(SSobj, src)
-	INVOKE_ASYNC(src, .proc/fade_out)
+	INVOKE_ASYNC(src, PROC_REF(fade_out))
 	QDEL_IN(src, 10)
 
 /obj/effect/particle_effect/smoke/process()
@@ -54,17 +54,17 @@
 		smoke_mob(L)
 	return TRUE
 
-/obj/effect/particle_effect/smoke/proc/smoke_mob(mob/living/carbon/C)
-	if(!istype(C))
+/obj/effect/particle_effect/smoke/proc/smoke_mob(mob/living/carbon/inhaling_mob)
+	if(!istype(inhaling_mob))
 		return FALSE
 	if(lifetime<1)
 		return FALSE
-	if(C.internal != null || C.has_smoke_protection())
+	if(inhaling_mob.internal != null || inhaling_mob.has_smoke_protection())
 		return FALSE
-	if(C.smoke_delay)
+	if(inhaling_mob.smoke_delay)
 		return FALSE
-	C.smoke_delay++
-	addtimer(CALLBACK(src, .proc/remove_smoke_delay, C), 10)
+	inhaling_mob.smoke_delay++
+	addtimer(CALLBACK(src, PROC_REF(remove_smoke_delay), inhaling_mob), 10)
 	return TRUE
 
 /obj/effect/particle_effect/smoke/proc/remove_smoke_delay(mob/living/carbon/C)
@@ -95,7 +95,7 @@
 
 	//the smoke spreads rapidly but not instantly
 	for(var/obj/effect/particle_effect/smoke/SM in newsmokes)
-		addtimer(CALLBACK(SM, /obj/effect/particle_effect/smoke.proc/spread_smoke), 1)
+		addtimer(CALLBACK(SM, TYPE_PROC_REF(/obj/effect/particle_effect/smoke, spread_smoke)), 1)
 
 
 /datum/effect_system/smoke_spread
@@ -125,12 +125,12 @@
 /obj/effect/particle_effect/smoke/bad
 	lifetime = 8
 
-/obj/effect/particle_effect/smoke/bad/smoke_mob(mob/living/carbon/M)
+/obj/effect/particle_effect/smoke/bad/smoke_mob(mob/living/carbon/inhaling_mob)
 	. = ..()
 	if(.)
-		M.drop_all_held_items()
-		M.adjustOxyLoss(1)
-		M.emote("cough")
+		inhaling_mob.drop_all_held_items()
+		inhaling_mob.adjustOxyLoss(1)
+		inhaling_mob.emote("cough")
 		return TRUE
 
 /obj/effect/particle_effect/smoke/bad/Crossed(atom/movable/AM, oldloc)

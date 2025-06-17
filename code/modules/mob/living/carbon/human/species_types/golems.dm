@@ -12,7 +12,6 @@
 	siemens_coeff = 0
 	punchdamagelow = 5
 	punchdamagehigh = 14
-	punchstunthreshold = 11 //about 40% chance to stun
 	no_equip = list(ITEM_SLOT_MASK, ITEM_SLOT_OCLOTHING, ITEM_SLOT_GLOVES, ITEM_SLOT_FEET, ITEM_SLOT_ICLOTHING, ITEM_SLOT_SUITSTORE)
 	nojumpsuit = 1
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC
@@ -168,7 +167,6 @@
 	name = "Silver Golem"
 	id = "silver golem"
 	fixed_mut_color = "ddd"
-	punchstunthreshold = 9 //60% chance, from 40%
 	meat = /obj/item/stack/ore/silver
 	info_text = "As a <span class='danger'>Silver Golem</span>, your attacks have a higher chance of stunning. Being made of silver, your body is immune to most types of magic."
 	prefix = "Silver"
@@ -190,7 +188,6 @@
 	stunmod = 0.4
 	punchdamagelow = 12
 	punchdamagehigh = 21
-	punchstunthreshold = 18 //still 40% stun chance
 	speedmod = 4 //pretty fucking slow
 	meat = /obj/item/stack/ore/iron
 	info_text = "As a <span class='danger'>Plasteel Golem</span>, you are slower, but harder to stun, and hit very hard when punching. You also magnetically attach to surfaces and so don't float without gravity and cannot have positions swapped with other beings."
@@ -328,7 +325,6 @@
 	brutemod = 0.5
 	punchdamagelow = 1
 	punchdamagehigh = 10
-	punchstunthreshold = 9
 	prefix = "Uranium"
 	special_names = list("Oxide", "Rod", "Meltdown", "235")
 	COOLDOWN_DECLARE(radiation_emission_cooldown)
@@ -511,7 +507,7 @@
 	var/mob/living/carbon/human/H = owner
 	H.visible_message("<span class='warning'>[H] starts vibrating!</span>", "<span class='danger'>You start charging your bluespace core...</span>")
 	playsound(get_turf(H), 'sound/weapons/flash.ogg', 25, TRUE)
-	addtimer(CALLBACK(src, .proc/teleport, H), 15)
+	addtimer(CALLBACK(src, PROC_REF(teleport), H), 15)
 
 /datum/action/innate/unstable_teleport/proc/teleport(mob/living/carbon/human/H)
 	H.visible_message("<span class='warning'>[H] disappears in a shower of sparks!</span>", "<span class='danger'>You teleport!</span>")
@@ -523,7 +519,7 @@
 	last_teleport = world.time
 	UpdateButtonIcon() //action icon looks unavailable
 	//action icon looks available again
-	addtimer(CALLBACK(src, .proc/UpdateButtonIcon), cooldown + 5)
+	addtimer(CALLBACK(src, PROC_REF(UpdateButtonIcon)), cooldown + 5)
 
 
 //honk
@@ -548,7 +544,6 @@
 	)
 	punchdamagelow = 0
 	punchdamagehigh = 1
-	punchstunthreshold = 2 //Harmless and can't stun
 	meat = /obj/item/stack/ore/bananium
 	info_text = "As a <span class='danger'>Bananium Golem</span>, you are made for pranking. Your body emits natural honks, and you can barely even hurt people when punching them. Your skin also bleeds banana peels when damaged."
 	attack_verb = "honk"
@@ -566,7 +561,7 @@
 	..()
 	last_banana = world.time
 	last_honk = world.time
-	RegisterSignal(C, COMSIG_MOB_SAY, .proc/handle_speech)
+	RegisterSignal(C, COMSIG_MOB_SAY, PROC_REF(handle_speech))
 	var/obj/item/organ/liver/liver = C.getorganslot(ORGAN_SLOT_LIVER)
 	if(liver)
 		ADD_TRAIT(liver, TRAIT_COMEDY_METABOLISM, SPECIES_TRAIT)
@@ -697,7 +692,6 @@
 	burnmod = 2 // don't get burned
 	speedmod = 1 // not as heavy as stone
 	punchdamagelow = 4
-	punchstunthreshold = 7
 	punchdamagehigh = 8 // not as heavy as stone
 	prefix = "Cloth"
 	special_names = null
@@ -757,7 +751,7 @@
 		H.forceMove(src)
 		cloth_golem = H
 		to_chat(cloth_golem, "<span class='notice'>You start gathering your life energy, preparing to rise again...</span>")
-		addtimer(CALLBACK(src, .proc/revive), revive_time)
+		addtimer(CALLBACK(src, PROC_REF(revive)), revive_time)
 	else
 		return INITIALIZE_HINT_QDEL
 
@@ -901,7 +895,6 @@
 	heatmod = 2
 	speedmod = 1.5
 	punchdamagelow = 4
-	punchstunthreshold = 7
 	punchdamagehigh = 8
 	var/last_creation = 0
 	var/brother_creation_cooldown = 300
@@ -1040,7 +1033,7 @@
 			badtime.appearance_flags = RESET_COLOR
 			H.overlays_standing[FIRE_LAYER+0.5] = badtime
 			H.apply_overlay(FIRE_LAYER+0.5)
-			addtimer(CALLBACK(H, /mob/living/carbon/.proc/remove_overlay, FIRE_LAYER+0.5), 25)
+			addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon, remove_overlay), FIRE_LAYER+0.5), 25)
 	else
 		playsound(get_turf(owner),'sound/magic/RATTLEMEBONES.ogg', 100)
 	for(var/mob/living/L in orange(7, get_turf(owner)))

@@ -83,6 +83,18 @@
 	/// A lazy list of statuses to add next to this mind in the traitor panel
 	var/list/special_statuses
 
+	//Dharma path
+	var/datum/dharma/dharma
+
+	//permanent character connections stored in a database
+	var/list/character_connections
+
+	//round-only connections not stored on the db, don't mix your peas and carrots
+	var/list/fake_character_connections
+
+	//Controls the tempted condition for frenzy
+	var/tempted_mod
+
 /datum/mind/New(_key)
 	key = _key
 	martial_art = default_martial_art
@@ -131,13 +143,15 @@
 	transfer_antag_huds(hud_to_transfer)				//inherit the antag HUD
 	transfer_actions(new_character)
 	transfer_martial_arts(new_character)
-	RegisterSignal(new_character, COMSIG_LIVING_DEATH, .proc/set_death_time)
+	RegisterSignal(new_character, COMSIG_LIVING_DEATH, PROC_REF(set_death_time))
 	if(active || force_key_move)
 		new_character.key = key		//now transfer the key to link the client to our new body
 	if(new_character.client)
 		LAZYCLEARLIST(new_character.client.recent_examines)
 		new_character.client.init_verbs() // re-initialize character specific verbs
 	current.update_atom_languages()
+
+	SEND_SIGNAL(src, COMSIG_MIND_TRANSFERRED, new_character)
 
 /datum/mind/proc/init_known_skills()
 	for (var/type in GLOB.skill_types)
@@ -259,7 +273,7 @@
 	var/datum/team/antag_team = A.get_team()
 	if(antag_team)
 		antag_team.add_member(src)
-	INVOKE_ASYNC(A, /datum/antagonist.proc/on_gain)
+	INVOKE_ASYNC(A, TYPE_PROC_REF(/datum/antagonist, on_gain))
 	log_game("[key_name(src)] has gained antag datum [A.name]([A.type])")
 	return A
 
@@ -361,8 +375,8 @@
 		P = locate() in all_contents
 
 	var/obj/item/uplink_loc
-	var/implant = FALSE
-
+	var/implant = TRUE
+/*
 	if(traitor_mob.client && traitor_mob.client.prefs)
 		switch(traitor_mob.client.prefs.uplink_spawn_loc)
 			if(UPLINK_PDA)
@@ -384,7 +398,7 @@
 
 	if(!uplink_loc) // We've looked everywhere, let's just implant you
 		implant = TRUE
-
+*/
 	if (!implant)
 		. = uplink_loc
 		var/datum/component/uplink/U = uplink_loc.AddComponent(/datum/component/uplink, traitor_mob.key)
@@ -464,7 +478,7 @@
 				output += "</ul>"
 
 	if(window)
-		recipient << browse(output,"window=memory")
+		recipient << browse(HTML_SKELETON(output),"window=memory")
 	else if(all_objectives.len || memory)
 		to_chat(recipient, "<i>[output]</i>")
 
@@ -719,7 +733,7 @@
 		if(istype(S, spell))
 			spell_list -= S
 			qdel(S)
-	current?.client << output(null, "statbrowser:check_spells")
+	current?.client.stat_panel.send_message("check_spells")
 
 /datum/mind/proc/RemoveAllSpells()
 	for(var/obj/effect/proc_holder/S in spell_list)
@@ -753,7 +767,7 @@
 				continue
 		S.charge_counter = delay
 		S.updateButtonIcon()
-		INVOKE_ASYNC(S, /obj/effect/proc_holder/spell.proc/start_recharge)
+		INVOKE_ASYNC(S, TYPE_PROC_REF(/obj/effect/proc_holder/spell, start_recharge))
 
 /datum/mind/proc/get_ghost(even_if_they_cant_reenter, ghosts_with_clients)
 	for(var/mob/dead/observer/G in (ghosts_with_clients ? GLOB.player_list : GLOB.dead_mob_list))
@@ -806,10 +820,13 @@
 	if(!mind.name)
 		mind.name = real_name
 	mind.current = src
+	if(!CONFIG_GET(flag/disable_area_ambiance))
+		mind.AddComponent(/datum/component/ambiance_memory)
 
 /mob/living/carbon/mind_initialize()
 	..()
 	last_mind = mind
+	mind.refresh_memory()
 
 //HUMAN
 /mob/living/carbon/human/mind_initialize()

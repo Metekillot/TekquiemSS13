@@ -24,7 +24,7 @@
 /datum/species/vampire/on_species_gain(mob/living/carbon/human/C, datum/species/old_species)
 	. = ..()
 	to_chat(C, "[info_text]")
-	C.skin_tone = "albino"
+	//C.skin_tone = "albino"
 	C.update_body(0)
 	if(isnull(batform))
 		batform = new
@@ -137,4 +137,6 @@
 	invocation = "Squeak!"
 	charge_max = 50
 	cooldown_min = 50
-	shapeshift_type = /mob/living/simple_animal/hostile/retaliate/bat
+	revert_on_death = TRUE
+	die_with_shapeshifted_form = FALSE
+	shapeshift_type = /mob/living/simple_animal/hostile/retaliate/bat/baali

@@ -44,9 +44,18 @@
 	var/list/datum/action/chameleon_item_actions
 	///Cursor icon used when holding shift over things
 	var/examine_cursor_icon = 'icons/effects/mouse_pointers/examine_pointer.dmi'
+	var/pvp_cursor_icon = 'icons/effects/mouse_pointers/pvp.dmi'
+	var/discipline_cursor_icon = 'icons/effects/mouse_pointers/discipline.dmi'
 
 	/// Whether a mob is alive or dead. TODO: Move this to living - Nodrak (2019, still here)
 	var/stat = CONSCIOUS
+
+	var/move_delay = 0
+
+	/// On next move, add this dir to the move that would otherwise be done
+	var/next_move_dir_add
+	/// On next move, subtract this dir from the move that would otherwise be done
+	var/next_move_dir_sub
 
 	/* A bunch of this stuff really needs to go under their own defines instead of being globally attached to mob.
 	A variable should only be globally attached to turfs/objects/whatever, when it is in fact needed as such.
@@ -228,3 +237,16 @@
 
 	///Override for sound_environments. If this is set the user will always hear a specific type of reverb (Instead of the area defined reverb)
 	var/sound_environment_override = SOUND_ENVIRONMENT_NONE
+
+	//imported variables from all around the code
+	var/taxist = FALSE
+
+	///If the blood cell cursor is currently active due to a Discipline being targeted
+	var/discipline_targeting = FALSE
+
+	///the icon currently used for the typing indicator's bubble
+	var/active_typing_indicator
+	///the icon currently used for the thinking indicator's bubble
+	var/active_thinking_indicator
+	/// User is thinking in character. Used to revert to thinking state after stop_typing
+	var/thinking_IC = FALSE

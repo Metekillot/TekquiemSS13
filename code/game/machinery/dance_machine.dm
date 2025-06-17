@@ -5,7 +5,7 @@
 	icon_state = "jukebox"
 	verb_say = "states"
 	density = TRUE
-	req_access = list(ACCESS_BAR)
+	req_access = null
 	var/active = FALSE
 	var/list/rangers = list()
 	var/stop = 0
@@ -312,7 +312,7 @@
 						glow.set_light_color(COLOR_SOFT_RED)
 					glow.even_cycle = !glow.even_cycle
 		if(prob(2))  // Unique effects for the dance floor that show up randomly to mix things up
-			INVOKE_ASYNC(src, .proc/hierofunk)
+			INVOKE_ASYNC(src, PROC_REF(hierofunk))
 		sleep(selection.song_beat)
 		if(QDELETED(src))
 			return
@@ -333,7 +333,7 @@
 
 /obj/machinery/jukebox/disco/proc/dance2(mob/living/M)
 	for(var/i in 0 to 9)
-		dance_rotate(M, CALLBACK(M, /mob.proc/dance_flip))
+		dance_rotate(M, CALLBACK(M, TYPE_PROC_REF(/mob, dance_flip)))
 		sleep(20)
 
 /mob/proc/dance_flip()
@@ -437,6 +437,22 @@
 /mob/living/proc/lying_fix()
 	animate(src, transform = null, time = 1, loop = 0)
 	lying_prev = 0
+	if(ischildren)
+		transform = transform.Scale(81/100, 81/100)
+	if(isdwarfy)
+		if(lying_angle != 0)
+			transform = transform.Scale(4/5, 1)
+			transform = transform.Translate(lying_angle == 90 ? 16*((4/5)-1) : -(16*((4/5)-1)), 0) //Makes sure you stand on the tile no matter the size - sand
+		else
+			transform = transform.Scale(1, 4/5)
+			transform = transform.Translate(0, 16*((4/5)-1))
+	if(istower)
+		if(lying_angle != 0)
+			transform = transform.Scale(1.16, 1)
+			transform = transform.Translate(lying_angle == 90 ? 16*(1.16-1) : -(16*(1.16-1)), 0) //Makes sure you stand on the tile no matter the size - sand
+		else
+			transform = transform.Scale(1, 1.16)
+			transform = transform.Translate(0, 16*(1.16-1))
 
 /obj/machinery/jukebox/proc/dance_over()
 	for(var/mob/living/L in rangers)

@@ -34,10 +34,10 @@
 	var/call_start_time
 	var/head_call = FALSE //calls from a head of staff autoconnect, if the receiving pad is not secure.
 
-//creates a holocall made by `caller` from `calling_pad` to `callees`
-/datum/holocall/New(mob/living/caller, obj/machinery/holopad/calling_pad, list/callees, elevated_access = FALSE)
+//creates a holocall made by `holopad_caller` from `calling_pad` to `callees`
+/datum/holocall/New(mob/living/holopad_caller, obj/machinery/holopad/calling_pad, list/callees, elevated_access = FALSE)
 	call_start_time = world.time
-	user = caller
+	user = holopad_caller
 	calling_pad.outgoing_call = src
 	calling_holopad = calling_pad
 	head_call = elevated_access
@@ -215,7 +215,7 @@
 	var/caller_name = "Unknown" //Caller name
 	var/image/caller_image
 	var/list/entries = list()
-	var/language = /datum/language/common //Initial language, can be changed by HOLORECORD_LANGUAGE entries
+	var/language = /datum/language/english //Initial language, can be changed by HOLORECORD_LANGUAGE entries
 
 /datum/holorecord/proc/set_caller_image(mob/user)
 	var/olddir = user.dir
@@ -237,7 +237,7 @@
 /obj/item/disk/holodisk/Initialize(mapload)
 	. = ..()
 	if(preset_record_text)
-		INVOKE_ASYNC(src, .proc/build_record)
+		INVOKE_ASYNC(src, PROC_REF(build_record))
 
 /obj/item/disk/holodisk/Destroy()
 	QDEL_NULL(record)
@@ -300,7 +300,7 @@
 		var/datum/preset_holoimage/H = new preset_image_type
 		record.caller_image = H.build_image()
 
-//These build caller image from outfit and some additional data, for use by mappers for ruin holorecords
+//These build holopad_caller image from outfit and some additional data, for use by mappers for ruin holorecords
 /datum/preset_holoimage
 	var/nonhuman_mobtype //Fill this if you just want something nonhuman
 	var/outfit_type
@@ -338,7 +338,7 @@
 	DELAY 10
 	PRESET /datum/preset_holoimage/gorilla
 	NAME Gorilla
-	LANGUAGE /datum/language/common
+	LANGUAGE /datum/language/english
 	SAY OOGA
 	DELAY 20"}
 
@@ -453,7 +453,7 @@
 	NAME Unknown
 	SAY RISE, MY LORD!!
 	DELAY 10
-	LANGUAGE /datum/language/common
+	LANGUAGE /datum/language/english
 	NAME Plastic
 	PRESET /datum/preset_holoimage/engineer/rig
 	SAY Fuck, fuck, fuck!

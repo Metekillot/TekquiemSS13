@@ -46,7 +46,7 @@
 	action.button_icon_state = "[base_icon_state][active]"
 	action.UpdateButtonIcon()
 
-/obj/effect/proc_holder/spell/aimed/InterceptClickOn(mob/living/caller, params, atom/target)
+/obj/effect/proc_holder/spell/aimed/InterceptClickOn(mob/living/clicker, params, atom/target)
 	if(..())
 		return FALSE
 	var/ran_out = (current_amount <= 0)
@@ -112,8 +112,8 @@
 	school = "evocation"
 	charge_max = 60
 	clothes_req = FALSE
-	invocation = "ONI SOMA"
-	invocation_type = INVOCATION_SHOUT
+	invocation = "UR ALPEL"
+	invocation_type = INVOCATION_WHISPER
 	range = 20
 	cooldown_min = 20 //10 deciseconds reduction per rank
 	projectile_type = /obj/projectile/magic/aoe/fireball
@@ -154,7 +154,7 @@
 
 /obj/effect/proc_holder/spell/aimed/spell_cards/on_activation(mob/M)
 	QDEL_NULL(lockon_component)
-	lockon_component = M.AddComponent(/datum/component/lockon_aiming, 5, typecacheof(list(/mob/living)), 1, null, CALLBACK(src, .proc/on_lockon_component))
+	lockon_component = M.AddComponent(/datum/component/lockon_aiming, 5, typecacheof(list(/mob/living)), 1, null, CALLBACK(src, PROC_REF(on_lockon_component)))
 
 /obj/effect/proc_holder/spell/aimed/spell_cards/proc/on_lockon_component(list/locked_weakrefs)
 	if(!length(locked_weakrefs))
@@ -185,3 +185,21 @@
 	P.pixel_x = rand(-projectile_location_spread_amount, projectile_location_spread_amount)
 	P.pixel_y = rand(-projectile_location_spread_amount, projectile_location_spread_amount)
 	P.preparePixelProjectile(target, user, null, current_angle)
+
+/obj/effect/proc_holder/spell/aimed/fireball/baali
+	name = "Infernal Fireball"
+	desc = "This spell fires an explosive fireball at a target."
+	school = "evocation"
+	charge_max = 60
+	clothes_req = FALSE
+	invocation = "FR BRTH"
+	invocation_type = INVOCATION_WHISPER
+	range = 20
+	cooldown_min = 20 //10 deciseconds reduction per rank
+	projectile_type = /obj/projectile/magic/aoe/fireball/baali
+	base_icon_state = "infernaball"
+	action_icon_state = "infernaball0"
+	sound = 'sound/magic/fireball.ogg'
+	active_msg = "You prepare to cast your fireball spell!"
+	deactive_msg = "You extinguish your fireball... for now."
+	active = FALSE

@@ -13,12 +13,15 @@
 	var/buttontooltipstyle = ""
 	var/transparent_when_unavailable = TRUE
 
-	var/button_icon = 'icons/mob/actions/backgrounds.dmi' //This is the file for the BACKGROUND icon
+	var/button_icon = 'icons/wod13/UI/actions.dmi' //This is the file for the BACKGROUND icon
 	var/background_icon_state = ACTION_BUTTON_DEFAULT_BACKGROUND //And this is the state for the background icon
 
 	var/icon_icon = 'icons/hud/actions.dmi' //This is the file for the ACTION icon
 	var/button_icon_state = "default" //And this is the state for the action icon
 	var/mob/owner
+
+	//imported from clane.dm
+	var/vampiric = FALSE
 
 /datum/action/New(Target)
 	link_to(Target)
@@ -31,7 +34,7 @@
 
 /datum/action/proc/link_to(Target)
 	target = Target
-	RegisterSignal(Target, COMSIG_ATOM_UPDATED_ICON, .proc/OnUpdatedIcon)
+	RegisterSignal(Target, COMSIG_ATOM_UPDATED_ICON, PROC_REF(OnUpdatedIcon))
 
 /datum/action/Destroy()
 	if(owner)
@@ -103,7 +106,7 @@
 		var/mob/living/action_user = owner
 		if(action_user.body_position == LYING_DOWN)
 			return FALSE
-	if((check_flags & AB_CHECK_CONSCIOUS) && owner.stat != CONSCIOUS)
+	if((check_flags & AB_CHECK_CONSCIOUS) && ((owner.stat != CONSCIOUS) || HAS_TRAIT(owner, TRAIT_TORPOR)))
 		return FALSE
 	return TRUE
 
@@ -218,6 +221,23 @@
 /datum/action/item_action/startchainsaw
 	name = "Pull The Starting Cord"
 
+/datum/action/item_action/eguitar
+	name = "Engage Distortion"
+	var/last_shit = 0
+
+/datum/action/item_action/eguitar/Trigger()
+	if(istype(target, /obj/item/melee/vampirearms/eguitar))
+		var/obj/item/melee/vampirearms/eguitar/E = target
+		if(!E.wielded)
+			return
+	if(last_shit+70 < world.time)
+		playsound(get_turf(owner), 'code/modules/wod13/sounds/punk.ogg', 100, FALSE)
+		owner.emote("me",1,"riffs brutally.",TRUE)
+		last_shit = world.time
+		for(var/mob/living/carbon/human/H in oviewers(7, owner))
+			H.Stun(30)
+			H.do_jitter_animation(30)
+
 /datum/action/item_action/toggle_gunlight
 	name = "Toggle Gunlight"
 
@@ -278,7 +298,7 @@
 
 /datum/action/item_action/toggle_spacesuit/New(Target)
 	. = ..()
-	RegisterSignal(target, COMSIG_SUIT_SPACE_TOGGLE, .proc/toggle)
+	RegisterSignal(target, COMSIG_SUIT_SPACE_TOGGLE, PROC_REF(toggle))
 
 /datum/action/item_action/toggle_spacesuit/Destroy()
 	UnregisterSignal(target, COMSIG_SUIT_SPACE_TOGGLE)

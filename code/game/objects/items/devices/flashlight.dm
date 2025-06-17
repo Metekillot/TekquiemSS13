@@ -3,6 +3,7 @@
 	desc = "A hand-held emergency light."
 	custom_price = PAYCHECK_EASY
 	icon = 'icons/obj/lighting.dmi'
+	onflooricon = 'icons/wod13/onfloor.dmi'
 	icon_state = "flashlight"
 	inhand_icon_state = "flashlight"
 	worn_icon_state = "flashlight"
@@ -17,6 +18,7 @@
 	light_range = 4
 	light_power = 1
 	light_on = FALSE
+	is_iron = TRUE
 	var/on = FALSE
 
 
@@ -37,6 +39,7 @@
 
 
 /obj/item/flashlight/attack_self(mob/user)
+	..()
 	on = !on
 	playsound(user, on ? 'sound/weapons/magin.ogg' : 'sound/weapons/magout.ogg', 40, TRUE)
 	update_brightness(user)

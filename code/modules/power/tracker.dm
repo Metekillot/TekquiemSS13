@@ -6,8 +6,8 @@
 /obj/machinery/power/tracker
 	name = "solar tracker"
 	desc = "A solar directional tracker."
-	icon = 'goon/icons/obj/power.dmi'
-	icon_state = "tracker"
+	icon = 'icons/obj/power.dmi'
+	icon_state = "smes"
 	density = TRUE
 	use_power = NO_POWER_USE
 	max_integrity = 250
@@ -20,7 +20,7 @@
 	. = ..()
 	Make(S)
 	connect_to_network()
-	RegisterSignal(SSsun, COMSIG_SUN_MOVED, .proc/sun_update)
+	RegisterSignal(SSsun, COMSIG_SUN_MOVED, PROC_REF(sun_update))
 
 /obj/machinery/power/tracker/Destroy()
 	unset_control() //remove from control computer

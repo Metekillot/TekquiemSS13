@@ -47,7 +47,7 @@
 #define LIGHT_RANGE_FIRE		3
 
 #define LIGHTING_PLANE_ALPHA_VISIBLE 255
-#define LIGHTING_PLANE_ALPHA_NV_TRAIT 245
+#define LIGHTING_PLANE_ALPHA_NV_TRAIT 192
 #define LIGHTING_PLANE_ALPHA_MOSTLY_VISIBLE 192
 /// For lighting alpha, small amounts lead to big changes. even at 128 its hard to figure out what is dark and what is light, at 64 you almost can't even tell.
 #define LIGHTING_PLANE_ALPHA_MOSTLY_INVISIBLE 128
@@ -64,6 +64,8 @@
 #define DYNAMIC_LIGHTING_IFSTARLIGHT 3
 #define IS_DYNAMIC_LIGHTING(A) A.dynamic_lighting
 
+/// The amount of lumcount on a tile for it to be considered dark (used to determine reading and nyctophobia)
+#define LIGHTING_TILE_IS_DARK 0.2
 
 //code assumes higher numbers override lower numbers.
 #define LIGHTING_NO_UPDATE 0

@@ -24,12 +24,13 @@ By using these methods of finding references, you can make your life far, far ea
 SUBSYSTEM_DEF(garbage)
 	name = "Garbage"
 	priority = FIRE_PRIORITY_GARBAGE
-	wait = 2 SECONDS
+	wait = 3 SECONDS
 	flags = SS_POST_FIRE_TIMING|SS_BACKGROUND|SS_NO_INIT
 	runlevels = RUNLEVELS_DEFAULT | RUNLEVEL_LOBBY
 	init_order = INIT_ORDER_GARBAGE
+	init_stage = INITSTAGE_EARLY
 
-	var/list/collection_timeout = list(2 MINUTES, 10 SECONDS)	// deciseconds to wait before moving something up in the queue to the next level
+	var/list/collection_timeout = list(GC_FILTER_QUEUE, GC_CHECK_QUEUE, GC_DEL_QUEUE)	// deciseconds to wait before moving something up in the queue to the next level
 
 	//Stat tracking
 	var/delslasttick = 0			// number of del()'s we've done this tick
@@ -86,7 +87,7 @@ SUBSYSTEM_DEF(garbage)
 	var/list/dellog = list()
 
 	//sort by how long it's wasted hard deleting
-	sortTim(items, cmp=/proc/cmp_qdel_item_time, associative = TRUE)
+	sortTim(items, cmp= GLOBAL_PROC_REF(cmp_qdel_item_time), associative = TRUE)
 	for(var/path in items)
 		var/datum/qdel_item/I = items[path]
 		dellog += "Path: [path]"
@@ -107,10 +108,13 @@ SUBSYSTEM_DEF(garbage)
 
 /datum/controller/subsystem/garbage/fire()
 	//the fact that this resets its processing each fire (rather then resume where it left off) is intentional.
-	var/queue = GC_QUEUE_CHECK
+	var/queue = GC_QUEUE_FILTER
 
 	while (state == SS_RUNNING)
 		switch (queue)
+			if (GC_QUEUE_FILTER)
+				HandleQueue(GC_QUEUE_FILTER)
+				queue = GC_QUEUE_FILTER+1
 			if (GC_QUEUE_CHECK)
 				HandleQueue(GC_QUEUE_CHECK)
 				queue = GC_QUEUE_CHECK+1
@@ -123,8 +127,8 @@ SUBSYSTEM_DEF(garbage)
 
 
 
-/datum/controller/subsystem/garbage/proc/HandleQueue(level = GC_QUEUE_CHECK)
-	if (level == GC_QUEUE_CHECK)
+/datum/controller/subsystem/garbage/proc/HandleQueue(level = GC_QUEUE_FILTER)
+	if (level == GC_QUEUE_FILTER)
 		delslasttick = 0
 		gcedlasttick = 0
 	var/cut_off_time = world.time - collection_timeout[level] //ignore entries newer then this
@@ -186,7 +190,7 @@ SUBSYSTEM_DEF(garbage)
 				var/type = D.type
 				var/datum/qdel_item/I = items[type]
 				#ifdef TESTING
-				log_world("## TESTING: GC: -- \ref[D] | [type] was unable to be GC'd --")
+				log_world("## TESTING: GC: -- [FAST_REF(D)] | [type] was unable to be GC'd --")
 				for(var/c in GLOB.admins) //Using testing() here would fill the logs with ADMIN_VV garbage
 					var/client/admin = c
 					if(!check_rights_for(admin, R_ADMIN))
@@ -213,14 +217,14 @@ SUBSYSTEM_DEF(garbage)
 		queue.Cut(1,count+1)
 		count = 0
 
-/datum/controller/subsystem/garbage/proc/Queue(datum/D, level = GC_QUEUE_CHECK)
+/datum/controller/subsystem/garbage/proc/Queue(datum/D, level = GC_QUEUE_FILTER)
 	if (isnull(D))
 		return
 	if (level > GC_QUEUE_COUNT)
 		HardDelete(D)
 		return
 	var/gctime = world.time
-	var/refid = "\ref[D]"
+	var/refid = FAST_REF(D)
 
 	D.gc_destroyed = gctime
 	var/list/queue = queues[level]
@@ -235,7 +239,7 @@ SUBSYSTEM_DEF(garbage)
 	++delslasttick
 	++totaldels
 	var/type = D.type
-	var/refID = "\ref[D]"
+	var/refID = FAST_REF(D)
 
 	del(D)
 
@@ -340,7 +344,7 @@ SUBSYSTEM_DEF(garbage)
 				D.find_references_legacy()
 			if (QDEL_HINT_IFFAIL_FINDREFERENCE)
 				SSgarbage.Queue(D)
-				SSgarbage.reference_find_on_fail[REF(D)] = TRUE
+				SSgarbage.reference_find_on_fail[FAST_REF(D)] = TRUE
 			#endif
 			else
 				#ifdef TESTING

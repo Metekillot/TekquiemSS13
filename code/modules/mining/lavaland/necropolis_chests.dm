@@ -18,7 +18,7 @@
 
 /obj/structure/closet/crate/necropolis/tendril/Initialize()
 	. = ..()
-	RegisterSignal(src, COMSIG_PARENT_ATTACKBY, .proc/try_spawn_loot)
+	RegisterSignal(src, COMSIG_PARENT_ATTACKBY, PROC_REF(try_spawn_loot))
 
 /obj/structure/closet/crate/necropolis/tendril/proc/try_spawn_loot(datum/source, obj/item/item, mob/user, params) ///proc that handles key checking and generating loot
 	SIGNAL_HANDLER
@@ -320,7 +320,7 @@
 /obj/effect/wisp/orbit(atom/thing, radius, clockwise, rotation_speed, rotation_segments, pre_rotation, lockinorbit)
 	. = ..()
 	if(ismob(thing))
-		RegisterSignal(thing, COMSIG_MOB_UPDATE_SIGHT, .proc/update_user_sight)
+		RegisterSignal(thing, COMSIG_MOB_UPDATE_SIGHT, PROC_REF(update_user_sight))
 		var/mob/being = thing
 		being.update_sight()
 		to_chat(thing, "<span class='notice'>The wisp enhances your vision.</span>")
@@ -522,7 +522,7 @@
 
 	can_destroy = FALSE
 
-	addtimer(CALLBACK(src, .proc/unvanish, user), 10 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(unvanish), user), 10 SECONDS)
 
 /obj/effect/immortality_talisman/proc/unvanish(mob/user)
 	user.status_flags &= ~GODMODE
@@ -691,8 +691,8 @@
 	. = ..()
 	if(slot == ITEM_SLOT_GLOVES)
 		tool_behaviour = TOOL_MINING
-		RegisterSignal(user, COMSIG_HUMAN_EARLY_UNARMED_ATTACK, .proc/rocksmash)
-		RegisterSignal(user, COMSIG_MOVABLE_BUMP, .proc/rocksmash)
+		RegisterSignal(user, COMSIG_HUMAN_EARLY_UNARMED_ATTACK, PROC_REF(rocksmash))
+		RegisterSignal(user, COMSIG_MOVABLE_BUMP, PROC_REF(rocksmash))
 	else
 		stopmining(user)
 
@@ -874,7 +874,7 @@
 	to_chat(user, "<span class='notice'>You call out for aid, attempting to summon spirits to your side.</span>")
 
 	notify_ghosts("[user] is raising [user.p_their()] [src], calling for your help!",
-		enter_link="<a href=?src=[REF(src)];orbit=1>(Click to help)</a>",
+		enter_link="<a href=byond://?src=[REF(src)];orbit=1>(Click to help)</a>",
 		source = user, ignore_key = POLL_IGNORE_SPECTRAL_BLADE, header = "Spectral blade")
 
 	summon_cooldown = world.time + 600
@@ -961,23 +961,6 @@
 
 	playsound(user.loc,'sound/items/drink.ogg', rand(10,50), TRUE)
 	qdel(src)
-
-/datum/disease/transformation/dragon
-	name = "dragon transformation"
-	cure_text = "nothing"
-	cures = list(/datum/reagent/medicine/adminordrazine)
-	agent = "dragon's blood"
-	desc = "What do dragons have to do with Space Station 13?"
-	stage_prob = 20
-	severity = DISEASE_SEVERITY_BIOHAZARD
-	visibility_flags = 0
-	stage1	= list("Your bones ache.")
-	stage2	= list("Your skin feels scaly.")
-	stage3	= list("<span class='danger'>You have an overwhelming urge to terrorize some peasants.</span>", "<span class='danger'>Your teeth feel sharper.</span>")
-	stage4	= list("<span class='danger'>Your blood burns.</span>")
-	stage5	= list("<span class='danger'>You're a fucking dragon. However, any previous allegiances you held still apply. It'd be incredibly rude to eat your still human friends for no reason.</span>")
-	new_form = /mob/living/simple_animal/hostile/megafauna/dragon/lesser
-
 
 //Lava Staff
 
@@ -1076,7 +1059,7 @@
 /obj/item/mayhem/attack_self(mob/user)
 	for(var/mob/living/carbon/human/H in range(7,user))
 		var/obj/effect/mine/pickup/bloodbath/B = new(H)
-		INVOKE_ASYNC(B, /obj/effect/mine/pickup/bloodbath/.proc/mineEffect, H)
+		INVOKE_ASYNC(B, TYPE_PROC_REF(/obj/effect/mine/pickup/bloodbath, mineEffect), H)
 	to_chat(user, "<span class='notice'>You shatter the bottle!</span>")
 	playsound(user.loc, 'sound/effects/glassbr1.ogg', 100, TRUE)
 	message_admins("<span class='adminnotice'>[ADMIN_LOOKUPFLW(user)] has activated a bottle of mayhem!</span>")
@@ -1284,7 +1267,7 @@
 		for(var/t in RANGE_TURFS(1, source))
 			new /obj/effect/temp_visual/hierophant/blast/visual(t, user, TRUE)
 		for(var/mob/living/L in range(1, source))
-			INVOKE_ASYNC(src, .proc/teleport_mob, source, L, T, user)
+			INVOKE_ASYNC(src, PROC_REF(teleport_mob), source, L, T, user)
 		sleep(6) //at this point the blasts detonate
 		if(beacon)
 			beacon.icon_state = "hierophant_tele_off"

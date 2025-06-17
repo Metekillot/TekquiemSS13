@@ -207,7 +207,7 @@
 /obj/item/storage/fancy/cigarettes/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_items = 6
+	STR.max_items = 10
 	STR.set_holdable(list(/obj/item/clothing/mask/cigarette, /obj/item/lighter))
 
 /obj/item/storage/fancy/cigarettes/examine(mob/user)
@@ -274,8 +274,8 @@
 		to_chat(user, "<span class='notice'>There are no [icon_type]s left in the pack.</span>")
 
 /obj/item/storage/fancy/cigarettes/dromedaryco
-	name = "\improper DromedaryCo packet"
-	desc = "A packet of six imported DromedaryCo cancer sticks. A label on the packaging reads, \"Wouldn't a slow death make a change?\""
+	name = "\improper Camel packet"
+	desc = "A packet of six imported Camel cancer sticks. A label on the packaging reads, \"Wouldn't a slow death make a change?\""
 	icon_state = "dromedary"
 	spawn_type = /obj/item/clothing/mask/cigarette/dromedary
 
@@ -286,7 +286,7 @@
 	spawn_type = /obj/item/clothing/mask/cigarette/uplift
 
 /obj/item/storage/fancy/cigarettes/cigpack_robust
-	name = "\improper Robust packet"
+	name = "\improper Malboro packet"
 	desc = "Smoked by the robust."
 	icon_state = "robust"
 	spawn_type = /obj/item/clothing/mask/cigarette/robust
@@ -336,8 +336,8 @@
 	spawn_type = /obj/item/clothing/mask/cigarette/shadyjims
 
 /obj/item/storage/fancy/cigarettes/cigpack_xeno
-	name = "\improper Xeno Filtered packet"
-	desc = "Loaded with 100% pure slime. And also nicotine."
+	name = "\improper Newport packet"
+	desc = "Loaded with 100% pure tabacco. And also nicotine."
 	icon_state = "slime"
 	spawn_type = /obj/item/clothing/mask/cigarette/xeno
 
@@ -449,15 +449,50 @@
 
 
 /obj/item/storage/fancy/nugget_box
-	name = "nugget box"
-	desc = "A cardboard box used for holding chicken nuggies."
+	name = "wing box"
+	desc = "A cardboard box used for holding unsauced chicken wings."
 	icon = 'icons/obj/food/containers.dmi'
 	icon_state = "nuggetbox"
 	icon_type = "nugget"
-	spawn_type = /obj/item/food/nugget
+	spawn_type = /obj/item/food/vampire/nugget
 
 /obj/item/storage/fancy/nugget_box/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_items = 6
-	STR.set_holdable(list(/obj/item/food/nugget))
+	STR.max_items = 5
+	STR.set_holdable(list(/obj/item/food/vampire/nugget))
+
+/obj/item/storage/fancy/hardcase
+	name = "5.56 magazine hardcase"
+	desc = "A small metal hardcase specifically designed to carry 5.56 magazines."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "hardcasbox"
+	icon_type = "hardcase"
+	inhand_icon_state = "syringe_kit"
+	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+	spawn_type = /obj/item/ammo_box/magazine/vamp556
+	component_type = /datum/component/storage/concrete/vtm/hardcase
+
+/obj/item/storage/fancy/hardcase/ComponentInitialize()
+	. = ..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	STR.max_items = 4
+	STR.set_holdable(list(/obj/item/ammo_box/magazine/vamp556))
+
+/obj/item/storage/fancy/hardcase/mp5
+	name = "Mp5 magazine hardcase"
+	desc = "A small metal hardcase specifically designed to carry Mp5 magazines."
+	icon_state = "hardcasebox"
+	inhand_icon_state = "syringe_kit"
+	icon_type = "hardcase"
+	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+	spawn_type = /obj/item/ammo_box/magazine/vamp9mp5
+	component_type = /datum/component/storage/concrete/vtm/hardcase
+
+/obj/item/storage/fancy/hardcase/mp5/ComponentInitialize()
+	. = ..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	STR.max_items = 4
+	STR.set_holdable(list(/obj/item/ammo_box/magazine/vamp9mp5))

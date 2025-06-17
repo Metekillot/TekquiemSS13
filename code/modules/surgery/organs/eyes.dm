@@ -31,6 +31,10 @@
 	var/no_glasses
 	var/damaged	= FALSE	//damaged indicates that our eyes are undergoing some level of negative effect
 
+/obj/item/organ/eyes/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling/organ, 100, "organ", TRUE, -1, 0)
+
 /obj/item/organ/eyes/Insert(mob/living/carbon/M, special = FALSE, drop_if_replaced = FALSE, initialising)
 	. = ..()
 	if(ishuman(owner))
@@ -91,6 +95,12 @@
 	lighting_alpha = LIGHTING_PLANE_ALPHA_MOSTLY_VISIBLE
 	actions_types = list(/datum/action/item_action/organ_action/use)
 	var/night_vision = TRUE
+
+/obj/item/organ/eyes/night_vision/salubri
+	eye_icon_state = "salubri"
+
+/obj/item/organ/eyes/night_vision/kiasyd
+	eye_icon_state = "kiasyd"
 
 /obj/item/organ/eyes/night_vision/ui_action_click()
 	sight_flags = initial(sight_flags)
@@ -285,7 +295,7 @@
 
 /obj/item/organ/eyes/robotic/glow/Insert(mob/living/carbon/M, special = FALSE, drop_if_replaced = FALSE)
 	. = ..()
-	RegisterSignal(M, COMSIG_ATOM_DIR_CHANGE, .proc/update_visuals)
+	RegisterSignal(M, COMSIG_ATOM_DIR_CHANGE, PROC_REF(update_visuals))
 
 /obj/item/organ/eyes/robotic/glow/Remove(mob/living/carbon/M, special = FALSE)
 	. = ..()

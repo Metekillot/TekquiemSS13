@@ -17,9 +17,15 @@
 		SEND_SIGNAL(src, COMSIG_PELLET_CLOUD_INIT, target, user, fired_from, randomspread, spread, zone_override, params, distro)
 
 	if(click_cooldown_override)
-		user.changeNext_move(click_cooldown_override)
+		if((click_cooldown_override > CLICK_CD_RAPID) && HAS_TRAIT(user, TRAIT_GUNFIGHTER))
+			user.changeNext_move(max(CLICK_CD_RAPID, round(click_cooldown_override/2)))
+		else
+			user.changeNext_move(click_cooldown_override)
 	else
-		user.changeNext_move(CLICK_CD_RANGE)
+		if(HAS_TRAIT(user, TRAIT_GUNFIGHTER))
+			user.changeNext_move(CLICK_CD_RAPID)
+		else
+			user.changeNext_move(CLICK_CD_RANGE)
 	user.newtonian_move(get_dir(target, user))
 	update_icon()
 	return TRUE
@@ -53,7 +59,30 @@
 	if(BB.firer)
 		firing_dir = BB.firer.dir
 	if(!BB.suppressed && firing_effect_type)
-		new firing_effect_type(get_turf(src), firing_dir)
+		var/witness_count
+		for(var/mob/living/carbon/human/npc/NEPIC in viewers(7, usr))
+			if(NEPIC && NEPIC.stat != DEAD)
+				witness_count++
+			if(witness_count > 1)
+				for(var/obj/item/police_radio/P in GLOB.police_radios)
+					P.announce_crime("shooting", get_turf(user))
+				for(var/obj/machinery/p25transceiver/police/radio in GLOB.p25_tranceivers)
+					if(radio.p25_network == "police")
+						radio.announce_crime("shooting", get_turf(src))
+						break
+		var/atom/A = new firing_effect_type(get_turf(src), firing_dir)
+		var/atom/movable/shit = new(A.loc)
+		if(ishuman(user))
+			var/mob/living/carbon/human/H = user
+			H.remove_overlay(FIRING_EFFECT_LAYER)
+			var/mutable_appearance/firing_overlay = mutable_appearance('icons/wod13/icons.dmi', "firing", -PROTEAN_LAYER)
+			H.overlays_standing[FIRING_EFFECT_LAYER] = firing_overlay
+			H.apply_overlay(FIRING_EFFECT_LAYER)
+			shit.set_light(3, 2, "#ffedbb")
+//			animate(firing_overlay, alpha = 0, time = 2)
+			spawn(2)
+				H.remove_overlay(FIRING_EFFECT_LAYER)
+				qdel(shit)
 
 	var/direct_target
 	if(targloc == curloc)

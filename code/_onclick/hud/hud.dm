@@ -23,7 +23,7 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 
 	var/hud_shown = TRUE			//Used for the HUD toggle (F12)
 	var/hud_version = HUD_STYLE_STANDARD	//Current displayed version of the HUD
-	var/inventory_shown = FALSE		//Equipped item inventory
+	var/inventory_shown = TRUE		//Equipped item inventory
 	var/hotkey_ui_hidden = FALSE	//This is to hide the buttons that can be used via hotkeys. (hotkeybuttons list of buttons)
 
 	var/atom/movable/screen/ling/chems/lingchemdisplay
@@ -40,6 +40,13 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	var/atom/movable/screen/zone_select
 	var/atom/movable/screen/pull_icon
 	var/atom/movable/screen/rest_icon
+	var/atom/movable/screen/block_icon
+	var/atom/movable/screen/jump_icon
+	var/atom/movable/screen/blood_icon
+	var/atom/movable/screen/rage_icon
+	var/atom/movable/screen/chi_pool/chi_icon
+	var/atom/movable/screen/drinkblood/drinkblood_icon
+	var/atom/movable/screen/zone_icon
 	var/atom/movable/screen/throw_icon
 	var/atom/movable/screen/module_store_icon
 
@@ -56,8 +63,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	var/action_buttons_hidden = FALSE
 
 	var/atom/movable/screen/healths
-	var/atom/movable/screen/healthdoll
-	var/atom/movable/screen/internals
+//	var/atom/movable/screen/healthdoll
+//	var/atom/movable/screen/internals
 	var/atom/movable/screen/wanted/wanted_lvl
 	var/atom/movable/screen/spacesuit
 	// subtypes can override this to force a specific UI style
@@ -100,12 +107,13 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	QDEL_LIST(toggleable_inventory)
 	QDEL_LIST(hotkeybuttons)
 	throw_icon = null
+	block_icon = null
 	QDEL_LIST(infodisplay)
 
 	healths = null
-	healthdoll = null
+//	healthdoll = null
 	wanted_lvl = null
-	internals = null
+//	internals = null
 	spacesuit = null
 	lingchemdisplay = null
 	lingstingdisplay = null
@@ -274,7 +282,7 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	for(var/i in 1 to mymob.held_items.len)
 		hand_box = new /atom/movable/screen/inventory/hand()
 		hand_box.name = mymob.get_held_index_name(i)
-		hand_box.icon = ui_style
+		hand_box.icon = 'icons/wod13/UI/buttons32.dmi'
 		hand_box.icon_state = "hand_[mymob.held_index_to_dir(i)]"
 		hand_box.screen_loc = ui_hand_position(i)
 		hand_box.held_index = i

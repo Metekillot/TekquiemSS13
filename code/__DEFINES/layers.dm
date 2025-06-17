@@ -10,9 +10,11 @@
 
 
 #define OPENSPACE_LAYER 17 //Openspace layer over all
-#define OPENSPACE_PLANE -4 //Openspace plane below all turfs
-#define OPENSPACE_BACKDROP_PLANE -3 //Black square just over openspace plane to guaranteed cover all in openspace turf
+#define OPENSPACE_PLANE -5 //Openspace plane below all turfs
+#define OPENSPACE_BACKDROP_PLANE -4 //Black square just over openspace plane to guaranteed cover all in openspace turf
 
+#define DISPLACEMENT_PLATE_RENDER_LAYER -3
+#define DISPLACEMENT_PLATE_RENDER_TARGET "*DISPLACEMENT_PLATE_RENDER_TARGET"
 
 #define FLOOR_PLANE -2
 #define FLOOR_PLANE_RENDER_TARGET "FLOOR_PLANE"
@@ -30,7 +32,8 @@
 #define TURF_DECAL_LAYER 2.039 //Makes turf decals appear in DM how they will look inworld.
 #define ABOVE_OPEN_TURF_LAYER 2.04
 #define CLOSED_TURF_LAYER 2.05
-#define BULLET_HOLE_LAYER 2.06
+#define WALLPAPER_LAYER 2.06
+#define BULLET_HOLE_LAYER 2.07
 #define ABOVE_NORMAL_TURF_LAYER 2.08
 #define LATTICE_LAYER 2.2
 #define DISPOSAL_PIPE_LAYER 2.3
@@ -76,7 +79,9 @@
 #define EDGED_TURF_LAYER 4.3
 #define ON_EDGED_TURF_LAYER 4.35
 #define LARGE_MOB_LAYER 4.4
-#define ABOVE_ALL_MOB_LAYER 4.5
+#define CAR_LAYER 4.5
+#define ABOVE_ALL_MOB_LAYER 4.6
+#define ABOVE_ALL_MOB_LAYERS_LAYER 4.7
 
 #define SPACEVINE_LAYER 4.8
 #define SPACEVINE_MOB_LAYER 4.9
@@ -129,10 +134,19 @@
 #define CAMERA_STATIC_LAYER 19
 #define CAMERA_STATIC_RENDER_TARGET "CAMERA_STATIC_PLANE"
 
-#define RUNECHAT_PLANE 20
+#define FAKE_SHADOW_LAYER 20
+#define FAKE_SHADOW_PLANE 20
 
-#define ATMOS_GROUP_PLANE 21
-#define ATMOS_GROUP_LAYER 21
+
+///Popup Chat Messages
+#define RUNECHAT_PLANE 21
+/// Plane for balloon text (text that fades up)
+#define BALLOON_CHAT_PLANE 22
+
+#define ATMOS_GROUP_PLANE 23
+#define ATMOS_GROUP_LAYER 23
+
+#define TYPING_LAYER 24
 
 //HUD layer defines
 

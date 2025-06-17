@@ -210,7 +210,7 @@
 	return TRUE
 
 /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/get_equip_info()
-	return "[..()] \[[src.projectiles][projectiles_cache_max &&!projectile_energy_cost?"/[projectiles_cache]":""]\][!disabledreload &&(src.projectiles < initial(src.projectiles))?" - <a href='?src=[REF(src)];rearm=1'>Rearm</a>":null]"
+	return "[..()] \[[src.projectiles][projectiles_cache_max &&!projectile_energy_cost?"/[projectiles_cache]":""]\][!disabledreload &&(src.projectiles < initial(src.projectiles))?" - <a href='byond://?src=[REF(src)];rearm=1'>Rearm</a>":null]"
 
 
 /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/rearm()
@@ -377,7 +377,7 @@
 	var/turf/T = get_turf(src)
 	message_admins("[ADMIN_LOOKUPFLW(user)] fired a [F] in [ADMIN_VERBOSEJMP(T)]")
 	log_game("[key_name(user)] fired a [F] in [AREACOORD(T)]")
-	addtimer(CALLBACK(F, /obj/item/grenade/flashbang.proc/detonate), det_time)
+	addtimer(CALLBACK(F, TYPE_PROC_REF(/obj/item/grenade/flashbang, detonate)), det_time)
 
 /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/launcher/flashbang/clusterbang //Because I am a heartless bastard -Sieve //Heartless? for making the poor man's honkblast? - Kaze
 	name = "\improper SOB-3 grenade launcher"
@@ -462,7 +462,7 @@
 		return
 
 	if(can_toggle_lethal)
-		return "[..()] &nbsp; <a href='?src=[REF(src)];lethalPunch=1'>[harmful?"Punch":"Pat"] mode</a>"
+		return "[..()] &nbsp; <a href='byond://?src=[REF(src)];lethalPunch=1'>[harmful?"Punch":"Pat"] mode</a>"
 	else
 		return ..()
 
@@ -471,9 +471,9 @@
 	if(href_list["lethalPunch"])
 		harmful = !harmful
 		if(harmful)
-			chassis?.to_chat(usr, "[icon2html(src, usr)]<span class='warning'>Lethal Fisting Enabled.</span>")
+			to_chat(usr, "[icon2html(src, usr)]<span class='warning'>Lethal Fisting Enabled.</span>")
 		else
-			chassis?.to_chat(usr, "[icon2html(src, usr)]<span class='warning'>Lethal Fisting Disabled.</span>")
+			to_chat(usr, "[icon2html(src, usr)]<span class='warning'>Lethal Fisting Disabled.</span>")
 
 /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/launcher/punching_glove/action(mob/source, atom/target, params)
 	. = ..()

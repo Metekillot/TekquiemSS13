@@ -56,7 +56,7 @@
  * * mutate_stats - If the plant needs to mutate their stats
  * * spread - If the plant is a result of spreading, reduce its stats
  */
-
+/*
 /obj/structure/glowshroom/Initialize(mapload, obj/item/seeds/newseed, mutate_stats, spread)
 	. = ..()
 	if(newseed)
@@ -96,13 +96,13 @@
 		icon_state = base_icon_state
 
 
-	addtimer(CALLBACK(src, .proc/Spread), delay_spread, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
-	addtimer(CALLBACK(src, .proc/Decay), delay_decay, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
+	addtimer(CALLBACK(src, PROC_REF(Spread)), delay_spread, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
+	addtimer(CALLBACK(src, PROC_REF(Decay)), delay_decay, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
 
 /obj/structure/glowshroom/ComponentInitialize()
 	. = ..()
 	AddElement(/datum/element/atmos_sensitive)
-
+*/
 /**
  * Causes glowshroom spreading across the floor/walls.
  */
@@ -115,7 +115,7 @@
 
 	var/turf/ownturf = get_turf(src)
 	if(!TURF_SHARES(ownturf)) //If we are in a 1x1 room
-		addtimer(CALLBACK(src, .proc/Spread), delay_spread, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
+		addtimer(CALLBACK(src, PROC_REF(Spread)), delay_spread, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
 		return //Deal with it not now
 
 	var/shrooms_planted = 0
@@ -182,7 +182,7 @@
 	if( (shrooms_planted <= myseed.yield) && (max_failed_spreads >= 0)  )
 		myseed.adjust_yield(-shrooms_planted)
 		//Lets make this a unique hash
-		addtimer(CALLBACK(src, .proc/Spread), delay_spread, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
+		addtimer(CALLBACK(src, PROC_REF(Spread)), delay_spread, TIMER_UNIQUE|TIMER_NO_HASH_WAIT)
 
 /obj/structure/glowshroom/proc/CalcDir(turf/location = loc)
 	var/direction = 16
@@ -229,7 +229,7 @@
 	else // Timed decay
 		myseed.endurance -= 1
 		if (myseed.endurance > 0)
-			addtimer(CALLBACK(src, .proc/Decay), delay_decay, TIMER_UNIQUE|TIMER_NO_HASH_WAIT) // Recall decay timer
+			addtimer(CALLBACK(src, PROC_REF(Decay)), delay_decay, TIMER_UNIQUE|TIMER_NO_HASH_WAIT) // Recall decay timer
 			return
 	if (myseed.endurance < 1) // Plant is gone
 		qdel(src)

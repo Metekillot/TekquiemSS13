@@ -5,9 +5,10 @@
 	silent = FALSE
 	losebreath = 0
 
-	if(!gibbed)
-		INVOKE_ASYNC(src, .proc/emote, "deathgasp")
-	reagents.end_metabolization(src)
+	if(!gibbed && !HAS_TRAIT(src, TRAIT_DEATHCOMA))
+		INVOKE_ASYNC(src, PROC_REF(emote), "deathgasp")
+	if(reagents != null)
+		reagents.end_metabolization(src)
 
 	. = ..()
 
@@ -16,10 +17,10 @@
 		BT.on_death()
 
 /mob/living/carbon/proc/inflate_gib() // Plays an animation that makes mobs appear to inflate before finally gibbing
-	addtimer(CALLBACK(src, .proc/gib, null, null, TRUE, TRUE), 25)
+	addtimer(CALLBACK(src, PROC_REF(gib), null, null, TRUE, TRUE), 25)
 	var/matrix/M = matrix()
 	M.Scale(1.8, 1.2)
-	animate(src, time = 40, transform = M, easing = SINE_EASING)
+	animate(src, time = 4 SECONDS, transform = M, easing = SINE_EASING)
 
 /mob/living/carbon/gib(no_brain, no_organs, no_bodyparts, safe_gib = FALSE)
 	if(safe_gib) // If you want to keep all the mob's items and not have them deleted

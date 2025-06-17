@@ -27,6 +27,10 @@
 	// Multiplier for both long term and short term ear damage
 	var/damage_multiplier = 1
 
+/obj/item/organ/ears/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling/organ, 100, "organ", TRUE, -1, 0)
+
 /obj/item/organ/ears/on_life()
 	// only inform when things got worse, needs to happen before we heal
 	if((damage > low_threshold && prev_damage < low_threshold) || (damage > high_threshold && prev_damage < high_threshold))

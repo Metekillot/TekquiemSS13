@@ -17,7 +17,7 @@ Assistant
 	liver_traits = list(TRAIT_GREYTIDE_METABOLISM)
 
 	paycheck_department = ACCOUNT_CIV
-	display_order = JOB_DISPLAY_ORDER_ASSISTANT
+//	display_order = JOB_DISPLAY_ORDER_ASSISTANT
 
 /datum/job/assistant/get_access()
 	if(CONFIG_GET(flag/assistants_have_maint_access) || !CONFIG_GET(flag/jobs_have_minimal_access)) //Config has assistant maint access set
@@ -32,6 +32,8 @@ Assistant
 
 /datum/outfit/job/assistant/pre_equip(mob/living/carbon/human/H)
 	..()
+	if(uniform != /obj/item/clothing/under/color/grey)
+		return
 	if (CONFIG_GET(flag/grey_assistants))
 		if(H.jumpsuit_style == PREF_SUIT)
 			uniform = /obj/item/clothing/under/color/grey

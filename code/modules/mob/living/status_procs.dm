@@ -20,6 +20,8 @@
 	if(((status_flags & CANSTUN) && !HAS_TRAIT(src, TRAIT_STUNIMMUNE)) || ignore_canstun)
 		if(absorb_stun(amount, ignore_canstun))
 			return
+		if(HAS_TRAIT(src, TRAIT_TOUGH_FLESH) && !ignore_canstun)
+			return
 		var/datum/status_effect/incapacitating/stun/S = IsStun()
 		if(S)
 			S.duration = max(world.time + amount, S.duration)
@@ -455,13 +457,61 @@
 
 /mob/living/proc/fakedeath(source, silent = FALSE)
 	if(stat == DEAD)
-		return
+		return FALSE
 	if(!silent)
 		emote("deathgasp")
 	ADD_TRAIT(src, TRAIT_FAKEDEATH, source)
 	ADD_TRAIT(src, TRAIT_DEATHCOMA, source)
 	tod = station_time_timestamp()
+	return TRUE
 
+/mob/living/proc/cure_torpor(source)
+	if (!HAS_TRAIT(src, TRAIT_TORPOR))
+		return
+
+	while(health <= HEALTH_THRESHOLD_CRIT)
+		if(getStaminaLoss() > 0)
+			heal_overall_damage(stamina = 10)
+		else if(getOxyLoss() > 0)
+			adjustOxyLoss(-10)
+		else if(getBruteLoss() > 0)
+			heal_overall_damage(brute = 10)
+		else if(getToxLoss() > 0)
+			adjustToxLoss(-10)
+		else if(getFireLoss() > 0)
+			heal_overall_damage(burn = 10)
+		else if(getCloneLoss() > 0)
+			adjustCloneLoss(-10)
+
+	cure_fakedeath(source)
+	REMOVE_TRAIT(src, TRAIT_TORPOR, source)
+	if(iskindred(src))
+		to_chat(src, "<span class='notice'>You have awoken from your Torpor.</span>")
+
+/mob/living/proc/torpor(source)
+	if (HAS_TRAIT(src, TRAIT_TORPOR))
+		return
+	if (fakedeath(source))
+		to_chat(src, "<span class='danger'>You have fallen into Torpor. Use the button in the top right to learn more, or attempt to wake up.</span>")
+		ADD_TRAIT(src, TRAIT_TORPOR, source)
+		if (iskindred(src))
+			var/mob/living/carbon/human/vampire = src
+			var/datum/species/kindred/vampire_species = vampire.dna.species
+			var/torpor_length = 0 SECONDS
+			switch(get_potency())
+				if(1)
+					torpor_length = 10 MINUTES
+				if(2)
+					torpor_length = 15 MINUTES
+				if(3)
+					torpor_length = 30 MINUTES
+				if(4)
+					torpor_length = 150 MINUTES
+				if(5)
+					torpor_length = 6 HOURS
+				else
+					torpor_length = 100 HOURS
+			COOLDOWN_START(vampire_species, torpor_timer, torpor_length)
 
 ///Unignores all slowdowns that lack the IGNORE_NOSLOW flag.
 /mob/living/proc/unignore_slowdown(source)
@@ -479,11 +529,11 @@
 		for(var/listed_type in slowdown_type)
 			if(ispath(listed_type))
 				listed_type = "[listed_type]" //Path2String
-			LAZYADDASSOC(movespeed_mod_immunities, listed_type, source)
+			LAZYADDASSOCLIST(movespeed_mod_immunities, listed_type, source)
 	else
 		if(ispath(slowdown_type))
 			slowdown_type = "[slowdown_type]" //Path2String
-		LAZYADDASSOC(movespeed_mod_immunities, slowdown_type, source)
+		LAZYADDASSOCLIST(movespeed_mod_immunities, slowdown_type, source)
 	if(update)
 		update_movespeed()
 

@@ -112,7 +112,7 @@
 		bite_consumption = bite_consumption,\
 		microwaved_type = microwaved_type,\
 		junkiness = junkiness,\
-		after_eat = CALLBACK(src, .proc/after_eat))
+		after_eat = CALLBACK(src, PROC_REF(after_eat)))
 
 /obj/item/food/clothing/proc/after_eat(mob/eater)
 	var/obj/item/clothing/resolved_clothing = clothing.resolve()
@@ -121,15 +121,6 @@
 	else
 		qdel(src)
 
-/obj/item/clothing/attack(mob/attacker, mob/user, def_zone)
-	if(user.a_intent != INTENT_HARM && ismoth(attacker))
-		if (isnull(moth_snack))
-			moth_snack = new
-			moth_snack.name = name
-			moth_snack.clothing = WEAKREF(src)
-		moth_snack.attack(attacker, user, def_zone)
-	else
-		return ..()
 
 /obj/item/clothing/attackby(obj/item/W, mob/user, params)
 	if(!istype(W, repairable_by))
@@ -216,7 +207,7 @@
 	if(iscarbon(loc))
 		var/mob/living/carbon/C = loc
 		C.visible_message("<span class='danger'>The [zone_name] on [C]'s [src.name] is [break_verb] away!</span>", "<span class='userdanger'>The [zone_name] on your [src.name] is [break_verb] away!</span>", vision_distance = COMBAT_MESSAGE_RANGE)
-		RegisterSignal(C, COMSIG_MOVABLE_MOVED, .proc/bristle, override = TRUE)
+		RegisterSignal(C, COMSIG_MOVABLE_MOVED, PROC_REF(bristle), override = TRUE)
 
 	zones_disabled++
 	for(var/i in zone2body_parts_covered(def_zone))
@@ -262,7 +253,7 @@
 		return
 	if(slot_flags & slot) //Was equipped to a valid slot for this item?
 		if(iscarbon(user) && LAZYLEN(zones_disabled))
-			RegisterSignal(user, COMSIG_MOVABLE_MOVED, .proc/bristle, override = TRUE)
+			RegisterSignal(user, COMSIG_MOVABLE_MOVED, PROC_REF(bristle), override = TRUE)
 		for(var/trait in clothing_traits)
 			ADD_TRAIT(user, trait, "[CLOTHING_TRAIT] [REF(src)]")
 		if (LAZYLEN(user_vars_to_edit))
@@ -304,7 +295,7 @@
 		else
 			how_cool_are_your_threads += "[src]'s storage opens when dragged to yourself.\n"
 		if (pockets.can_hold?.len) // If pocket type can hold anything, vs only specific items
-			how_cool_are_your_threads += "[src] can store [pockets.max_items] <a href='?src=[REF(src)];show_valid_pocket_items=1'>item\s</a>.\n"
+			how_cool_are_your_threads += "[src] can store [pockets.max_items] <a href='byond://?src=[REF(src)];show_valid_pocket_items=1'>item\s</a>.\n"
 		else
 			how_cool_are_your_threads += "[src] can store [pockets.max_items] item\s that are [weightclass2text(pockets.max_w_class)] or smaller.\n"
 		if(pockets.quickdraw)
@@ -341,7 +332,7 @@
 		durability_list += list("ACID" = armor.acid)
 
 	if(LAZYLEN(armor_list) || LAZYLEN(durability_list))
-		. += "<span class='notice'>It has a <a href='?src=[REF(src)];list_armor=1'>tag</a> listing its protection classes.</span>"
+		. += "<span class='notice'>It has a <a href='byond://?src=[REF(src)];list_armor=1'>tag</a> listing its protection classes.</span>"
 
 /obj/item/clothing/Topic(href, href_list)
 	. = ..()
@@ -411,17 +402,20 @@
 
 /obj/item/clothing/update_overlays()
 	. = ..()
-	if(damaged_clothes)
-		var/index = "[REF(initial(icon))]-[initial(icon_state)]"
-		var/static/list/damaged_clothes_icons = list()
-		var/icon/damaged_clothes_icon = damaged_clothes_icons[index]
-		if(!damaged_clothes_icon)
-			damaged_clothes_icon = icon(initial(icon), initial(icon_state), , 1)	//we only want to apply damaged effect to the initial icon_state for each object
-			damaged_clothes_icon.Blend("#fff", ICON_ADD) 	//fills the icon_state with white (except where it's transparent)
-			damaged_clothes_icon.Blend(icon('icons/effects/item_damage.dmi', "itemdamaged"), ICON_MULTIPLY) //adds damage effect and the remaining white areas become transparant
-			damaged_clothes_icon = fcopy_rsc(damaged_clothes_icon)
-			damaged_clothes_icons[index] = damaged_clothes_icon
-		. += damaged_clothes_icon
+	if(!damaged_clothes)
+		return
+
+	var/initial_icon = initial(icon)
+	var/index = "[REF(initial_icon)]-[initial(icon_state)]"
+	var/static/list/damaged_clothes_icons = list()
+	var/icon/damaged_clothes_icon = damaged_clothes_icons[index]
+	if(!damaged_clothes_icon)
+		damaged_clothes_icon = icon(icon, icon_state, null, 1)
+		damaged_clothes_icon.Blend("#fff", ICON_ADD) 	//fills the icon_state with white (except where it's transparent)
+		damaged_clothes_icon.Blend(icon('icons/effects/item_damage.dmi', "itemdamaged"), ICON_MULTIPLY) //adds damage effect and the remaining white areas become transparant
+		damaged_clothes_icon = fcopy_rsc(damaged_clothes_icon)
+		damaged_clothes_icons[index] = damaged_clothes_icon
+	. += damaged_clothes_icon
 
 /*
 SEE_SELF  // can see self, no matter what

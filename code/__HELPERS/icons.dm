@@ -833,7 +833,7 @@ world
 						break
 				layers[current] = current_layer
 
-		//sortTim(layers, /proc/cmp_image_layer_asc)
+		//sortTim(layers, GLOBAL_PROC_REF(cmp_image_layer_asc))
 
 		var/icon/add // Icon of overlay being added
 
@@ -1144,7 +1144,7 @@ GLOBAL_LIST_INIT(freon_color_matrix, list("#2E5E69", "#60A2A8", "#A1AFB1", rgb(0
 			return
 	if (!isicon(I))
 		if (isfile(thing)) //special snowflake
-			var/name = sanitize_filename("[generate_asset_name(thing)].png")
+			var/name = SANITIZE_FILENAME("[generate_asset_name(thing)].png")
 			if (!SSassets.cache[name])
 				SSassets.transport.register_asset(name, thing)
 			for (var/thing2 in targets)
@@ -1206,11 +1206,12 @@ GLOBAL_LIST_INIT(freon_color_matrix, list("#2E5E69", "#60A2A8", "#A1AFB1", rgb(0
 
 	// Either an atom or somebody fucked up and is gonna get a runtime, which I'm fine with.
 	var/atom/A = thing
-	var/key = "[istype(A.icon, /icon) ? "[REF(A.icon)]" : A.icon]:[A.icon_state]"
+	var/icon/the_icon = A.icon
+	var/key = "[istype(the_icon) ? "[FAST_REF(the_icon)]" : the_icon]:[A.icon_state]"
 
 
 	if (!bicon_cache[key]) // Doesn't exist, make it.
-		var/icon/I = icon(A.icon, A.icon_state, SOUTH, 1)
+		var/icon/I = icon(the_icon, A.icon_state, SOUTH, 1)
 		if (ishuman(thing)) // Shitty workaround for a BYOND issue.
 			var/icon/temp = I
 			I = icon()
@@ -1272,7 +1273,7 @@ GLOBAL_LIST_EMPTY(transformation_animation_objects)
 	for(var/A in transformation_objects)
 		vis_contents += A
 	if(reset_after)
-		addtimer(CALLBACK(src,.proc/_reset_transformation_animation,filter_index),time)
+		addtimer(CALLBACK(src, PROC_REF(_reset_transformation_animation),filter_index),time)
 
 /*
  * Resets filters and removes transformation animations helper objects from vis contents.

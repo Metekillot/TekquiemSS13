@@ -7,14 +7,21 @@
 			"windows": {
 				"command": ".\\tools\\build\\build.bat"
 			},
+			"options": {
+				"env": {
+					"DM_EXE": "${config:dreammaker.byondPath}"
+				}
+			},
 			"problemMatcher": [
 				"$dreammaker",
+				"$tsc",
 				"$eslint-stylish"
 			],
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
+			"dependsOn": "dm: reparse",
 			"label": "Build All"
 		},
 		{
@@ -27,16 +34,9 @@
 			"label": "dm: build - tgstation.dme"
 		},
 		{
-			"type": "shell",
-			"command": "tgui/bin/tgui",
-			"windows": {
-				"command": ".\\tgui\\bin\\tgui.bat"
-			},
-			"problemMatcher": [
-				"$eslint-stylish"
-			],
+			"command": "${command:dreammaker.reparse}",
 			"group": "build",
-			"label": "tgui: build"
+			"label": "dm: reparse"
 		}
 	]
 }

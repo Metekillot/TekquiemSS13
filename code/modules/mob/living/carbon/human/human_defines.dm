@@ -19,6 +19,11 @@
 	var/hair_color = "000"
 	var/hairstyle = "Bald"
 
+///Colour used for the hair gradient.
+	var/grad_color = "000"
+	///Style used for the hair gradient.
+	var/grad_style
+
 	//Facial hair colour and style
 	var/facial_hair_color = "000"
 	var/facial_hairstyle = "Shaved"
@@ -26,12 +31,15 @@
 	//Eye colour
 	var/eye_color = "000"
 
-	var/skin_tone = "caucasian1"	//Skin tone
+	var/skin_tone = LATINO	//Skin tone
 
 	var/lip_style = null	//no lipstick by default- arguably misleading, as it could be used for general makeup
 	var/lip_color = "white"
 
-	var/age = 30		//Player's age
+	///Character's biological age
+	var/age = 30
+	///Character's chronological age
+	var/chronological_age = 30
 
 	var/underwear = "Nude"	//Which underwear the player wants
 	var/underwear_color = "000"
@@ -62,6 +70,7 @@
 	var/lastpuke = 0
 	var/last_fire_update
 	var/account_id
+	var/bank_id
 
 	var/hardcore_survival_score = 0
 	/// For agendered spessmen, which body type to use
@@ -75,3 +84,56 @@
 
 	///Exposure to damaging heat levels increases stacks, stacks clean over time when temperatures are lower. Stack is consumed to add a wound.
 	var/heat_exposure_stacks = 0
+
+
+	var/last_repainted_mark
+
+	var/dementia = FALSE
+
+	//[Lucia] I have no clue why this is necessary, TODO: remove
+	var/mob/living/caster
+
+	var/datum/job/JOB
+	var/roundstart_vampire = FALSE
+	var/last_loot_check = 0
+
+	var/phonevoicetag = 10
+
+	var/hided = FALSE
+	var/additional_hands = FALSE
+	var/additional_wings = FALSE
+	var/additional_centipede = FALSE
+	var/additional_armor = FALSE
+
+	var/unique_body_sprite
+
+	var/image/suckbar
+	var/atom/suckbar_loc
+
+	var/last_showed = 0
+	var/last_raid = 0
+	var/next_raid = 900 //time between SWAT raids, varies a bit randomly
+	var/current_police_raid = FALSE //execution lock for police raid stealth logic
+	var/killed_count = 0
+
+	var/base_body_mod = ""
+	var/icon/body_sprite
+
+	bloodquality = 2
+
+	var/soul_state = SOUL_PRESENT
+
+	///The Examine Panel TGUI.
+	var/datum/examine_panel/tgui = new() //create the datum
+	var/headshot_link = null
+	var/ooc_notes
+
+
+	//VTR EDIT BEGIN
+	var/ooc_link
+	var/datum/vtr_faction/vtr_faction
+	var/datum/vampireclane/clane
+	var/datum/vampireclane/regent_clan
+	var/vamp_rank = 0
+	var/datum/examine_panel_fake/examine_panel_fake = new()
+	//VTR EDIT END

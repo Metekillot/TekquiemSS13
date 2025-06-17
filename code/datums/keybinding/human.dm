@@ -56,3 +56,36 @@
 	slot_type = ITEM_SLOT_SUITSTORE
 	slot_item_name = "suit storage slot item"
 	keybind_signal = COMSIG_KB_HUMAN_SUITEQUIP_DOWN
+
+/datum/keybinding/human/block
+	hotkey_keys = list("C")
+	name = "enable_blocking"
+	full_name = " Enable or disable blocking mod"
+	description = "Toggles blocking mode for combat"
+	keybind_signal = COMSIG_KB_HUMAN_BLOCK
+
+/datum/keybinding/human/block/down(client/user)
+	. = ..()
+	if(.)
+		return
+	var/mob/living/carbon/human/H = user.mob
+	H.SwitchBlocking()
+	return TRUE
+
+/datum/keybinding/human/bite
+	hotkey_keys = list("F")
+	name = "bite"
+	full_name = "Bite"
+	description = "Bite whoever you're aggressively grabbing, and feed on them if possible."
+	keybind_signal = COMSIG_KB_HUMAN_BITE_DOWN
+
+/datum/keybinding/human/bite/down(client/user)
+	. = ..()
+	if(.)
+		return
+
+	if(ishuman(user.mob))
+		var/mob/living/carbon/human/human_user = user.mob
+		human_user.vamp_bite()
+					
+	return TRUE

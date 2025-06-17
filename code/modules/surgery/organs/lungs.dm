@@ -9,7 +9,7 @@
 	w_class = WEIGHT_CLASS_SMALL
 
 	healing_factor = STANDARD_ORGAN_HEALING
-	decay_factor = STANDARD_ORGAN_DECAY * 0.9 // fails around 16.5 minutes, lungs are one of the last organs to die (of the ones we have)
+	decay_factor = STANDARD_ORGAN_DECAY * 0.45 // fails around 33 minutes, lungs are one of the last organs to die (of the ones we have)
 
 	low_threshold_passed = "<span class='warning'>You feel short of breath.</span>"
 	high_threshold_passed = "<span class='warning'>You feel some sort of constriction around your chest as your breathing becomes shallow and rapid.</span>"
@@ -75,6 +75,9 @@
 
 	var/crit_stabilizing_reagent = /datum/reagent/medicine/epinephrine
 
+/obj/item/organ/lungs/Initialize()
+	. = ..()
+	AddComponent(/datum/component/selling/organ, 450, "organ", TRUE, -1, 0)
 
 /obj/item/organ/lungs/proc/check_breath(datum/gas_mixture/breath, mob/living/carbon/human/H)
 	if(H.status_flags & GODMODE)
@@ -82,6 +85,10 @@
 		H.clear_alert("not_enough_oxy")
 		return
 	if(HAS_TRAIT(H, TRAIT_NOBREATH))
+		return
+	if(istype(H.loc, /obj/werewolf_holder/transformation))
+		H.failed_last_breath = FALSE //clear oxy issues
+		H.clear_alert("not_enough_oxy")
 		return
 
 	if(!breath || (breath.total_moles() == 0))
@@ -388,13 +395,6 @@
 	// Miasma
 		if (breath_gases[/datum/gas/miasma])
 			var/miasma_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/miasma][MOLES])
-
-			//Miasma sickness
-			if(prob(0.5 * miasma_pp))
-				var/datum/disease/advance/miasma_disease = new /datum/disease/advance/random(min(round(max(miasma_pp/2, 1), 1), 6), min(round(max(miasma_pp, 1), 1), 8))
-				//tl;dr the first argument chooses the smaller of miasma_pp/2 or 6(typical max virus symptoms), the second chooses the smaller of miasma_pp or 8(max virus symptom level) //
-				miasma_disease.name = "Unknown"//^each argument has a minimum of 1 and rounds to the nearest value. Feel free to change the pp scaling I couldn't decide on good numbers for it.
-				miasma_disease.try_infect(owner)
 
 			// Miasma side effects
 			switch(miasma_pp)

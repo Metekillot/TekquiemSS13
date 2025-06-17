@@ -10,7 +10,7 @@
 	selection_color = "#ffddff"
 	req_admin_notify = 1
 	minimal_player_age = 7
-	exp_type_department = EXP_TYPE_SCIENCE
+	exp_type_department = EXP_TYPE_ANARCH
 	exp_requirements = 180
 	exp_type = EXP_TYPE_CREW
 
@@ -31,7 +31,7 @@
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_SCI
 
-	display_order = JOB_DISPLAY_ORDER_RESEARCH_DIRECTOR
+//	display_order = JOB_DISPLAY_ORDER_RESEARCH_DIRECTOR
 	bounty_types = CIV_JOB_SCI
 
 /datum/outfit/job/rd

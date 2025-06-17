@@ -106,23 +106,23 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 	var/list/configuration = null
 
 /datum/game_mode/dynamic/admin_panel()
-	var/list/dat = list("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>Game Mode Panel</title></head><body><h1><B>Game Mode Panel</B></h1>")
-	dat += "Dynamic Mode <a href='?_src_=vars;[HrefToken()];Vars=[REF(src)]'>\[VV\]</a> <a href='?src=\ref[src];[HrefToken()]'>\[Refresh\]</a><BR>"
+	var/list/dat = list()
+	dat += "Dynamic Mode <a href='byond://?_src_=vars;[HrefToken()];Vars=[FAST_REF(src)]'>VV</a> <a href='byond://?src=[FAST_REF(src)];[HrefToken()]'>\[Refresh\]</a><BR>"
 	dat += "Threat Level: <b>[threat_level]</b><br/>"
 
-	dat += "Threat to Spend: <b>[threat]</b> <a href='?src=\ref[src];[HrefToken()];adjustthreat=1'>\[Adjust\]</A> <a href='?src=\ref[src];[HrefToken()];threatlog=1'>\[View Log\]</a><br/>"
+	dat += "Threat to Spend: <b>[threat]</b> <a href='byond://?src=[FAST_REF(src)];[HrefToken()];adjustthreat=1'>Adjust</a> <a href='byond://?src=[FAST_REF(src)];[HrefToken()];threatlog=1'>\[View Log\]</a><br/>"
 	dat += "<br/>"
 	dat += "Parameters: centre = [GLOB.dynamic_curve_centre] ; width = [GLOB.dynamic_curve_width].<br/>"
 	dat += "<i>On average, <b>[peaceful_percentage]</b>% of the rounds are more peaceful.</i><br/>"
-	dat += "Forced extended: <a href='?src=\ref[src];[HrefToken()];forced_extended=1'><b>[GLOB.dynamic_forced_extended ? "On" : "Off"]</b></a><br/>"
-	dat += "Classic secret (only autotraitor): <a href='?src=\ref[src];[HrefToken()];classic_secret=1'><b>[GLOB.dynamic_classic_secret ? "On" : "Off"]</b></a><br/>"
-	dat += "No stacking (only one round-ender): <a href='?src=\ref[src];[HrefToken()];no_stacking=1'><b>[GLOB.dynamic_no_stacking ? "On" : "Off"]</b></a><br/>"
-	dat += "Stacking limit: [GLOB.dynamic_stacking_limit] <a href='?src=\ref[src];[HrefToken()];stacking_limit=1'>\[Adjust\]</A>"
+	dat += "Forced extended: <a href='byond://?src=[FAST_REF(src)];[HrefToken()];forced_extended=1'><b>[GLOB.dynamic_forced_extended ? "On" : "Off"]</b></a><br/>"
+	dat += "Classic secret (only autotraitor): <a href='byond://?src=[FAST_REF(src)];[HrefToken()];classic_secret=1'><b>[GLOB.dynamic_classic_secret ? "On" : "Off"]</b></a><br/>"
+	dat += "No stacking (only one round-ender): <a href='byond://?src=[FAST_REF(src)];[HrefToken()];no_stacking=1'><b>[GLOB.dynamic_no_stacking ? "On" : "Off"]</b></a><br/>"
+	dat += "Stacking limit: [GLOB.dynamic_stacking_limit] <a href='byond://?src=[FAST_REF(src)];[HrefToken()];stacking_limit=1'>Adjust</a>"
 	dat += "<br/>"
-	dat += "<A href='?src=\ref[src];[HrefToken()];force_latejoin_rule=1'>\[Force Next Latejoin Ruleset\]</A><br>"
+	dat += "<A href='byond://?src=\ref[src];[HrefToken()];force_latejoin_rule=1'>\[Force Next Latejoin Ruleset\]</A><br>"
 	if (forced_latejoin_rule)
-		dat += {"<A href='?src=\ref[src];[HrefToken()];clear_forced_latejoin=1'>-> [forced_latejoin_rule.name] <-</A><br>"}
-	dat += "<A href='?src=\ref[src];[HrefToken()];force_midround_rule=1'>\[Execute Midround Ruleset\]</A><br>"
+		dat += {"<A href='byond://?src=\ref[src];[HrefToken()];clear_forced_latejoin=1'>-> [forced_latejoin_rule.name] <-</A><br>"}
+	dat += "<A href='byond://?src=\ref[src];[HrefToken()];force_midround_rule=1'>\[Execute Midround Ruleset\]</A><br>"
 	dat += "<br />"
 	dat += "Executed rulesets: "
 	if (executed_rules.len > 0)
@@ -132,9 +132,12 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 	else
 		dat += "none.<br>"
 	dat += "<br>Injection Timers: (<b>[get_injection_chance(TRUE)]%</b> chance)<BR>"
-	dat += "Latejoin: [(latejoin_injection_cooldown-world.time)>60*10 ? "[round((latejoin_injection_cooldown-world.time)/60/10,0.1)] minutes" : "[(latejoin_injection_cooldown-world.time)] seconds"] <a href='?src=\ref[src];[HrefToken()];injectlate=1'>\[Now!\]</a><BR>"
-	dat += "Midround: [(midround_injection_cooldown-world.time)>60*10 ? "[round((midround_injection_cooldown-world.time)/60/10,0.1)] minutes" : "[(midround_injection_cooldown-world.time)] seconds"] <a href='?src=\ref[src];[HrefToken()];injectmid=1'>\[Now!\]</a><BR>"
-	usr << browse(dat.Join(), "window=gamemode_panel;size=500x500")
+	dat += "Latejoin: [(latejoin_injection_cooldown-world.time)>60*10 ? "[round((latejoin_injection_cooldown-world.time)/60/10,0.1)] minutes" : "[(latejoin_injection_cooldown-world.time)] seconds"] <a href='byond://?src=[FAST_REF(src)];[HrefToken()];injectlate=1'>Now!</a><BR>"
+	dat += "Midround: [(midround_injection_cooldown-world.time)>60*10 ? "[round((midround_injection_cooldown-world.time)/60/10,0.1)] minutes" : "[(midround_injection_cooldown-world.time)] seconds"] <a href='byond://?src=[FAST_REF(src)];[HrefToken()];injectmid=1'>Now!</a><BR>"
+
+	var/datum/browser/browser = new(usr, "gamemode_panel", "Game Mode Panel", 500, 500)
+	browser.set_content(dat.Join())
+	browser.open()
 
 /datum/game_mode/dynamic/Topic(href, href_list)
 	if (..()) // Sanity, maybe ?
@@ -200,49 +203,6 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 			return rule.round_result()
 	return ..()
 
-/datum/game_mode/dynamic/send_intercept()
-	. = "<b><i>Central Command Status Summary</i></b><hr>"
-	var/shown_threat
-	if(prob(FAKE_REPORT_CHANCE))
-		shown_threat = rand(1, 100)
-	else
-		shown_threat = clamp(threat_level + rand(REPORT_NEG_DIVERGENCE, REPORT_POS_DIVERGENCE), 0, 100)
-	switch(round(shown_threat))
-		if(0 to 19)
-			if(!current_players[CURRENT_LIVING_ANTAGS].len)
-				. += "<b>Peaceful Waypoint</b></center><BR>"
-				. += "Your station orbits deep within controlled, core-sector systems and serves as a waypoint for routine traffic through Nanotrasen's trade empire. Due to the combination of high security, interstellar traffic, and low strategic value, it makes any direct threat of violence unlikely. Your primary enemies will be incompetence and bored crewmen: try to organize team-building events to keep staffers interested and productive."
-			else
-				. += "<b>Core Territory</b></center><BR>"
-				. += "Your station orbits within reliably mundane, secure space. Although Nanotrasen has a firm grip on security in your region, the valuable resources and strategic position aboard your station make it a potential target for infiltrations. Monitor crew for non-loyal behavior, but expect a relatively tame shift free of large-scale destruction. We expect great things from your station."
-		if(20 to 39)
-			. += "<b>Anomalous Exogeology</b></center><BR>"
-			. += "Although your station lies within what is generally considered Nanotrasen-controlled space, the course of its orbit has caused it to cross unusually close to exogeological features with anomalous readings. Although these features offer opportunities for our research department, it is known that these little understood readings are often correlated with increased activity from competing interstellar organizations and individuals, among them the Wizard Federation and Cult of the Geometer of Blood - all known competitors for Anomaly Type B sites. Exercise elevated caution."
-		if(40 to 65)
-			. += "<b>Contested System</b></center><BR>"
-			. += "Your station's orbit passes along the edge of Nanotrasen's sphere of influence. While subversive elements remain the most likely threat against your station, hostile organizations are bolder here, where our grip is weaker. Exercise increased caution against elite Syndicate strike forces, or Executives forbid, some kind of ill-conceived unionizing attempt."
-		if(66 to 79)
-			. += "<b>Uncharted Space</b></center><BR>"
-			. += "Congratulations and thank you for participating in the NT 'Frontier' space program! Your station is actively orbiting a high value system far from the nearest support stations. Little is known about your region of space, and the opportunity to encounter the unknown invites greater glory. You are encouraged to elevate security as necessary to protect Nanotrasen assets."
-		if(80 to 99)
-			. += "<b>Black Orbit</b></center><BR>"
-			. += "As part of a mandatory security protocol, we are required to inform you that as a result of your orbital pattern directly behind an astrological body (oriented from our nearest observatory), your station will be under decreased monitoring and support. It is anticipated that your extreme location and decreased surveillance could pose security risks. Avoid unnecessary risks and attempt to keep your station in one piece."
-		if(100)
-			. += "<b>Impending Doom</b></center><BR>"
-			. += "Your station is somehow in the middle of hostile territory, in clear view of any enemy of the corporation. Your likelihood to survive is low, and station destruction is expected and almost inevitable. Secure any sensitive material and neutralize any enemy you will come across. It is important that you at least try to maintain the station.<BR>"
-			. += "Good luck."
-
-	if(station_goals.len)
-		. += "<hr><b>Special Orders for [station_name()]:</b>"
-		for(var/datum/station_goal/G in station_goals)
-			G.on_report()
-			. += G.get_report()
-
-	print_command_report(., "Central Command Status Summary", announce=FALSE)
-	priority_announce("A summary has been copied and printed to all communications consoles.", "Security level elevated.", 'sound/ai/intercept.ogg')
-	if(GLOB.security_level < SEC_LEVEL_BLUE)
-		set_security_level(SEC_LEVEL_BLUE)
-
 // Yes, this is copy pasted from game_mode
 /datum/game_mode/dynamic/check_finished(force_ending)
 	if(!SSticker.setup_done || !gamemode_ready)
@@ -264,7 +224,7 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 	if(!check_rights(R_ADMIN))
 		return
 
-	var/list/out = list("<TITLE>Threat Log</TITLE><B><font size='3'>Threat Log</font></B><br><B>Starting Threat:</B> [threat_level]<BR>")
+	var/list/out = list("<B><font size='3'>Threat Log</font></B><br><B>Starting Threat:</B> [threat_level]<BR>")
 
 	for(var/entry in threat_log)
 		if(istext(entry))
@@ -272,7 +232,7 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 
 	out += "<B>Remaining threat/threat_level:</B> [threat]/[threat_level]"
 
-	usr << browse(out.Join(), "window=threatlog;size=700x500")
+	usr << browse(HTML_SKELETON_TITLE("Threat Log", out.Join()), "window=threatlog;size=700x500")
 
 /// Generates the threat level using lorentz distribution and assigns peaceful_percentage.
 /datum/game_mode/dynamic/proc/generate_threat()
@@ -360,7 +320,7 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 /datum/game_mode/dynamic/post_setup(report)
 	for(var/datum/dynamic_ruleset/roundstart/rule in executed_rules)
 		rule.candidates.Cut() // The rule should not use candidates at this point as they all are null.
-		addtimer(CALLBACK(src, /datum/game_mode/dynamic/.proc/execute_roundstart_rule, rule), rule.delay)
+		addtimer(CALLBACK(src, TYPE_PROC_REF(/datum/game_mode/dynamic, execute_roundstart_rule), rule), rule.delay)
 	..()
 
 /// A simple roundstart proc used when dynamic_forced_roundstart_ruleset has rules in it.
@@ -528,7 +488,7 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 		else if(rule.ruletype == "Midround")
 			midround_rules = remove_from_list(midround_rules, rule.type)
 
-	addtimer(CALLBACK(src, /datum/game_mode/dynamic/.proc/execute_midround_latejoin_rule, rule), rule.delay)
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/datum/game_mode/dynamic, execute_midround_latejoin_rule), rule), rule.delay)
 	return TRUE
 
 /// An experimental proc to allow admins to call rules on the fly or have rules call other rules.

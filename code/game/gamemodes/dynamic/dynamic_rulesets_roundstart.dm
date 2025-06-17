@@ -382,7 +382,7 @@
 	minimum_players = 35
 	/// How much threat should be injected when the revolution wins?
 	var/revs_win_threat_injection = 20
-	var/datum/team/revolution/revolution
+	var/datum/team/sabbat/revolution
 	var/finished = FALSE
 
 /datum/dynamic_ruleset/roundstart/revs/pre_execute()
@@ -579,7 +579,7 @@
 /datum/dynamic_ruleset/roundstart/monkey/proc/check_monkey_victory()
 	if(SSshuttle.emergency.mode != SHUTTLE_ENDGAME)
 		return FALSE
-	var/datum/disease/D = new /datum/disease/transformation/jungle_fever()
+	var/datum/disease/D = new /datum/disease/anxiety() //Random disease. This is never going to run anyways unless admins decide fuck it we ball.
 	for(var/mob/living/carbon/human/M in GLOB.alive_mob_list)
 		if(!ismonkey(M))
 			continue

@@ -48,7 +48,7 @@
 /mob/living/proc/ZImpactDamage(turf/T, levels)
 	visible_message("<span class='danger'>[src] crashes into [T] with a sickening noise!</span>", \
 					"<span class='userdanger'>You crash into [T] with a sickening noise!</span>")
-	adjustBruteLoss((levels * 5) ** 1.5)
+	adjustBruteLoss((levels * 5) ** 2)
 	Knockdown(levels * 50)
 
 //Generic Bump(). Override MobBump() and ObjBump() instead of this.
@@ -384,8 +384,10 @@
 	if(!..())
 		return FALSE
 	visible_message("<span class='name'>[src]</span> points at [A].", "<span class='notice'>You point at [A].</span>")
-	return TRUE
 
+	SEND_SIGNAL(A, COMSIG_MOB_LIVING_POINTED, src)
+
+	return TRUE
 
 /mob/living/verb/succumb(whispered as null)
 	set hidden = TRUE
@@ -393,11 +395,29 @@
 		to_chat(src, text="You are unable to succumb to death! This life continues.", type=MESSAGE_TYPE_INFO)
 		return
 	log_message("Has [whispered ? "whispered his final words" : "succumbed to death"] with [round(health, 0.1)] points of health!", LOG_ATTACK)
-	adjustOxyLoss(health - HEALTH_THRESHOLD_DEAD)
-	updatehealth()
+	
+	if(HAS_TRAIT(src, TRAIT_TORPOR))
+		adjustOxyLoss(health - HEALTH_THRESHOLD_VAMPIRE_DEAD)
+	else if(iskindred(src))
+		adjustOxyLoss(health - HEALTH_THRESHOLD_VAMPIRE_TORPOR)
+		updatehealth()
+	else
+		adjustOxyLoss(health - HEALTH_THRESHOLD_DEAD)
+		updatehealth()
+	
 	if(!whispered)
 		to_chat(src, "<span class='notice'>You have given up life and succumbed to death.</span>")
-	death()
+
+/mob/living/verb/untorpor()
+	set hidden = TRUE
+	if(HAS_TRAIT(src, TRAIT_TORPOR))
+		if(iskindred(src))
+			if (bloodpool > 0)
+				adjustBloodPool(-1)
+				cure_torpor()
+				to_chat(src, "<span class='notice'>You have awoken from your Torpor.</span>")
+			else
+				to_chat(src, "<span class='warning'>You have no blood to re-awaken with...</span>")
 
 /mob/living/incapacitated(ignore_restraints = FALSE, ignore_grab = FALSE, ignore_stasis = FALSE)
 	if(HAS_TRAIT(src, TRAIT_INCAPACITATED) || (!ignore_restraints && (HAS_TRAIT(src, TRAIT_RESTRAINED) || (!ignore_grab && pulledby && pulledby.grab_state >= GRAB_AGGRESSIVE))) || (!ignore_stasis && IS_IN_STASIS(src)))
@@ -510,17 +530,19 @@
 				to_chat(src, "<span class='notice'>You stand up.</span>")
 			get_up(instant)
 
+	SEND_SIGNAL(src, COMSIG_LIVING_RESTING, new_resting, silent, instant)
 	update_resting()
 
 
 /// Proc to append and redefine behavior to the change of the [/mob/living/var/resting] variable.
 /mob/living/proc/update_resting()
 	update_rest_hud_icon()
+	SEND_SIGNAL(src, COMSIG_LIVING_RESTING_UPDATED, resting)
 
 
 /mob/living/proc/get_up(instant = FALSE)
 	set waitfor = FALSE
-	if(!instant && !do_mob(src, src, 1 SECONDS, timed_action_flags = (IGNORE_USER_LOC_CHANGE|IGNORE_TARGET_LOC_CHANGE|IGNORE_HELD_ITEM), extra_checks = CALLBACK(src, /mob/living/proc/rest_checks_callback), interaction_key = DOAFTER_SOURCE_GETTING_UP))
+	if(!instant && !do_mob(src, src, 1 SECONDS, timed_action_flags = (IGNORE_USER_LOC_CHANGE|IGNORE_TARGET_LOC_CHANGE|IGNORE_HELD_ITEM), extra_checks = CALLBACK(src, TYPE_PROC_REF(/mob/living, rest_checks_callback)), interaction_key = DOAFTER_SOURCE_GETTING_UP))
 		return
 	if(resting || body_position == STANDING_UP || HAS_TRAIT(src, TRAIT_FLOORED))
 		return
@@ -560,7 +582,11 @@
 	REMOVE_TRAIT(src, TRAIT_PULL_BLOCKED, LYING_DOWN_TRAIT)
 	body_position_pixel_y_offset = 0
 
-
+/mob/living/proc/update_density()
+	if(HAS_TRAIT(src, TRAIT_UNDENSE))
+		set_density(FALSE)
+	else
+		set_density(TRUE)
 
 //Recursive function to find everything a mob is holding. Really shitty proc tbh.
 /mob/living/get_contents()
@@ -603,23 +629,23 @@
 /mob/living/update_health_hud()
 	var/severity = 0
 	var/healthpercent = (health/maxHealth) * 100
-	if(hud_used?.healthdoll) //to really put you in the boots of a simplemob
-		var/atom/movable/screen/healthdoll/living/livingdoll = hud_used.healthdoll
-		switch(healthpercent)
-			if(100 to INFINITY)
-				severity = 0
-			if(80 to 100)
-				severity = 1
-			if(60 to 80)
-				severity = 2
-			if(40 to 60)
-				severity = 3
-			if(20 to 40)
-				severity = 4
-			if(1 to 20)
-				severity = 5
-			else
-				severity = 6
+	switch(healthpercent)
+		if(100 to INFINITY)
+			severity = 0
+		if(80 to 100)
+			severity = 1
+		if(60 to 80)
+			severity = 2
+		if(40 to 60)
+			severity = 3
+		if(20 to 40)
+			severity = 4
+		if(1 to 20)
+			severity = 5
+		else
+			severity = 6
+	if(hud_used?.healths) //to really put you in the boots of a simplemob
+		var/atom/movable/screen/healthdoll/living/livingdoll = hud_used.healths
 		livingdoll.icon_state = "living[severity]"
 		if(!livingdoll.filtered)
 			livingdoll.filtered = TRUE
@@ -670,7 +696,7 @@
 				var/obj/effect/proc_holder/spell/spell = S
 				spell.updateButtonIcon()
 		if(excess_healing)
-			INVOKE_ASYNC(src, .proc/emote, "gasp")
+			INVOKE_ASYNC(src, PROC_REF(emote), "gasp")
 			log_combat(src, src, "revived")
 	else if(admin_revive)
 		updatehealth()
@@ -829,7 +855,7 @@
 	return bleed_amount
 
 /mob/living/proc/getTrail()
-	if(getBruteLoss() < 300)
+	if(getBruteLoss() < 100)
 		return pick("ltrails_1", "ltrails_2")
 	else
 		return pick("trails_1", "trails_2")
@@ -872,14 +898,32 @@
 
 	if(!can_resist())
 		return
+
 	changeNext_move(CLICK_CD_RESIST)
 
 	SEND_SIGNAL(src, COMSIG_LIVING_RESIST, src)
+
 	//resisting grabs (as if it helps anyone...)
 	if(!HAS_TRAIT(src, TRAIT_RESTRAINED) && pulledby)
 		log_combat(src, pulledby, "resisted grab")
 		resist_grab()
 		return
+
+	if(IsStun())
+		AdjustStun(-5)
+		do_attack_animation(src)
+		visible_message("<span class='danger'>[src] tries to stand up!</span>", \
+						"<span class='userdanger'>You try to stand up!</span>")
+	if(IsKnockdown())
+		AdjustKnockdown(-5)
+		do_attack_animation(src)
+		visible_message("<span class='danger'>[src] tries to stand up!</span>", \
+						"<span class='userdanger'>You try to stand up!</span>")
+	if(IsImmobilized())
+		AdjustImmobilized(-5)
+		do_attack_animation(src)
+		visible_message("<span class='danger'>[src] tries to stand up!</span>", \
+						"<span class='userdanger'>You try to stand up!</span>")
 
 	//unbuckling yourself
 	if(buckled && last_special <= world.time)
@@ -901,13 +945,30 @@
 
 /mob/living/resist_grab(moving_resist)
 	. = TRUE
+
 	if(pulledby.grab_state || resting || HAS_TRAIT(src, TRAIT_GRABWEAKNESS))
-		var/altered_grab_state = pulledby.grab_state
-		if((resting || HAS_TRAIT(src, TRAIT_GRABWEAKNESS)) && pulledby.grab_state < GRAB_KILL) //If resting, resisting out of a grab is equivalent to 1 grab state higher. won't make the grab state exceed the normal max, however
-			altered_grab_state++
-		var/resist_chance = BASE_GRAB_RESIST_CHANCE /// see defines/combat.dm, this should be baseline 60%
-		resist_chance = (resist_chance/altered_grab_state) ///Resist chance divided by the value imparted by your grab state. It isn't until you reach neckgrab that you gain a penalty to escaping a grab.
-		if(prob(resist_chance))
+		var/mob/living/G = pulledby
+
+		//resist dice is the higher of physique and wits
+		var/resist_dice = get_physique() * 2
+		if(resist_dice < get_wits() * 2)
+			resist_dice = get_wits() * 2
+		
+		//If resting, give aggressor bonus dice.
+		if((resting || HAS_TRAIT(src, TRAIT_GRABWEAKNESS)) && pulledby.grab_state < GRAB_KILL)
+			resist_dice--
+		
+		var/success = SSroll.opposed_roll(
+			player_a = G,
+			player_b = src,
+			dice_a = G.get_physique()*2,
+			dice_b = resist_dice,
+			show_player_a = TRUE,
+			show_player_b = TRUE,
+			alert_atom = src,
+			draw_goes_to_b = TRUE)
+		
+		if(!success)
 			visible_message("<span class='danger'>[src] breaks free of [pulledby]'s grip!</span>", \
 							"<span class='danger'>You break free of [pulledby]'s grip!</span>", null, null, pulledby)
 			to_chat(pulledby, "<span class='warning'>[src] breaks free of your grip!</span>")
@@ -963,14 +1024,25 @@
 	if(!what.canStrip(who))
 		to_chat(src, "<span class='warning'>You can't remove \the [what.name], it appears to be stuck!</span>")
 		return
-	who.visible_message("<span class='warning'>[src] tries to remove [who]'s [what.name].</span>", \
-					"<span class='userdanger'>[src] tries to remove your [what.name].</span>", null, null, src)
+	if(!enhanced_strip)
+		who.visible_message("<span class='warning'>[src] tries to remove [who]'s [what.name].</span>", \
+			"<span class='userdanger'>[src] tries to remove your [what.name].</span>", null, null, src)
 	to_chat(src, "<span class='danger'>You try to remove [who]'s [what.name]...</span>")
 	who.log_message("[key_name(who)] is being stripped of [what] by [key_name(src)]", LOG_ATTACK, color="red")
 	log_message("[key_name(who)] is being stripped of [what] by [key_name(src)]", LOG_ATTACK, color="red", log_globally=FALSE)
 	what.add_fingerprint(src)
-	if(do_mob(src, who, what.strip_delay, interaction_key = what))
-		if(what && Adjacent(who))
+	var/strip_delayed = what.strip_delay
+	if(enhanced_strip)
+		strip_delayed = 0.1 SECONDS
+	if(do_mob(src, who, min(strip_delayed, what.strip_delay), interaction_key = what))
+		if(what && (Adjacent(who) || (enhanced_strip && (get_dist(src, who) <= 3))))
+			enhanced_strip = FALSE
+			if(ishuman(src) && isnpc(who))
+				var/mob/living/carbon/human/H = src
+				var/mob/living/carbon/human/NPC = who
+				if(NPC.stat < SOFT_CRIT)
+					if(istype(what, /obj/item/clothing) || istype(what, /obj/item/vamp/keys) || istype(what, /obj/item/stack/dollar))
+						H.AdjustHumanity(-1, 6)
 			if(islist(where))
 				var/list/L = where
 				if(what == who.get_item_for_held_index(L[2]))
@@ -1102,7 +1174,7 @@
 	if(!(mobility_flags & MOBILITY_UI) && !floor_okay)
 		to_chat(src, "<span class='warning'>You can't do that right now!</span>")
 		return FALSE
-	if(be_close && !Adjacent(M) && (M.loc != src))
+	if(be_close && !Adjacent(M) && (M.loc != src) && !enhanced_strip)
 		if(no_tk)
 			to_chat(src, "<span class='warning'>You are too far away!</span>")
 			return FALSE
@@ -1354,6 +1426,7 @@
 		if(M.can_be_held && U.pulling == M)
 			M.mob_try_pickup(U)//blame kevinz
 			return//dont open the mobs inventory if you are picking them up
+
 	. = ..()
 
 /mob/living/proc/mob_pickup(mob/living/L)
@@ -1467,13 +1540,13 @@
 	. += {"
 		<br><font size='1'>[VV_HREF_TARGETREF(refid, VV_HK_GIVE_DIRECT_CONTROL, "[ckey || "no ckey"]")] / [VV_HREF_TARGETREF_1V(refid, VV_HK_BASIC_EDIT, "[real_name || "no real name"]", NAMEOF(src, real_name))]</font>
 		<br><font size='1'>
-			BRUTE:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=brute' id='brute'>[getBruteLoss()]</a>
-			FIRE:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=fire' id='fire'>[getFireLoss()]</a>
-			TOXIN:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=toxin' id='toxin'>[getToxLoss()]</a>
-			OXY:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=oxygen' id='oxygen'>[getOxyLoss()]</a>
-			CLONE:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=clone' id='clone'>[getCloneLoss()]</a>
-			BRAIN:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=brain' id='brain'>[getOrganLoss(ORGAN_SLOT_BRAIN)]</a>
-			STAMINA:<font size='1'><a href='?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=stamina' id='stamina'>[getStaminaLoss()]</a>
+			BRUTE:<font size='1'><a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=brute' id='brute'>[getBruteLoss()]</a>
+			FIRE:<font size='1'><a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=fire' id='fire'>[getFireLoss()]</a>
+			TOXIN:<font size='1'><a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=toxin' id='toxin'>[getToxLoss()]</a>
+			OXY:<font size='1'><a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=oxygen' id='oxygen'>[getOxyLoss()]</a>
+			CLONE:<font size='1'><a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=clone' id='clone'>[getCloneLoss()]</a>
+			BRAIN:<font size='1'><a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=brain' id='brain'>[getOrganLoss(ORGAN_SLOT_BRAIN)]</a>
+			STAMINA:<font size='1'><a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=stamina' id='stamina'>[getStaminaLoss()]</a>
 		</font>
 	"}
 
@@ -1506,6 +1579,13 @@
 		update_transform()
 		lying_prev = lying_angle
 
+/**
+ * Getter for lying_angle. Workaround for code trying to access a protected variable FOR SOME REASON.
+ *
+ * Returns the lying angle of the mob.
+ */
+/mob/living/proc/get_lying_angle()
+	return(lying_angle)
 
 /**
  * add_body_temperature_change Adds modifications to the body temperature
@@ -1558,7 +1638,7 @@
 
 ///Checks if the user is incapacitated or on cooldown.
 /mob/living/proc/can_look_up()
-	return !(incapacitated(ignore_restraints = TRUE))
+	return !(incapacitated(ignore_restraints = TRUE) || HAS_TRAIT(src, TRAIT_ENRAPTURED))
 
 /**
  * look_up Changes the perspective of the mob to any openspace turf above the mob
@@ -1572,8 +1652,8 @@
 	if(!can_look_up())
 		return
 	changeNext_move(CLICK_CD_LOOK_UP)
-	RegisterSignal(src, COMSIG_MOVABLE_PRE_MOVE, .proc/stop_look_up) //We stop looking up if we move.
-	RegisterSignal(src, COMSIG_MOVABLE_MOVED, .proc/start_look_up) //We start looking again after we move.
+	RegisterSignal(src, COMSIG_MOVABLE_PRE_MOVE, PROC_REF(stop_look_up)) //We stop looking up if we move.
+	RegisterSignal(src, COMSIG_MOVABLE_MOVED, PROC_REF(start_look_up)) //We start looking again after we move.
 	start_look_up()
 
 /mob/living/proc/start_look_up()
@@ -1617,8 +1697,8 @@
 	if(!can_look_up()) //if we cant look up, we cant look down.
 		return
 	changeNext_move(CLICK_CD_LOOK_UP)
-	RegisterSignal(src, COMSIG_MOVABLE_PRE_MOVE, .proc/stop_look_down) //We stop looking down if we move.
-	RegisterSignal(src, COMSIG_MOVABLE_MOVED, .proc/start_look_down) //We start looking again after we move.
+	RegisterSignal(src, COMSIG_MOVABLE_PRE_MOVE, PROC_REF(stop_look_down)) //We stop looking down if we move.
+	RegisterSignal(src, COMSIG_MOVABLE_MOVED, PROC_REF(start_look_down)) //We start looking again after we move.
 	start_look_down()
 
 /mob/living/proc/start_look_down()
@@ -1867,13 +1947,13 @@
 		set_lying_angle(pick(90, 270))
 		set_body_position(LYING_DOWN)
 		on_fall()
-
+	SEND_SIGNAL(src, COMSIG_LIVING_RESTING_UPDATED)
 
 /// Proc to append behavior to the condition of being floored. Called when the condition ends.
 /mob/living/proc/on_floored_end()
 	if(!resting)
 		get_up()
-
+	SEND_SIGNAL(src, COMSIG_LIVING_RESTING_UPDATED)
 
 /// Proc to append behavior to the condition of being handsblocked. Called when the condition starts.
 /mob/living/proc/on_handsblocked_start()

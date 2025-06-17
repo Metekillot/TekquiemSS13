@@ -185,7 +185,7 @@
 		to_chat(src, "<span class='userdanger'>You are tipped over by [M]!</span>")
 		Paralyze(60, ignore_canstun = TRUE)
 		icon_state = icon_dead
-		addtimer(CALLBACK(src, .proc/cow_tipped, M), rand(20,50))
+		addtimer(CALLBACK(src, PROC_REF(cow_tipped), M), rand(20,50))
 
 	else
 		..()
@@ -430,6 +430,7 @@
 	speak_chance = 1
 	turns_per_move = 5
 	see_in_dark = 6
+	speed = -0.6
 	butcher_results = list(/obj/item/food/meat/slab = 3)
 	response_help_continuous = "pets"
 	response_help_simple = "pet"

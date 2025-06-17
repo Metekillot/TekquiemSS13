@@ -36,11 +36,11 @@
 #define CHAT_GHOSTWHISPER	(1<<7)
 #define CHAT_GHOSTPDA		(1<<8)
 #define CHAT_GHOSTRADIO 	(1<<9)
-#define CHAT_BANKCARD  (1<<10)
-#define CHAT_GHOSTLAWS	(1<<11)
+#define CHAT_BANKCARD		(1<<10)
+#define CHAT_GHOSTLAWS		(1<<11)
 #define CHAT_LOGIN_LOGOUT	(1<<12)
 
-#define TOGGLES_DEFAULT_CHAT (CHAT_OOC|CHAT_DEAD|CHAT_GHOSTEARS|CHAT_GHOSTSIGHT|CHAT_PRAYER|CHAT_RADIO|CHAT_PULLR|CHAT_GHOSTWHISPER|CHAT_GHOSTPDA|CHAT_GHOSTRADIO|CHAT_BANKCARD|CHAT_GHOSTLAWS|CHAT_LOGIN_LOGOUT)
+#define TOGGLES_DEFAULT_CHAT (CHAT_OOC|CHAT_DEAD|CHAT_GHOSTSIGHT|CHAT_PRAYER|CHAT_RADIO|CHAT_PULLR|CHAT_GHOSTWHISPER|CHAT_GHOSTPDA|CHAT_GHOSTRADIO|CHAT_BANKCARD|CHAT_GHOSTLAWS|CHAT_LOGIN_LOGOUT|CHAT_GHOSTEARS) // CHAT_GHOSTEARS| [ChillRaccoon] - Removed due to request //[Lucifernix] - readded because fuck you!
 
 #define PARALLAX_INSANE -1 //for show offs
 #define PARALLAX_HIGH    0 //default.
@@ -71,16 +71,23 @@
 
 // Playtime tracking system, see jobs_exp.dm
 #define EXP_TYPE_LIVING			"Living"
-#define EXP_TYPE_CREW			"Crew"
-#define EXP_TYPE_COMMAND		"Command"
-#define EXP_TYPE_ENGINEERING	"Engineering"
-#define EXP_TYPE_MEDICAL		"Medical"
-#define EXP_TYPE_SCIENCE		"Science"
-#define EXP_TYPE_SUPPLY			"Supply"
-#define EXP_TYPE_SECURITY		"Security"
-#define EXP_TYPE_SILICON		"Silicon"
-#define EXP_TYPE_SERVICE		"Service"
+#define EXP_TYPE_CREW			"Kindred"
+#define EXP_TYPE_CAMARILLIA		"Camarilla Authorities"
+#define EXP_TYPE_GANG			"Gangs"
+#define EXP_TYPE_TREMERE		"Tremere"
+#define EXP_TYPE_ANARCH			"Anarchs"
+#define EXP_TYPE_OTHER_CITIZEN "Unaligned"
+#define EXP_TYPE_NEUTRALS		"Neutrals"
 #define EXP_TYPE_ANTAG			"Antag"
+#define EXP_TYPE_COUNCIL        "Camarilla Primogen Council"
+#define EXP_TYPE_POLICE         "Police Force"
+#define EXP_TYPE_SERVICES   "City Services"
+#define EXP_TYPE_CLINIC   "St. John's Clinic"
+#define EXP_TYPE_GIOVANNI   "Giovanni Family"
+#define EXP_TYPE_TZIMISCE   "Tzimisce Mansion"
+#define EXP_TYPE_WAREHOUSE      "Warehouse"
+#define EXP_TYPE_NATIONAL_SECURITY      "National Security"
+#define EXP_TYPE_CHURCH         "Church"
 #define EXP_TYPE_SPECIAL		"Special"
 #define EXP_TYPE_GHOST			"Ghost"
 #define EXP_TYPE_ADMIN			"Admin"
@@ -122,3 +129,10 @@
 
 //recommened client FPS
 #define RECOMMENDED_FPS 40
+
+//public image
+
+#define INFO_KNOWN_UNKNOWN "Unknown"
+#define INFO_KNOWN_CLAN_ONLY "Clan Only"
+#define INFO_KNOWN_FACTION "Faction Only"
+#define INFO_KNOWN_PUBLIC "Famous"

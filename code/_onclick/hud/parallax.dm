@@ -9,10 +9,11 @@
 		C.parallax_layers_cached = list()
 		C.parallax_layers_cached += new /atom/movable/screen/parallax_layer/layer_1(null, C.view)
 		C.parallax_layers_cached += new /atom/movable/screen/parallax_layer/layer_2(null, C.view)
-		C.parallax_layers_cached += new /atom/movable/screen/parallax_layer/planet(null, C.view)
-		if(SSparallax.random_layer)
-			C.parallax_layers_cached += new SSparallax.random_layer
-		C.parallax_layers_cached += new /atom/movable/screen/parallax_layer/layer_3(null, C.view)
+//		C.parallax_layers_cached += new /atom/movable/screen/parallax_layer/planet(null, C.view)
+		C.parallax_layers_cached += new /atom/movable/screen/parallax_layer/umbra(null, C.view)
+//		if(SSparallax.random_layer)
+//			C.parallax_layers_cached += new SSparallax.random_layer
+//		C.parallax_layers_cached += new /atom/movable/screen/parallax_layer/layer_3(null, C.view)
 
 	C.parallax_layers = C.parallax_layers_cached.Copy()
 
@@ -53,8 +54,8 @@
 			pref = PARALLAX_HIGH
 		switch(C.prefs.parallax)
 			if (PARALLAX_INSANE)
-				C.parallax_throttle = FALSE
-				C.parallax_layers_max = 5
+				C.parallax_throttle = PARALLAX_DELAY_MED
+				C.parallax_layers_max = 3
 				return TRUE
 
 			if (PARALLAX_MED)
@@ -63,16 +64,18 @@
 				return TRUE
 
 			if (PARALLAX_LOW)
-				C.parallax_throttle = PARALLAX_DELAY_LOW
-				C.parallax_layers_max = 1
+				C.parallax_throttle = PARALLAX_DELAY_MED
+				C.parallax_layers_max = 3
 				return TRUE
 
 			if (PARALLAX_DISABLE)
-				return FALSE
+				C.parallax_throttle = PARALLAX_DELAY_MED
+				C.parallax_layers_max = 3
+				return TRUE
 
 	//This is high parallax.
-	C.parallax_throttle = PARALLAX_DELAY_DEFAULT
-	C.parallax_layers_max = 4
+	C.parallax_throttle = PARALLAX_DELAY_MED
+	C.parallax_layers_max = 3
 	return TRUE
 
 /datum/hud/proc/update_parallax_pref(mob/viewmob)
@@ -130,7 +133,7 @@
 	C.parallax_movedir = new_parallax_movedir
 	if (C.parallax_animate_timer)
 		deltimer(C.parallax_animate_timer)
-	var/datum/callback/CB = CALLBACK(src, .proc/update_parallax_motionblur, C, animatedir, new_parallax_movedir, newtransform)
+	var/datum/callback/CB = CALLBACK(src, PROC_REF(update_parallax_motionblur), C, animatedir, new_parallax_movedir, newtransform)
 	if(skip_windups)
 		CB.Invoke()
 	else
@@ -319,6 +322,19 @@
 	if(!posobj)
 		return
 	invisibility = is_station_level(posobj.z) ? 0 : INVISIBILITY_ABSTRACT
+
+/atom/movable/screen/parallax_layer/umbra
+	icon_state = "umbra"
+	blend_mode = BLEND_OVERLAY
+	absolute = TRUE //Status of seperation
+	speed = 0.6
+	layer = 3
+
+/atom/movable/screen/parallax_layer/umbra/update_status(mob/M)
+	var/turf/posobj = get_turf(M)
+	if(!posobj)
+		return
+	invisibility = posobj.umbra? 0 : INVISIBILITY_ABSTRACT
 
 /atom/movable/screen/parallax_layer/planet/update_o()
 	return //Shit won't move

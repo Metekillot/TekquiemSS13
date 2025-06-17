@@ -24,7 +24,7 @@
 	if(!IS_HERETIC(user))
 		return
 	if(!is_in_use)
-		INVOKE_ASYNC(src, .proc/activate , user)
+		INVOKE_ASYNC(src, PROC_REF(activate) , user)
 
 /obj/effect/eldritch/attacked_by(obj/item/I, mob/living/user)
 	. = ..()
@@ -145,9 +145,9 @@
  *
  * Automatically creates more reality smashes
  */
-/datum/reality_smash_tracker/proc/Generate(mob/caller)
-	if(istype(caller))
-		targets += caller
+/datum/reality_smash_tracker/proc/Generate(mob/clicker)
+	if(istype(clicker))
+		targets += clicker
 	var/targ_len = length(targets)
 	var/smash_len = length(smashes)
 	var/number = max(targ_len * (4-(targ_len-1)) - smash_len,1)
@@ -168,7 +168,7 @@
  * Use this whenever you want to add someone to the list
  */
 /datum/reality_smash_tracker/proc/AddMind(datum/mind/e_cultists)
-	RegisterSignal(e_cultists.current,COMSIG_MOB_LOGIN,.proc/ReworkNetwork)
+	RegisterSignal(e_cultists.current,COMSIG_MOB_LOGIN, PROC_REF(ReworkNetwork))
 	targets |= e_cultists
 	Generate()
 	for(var/obj/effect/reality_smash/reality_smash in smashes)
@@ -196,7 +196,7 @@
 
 /obj/effect/broken_illusion/Initialize()
 	. = ..()
-	addtimer(CALLBACK(src,.proc/show_presence),15 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(show_presence)),15 SECONDS)
 
 	var/image/I = image('icons/effects/eldritch.dmi',src,null,OBJ_LAYER)
 	I.override = TRUE

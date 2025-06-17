@@ -6,7 +6,7 @@
 	spawn_positions = 1
 	supervisors = "the head of personnel"
 	selection_color = "#d7b088"
-	exp_type_department = EXP_TYPE_SUPPLY // This is so the jobs menu can work properly
+	exp_type_department = EXP_TYPE_NEUTRALS // This is so the jobs menu can work properly
 
 	outfit = /datum/outfit/job/quartermaster
 
@@ -17,7 +17,7 @@
 
 	liver_traits = list(TRAIT_PRETENDER_ROYAL_METABOLISM)
 
-	display_order = JOB_DISPLAY_ORDER_QUARTERMASTER
+//	display_order = JOB_DISPLAY_ORDER_QUARTERMASTER
 	bounty_types = CIV_JOB_RANDOM
 
 /datum/outfit/job/quartermaster

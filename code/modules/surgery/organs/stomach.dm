@@ -12,7 +12,7 @@
 	desc = "Onaka ga suite imasu."
 
 	healing_factor = STANDARD_ORGAN_HEALING
-	decay_factor = STANDARD_ORGAN_DECAY * 1.15 // ~13 minutes, the stomach is one of the first organs to die
+	decay_factor = STANDARD_ORGAN_DECAY * 0.57 // ~13 minutes, the stomach is one of the first organs to die
 
 	low_threshold_passed = "<span class='info'>Your stomach flashes with pain before subsiding. Food doesn't seem like a good idea right now.</span>"
 	high_threshold_passed = "<span class='warning'>Your stomach flares up with constant pain- you can hardly stomach the idea of food right now!</span>"
@@ -35,6 +35,7 @@
 	//None edible organs do not get a reagent holder by default
 	if(!reagents)
 		create_reagents(reagent_vol)
+	AddComponent(/datum/component/selling/organ, 100, "organ", TRUE, -1, 0)
 
 /obj/item/organ/stomach/on_life()
 	. = ..()
@@ -199,8 +200,8 @@
 
 /obj/item/organ/stomach/ethereal/Insert(mob/living/carbon/M, special = 0)
 	..()
-	RegisterSignal(owner, COMSIG_PROCESS_BORGCHARGER_OCCUPANT, .proc/charge)
-	RegisterSignal(owner, COMSIG_LIVING_ELECTROCUTE_ACT, .proc/on_electrocute)
+	RegisterSignal(owner, COMSIG_PROCESS_BORGCHARGER_OCCUPANT, PROC_REF(charge))
+	RegisterSignal(owner, COMSIG_LIVING_ELECTROCUTE_ACT, PROC_REF(on_electrocute))
 
 /obj/item/organ/stomach/ethereal/Remove(mob/living/carbon/M, special = 0)
 	UnregisterSignal(owner, COMSIG_PROCESS_BORGCHARGER_OCCUPANT)

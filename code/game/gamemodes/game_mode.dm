@@ -88,7 +88,7 @@
 /datum/game_mode/proc/post_setup(report) //Gamemodes can override the intercept report. Passing TRUE as the argument will force a report.
 	if(!report)
 		report = !CONFIG_GET(flag/no_intercept_report)
-	addtimer(CALLBACK(GLOBAL_PROC, .proc/display_roundstart_logout_report), ROUNDSTART_LOGOUT_REPORT_TIME)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(display_roundstart_logout_report)), ROUNDSTART_LOGOUT_REPORT_TIME)
 
 	if(CONFIG_GET(flag/reopen_roundstart_suicide_roles))
 		var/delay = CONFIG_GET(number/reopen_roundstart_suicide_roles_delay)
@@ -96,7 +96,7 @@
 			delay = (delay SECONDS)
 		else
 			delay = (4 MINUTES) //default to 4 minutes if the delay isn't defined.
-		addtimer(CALLBACK(GLOBAL_PROC, .proc/reopen_roundstart_suicide_roles), delay)
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(reopen_roundstart_suicide_roles)), delay)
 
 	if(SSdbcore.Connect())
 		var/list/to_set = list()
@@ -115,8 +115,6 @@
 			)
 			query_round_game_mode.Execute()
 			qdel(query_round_game_mode)
-	if(report)
-		addtimer(CALLBACK(src, .proc/send_intercept, 0), rand(waittime_l, waittime_h))
 	generate_station_goals()
 	gamemode_ready = TRUE
 	return TRUE
@@ -186,7 +184,7 @@
 	if(CONFIG_GET(flag/protect_assistant_from_antagonist))
 		replacementmode.restricted_jobs += "Assistant"
 
-	message_admins("The roundtype will be converted. If you have other plans for the station or feel the station is too messed up to inhabit <A HREF='?_src_=holder;[HrefToken()];toggle_midround_antag=[REF(usr)]'>stop the creation of antags</A> or <A HREF='?_src_=holder;[HrefToken()];end_round=[REF(usr)]'>end the round now</A>.")
+	message_admins("The roundtype will be converted. If you have other plans for the station or feel the station is too messed up to inhabit <A HREF='byond://?_src_=holder;[HrefToken()];toggle_midround_antag=[REF(usr)]'>stop the creation of antags</A> or <A HREF='byond://?_src_=holder;[HrefToken()];end_round=[REF(usr)]'>end the round now</A>.")
 	log_game("Roundtype converted to [replacementmode.name]")
 
 	. = 1
@@ -269,54 +267,6 @@
 					return FALSE
 
 	return FALSE
-
-
-/datum/game_mode/proc/send_intercept()
-	var/intercepttext = "<b><i>Central Command Status Summary</i></b><hr>"
-	intercepttext += "<b>Central Command has intercepted and partially decoded a Syndicate transmission with vital information regarding their movements. The following report outlines the most \
-	likely threats to appear in your sector.</b>"
-	var/list/report_weights = config.mode_false_report_weight.Copy()
-	report_weights[report_type] = 0 //Prevent the current mode from being falsely selected.
-	var/list/reports = list()
-	var/Count = 0 //To compensate for missing correct report
-	if(prob(65)) // 65% chance the actual mode will appear on the list
-		reports += config.mode_reports[report_type]
-		Count++
-	for(var/i in Count to rand(3,5)) //Between three and five wrong entries on the list.
-		var/false_report_type = pickweightAllowZero(report_weights)
-		report_weights[false_report_type] = 0 //Make it so the same false report won't be selected twice
-		reports += config.mode_reports[false_report_type]
-
-	reports = shuffle(reports) //Randomize the order, so the real one is at a random position.
-
-	for(var/report in reports)
-		intercepttext += "<hr>"
-		intercepttext += report
-
-	if(station_goals.len)
-		intercepttext += "<hr><b>Special Orders for [station_name()]:</b>"
-		for(var/datum/station_goal/G in station_goals)
-			G.on_report()
-			intercepttext += G.get_report()
-
-	print_command_report(intercepttext, "Central Command Status Summary", announce=FALSE)
-	priority_announce("A summary has been copied and printed to all communications consoles.", "Enemy communication intercepted. Security level elevated.", 'sound/ai/intercept.ogg')
-	if(GLOB.security_level < SEC_LEVEL_BLUE)
-		set_security_level(SEC_LEVEL_BLUE)
-
-
-// This is a frequency selection system. You may imagine it like a raffle where each player can have some number of tickets. The more tickets you have the more likely you are to
-// "win". The default is 100 tickets. If no players use any extra tickets (earned with the antagonist rep system) calling this function should be equivalent to calling the normal
-// pick() function. By default you may use up to 100 extra tickets per roll, meaning at maximum a player may double their chances compared to a player who has no extra tickets.
-//
-// The odds of being picked are simply (your_tickets / total_tickets). Suppose you have one player using fifty (50) extra tickets, and one who uses no extra:
-//     Player A: 150 tickets
-//     Player B: 100 tickets
-//        Total: 250 tickets
-//
-// The odds become:
-//     Player A: 150 / 250 = 0.6 = 60%
-//     Player B: 100 / 250 = 0.4 = 40%
 /datum/game_mode/proc/antag_pick(list/datum/candidates)
 	if(!CONFIG_GET(flag/use_antag_rep)) // || candidates.len <= 1)
 		return pick(candidates)
@@ -429,12 +379,12 @@
 
 /proc/reopen_roundstart_suicide_roles()
 	var/list/valid_positions = list()
-	valid_positions += GLOB.engineering_positions
-	valid_positions += GLOB.medical_positions
-	valid_positions += GLOB.science_positions
-	valid_positions += GLOB.supply_positions
-	valid_positions += GLOB.service_positions
-	valid_positions += GLOB.security_positions
+	valid_positions += GLOB.ss13
+	valid_positions += GLOB.ss13
+	valid_positions += GLOB.ss13
+	valid_positions += GLOB.ss13
+	valid_positions += GLOB.neutral_positions
+	valid_positions += GLOB.ss13
 	if(CONFIG_GET(flag/reopen_roundstart_suicide_roles_command_positions))
 		valid_positions += GLOB.command_positions //add any remaining command positions
 	else

@@ -34,6 +34,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		matchburnout()
 	else
 		open_flame(heat)
+		if(istype(loc, /turf/open/floor))
+			var/obj/effect/decal/cleanable/gasoline/G = locate() in loc
+			if(G)
+				new /obj/effect/fire(loc)
 
 /obj/item/match/fire_act(exposed_temperature, exposed_volume)
 	matchignite()
@@ -137,7 +141,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/chem_volume = 30
 	var/smoke_all = FALSE /// Should we smoke all of the chems in the cig before it runs out. Splits each puff to take a portion of the overall chems so by the end you'll always have consumed all of the chems inside.
 	var/list/list_reagents = list(/datum/reagent/drug/nicotine = 15)
-	var/lung_harm = 1 //How bad it is for you
+	var/lung_harm = 0.1 //How bad it is for you //Edited to lower from 1 to 0.1
 
 /obj/item/clothing/mask/cigarette/suicide_act(mob/user)
 	user.visible_message("<span class='suicide'>[user] is huffing [src] as quickly as [user.p_they()] can! It looks like [user.p_theyre()] trying to give [user.p_them()]self cancer.</span>")
@@ -269,6 +273,12 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/mob/living/M = loc
 	if(isliving(loc))
 		M.IgniteMob()
+	if(istype(loc, /turf/open/floor))
+		var/turf/open/floor/F = location
+		if(F.spread_chance > 50 && F.burn_material)
+			var/obj/effect/fire/R = locate() in location
+			if(!R)
+				new /obj/effect/fire(location)
 	smoketime -= delta_time
 	if(smoketime <= 0)
 		new type_butt(location)
@@ -295,16 +305,55 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if(M.on_fire && !lit)
 		light("<span class='notice'>[user] lights [src] with [M]'s burning body. What a cold-blooded badass.</span>")
 		return
-	var/obj/item/clothing/mask/cigarette/cig = help_light_cig(M)
-	if(lit && cig && user.a_intent == INTENT_HELP)
+
+	
+	if(!lit)
+		return ..()
+
+	if(user.a_intent == INTENT_HELP)
+		var/obj/item/clothing/mask/cigarette/cig = help_light_cig(M)
+		if(!cig)
+			return ..()
+		
 		if(cig.lit)
 			to_chat(user, "<span class='warning'>The [cig.name] is already lit!</span>")
 		if(M == user)
 			cig.attackby(src, user)
 		else
 			cig.light("<span class='notice'>[user] holds the [name] out for [M], and lights [M.p_their()] [cig.name].</span>")
-	else
-		return ..()
+	else if (user.a_intent == INTENT_HARM)
+		if(user == M)
+			M.visible_message(span_warning("[user] puts out [src] by crushing it in their palm."))
+		else
+			switch(user.zone_selected)
+				if(BODY_ZONE_PRECISE_EYES)
+					M.visible_message(span_warning("[user] puts out [src] by jamming its burning tip into [M]'s eye!"))
+				if(BODY_ZONE_PRECISE_MOUTH)
+					M.visible_message(span_warning("[user] puts out [src] by dousing its burning tip on [M]'s tongue!"))
+				if(BODY_ZONE_PRECISE_GROIN)
+					M.visible_message(span_warning("[user] puts out [src] by pressing its burning tip against [M]'s groin!"))
+				if(BODY_ZONE_PRECISE_L_HAND, BODY_ZONE_PRECISE_R_HAND)
+					M.visible_message(span_warning("[user] puts out [src] by twisting its burning tip into the palm of [M]'s hand!"))
+				if(BODY_ZONE_PRECISE_L_FOOT, BODY_ZONE_PRECISE_R_FOOT)
+					M.visible_message(span_warning("[user] puts out [src] by pressing its burning tip on [M]'s foot!"))
+				if(BODY_ZONE_CHEST)
+					M.visible_message(span_warning("[user] puts out [src] by pressing its burning tip against [M]'s chest!"))
+				if(BODY_ZONE_L_LEG)
+					M.visible_message(span_warning("[user] puts out [src] by pressing its burning tip against [M]'s left thigh!"))
+				if(BODY_ZONE_R_LEG)
+					M.visible_message(span_warning("[user] puts out [src] by pressing its burning tip against [M]'s left thigh!"))
+				if(BODY_ZONE_L_ARM)
+					M.visible_message(span_warning("[user] puts out [src] by pressing its burning tip against [M]'s left arm!"))
+				if(BODY_ZONE_R_ARM)
+					M.visible_message(span_warning("[user] puts out [src] by pressing its burning tip against [M]'s right arm!"))
+			M.apply_damage(5, BURN, user.zone_selected, 0)
+			if(iskindred(M))
+				M.do_jitter_animation(10)
+				if(M.mind)
+					M.mind.try_frenzy(4)
+		extinguish()
+		return
+	return ..()
 
 /obj/item/clothing/mask/cigarette/fire_act(exposed_temperature, exposed_volume)
 	light()
@@ -316,30 +365,30 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/clothing/mask/cigarette/space_cigarette
 	desc = "A Space Cigarette brand cigarette."
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/dromedary
 	desc = "A DromedaryCo brand cigarette. Contrary to popular belief, does not contain Calomel, but is reported to have a watery taste."
 	list_reagents = list(/datum/reagent/drug/nicotine = 13, /datum/reagent/water = 5) //camel has water
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/uplift
 	desc = "An Uplift Smooth brand cigarette. Smells refreshing."
 	list_reagents = list(/datum/reagent/drug/nicotine = 13, /datum/reagent/consumable/menthol = 5)
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/robust
 	desc = "A Robust brand cigarette."
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/robustgold
 	desc = "A Robust Gold brand cigarette."
 	list_reagents = list(/datum/reagent/drug/nicotine = 15, /datum/reagent/gold = 3) // Just enough to taste a hint of expensive metal.
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/carp
 	desc = "A Carp Classic brand cigarette. A small label on its side indicates that it does NOT contain carpotoxin."
-
-/obj/item/clothing/mask/cigarette/carp/Initialize()
-	. = ..()
-	if(!prob(5))
-		return
-	reagents?.add_reagent(/datum/reagent/toxin/carpotoxin , 3) // They lied
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/syndicate
 	desc = "An unknown brand cigarette."
@@ -347,14 +396,17 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	smoketime = 2 * 60
 	smoke_all = TRUE
 	list_reagents = list(/datum/reagent/drug/nicotine = 10, /datum/reagent/medicine/omnizine = 15)
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/shadyjims
 	desc = "A Shady Jim's Super Slims cigarette."
-	list_reagents = list(/datum/reagent/drug/nicotine = 15, /datum/reagent/toxin/lipolicide = 4, /datum/reagent/ammonia = 2, /datum/reagent/toxin/plantbgone = 1, /datum/reagent/toxin = 1.5)
+	list_reagents = list(/datum/reagent/drug/nicotine = 15, /datum/reagent/toxin/plantbgone = 1, /datum/reagent/toxin = 1.5)
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/xeno
 	desc = "A Xeno Filtered brand cigarette."
-	list_reagents = list (/datum/reagent/drug/nicotine = 20, /datum/reagent/medicine/regen_jelly = 15, /datum/reagent/drug/krokodil = 4)
+	list_reagents = list (/datum/reagent/drug/nicotine = 20, /datum/reagent/medicine/omnizine = 15)
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 // Rollies.
 
@@ -370,6 +422,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	smoketime = 4 * 60
 	chem_volume = 50
 	list_reagents = null
+	onflooricon = 'icons/wod13/onfloor.dmi'
 
 /obj/item/clothing/mask/cigarette/rollie/Initialize()
 	. = ..()
@@ -425,7 +478,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	starts_lit = TRUE
 
 /obj/item/clothing/mask/cigarette/rollie/cannabis
-	list_reagents = list(/datum/reagent/drug/space_drugs = 15, /datum/reagent/toxin/lipolicide = 35)
+	list_reagents = list(/datum/reagent/drug/cannabis = 15, /datum/reagent/toxin/lipolicide = 35)
 
 /obj/item/clothing/mask/cigarette/rollie/mindbreaker
 	list_reagents = list(/datum/reagent/toxin/mindbreaker = 35, /datum/reagent/toxin/lipolicide = 15)
@@ -634,7 +687,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/overlay_list = list(
 		"plain",
 		"dame",
-		"thirteen",
 		"snake"
 		)
 
@@ -749,6 +801,12 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/lighter/process()
 	open_flame()
+	if(istype(loc, /turf/open/floor))
+		var/turf/open/floor/F = loc
+		if(F.spread_chance > 50 && F.burn_material)
+			var/obj/effect/fire/R = locate() in loc
+			if(!R)
+				new /obj/effect/fire(loc)
 
 /obj/item/lighter/get_temperature()
 	return lit * heat

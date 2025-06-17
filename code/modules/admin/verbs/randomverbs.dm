@@ -578,7 +578,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if(!check_rights(R_ADMIN))
 		return
 
-	var/input = input(usr, "Please input a new name for Central Command.", "What?", "") as text|null
+	var/input = input(usr, "Please input a new name for the City Council.", "What?", "") as text|null
 	if(!input)
 		return
 	change_command_name(input)
@@ -909,6 +909,14 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	message_admins("[ADMIN_LOOKUPFLW(usr)] [N.timing ? "activated" : "deactivated"] a nuke at [ADMIN_VERBOSEJMP(N)].")
 	SSblackbox.record_feedback("nested tally", "admin_toggle", 1, list("Toggle Nuke", "[N.timing]")) //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
+/client/proc/toggle_RMB() // [ChillRaccoon] - i fucking evil when i have no choice
+	set name = "Toggle RMB Interaction"
+	set category = "Admin"
+	set desc = "This should be helpfull for testing purposes"
+	show_popup_menus = !show_popup_menus
+
+	to_chat(src, "Current RMB interaction = [show_popup_menus]")
+
 /client/proc/toggle_combo_hud()
 	set category = "Admin.Game"
 	set name = "Toggle Combo HUD"
@@ -952,7 +960,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if(!holder)
 		return
 
-	var/weather_type = input("Choose a weather", "Weather")  as null|anything in sortList(subtypesof(/datum/weather), /proc/cmp_typepaths_asc)
+	var/weather_type = input("Choose a weather", "Weather")  as null|anything in sortList(subtypesof(/datum/weather), GLOBAL_PROC_REF(cmp_typepaths_asc))
 	if(!weather_type)
 		return
 
@@ -1038,6 +1046,14 @@ Traitors and the like can also be revived with the previous role mostly intact.
 
 	message_admins("Mass polymorph started by [who_did_it] is complete.")
 
+/client/proc/roll_dice_vtm()
+	set category = "Admin.Fun"
+	set name = "Roll WoD dice"
+	set desc = "Roll WoD dice at yourself."
+	var/dice_count = tgui_input_number(usr, "Input amount of dice to roll:", "Dice", 5, 100, 1)
+	var/difficulty = tgui_input_number(usr, "Input roll difficulty:", "Difficulty", 2, 10, 1)
+
+	SSroll.storyteller_roll(dice_count, difficulty, mobs_to_show_output = usr, alert_atom = usr)
 
 /client/proc/show_tip()
 	set category = "Admin"
@@ -1078,9 +1094,11 @@ Traitors and the like can also be revived with the previous role mostly intact.
 /datum/admins/proc/modify_goals()
 	var/dat = ""
 	for(var/datum/station_goal/S in SSticker.mode.station_goals)
-		dat += "[S.name] - <a href='?src=[REF(S)];[HrefToken()];announce=1'>Announce</a> | <a href='?src=[REF(S)];[HrefToken()];remove=1'>Remove</a><br>"
-	dat += "<br><a href='?src=[REF(src)];[HrefToken()];add_station_goal=1'>Add New Goal</a>"
-	usr << browse(dat, "window=goals;size=400x400")
+		dat += "[S.name] - <a href='byond://?src=[REF(S)];[HrefToken()];announce=1'>Announce</a> | <a href='byond://?src=[REF(S)];[HrefToken()];remove=1'>Remove</a><br>"
+	dat += "<br><a href='byond://?src=[REF(src)];[HrefToken()];add_station_goal=1'>Add New Goal</a>"
+	var/datum/browser/browser = new(usr, "goals", "Modify Goals", 400, 400)
+	browser.set_content(dat)
+	browser.open()
 
 /proc/immerse_player(mob/living/carbon/target, toggle=TRUE, remove=FALSE)
 	var/list/immersion_components = list(/datum/component/manual_breathing, /datum/component/manual_blinking)
@@ -1188,13 +1206,13 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		return
 
 	var/list/msg = list()
-	msg += "<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>Playtime Report</title></head><body>Playtime:<BR><UL>"
+	msg += "Playtime:<BR><UL>"
 	var/list/clients_list_copy = GLOB.clients.Copy()
 	sortList(clients_list_copy)
 	for(var/client/C in clients_list_copy)
-		msg += "<LI> - [key_name_admin(C)]: <A href='?_src_=holder;[HrefToken()];getplaytimewindow=[REF(C.mob)]'>" + C.get_exp_living() + "</a></LI>"
-	msg += "</UL></BODY></HTML>"
-	src << browse(msg.Join(), "window=Player_playtime_check")
+		msg += "<LI> - [key_name_admin(C)]: <A href='byond://?_src_=holder;[HrefToken()];getplaytimewindow=[REF(C.mob)]'>" + C.get_exp_living() + "</a></LI>"
+	msg += "</UL>"
+	src << browse(HTML_SKELETON_TITLE("Playtime Report", msg.Join()), "window=Player_playtime_check")
 
 /datum/admins/proc/cmd_show_exp_panel(client/client_to_check)
 	if(!check_rights(R_ADMIN))

@@ -12,7 +12,7 @@
 	minimal_player_age = 14
 	exp_requirements = 300
 	exp_type = EXP_TYPE_CREW
-	exp_type_department = EXP_TYPE_SECURITY
+	exp_type_department = EXP_TYPE_NEUTRALS
 
 	outfit = /datum/outfit/job/hos
 
@@ -30,7 +30,7 @@
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_SEC
 
-	display_order = JOB_DISPLAY_ORDER_HEAD_OF_SECURITY
+//	display_order = JOB_DISPLAY_ORDER_HEAD_OF_SECURITY
 	bounty_types = CIV_JOB_SEC
 
 /datum/outfit/job/hos

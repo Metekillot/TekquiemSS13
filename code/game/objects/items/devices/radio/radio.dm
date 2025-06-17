@@ -2,7 +2,8 @@
 
 /obj/item/radio
 	icon = 'icons/obj/radio.dmi'
-	name = "station bounced radio"
+	onflooricon = 'icons/wod13/onfloor.dmi'
+	name = "city bounced radio"
 	icon_state = "walkietalkie"
 	inhand_icon_state = "walkietalkie"
 	worn_icon_state = "radio"
@@ -209,7 +210,7 @@
 		spans = list(M.speech_span)
 	if(!language)
 		language = M.get_selected_language()
-	INVOKE_ASYNC(src, .proc/talk_into_impl, M, message, channel, spans.Copy(), language, message_mods)
+	INVOKE_ASYNC(src, PROC_REF(talk_into_impl), M, message, channel, spans.Copy(), language, message_mods)
 	return ITALICS | REDUCE_RANGE
 
 /obj/item/radio/proc/talk_into_impl(atom/movable/M, message, channel, list/spans, datum/language/language, list/message_mods)
@@ -277,7 +278,7 @@
 
 	// Non-subspace radios will check in a couple of seconds, and if the signal
 	// was never received, send a mundane broadcast (no headsets).
-	addtimer(CALLBACK(src, .proc/backup_transmission, signal), 20)
+	addtimer(CALLBACK(src, PROC_REF(backup_transmission), signal), 20)
 
 /obj/item/radio/proc/backup_transmission(datum/signal/subspace/vocal/signal)
 	var/turf/T = get_turf(src)
@@ -287,7 +288,10 @@
 	// Okay, the signal was never processed, send a mundane broadcast.
 	signal.data["compression"] = 0
 	signal.transmission_method = TRANSMISSION_RADIO
-	signal.levels = list(T.z)
+
+	//WoD13 edit! We want the radio to reach most of the z-levels, not just the one it's on.
+	//Ugly hardcoding; z-level 1 is the splashscreen (no signal), 2 is sewers, 3 is city, 4 is upper floors, 5 is special, 6 is Penumbra (no signal)
+	signal.levels = list(2, 3, 4, 5)
 	signal.broadcast()
 
 /obj/item/radio/Hear(message, atom/movable/speaker, message_language, raw_message, radio_freq, list/spans, list/message_mods = list())
@@ -364,7 +368,7 @@
 	for (var/ch_name in channels)
 		channels[ch_name] = 0
 	on = FALSE
-	addtimer(CALLBACK(src, .proc/end_emp_effect, curremp), 200)
+	addtimer(CALLBACK(src, PROC_REF(end_emp_effect), curremp), 200)
 
 /obj/item/radio/proc/end_emp_effect(curremp)
 	if(emped != curremp) //Don't fix it if it's been EMP'd again
@@ -372,6 +376,38 @@
 	emped = FALSE
 	on = TRUE
 	return TRUE
+
+
+/obj/item/radio/cop
+	name = "police radio"
+	subspace_transmission = FALSE
+	subspace_switchable = FALSE
+	keyslot = new /obj/item/encryptionkey/headset_sec
+
+/obj/item/radio/cop/Initialize()
+	. = ..()
+	set_frequency(FREQ_SECURITY)
+
+/obj/item/radio/clinic
+	name = "clinic radio"
+	subspace_transmission = FALSE
+	subspace_switchable = FALSE
+	keyslot = new /obj/item/encryptionkey/headset_medsci
+
+/obj/item/radio/clinic/Initialize()
+	. = ..()
+	set_frequency(FREQ_MEDICAL)
+
+/obj/item/radio/military
+	name = "military radio"
+	subspace_transmission = FALSE
+	subspace_switchable = FALSE
+	syndie = TRUE
+	keyslot = new /obj/item/encryptionkey/syndicate
+
+/obj/item/radio/military/Initialize()
+	. = ..()
+	set_frequency(FREQ_SYNDICATE)
 
 ///////////////////////////////
 //////////Borg Radios//////////
@@ -398,7 +434,7 @@
 
 /obj/item/radio/borg/syndicate/Initialize()
 	. = ..()
-	set_frequency(FREQ_SYNDICATE)
+	set_frequency(FREQ_CTF_RED)
 
 /obj/item/radio/borg/attackby(obj/item/W, mob/user, params)
 

@@ -1,5 +1,5 @@
 /datum/reagent/blood
-	data = list("donor"=null,"viruses"=null,"blood_DNA"=null,"blood_type"=null,"resistances"=null,"trace_chem"=null,"mind"=null,"ckey"=null,"gender"=null,"real_name"=null,"cloneable"=null,"factions"=null,"quirks"=null)
+	data = list("donor"=null,"viruses"=null,"blood_DNA"=null,"blood_type"=null,"resistances"=null,"trace_chem"=null,"mind"=null,"ckey"=null,"gender"=null,"real_name"=null,"cloneable"=null,"factions"=null,"quirks"=null,"clan"=null,"generation"=null)
 	name = "Blood"
 	color = "#C80000" // rgb: 200, 0, 0
 	metabolization_rate = 5 //fast rate so it disappears fast.
@@ -394,7 +394,7 @@
 	name = "Super Duper Lube"
 	description = "This \[REDACTED\] has been outlawed after the incident on \[DATA EXPUNGED\]."
 	lube_kind = TURF_WET_SUPERLUBE
-
+/*
 /datum/reagent/spraytan
 	name = "Spray Tan"
 	description = "A substance applied to the skin to darken the skin."
@@ -491,7 +491,7 @@
 		M.say(pick("Shit was SO cash.", "You are everything bad in the world.", "What sports do you play, other than 'jack off to naked drawn Japanese people?'", "Don???t be a stranger. Just hit me with your best shot.", "My name is John and I hate every single one of you."), forced = /datum/reagent/spraytan)
 	..()
 	return
-
+*/
 #define MUT_MSG_IMMEDIATE 1
 #define MUT_MSG_EXTENDED 2
 #define MUT_MSG_ABOUT2TURN 3
@@ -686,11 +686,6 @@
 	taste_description = "slime"
 	penetrates_skin = NONE
 
-/datum/reagent/aslimetoxin/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume, show_message=TRUE, touch_protection=0)
-	. = ..()
-	if(methods & ~TOUCH)
-		exposed_mob.ForceContractDisease(new /datum/disease/transformation/slime(), FALSE, TRUE)
-
 /datum/reagent/gluttonytoxin
 	name = "Gluttony's Blessing"
 	description = "An advanced corruptive toxin produced by something terrible."
@@ -698,10 +693,6 @@
 	can_synth = FALSE
 	taste_description = "decay"
 	penetrates_skin = NONE
-
-/datum/reagent/gluttonytoxin/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume, show_message=TRUE, touch_protection=0)
-	. = ..()
-	exposed_mob.ForceContractDisease(new /datum/disease/transformation/morph(), FALSE, TRUE)
 
 /datum/reagent/serotrotium
 	name = "Serotrotium"
@@ -1009,7 +1000,7 @@
 		to_chat(M, "<span class='warning'>You feel unstable...</span>")
 		M.Jitter(2)
 		current_cycle = 1
-		addtimer(CALLBACK(M, /mob/living/proc/bluespace_shuffle), 30)
+		addtimer(CALLBACK(M, TYPE_PROC_REF(/mob/living, bluespace_shuffle)), 30)
 	..()
 
 /mob/living/proc/bluespace_shuffle()
@@ -1138,11 +1129,6 @@
 	taste_description = "sludge"
 	penetrates_skin = NONE
 
-/datum/reagent/nanomachines/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume, show_message = TRUE, touch_protection = 0)
-	. = ..()
-	if((methods & (PATCH|INGEST|INJECT)) || ((methods & VAPOR) && prob(min(reac_volume,100)*(1 - touch_protection))))
-		exposed_mob.ForceContractDisease(new /datum/disease/transformation/robot(), FALSE, TRUE)
-
 /datum/reagent/xenomicrobes
 	name = "Xenomicrobes"
 	description = "Microbes with an entirely alien cellular structure."
@@ -1151,11 +1137,6 @@
 	taste_description = "sludge"
 	penetrates_skin = NONE
 
-/datum/reagent/xenomicrobes/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume, show_message = TRUE, touch_protection = 0)
-	. = ..()
-	if((methods & (PATCH|INGEST|INJECT)) || ((methods & VAPOR) && prob(min(reac_volume,100)*(1 - touch_protection))))
-		exposed_mob.ForceContractDisease(new /datum/disease/transformation/xeno(), FALSE, TRUE)
-
 /datum/reagent/fungalspores
 	name = "Tubercle bacillus Cosmosis microbes"
 	description = "Active fungal spores."
@@ -1163,11 +1144,6 @@
 	can_synth = FALSE
 	taste_description = "slime"
 	penetrates_skin = NONE
-
-/datum/reagent/fungalspores/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume, show_message = TRUE, touch_protection = 0)
-	. = ..()
-	if((methods & (PATCH|INGEST|INJECT)) || ((methods & VAPOR) && prob(min(reac_volume,100)*(1 - touch_protection))))
-		exposed_mob.ForceContractDisease(new /datum/disease/tuberculosis(), FALSE, TRUE)
 
 /datum/reagent/snail
 	name = "Agent-S"
@@ -1390,7 +1366,7 @@
 	return ..()
 
 /////////////////////////Colorful Powder////////////////////////////
-//For colouring in /proc/mix_color_from_reagents
+//For colouring in GLOBAL_PROC_REF(mix_color_from_reagents)
 
 /datum/reagent/colorful_reagent/powder
 	name = "Mundane Powder" //the name's a bit similar to the name of colorful reagent, but hey, they're practically the same chem anyway
@@ -1503,7 +1479,7 @@
 
 /datum/reagent/plantnutriment
 	name = "Generic nutriment"
-	description = "Some kind of nutriment. You can't really tell what it is. You should probably report it, along with how you obtained it."
+	description = "Simple and easy starter nutrients."
 	color = "#000000" // RBG: 0, 0, 0
 	var/tox_prob = 0
 	taste_description = "plant food"
@@ -1528,8 +1504,8 @@
 		myseed.adjust_yield(round(chems.get_reagent_amount(src.type) * 0.1))
 
 /datum/reagent/plantnutriment/left4zednutriment
-	name = "Left 4 Zed"
-	description = "Unstable nutriment that makes plants mutate more often than usual."
+	name = "Ethyl methanesulfonate"
+	description = "Unstable nutriment that makes plants mutate more often than usual. Toxic health risk."
 	color = "#1A1E4D" // RBG: 26, 30, 77
 	tox_prob = 25
 
@@ -1780,7 +1756,7 @@
 	var/can_colour_mobs = TRUE
 
 /datum/reagent/colorful_reagent/New()
-	SSticker.OnRoundstart(CALLBACK(src,.proc/UpdateColor))
+	SSticker.OnRoundstart(CALLBACK(src, PROC_REF(UpdateColor)))
 	return ..()
 
 /datum/reagent/colorful_reagent/proc/UpdateColor()
@@ -1807,7 +1783,7 @@
 	penetrates_skin = NONE
 
 /datum/reagent/hair_dye/New()
-	SSticker.OnRoundstart(CALLBACK(src,.proc/UpdateColor))
+	SSticker.OnRoundstart(CALLBACK(src, PROC_REF(UpdateColor)))
 	return ..()
 
 /datum/reagent/hair_dye/proc/UpdateColor()
@@ -2167,12 +2143,6 @@
 	can_synth = FALSE
 	penetrates_skin = NONE
 
-/datum/reagent/tranquility/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume, show_message = TRUE, touch_protection = 0)
-	. = ..()
-	if((methods & (PATCH|INGEST|INJECT)) || ((methods & VAPOR) && prob(min(reac_volume,100)*(1 - touch_protection))))
-		exposed_mob.ForceContractDisease(new /datum/disease/transformation/gondola(), FALSE, TRUE)
-
-
 /datum/reagent/spider_extract
 	name = "Spider Extract"
 	description = "A highly specialized extract coming from the Australicus sector, used to create broodmother spiders."
@@ -2299,7 +2269,7 @@
 
 /datum/reagent/gravitum
 	name = "Gravitum"
-	description = "A rare kind of null fluid, capable of temporalily removing all weight of whatever it touches." //i dont even
+	description = "A rare kind of null fluid, capable of temporaily removing all weight of whatever it touches." //i dont even
 	color = "#050096" // rgb: 5, 0, 150
 	taste_mult = 0 // oderless and tasteless
 	metabolization_rate = 0.1 * REAGENTS_METABOLISM //20 times as long, so it's actually viable to use
@@ -2308,7 +2278,7 @@
 /datum/reagent/gravitum/expose_obj(obj/exposed_obj, volume)
 	. = ..()
 	exposed_obj.AddElement(/datum/element/forced_gravity, 0)
-	addtimer(CALLBACK(exposed_obj, .proc/_RemoveElement, list(/datum/element/forced_gravity, 0)), volume * time_multiplier)
+	addtimer(CALLBACK(exposed_obj, PROC_REF(_RemoveElement), list(/datum/element/forced_gravity, 0)), volume * time_multiplier)
 
 /datum/reagent/gravitum/on_mob_add(mob/living/L)
 	L.AddElement(/datum/element/forced_gravity, 0) //0 is the gravity, and in this case weightless

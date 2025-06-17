@@ -149,7 +149,7 @@
 			set_light(0)
 			emped = emped+1  //Increase the number of consecutive EMP's
 			update_icon()
-			addtimer(CALLBACK(src, .proc/post_emp_reset, emped, network), 90 SECONDS)
+			addtimer(CALLBACK(src, PROC_REF(post_emp_reset), emped, network), 90 SECONDS)
 			for(var/i in GLOB.player_list)
 				var/mob/M = i
 				if (M.client.eye == src)
@@ -169,7 +169,7 @@
 	if(can_use())
 		GLOB.cameranet.addCamera(src)
 	emped = 0 //Resets the consecutive EMP count
-	addtimer(CALLBACK(src, .proc/cancelCameraAlarm), 100)
+	addtimer(CALLBACK(src, PROC_REF(cancelCameraAlarm)), 100)
 
 /obj/machinery/camera/ex_act(severity, target)
 	if(invuln)
@@ -309,7 +309,7 @@
 		if(istype(I, /obj/item/paper))
 			X = I
 			itemname = X.name
-			info = X.info
+			info = X.default_raw_text
 		else
 			P = I
 			itemname = P.name
@@ -322,13 +322,13 @@
 				if(AI.control_disabled || (AI.stat == DEAD))
 					continue
 				if(U.name == "Unknown")
-					to_chat(AI, "<span class='name'>[U]</span> holds <a href='?_src_=usr;show_paper=1;'>\a [itemname]</a> up to one of your cameras ...")
+					to_chat(AI, "<span class='name'>[U]</span> holds <a href='byond://?_src_=usr;show_paper=1;'>\a [itemname]</a> up to one of your cameras ...")
 				else
-					to_chat(AI, "<b><a href='?src=[REF(AI)];track=[html_encode(U.name)]'>[U]</a></b> holds <a href='?_src_=usr;show_paper=1;'>\a [itemname]</a> up to one of your cameras ...")
-				AI.last_paper_seen = "<HTML><HEAD><TITLE>[itemname]</TITLE></HEAD><BODY><TT>[info]</TT></BODY></HTML>"
+					to_chat(AI, "<b><a href='byond://?src=[REF(AI)];track=[html_encode(U.name)]'>[U]</a></b> holds <a href='byond://?_src_=usr;show_paper=1;'>\a [itemname]</a> up to one of your cameras ...")
+				AI.last_paper_seen = HTML_SKELETON_TITLE(itemname, "<tt>[info]</tt>")
 			else if (O.client.eye == src)
 				to_chat(O, "<span class='name'>[U]</span> holds \a [itemname] up to one of the cameras ...")
-				O << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", itemname, info), text("window=[]", itemname))
+				O << browse(HTML_SKELETON_TITLE(itemname, "<tt>[info]</tt>"), "window=[itemname]")
 		return
 
 	else if(istype(I, /obj/item/camera_bug))
@@ -407,7 +407,7 @@
 		change_msg = "reactivates"
 		triggerCameraAlarm()
 		if(!QDELETED(src)) //We'll be doing it anyway in destroy
-			addtimer(CALLBACK(src, .proc/cancelCameraAlarm), 100)
+			addtimer(CALLBACK(src, PROC_REF(cancelCameraAlarm)), 100)
 	if(displaymessage)
 		if(user)
 			visible_message("<span class='danger'>[user] [change_msg] [src]!</span>")

@@ -160,7 +160,7 @@
 		if(isobj(A) || ismob(A))
 			if(A.layer > highest.layer)
 				highest = A
-	INVOKE_ASYNC(src, .proc/SpinAnimation, 5, 2)
+	INVOKE_ASYNC(src, PROC_REF(SpinAnimation), 5, 2)
 	return TRUE
 
 //For physical constraints to travelling up/down.
@@ -264,14 +264,15 @@
 		if(!supress_message)
 			M.visible_message("<span class='warning'>[src] grabs [M] passively.</span>", \
 				"<span class='danger'>[src] grabs you passively.</span>")
+	SEND_SIGNAL(pulling, COMSIG_MOVABLE_PULLED)
 	return TRUE
 
 /atom/movable/proc/stop_pulling()
 	if(pulling)
 		pulling.set_pulledby(null)
 		setGrabState(GRAB_PASSIVE)
+		SEND_SIGNAL(pulling, COMSIG_MOVABLE_NO_LONGER_PULLED)
 		pulling = null
-
 
 ///Reports the event of the change in value of the pulledby variable.
 /atom/movable/proc/set_pulledby(new_pulledby)
@@ -677,7 +678,7 @@
 	. = FALSE
 
 	if(QDELETED(src))
-		CRASH("Qdeleted thing being thrown around.")
+		return
 
 	if (!target || speed <= 0)
 		return
@@ -753,6 +754,8 @@
 		SpinAnimation(5, 1)
 
 	SEND_SIGNAL(src, COMSIG_MOVABLE_POST_THROW, TT, spin)
+	if(thrower)
+		SEND_SIGNAL(thrower, COMSIG_MOB_THREW_MOVABLE, target, TT)
 	SSthrowing.processing[src] = TT
 	if (SSthrowing.state == SS_PAUSED && length(SSthrowing.currentrun))
 		SSthrowing.currentrun[src] = TT

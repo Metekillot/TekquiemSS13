@@ -60,7 +60,7 @@
 	product = /obj/item/food/grown/tomato/blue
 	yield = 2
 	icon_grow = "bluetomato-grow"
-	mutatelist = list(/obj/item/seeds/tomato/blue/bluespace)
+	// mutatelist = list(/obj/item/seeds/tomato/blue/bluespace)
 	genes = list(/datum/plant_gene/trait/slip, /datum/plant_gene/trait/repeated_harvest)
 	reagents_add = list(/datum/reagent/lube = 0.2, /datum/reagent/consumable/nutriment/vitamin = 0.04, /datum/reagent/consumable/nutriment = 0.1)
 	rarity = 20
@@ -133,7 +133,7 @@
 		return
 	to_chat(user, "<span class='notice'>You begin to awaken the Killer Tomato...</span>")
 	awakening = TRUE
-	addtimer(CALLBACK(src, .proc/awaken), 3 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(awaken)), 3 SECONDS)
 	log_game("[key_name(user)] awakened a killer tomato at [AREACOORD(user)].")
 
 /obj/item/food/grown/tomato/killer/proc/awaken()

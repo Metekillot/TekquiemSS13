@@ -10,7 +10,7 @@
 	setup_human_dna()
 
 	if(dna.species)
-		INVOKE_ASYNC(src, .proc/set_species, dna.species.type)
+		INVOKE_ASYNC(src, PROC_REF(set_species), dna.species.type)
 
 	//initialise organs
 	create_internal_organs() //most of it is done in set_species now, this is only for parent call
@@ -18,12 +18,13 @@
 
 	. = ..()
 
-	RegisterSignal(src, COMSIG_COMPONENT_CLEAN_FACE_ACT, .proc/clean_face)
+	RegisterSignal(src, COMSIG_COMPONENT_CLEAN_FACE_ACT, PROC_REF(clean_face))
 	AddComponent(/datum/component/personal_crafting)
 	AddComponent(/datum/component/footstep, FOOTSTEP_MOB_HUMAN, 1, -6)
 	AddComponent(/datum/component/bloodysoles/feet)
 	AddElement(/datum/element/ridable, /datum/component/riding/creature/human)
 	GLOB.human_list += src
+	phonevoicetag = length(GLOB.human_list)+10
 
 /mob/living/carbon/human/proc/setup_human_dna()
 	//initialize dna. for spawned humans; overwritten by other code
@@ -42,11 +43,23 @@
 	return ..()
 
 /mob/living/carbon/human/ZImpactDamage(turf/T, levels)
-	if(!HAS_TRAIT(src, TRAIT_FREERUNNING) || levels > 1) // falling off one level
+
+	var/successes = SSroll.storyteller_roll(
+		dice = get_composure()*2,
+		difficulty = levels+1,
+		mobs_to_show_output = list(src),
+		alert_atom = src)
+
+	if(successes <= levels)
 		return ..()
-	visible_message("<span class='danger'>[src] makes a hard landing on [T] but remains unharmed from the fall.</span>", \
-					"<span class='userdanger'>You brace for the fall. You make a hard landing on [T] but remain unharmed.</span>")
-	Knockdown(levels * 50)
+	else if(successes == levels+1)
+		visible_message("<span class='danger'>[src] makes a hard landing on [T] but remains unharmed from the fall.</span>", \
+				"<span class='userdanger'>You brace for the fall. You make a hard landing on [T] but remain unharmed.</span>")
+		Knockdown(levels * 50)
+	else
+		visible_message("<span class='danger'>[src] makes a perfect three-point landing on [T].</span>", \
+			"<span class='userdanger'>You anticipate the fall. You make a perfect three-point landing on [T].</span>")
+
 
 /mob/living/carbon/human/prepare_data_huds()
 	//Update med hud images...
@@ -64,14 +77,6 @@
 	. = ..()
 	. += "Intent: [a_intent]"
 	. += "Move Mode: [m_intent]"
-	if (internal)
-		if (!internal.air_contents)
-			qdel(internal)
-		else
-			. += ""
-			. += "Internal Atmosphere Info: [internal.name]"
-			. += "Tank Pressure: [internal.air_contents.return_pressure()]"
-			. += "Distribution Pressure: [internal.distribute_pressure]"
 	if(istype(wear_suit, /obj/item/clothing/suit/space))
 		var/obj/item/clothing/suit/space/S = wear_suit
 		. += "Thermal Regulator: [S.thermal_on ? "on" : "off"]"
@@ -92,47 +97,47 @@
 	dat += "<table>"
 	for(var/i in 1 to held_items.len)
 		var/obj/item/I = get_item_for_held_index(i)
-		dat += "<tr><td><B>[get_held_index_name(i)]:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_HANDS];hand_index=[i]'>[(I && !(I.item_flags & ABSTRACT)) ? I : "<font color=grey>Empty</font>"]</a></td></tr>"
+		dat += "<tr><td><B>[get_held_index_name(i)]:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_HANDS];hand_index=[i]'>[(I && !(I.item_flags & ABSTRACT)) ? I : "<font color=grey>Empty</font>"]</a></td></tr>"
 	dat += "<tr><td>&nbsp;</td></tr>"
 
-	dat += "<tr><td><B>Back:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_BACK]'>[(back && !(back.item_flags & ABSTRACT)) ? back : "<font color=grey>Empty</font>"]</A>"
-	if(has_breathable_mask && istype(back, /obj/item/tank))
-		dat += "&nbsp;<A href='?src=[REF(src)];internal=[ITEM_SLOT_BACK]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
+	dat += "<tr><td><B>Back:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_BACK]'>[(back && !(back.item_flags & ABSTRACT)) ? back : "<font color=grey>Empty</font>"]</A>"
+	if(has_breathable_mask && istype(back, /obj/item))
+		dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_BACK]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 
 	dat += "</td></tr><tr><td>&nbsp;</td></tr>"
 
-	dat += "<tr><td><B>Head:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_HEAD]'>[(head && !(head.item_flags & ABSTRACT)) ? head : "<font color=grey>Empty</font>"]</A></td></tr>"
+	dat += "<tr><td><B>Head:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_HEAD]'>[(head && !(head.item_flags & ABSTRACT)) ? head : "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(obscured & ITEM_SLOT_MASK)
 		dat += "<tr><td><font color=grey><B>Mask:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Mask:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_MASK]'>[(wear_mask && !(wear_mask.item_flags & ABSTRACT)) ? wear_mask : "<font color=grey>Empty</font>"]</A></td></tr>"
+		dat += "<tr><td><B>Mask:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_MASK]'>[(wear_mask && !(wear_mask.item_flags & ABSTRACT)) ? wear_mask : "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(obscured & ITEM_SLOT_NECK)
 		dat += "<tr><td><font color=grey><B>Neck:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Neck:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_NECK]'>[(wear_neck && !(wear_neck.item_flags & ABSTRACT)) ? wear_neck : "<font color=grey>Empty</font>"]</A></td></tr>"
+		dat += "<tr><td><B>Neck:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_NECK]'>[(wear_neck && !(wear_neck.item_flags & ABSTRACT)) ? wear_neck : "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(obscured & ITEM_SLOT_EYES)
 		dat += "<tr><td><font color=grey><B>Eyes:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Eyes:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_EYES]'>[(glasses && !(glasses.item_flags & ABSTRACT))	? glasses : "<font color=grey>Empty</font>"]</A></td></tr>"
+		dat += "<tr><td><B>Eyes:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_EYES]'>[(glasses && !(glasses.item_flags & ABSTRACT))	? glasses : "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(obscured & ITEM_SLOT_EARS)
 		dat += "<tr><td><font color=grey><B>Ears:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Ears:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_EARS]'>[(ears && !(ears.item_flags & ABSTRACT))		? ears		: "<font color=grey>Empty</font>"]</A></td></tr>"
+		dat += "<tr><td><B>Ears:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_EARS]'>[(ears && !(ears.item_flags & ABSTRACT))		? ears		: "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	dat += "<tr><td>&nbsp;</td></tr>"
 
-	dat += "<tr><td><B>Exosuit:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_OCLOTHING]'>[(wear_suit && !(wear_suit.item_flags & ABSTRACT)) ? wear_suit : "<font color=grey>Empty</font>"]</A></td></tr>"
+	dat += "<tr><td><B>Exosuit:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_OCLOTHING]'>[(wear_suit && !(wear_suit.item_flags & ABSTRACT)) ? wear_suit : "<font color=grey>Empty</font>"]</A></td></tr>"
 	if(wear_suit)
 		if(obscured & ITEM_SLOT_SUITSTORE)
 			dat += "<tr><td><font color=grey>&nbsp;&#8627;<B>Suit Storage:</B></font></td></tr>"
 		else
-			dat += "<tr><td>&nbsp;&#8627;<B>Suit Storage:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_SUITSTORE]'>[(s_store && !(s_store.item_flags & ABSTRACT)) ? s_store : "<font color=grey>Empty</font>"]</A>"
-			if(has_breathable_mask && istype(s_store, /obj/item/tank))
-				dat += "&nbsp;<A href='?src=[REF(src)];internal=[ITEM_SLOT_SUITSTORE]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
+			dat += "<tr><td>&nbsp;&#8627;<B>Suit Storage:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_SUITSTORE]'>[(s_store && !(s_store.item_flags & ABSTRACT)) ? s_store : "<font color=grey>Empty</font>"]</A>"
+			if(has_breathable_mask && istype(s_store, /obj/item))
+				dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_SUITSTORE]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 			dat += "</td></tr>"
 	else
 		dat += "<tr><td><font color=grey>&nbsp;&#8627;<B>Suit Storage:</B></font></td></tr>"
@@ -140,24 +145,24 @@
 	if(obscured & ITEM_SLOT_FEET)
 		dat += "<tr><td><font color=grey><B>Shoes:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Shoes:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_FEET]'>[(shoes && !(shoes.item_flags & ABSTRACT))		? shoes		: "<font color=grey>Empty</font>"]</A>"
+		dat += "<tr><td><B>Shoes:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_FEET]'>[(shoes && !(shoes.item_flags & ABSTRACT))		? shoes		: "<font color=grey>Empty</font>"]</A>"
 		if(shoes && shoes.can_be_tied && shoes.tied != SHOES_KNOTTED)
-			dat += "&nbsp;<A href='?src=[REF(src)];shoes=[ITEM_SLOT_FEET]'>[shoes.tied ? "Untie shoes" : "Knot shoes"]</A>"
+			dat += "&nbsp;<A href='byond://?src=[REF(src)];shoes=[ITEM_SLOT_FEET]'>[shoes.tied ? "Untie shoes" : "Knot shoes"]</A>"
 
 		dat += "</td></tr>"
 	if(obscured & ITEM_SLOT_GLOVES)
 		dat += "<tr><td><font color=grey><B>Gloves:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Gloves:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_GLOVES]'>[(gloves && !(gloves.item_flags & ABSTRACT))		? gloves	: "<font color=grey>Empty</font>"]</A></td></tr>"
+		dat += "<tr><td><B>Gloves:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_GLOVES]'>[(gloves && !(gloves.item_flags & ABSTRACT))		? gloves	: "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(obscured & ITEM_SLOT_ICLOTHING)
 		dat += "<tr><td><font color=grey><B>Uniform:</B></font></td><td><font color=grey>Obscured</font></td></tr>"
 	else
-		dat += "<tr><td><B>Uniform:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_ICLOTHING]'>[(w_uniform && !(w_uniform.item_flags & ABSTRACT)) ? w_uniform : "<font color=grey>Empty</font>"]</A>"
+		dat += "<tr><td><B>Uniform:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_ICLOTHING]'>[(w_uniform && !(w_uniform.item_flags & ABSTRACT)) ? w_uniform : "<font color=grey>Empty</font>"]</A>"
 		if(w_uniform)
 			var/obj/item/clothing/under/U = w_uniform
 			if (U.can_adjust)
-				dat += "&nbsp;<A href='?src=[REF(src)];toggle_uniform=[ITEM_SLOT_ICLOTHING]'>Adjust</A>"
+				dat += "&nbsp;<A href='byond://?src=[REF(src)];toggle_uniform=[ITEM_SLOT_ICLOTHING]'>Adjust</A>"
 		dat += "</td></tr>"
 
 	var/obj/item/bodypart/O = get_bodypart(BODY_ZONE_CHEST)
@@ -166,21 +171,21 @@
 		dat += "<tr><td><font color=grey>&nbsp;&#8627;<B>ID:</B></font></td></tr>"
 		dat += "<tr><td><font color=grey>&nbsp;&#8627;<B>Belt:</B></font></td></tr>"
 	else
-		dat += "<tr><td>&nbsp;&#8627;<B>Belt:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_BELT]'>[(belt && !(belt.item_flags & ABSTRACT)) ? belt : "<font color=grey>Empty</font>"]</A>"
-		if(has_breathable_mask && istype(belt, /obj/item/tank))
-			dat += "&nbsp;<A href='?src=[REF(src)];internal=[ITEM_SLOT_BELT]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
+		dat += "<tr><td>&nbsp;&#8627;<B>Belt:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_BELT]'>[(belt && !(belt.item_flags & ABSTRACT)) ? belt : "<font color=grey>Empty</font>"]</A>"
+		if(has_breathable_mask && istype(belt, /obj/item))
+			dat += "&nbsp;<A href='byond://?src=[REF(src)];internal=[ITEM_SLOT_BELT]'>[internal ? "Disable Internals" : "Set Internals"]</A>"
 		dat += "</td></tr>"
-		dat += "<tr><td>&nbsp;&#8627;<B>Pockets:</B></td><td><A href='?src=[REF(src)];pockets=left'>[(l_store && !(l_store.item_flags & ABSTRACT)) ? "Left (Full)" : "<font color=grey>Left (Empty)</font>"]</A>"
-		dat += "&nbsp;<A href='?src=[REF(src)];pockets=right'>[(r_store && !(r_store.item_flags & ABSTRACT)) ? "Right (Full)" : "<font color=grey>Right (Empty)</font>"]</A></td></tr>"
-		dat += "<tr><td>&nbsp;&#8627;<B>ID:</B></td><td><A href='?src=[REF(src)];item=[ITEM_SLOT_ID]'>[(wear_id && !(wear_id.item_flags & ABSTRACT)) ? wear_id : "<font color=grey>Empty</font>"]</A></td></tr>"
+		dat += "<tr><td>&nbsp;&#8627;<B>Pockets:</B></td><td><A href='byond://?src=[REF(src)];pockets=left'>[(l_store && !(l_store.item_flags & ABSTRACT)) ? "Left (Full)" : "<font color=grey>Left (Empty)</font>"]</A>"
+		dat += "&nbsp;<A href='byond://?src=[REF(src)];pockets=right'>[(r_store && !(r_store.item_flags & ABSTRACT)) ? "Right (Full)" : "<font color=grey>Right (Empty)</font>"]</A></td></tr>"
+		dat += "<tr><td>&nbsp;&#8627;<B>ID:</B></td><td><A href='byond://?src=[REF(src)];item=[ITEM_SLOT_ID]'>[(wear_id && !(wear_id.item_flags & ABSTRACT)) ? wear_id : "<font color=grey>Empty</font>"]</A></td></tr>"
 
 	if(handcuffed)
-		dat += "<tr><td><B>Handcuffed:</B> <A href='?src=[REF(src)];item=[ITEM_SLOT_HANDCUFFED]'>Remove</A></td></tr>"
+		dat += "<tr><td><B>Handcuffed:</B> <A href='byond://?src=[REF(src)];item=[ITEM_SLOT_HANDCUFFED]'>Remove</A></td></tr>"
 	if(legcuffed)
-		dat += "<tr><td><B>Legcuffed:</B> <A href='?src=[REF(src)];item=[ITEM_SLOT_LEGCUFFED]'>Remove</A></td></tr>"
+		dat += "<tr><td><B>Legcuffed:</B> <A href='byond://?src=[REF(src)];item=[ITEM_SLOT_LEGCUFFED]'>Remove</A></td></tr>"
 
 	dat += {"</table>
-	<A href='?src=[REF(user)];mach_close=mob[REF(src)]'>Close</A>
+	<A href='byond://?src=[REF(user)];mach_close=mob[REF(src)]'>Close</A>
 	"}
 
 	var/datum/browser/popup = new(user, "mob[REF(src)]", "[src]", 440, 510)
@@ -214,7 +219,15 @@
 			to_chat(usr, "<span class='warning'>You can't reach that! Something is covering it.</span>")
 			return
 
-	if(href_list["pockets"] && usr.canUseTopic(src, BE_CLOSE, NO_DEXTERITY)) //TODO: Make it match (or intergrate it into) strippanel so you get 'item cannot fit here' warnings if mob_can_equip fails
+	var/mob/living/L = usr
+	if(href_list["pockets"] && (usr.canUseTopic(src, BE_CLOSE, NO_DEXTERITY) || (L.enhanced_strip && (get_dist(usr, src) <= 3)))) //TODO: Make it match (or intergrate it into) strippanel so you get 'item cannot fit here' warnings if mob_can_equip fails
+		if(isnpc(src))
+			var/mob/living/carbon/human/npc/N = src
+			if(N.fights_anyway)
+				N.Aggro(usr, TRUE)
+			else
+				if(prob(33))
+					N.Aggro(usr, TRUE)
 		var/pocket_side = href_list["pockets"] != "right" ? "left" : "right"
 		var/pocket_id = (pocket_side == "right" ? ITEM_SLOT_RPOCKET : ITEM_SLOT_LPOCKET)
 		var/obj/item/pocket_item = (pocket_id == ITEM_SLOT_RPOCKET ? r_store : l_store)
@@ -234,7 +247,8 @@
 			delay_denominator = 4
 		else
 			return
-
+		if(L.enhanced_strip)
+			delay_denominator = POCKET_STRIP_DELAY	//so it's instant 1 tick
 		if(do_mob(usr, src, POCKET_STRIP_DELAY/delay_denominator)) //placing an item into the pocket is 4 times faster
 			if(pocket_item)
 				if(pocket_item == (pocket_id == ITEM_SLOT_RPOCKET ? r_store : l_store)) //item still in the pocket we search
@@ -267,6 +281,32 @@
 	if(istype(user) && href_list["shoes"] && shoes && (user.mobility_flags & MOBILITY_USE)) // we need to be on the ground, so we'll be a bit looser
 		shoes.handle_tying(usr)
 
+///////KARMA//////
+	if(href_list["masquerade"])
+		if(!ishuman(usr))
+			return
+		var/mob/living/carbon/human/H = usr
+		if(H.stat > UNCONSCIOUS)
+			return
+		if(usr == src)
+			return
+		if(dna)
+			if (H.voted_for.Find(dna.real_name))
+				to_chat(H, "<span class='warning'>You have already noted their masquerade breach! Wait some time until you do that again.</span>")
+				return
+			var/reason = input(usr, "Write a description of violation:", "Spot a Masquerade violation") as text|null
+			if(reason)
+				if (H.voted_for.Find(dna.real_name)) //Rudimentary check to avoid queueing a whole bunch of reason texts and then nuking their masquerade to 0.
+					to_chat(H, "<span class='warning'>You have already noted their masquerade breach! Wait some time until you do that again.</span>")
+					return
+				reason = trim(copytext_char(sanitize(reason), 1, MAX_MESSAGE_LEN))
+				masquerade_votes++
+				message_admins("[ADMIN_LOOKUPFLW(H)] spotted [ADMIN_LOOKUPFLW(src)]'s Masquerade violation. Description: [reason]")
+				H.voted_for |= dna.real_name
+				if(masquerade_votes > 1)
+					masquerade_votes = 0
+					last_masquerade_violation = 0
+					AdjustMasquerade(-1)
 ///////HUDs///////
 	if(href_list["hud"])
 		if(!ishuman(usr))
@@ -426,7 +466,7 @@
 					if (c.crimeDetails)
 						to_chat(usr, "<b>Details:</b> [c.crimeDetails]")
 					else
-						to_chat(usr, "<b>Details:</b> <A href='?src=[REF(src)];hud=s;add_details=1;cdataid=[c.dataId]'>\[Add details]</A>")
+						to_chat(usr, "<b>Details:</b> <A href='byond://?src=[REF(src)];hud=s;add_details=1;cdataid=[c.dataId]'>\[Add details]</A>")
 					to_chat(usr, "Added by [c.author] at [c.time]")
 					to_chat(usr, "----------")
 				to_chat(usr, "<b>Notes:</b> [R.fields["notes"]]")
@@ -519,6 +559,17 @@
 				R.fields[text("com_[]", counter)] = text("Made by [] on [] [], []<BR>[]", allowed_access, station_time_timestamp(), time2text(world.realtime, "MMM DD"), GLOB.year_integer+540, t1)
 				to_chat(usr, "<span class='notice'>Successfully added comment.</span>")
 				return
+
+	if(href_list["view_flavortext"])
+		tgui.holder = src
+		tgui.ui_interact(usr) //datum has a tgui component, here we open the window
+
+	//VTR EDIT ADDITON START
+	if(href_list["view_flavortext_fake"])
+		examine_panel_fake.holder = src
+		examine_panel_fake.disguise = locate(href_list["view_flavortext_fake"])
+		examine_panel_fake.ui_interact(usr) //datum has a tgui component, here we open the window
+	//VTR EDIT ADDITON END
 
 	..() //end of this massive fucking chain. TODO: make the hud chain not spooky. - Yeah, great job doing that.
 
@@ -630,18 +681,8 @@
 	update_body()
 	update_hair()
 
-/mob/living/carbon/human/singularity_pull(S, current_size)
-	..()
-	if(current_size >= STAGE_THREE)
-		for(var/obj/item/hand in held_items)
-			if(prob(current_size * 5) && hand.w_class >= ((11-current_size)/2)  && dropItemToGround(hand))
-				step_towards(hand, src)
-				to_chat(src, "<span class='warning'>\The [S] pulls \the [hand] from your grip!</span>")
-	rad_act(current_size * 3)
-
 #define CPR_PANIC_SPEED (0.8 SECONDS)
 
-/// Performs CPR on the target after a delay.
 /mob/living/carbon/human/proc/do_cpr(mob/living/carbon/target)
 	if(target == src)
 		return
@@ -666,13 +707,13 @@
 			to_chat(src, "<span class='warning'>Remove [p_their()] mask first!</span>")
 			return FALSE
 
-		if (!getorganslot(ORGAN_SLOT_LUNGS))
-			to_chat(src, "<span class='warning'>You have no lungs to breathe with, so you cannot perform CPR!</span>")
-			return FALSE
+//		if (!getorganslot(ORGAN_SLOT_LUNGS))
+//			to_chat(src, "<span class='warning'>You have no lungs to breathe with, so you cannot perform CPR!</span>")
+//			return FALSE
 
-		if (HAS_TRAIT(src, TRAIT_NOBREATH))
-			to_chat(src, "<span class='warning'>You do not breathe, so you cannot perform CPR!</span>")
-			return FALSE
+//		if (HAS_TRAIT(src, TRAIT_NOBREATH))
+//			to_chat(src, "<span class='warning'>You do not breathe, so you cannot perform CPR!</span>")
+//			return FALSE
 
 		visible_message("<span class='notice'>[src] is trying to perform CPR on [target.name]!</span>", \
 						"<span class='notice'>You try to perform CPR on [target.name]... Hold still!</span>")
@@ -685,7 +726,14 @@
 			return FALSE
 
 		visible_message("<span class='notice'>[src] performs CPR on [target.name]!</span>", "<span class='notice'>You perform CPR on [target.name].</span>")
-		SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "saved_life", /datum/mood_event/saved_life)
+
+		if(!HAS_TRAIT(src, TRAIT_SAVED_LIFE))
+			if(isnpc(target))
+				var/mob/living/carbon/human/npc/N = target
+				if(N.last_damager != src)
+					AdjustHumanity(1, 10)
+					ADD_TRAIT(src, TRAIT_SAVED_LIFE, HUMANITY_TRAIT)
+
 		log_combat(src, target, "CPRed")
 
 		if (HAS_TRAIT(target, TRAIT_NOBREATH))
@@ -803,7 +851,7 @@
 			electrocution_skeleton_anim = mutable_appearance(icon, "electrocuted_base")
 			electrocution_skeleton_anim.appearance_flags |= RESET_COLOR|KEEP_APART
 		add_overlay(electrocution_skeleton_anim)
-		addtimer(CALLBACK(src, .proc/end_electrocution_animation, electrocution_skeleton_anim), anim_duration)
+		addtimer(CALLBACK(src, PROC_REF(end_electrocution_animation), electrocution_skeleton_anim), anim_duration)
 
 	else //or just do a generic animation
 		flick_overlay_view(image(icon,src,"electrocuted_generic",ABOVE_MOB_LAYER), src, anim_duration)
@@ -858,35 +906,35 @@
 						hud_used.healths.icon_state = "health7"
 					if(SCREWYHUD_HEALTHY)
 						hud_used.healths.icon_state = "health0"
-		if(hud_used.healthdoll)
-			hud_used.healthdoll.cut_overlays()
-			if(stat != DEAD)
-				hud_used.healthdoll.icon_state = "healthdoll_OVERLAY"
-				for(var/X in bodyparts)
-					var/obj/item/bodypart/BP = X
-					var/damage = BP.burn_dam + BP.brute_dam
-					var/comparison = (BP.max_damage/5)
-					var/icon_num = 0
-					if(damage)
-						icon_num = 1
-					if(damage > (comparison))
-						icon_num = 2
-					if(damage > (comparison*2))
-						icon_num = 3
-					if(damage > (comparison*3))
-						icon_num = 4
-					if(damage > (comparison*4))
-						icon_num = 5
-					if(hal_screwyhud == SCREWYHUD_HEALTHY)
-						icon_num = 0
-					if(icon_num)
-						hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[BP.body_zone][icon_num]"))
-				for(var/t in get_missing_limbs()) //Missing limbs
-					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]6"))
-				for(var/t in get_disabled_limbs()) //Disabled limbs
-					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]7"))
-			else
-				hud_used.healthdoll.icon_state = "healthdoll_DEAD"
+//		if(hud_used.healthdoll)
+//			hud_used.healthdoll.cut_overlays()
+//			if(stat != DEAD)
+//				hud_used.healthdoll.icon_state = "healthdoll_OVERLAY"
+//				for(var/X in bodyparts)
+//					var/obj/item/bodypart/BP = X
+//					var/damage = BP.burn_dam + BP.brute_dam
+//					var/comparison = (BP.max_damage/5)
+//					var/icon_num = 0
+//					if(damage)
+//						icon_num = 1
+//					if(damage > (comparison))
+//						icon_num = 2
+//					if(damage > (comparison*2))
+//						icon_num = 3
+//					if(damage > (comparison*3))/
+//						icon_num = 4
+//					if(damage > (comparison*4))
+//						icon_num = 5
+//					if(hal_screwyhud == SCREWYHUD_HEALTHY)
+//						icon_num = 0
+//					if(icon_num)
+//						hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[BP.body_zone][icon_num]"))
+//				for(var/t in get_missing_limbs()) //Missing limbs
+//					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]6"))
+//				for(var/t in get_disabled_limbs()) //Disabled limbs
+//					hud_used.healthdoll.add_overlay(mutable_appearance('icons/hud/screen_gen.dmi', "[t]7"))
+//			else
+//				hud_used.healthdoll.icon_state = "healthdoll_DEAD"
 
 /mob/living/carbon/human/fully_heal(admin_revive = FALSE)
 	dna?.species.spec_fully_heal(src)
@@ -976,6 +1024,27 @@
 					remove_quirk(T)
 				else
 					add_quirk(T,TRUE)
+	if(href_list[VV_HK_MOD_MERITS])
+		if(!check_rights(R_SPAWN))
+			return
+
+		var/list/options = list("Clear"="Clear")
+		for(var/x in subtypesof(/datum/merit))
+			var/datum/merit/merit = x
+			var/qname = initial(merit.name)
+			options[has_merit(merit) ? "[qname] (Remove)" : "[qname] (Add)"] = merit
+
+		var/result = input(usr, "Choose merit to add/remove","Merit Mod") as null|anything in sortList(options)
+		if(result)
+			if(result == "Clear")
+				for(var/datum/quirk/q in roundstart_quirks)
+					remove_merit(q.type)
+			else
+				var/selection = options[result]
+				if(has_quirk(selection))
+					remove_merit(selection)
+				else
+					add_merit(selection,TRUE)
 	if(href_list[VV_HK_MAKE_MONKEY])
 		if(!check_rights(R_SPAWN))
 			return
@@ -1108,6 +1177,8 @@
 
 	return buckle_mob(target, TRUE, TRUE, RIDER_NEEDS_ARMS)
 
+
+
 /mob/living/carbon/human/buckle_mob(mob/living/target, force = FALSE, check_loc = TRUE, buckle_mob_flags= NONE)
 	if(!is_type_in_typecache(target, can_ride_typecache))
 		target.visible_message("<span class='warning'>[target] really can't seem to mount [src]...</span>")
@@ -1126,9 +1197,11 @@
 		remove_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown_flying)
 		return
 	var/health_deficiency = max((maxHealth - health), staminaloss)
-	if(health_deficiency >= 40)
-		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown, TRUE, multiplicative_slowdown = health_deficiency / 75)
-		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown_flying, TRUE, multiplicative_slowdown = health_deficiency / 25)
+	var/health_scale_modifier = maxHealth/100 //If the human has a higher amount of max health this will be reflected in the amount of damage required to slow down.
+	var/health_slowdown = health_deficiency / (75 * health_scale_modifier)
+	if(health_deficiency >= (40 * health_scale_modifier))
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown, TRUE, multiplicative_slowdown = health_slowdown)
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown_flying, TRUE, multiplicative_slowdown = health_slowdown)
 	else
 		remove_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown)
 		remove_movespeed_modifier(/datum/movespeed_modifier/damage_slowdown_flying)
@@ -1162,12 +1235,44 @@
 
 /mob/living/carbon/human/species/Initialize()
 	. = ..()
-	INVOKE_ASYNC(src, .proc/set_species, race)
+	INVOKE_ASYNC(src, PROC_REF(set_species), race)
 
 /mob/living/carbon/human/species/set_species(datum/species/mrace, icon_update, pref_load)
 	. = ..()
 	if(use_random_name)
 		fully_replace_character_name(real_name, dna.species.random_name())
+
+/mob/living/carbon/human/species/kindred
+	race = /datum/species/kindred
+
+/mob/living/carbon/human/species/vamp_mannequin
+	race = /datum/species/vamp_mannequin
+
+/mob/living/carbon/human/species/vamp_mannequin/napoleon
+
+/mob/living/carbon/human/species/vamp_mannequin/napoleon/Initialize()
+	. = ..()
+	equip_to_slot_or_del(new /obj/item/clothing/head/vampire/napoleon(src), ITEM_SLOT_HEAD)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/vampire/jackboots/high(src), ITEM_SLOT_FEET)
+	equip_to_slot_or_del(new /obj/item/clothing/under/vampire/napoleon(src), ITEM_SLOT_ICLOTHING)
+
+/mob/living/carbon/human/species/vamp_mannequin/conquestador
+
+/mob/living/carbon/human/species/vamp_mannequin/conquestador/Initialize()
+	. = ..()
+	equip_to_slot_or_del(new /obj/item/clothing/head/vampire/helmet/spain(src), ITEM_SLOT_HEAD)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/vampire/jackboots/work(src), ITEM_SLOT_FEET)
+	equip_to_slot_or_del(new /obj/item/clothing/under/vampire/tremere(src), ITEM_SLOT_ICLOTHING)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/vest/medieval(src), ITEM_SLOT_OCLOTHING)
+
+/mob/living/carbon/human/species/vamp_mannequin/cowboy
+
+/mob/living/carbon/human/species/vamp_mannequin/cowboy/Initialize()
+	. = ..()
+	equip_to_slot_or_del(new /obj/item/clothing/head/vampire/cowboy(src), ITEM_SLOT_HEAD)
+	equip_to_slot_or_del(new /obj/item/clothing/shoes/vampire/brown(src), ITEM_SLOT_FEET)
+	equip_to_slot_or_del(new /obj/item/clothing/under/vampire/bouncer(src), ITEM_SLOT_ICLOTHING)
+	equip_to_slot_or_del(new /obj/item/clothing/suit/vampire/trench/alt(src), ITEM_SLOT_OCLOTHING)
 
 /mob/living/carbon/human/species/abductor
 	race = /datum/species/abductor

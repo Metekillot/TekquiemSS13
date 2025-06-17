@@ -24,6 +24,7 @@ SUBSYSTEM_DEF(mapping)
 	var/list/shuttle_templates = list()
 	var/list/shelter_templates = list()
 	var/list/holodeck_templates = list()
+	var/list/modular_templates = list()
 
 	var/list/areas_in_z = list()
 
@@ -145,7 +146,7 @@ SUBSYSTEM_DEF(mapping)
 		message_admins("Shuttles in transit detected. Attempting to fast travel. Timeout is [wipe_safety_delay/10] seconds.")
 	var/list/cleared = list()
 	for(var/i in in_transit)
-		INVOKE_ASYNC(src, .proc/safety_clear_transit_dock, i, in_transit[i], cleared)
+		INVOKE_ASYNC(src, PROC_REF(safety_clear_transit_dock), i, in_transit[i], cleared)
 	UNTIL((go_ahead < world.time) || (cleared.len == in_transit.len))
 	do_wipe_turf_reservations()
 	clearing_reserved_turfs = FALSE
@@ -189,6 +190,7 @@ Used by the AI doomsday and the self-destruct nuke.
 	ice_ruins_underground_templates = SSmapping.ice_ruins_underground_templates
 	shuttle_templates = SSmapping.shuttle_templates
 	shelter_templates = SSmapping.shelter_templates
+	modular_templates = SSmapping.modular_templates
 	unused_turfs = SSmapping.unused_turfs
 	turf_reservations = SSmapping.turf_reservations
 	used_turfs = SSmapping.used_turfs
@@ -274,7 +276,7 @@ Used by the AI doomsday and the self-destruct nuke.
 		add_new_zlevel("Empty Area [space_levels_so_far]", ZTRAITS_SPACE)
 
 	if(config.minetype == "lavaland")
-		LoadGroup(FailedZs, "Lavaland", "map_files/Mining", "Lavaland.dmm", default_traits = ZTRAITS_LAVALAND)
+		LoadGroup(FailedZs, "Lavaland", "map_files/Mining", "Lavaland.dmm")
 	else if (!isnull(config.minetype) && config.minetype != "none")
 		INIT_ANNOUNCE("WARNING: An unknown minetype '[config.minetype]' was set! This is being ignored! Update the maploader code!")
 #endif
@@ -397,6 +399,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	preloadShuttleTemplates()
 	preloadShelterTemplates()
 	preloadHolodeckTemplates()
+	preloadModularTemplates()
 
 /datum/controller/subsystem/mapping/proc/preloadRuinTemplates()
 	// Still supporting bans by filename
@@ -404,7 +407,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	banned += generateMapList("[global.config.directory]/spaceruinblacklist.txt")
 	banned += generateMapList("[global.config.directory]/iceruinblacklist.txt")
 
-	for(var/item in sortList(subtypesof(/datum/map_template/ruin), /proc/cmp_ruincost_priority))
+	for(var/item in sortList(subtypesof(/datum/map_template/ruin), GLOBAL_PROC_REF(cmp_ruincost_priority)))
 		var/datum/map_template/ruin/ruin_type = item
 		// screen out the abstract subtypes
 		if(!initial(ruin_type.id))
@@ -502,6 +505,16 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	if(!away_level)
 		message_admins("Loading [away_name] failed!")
 		return
+
+/datum/controller/subsystem/mapping/proc/preloadModularTemplates()
+	for(var/item in subtypesof(/datum/map_template/modular))
+		var/datum/map_template/modular/modular_type = item
+
+		var/datum/map_template/modular/M = new modular_type()
+
+		LAZYINITLIST(modular_templates[M.modular_id])
+		modular_templates[M.modular_id] += M
+		map_templates[M.type] = M
 
 /datum/controller/subsystem/mapping/proc/RequestBlockReservation(width, height, z, type = /datum/turf_reservation, turf_type_override)
 	UNTIL((!z || reservation_ready["[z]"]) && !clearing_reserved_turfs)

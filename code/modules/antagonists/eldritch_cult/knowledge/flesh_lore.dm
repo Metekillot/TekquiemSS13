@@ -14,7 +14,7 @@
 	desc = "Allows you to resurrect the dead as voiceless dead by sacrificing them on the transmutation rune with a poppy. Voiceless dead are mute and have 50 HP. You can only have 2 at a time."
 	gain_text = "I found notes of a dark ritual, unfinished... yet still, I pushed forward."
 	cost = 1
-	required_atoms = list(/mob/living/carbon/human,/obj/item/food/grown/poppy)
+	required_atoms = list(/mob/living/carbon/human,/obj/item/food/grown/flower/poppy)
 	next_knowledge = list(/datum/eldritch_knowledge/flesh_mark,/datum/eldritch_knowledge/void_cloak,/datum/eldritch_knowledge/ashen_eyes)
 	route = PATH_FLESH
 	var/max_amt = 2
@@ -55,7 +55,7 @@
 	var/datum/antagonist/heretic/master = user.mind.has_antag_datum(/datum/antagonist/heretic)
 	heretic_monster.set_owner(master)
 	atoms -= humie
-	RegisterSignal(humie,COMSIG_LIVING_DEATH,.proc/remove_ghoul)
+	RegisterSignal(humie,COMSIG_LIVING_DEATH, PROC_REF(remove_ghoul))
 	ghouls += humie
 
 /datum/eldritch_knowledge/flesh_ghoul/proc/remove_ghoul(datum/source)
@@ -102,7 +102,7 @@
 	log_game("[key_name_admin(human_target)] has become a ghoul, their master is [user.real_name]")
 	//we change it to true only after we know they passed all the checks
 	. = TRUE
-	RegisterSignal(human_target,COMSIG_LIVING_DEATH,.proc/remove_ghoul)
+	RegisterSignal(human_target,COMSIG_LIVING_DEATH, PROC_REF(remove_ghoul))
 	human_target.revive(full_heal = TRUE, admin_revive = TRUE)
 	human_target.setMaxHealth(25)
 	human_target.health = 25

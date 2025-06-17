@@ -413,7 +413,7 @@
 		add_ranged_ability(user, message, TRUE)
 		return TRUE
 
-/obj/effect/proc_holder/wrap/InterceptClickOn(mob/living/caller, params, atom/target)
+/obj/effect/proc_holder/wrap/InterceptClickOn(mob/living/clicker, params, atom/target)
 	if(..())
 		return
 	if(ranged_ability_user.incapacitated() || !istype(ranged_ability_user, /mob/living/simple_animal/hostile/poison/giant_spider/midwife))
@@ -427,7 +427,7 @@
 		if(target_atom.anchored)
 			return
 		user.cocoon_target = target_atom
-		INVOKE_ASYNC(user, /mob/living/simple_animal/hostile/poison/giant_spider/midwife/.proc/cocoon)
+		INVOKE_ASYNC(user, TYPE_PROC_REF(/mob/living/simple_animal/hostile/poison/giant_spider/midwife, cocoon))
 		remove_ranged_ability()
 		return TRUE
 
@@ -474,7 +474,7 @@
 		add_ranged_ability(user, message, TRUE)
 		return 1
 
-/obj/effect/proc_holder/tarantula_charge/InterceptClickOn(mob/living/caller, params, atom/target)
+/obj/effect/proc_holder/tarantula_charge/InterceptClickOn(mob/living/clicker, params, atom/target)
 	if(..())
 		return
 	if(ranged_ability_user.incapacitated() || !istype(ranged_ability_user, /mob/living/simple_animal/hostile/poison/giant_spider/tarantula))
@@ -483,7 +483,7 @@
 
 	var/mob/living/simple_animal/hostile/poison/giant_spider/tarantula/user = ranged_ability_user
 
-	INVOKE_ASYNC(user, /mob/living/simple_animal/hostile/.proc/enter_charge, target)
+	INVOKE_ASYNC(user, TYPE_PROC_REF(/mob/living/simple_animal/hostile, enter_charge), target)
 	remove_ranged_ability()
 	return TRUE
 

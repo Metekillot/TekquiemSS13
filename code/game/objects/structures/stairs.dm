@@ -11,6 +11,7 @@
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "stairs"
 	anchored = TRUE
+	layer = 3
 
 	var/force_open_above = FALSE // replaces the turf above this stair obj with /turf/open/openspace
 	var/terminator_mode = STAIR_TERMINATOR_AUTOMATIC
@@ -78,6 +79,8 @@
 		return
 	if(!checking.zPassIn(AM, UP, get_turf(src)))
 		return
+	if(AM.anchored)
+		return
 	var/turf/target = get_step_multiz(get_turf(src), (dir|UP))
 	if(istype(target) && !target.can_zFall(AM, null, get_step_multiz(target, DOWN)))			//Don't throw them into a tile that will just dump them back down.
 		if(isliving(AM))
@@ -108,7 +111,7 @@
 	if(listeningTo)
 		UnregisterSignal(listeningTo, COMSIG_TURF_MULTIZ_NEW)
 	var/turf/open/openspace/T = get_step_multiz(get_turf(src), UP)
-	RegisterSignal(T, COMSIG_TURF_MULTIZ_NEW, .proc/on_multiz_new)
+	RegisterSignal(T, COMSIG_TURF_MULTIZ_NEW, PROC_REF(on_multiz_new))
 	listeningTo = T
 
 /obj/structure/stairs/proc/force_open_above()

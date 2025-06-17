@@ -7,6 +7,9 @@ GLOBAL_LIST_INIT(commando_names, world.file2list("strings/names/death_commando.t
 GLOBAL_LIST_INIT(first_names, world.file2list("strings/names/first.txt"))
 GLOBAL_LIST_INIT(first_names_male, world.file2list("strings/names/first_male.txt"))
 GLOBAL_LIST_INIT(first_names_female, world.file2list("strings/names/first_female.txt"))
+GLOBAL_LIST_INIT(first_names_male_triad, world.file2list("strings/names/first_male_triad.txt"))
+GLOBAL_LIST_INIT(first_names_female_triad, world.file2list("strings/names/first_female_triad.txt"))
+GLOBAL_LIST_INIT(last_names_triad, world.file2list("strings/names/last_triad.txt"))
 GLOBAL_LIST_INIT(last_names, world.file2list("strings/names/last.txt"))
 GLOBAL_LIST_INIT(lizard_names_male, world.file2list("strings/names/lizard_male.txt"))
 GLOBAL_LIST_INIT(lizard_names_female, world.file2list("strings/names/lizard_female.txt"))
@@ -22,6 +25,11 @@ GLOBAL_LIST_INIT(posibrain_names, world.file2list("strings/names/posibrain.txt")
 GLOBAL_LIST_INIT(nightmare_names, world.file2list("strings/names/nightmare.txt"))
 GLOBAL_LIST_INIT(megacarp_first_names, world.file2list("strings/names/megacarp1.txt"))
 GLOBAL_LIST_INIT(megacarp_last_names, world.file2list("strings/names/megacarp2.txt"))
+
+//Book Quotes
+GLOBAL_LIST_INIT(bahari_quotes, world.file2list("strings/quotes/bahari.txt"))
+GLOBAL_LIST_INIT(noddist_quotes, world.file2list("strings/quotes/noddist.txt"))
+GLOBAL_LIST_INIT(quran_quotes, world.file2list("strings/quotes/islam.txt"))
 
 GLOBAL_LIST_INIT(verbs, world.file2list("strings/names/verbs.txt"))
 GLOBAL_LIST_INIT(ing_verbs, world.file2list("strings/names/ing_verbs.txt"))

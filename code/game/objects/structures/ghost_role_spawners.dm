@@ -109,7 +109,7 @@
 		H.underwear = "Nude"
 		H.update_body()
 		ADD_TRAIT(H, TRAIT_PRIMITIVE, ROUNDSTART_TRAIT)
-		H.remove_language(/datum/language/common)
+		H.remove_language(/datum/language/english)
 	team.players_spawned += (new_spawn.key)
 	eggshell.egg = null
 	qdel(eggshell)
@@ -624,7 +624,6 @@
 	H.faction |= ROLE_SYNDICATE
 
 /obj/effect/mob_spawn/human/syndicatespace/special(mob/living/new_spawn)
-	new_spawn.grant_language(/datum/language/codespeak, TRUE, TRUE, LANGUAGE_MIND)
 	var/policy = get_policy(assignedrole)
 	if(policy)
 		to_chat(new_spawn, "<span class='bold'>[policy]</span>")

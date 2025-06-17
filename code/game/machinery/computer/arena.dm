@@ -88,7 +88,7 @@
 	var/list/default_arenas = flist(arena_dir)
 	for(var/arena_file in default_arenas)
 		var/simple_name = replacetext(replacetext(arena_file,arena_dir,""),".dmm","")
-		INVOKE_ASYNC(src, .proc/add_new_arena_template, null, arena_dir + arena_file, simple_name)
+		INVOKE_ASYNC(src, PROC_REF(add_new_arena_template), null, arena_dir + arena_file, simple_name)
 
 /obj/machinery/computer/arena/proc/get_landmark_turf(landmark_tag)
 	for(var/obj/effect/landmark/arena/L in GLOB.landmarks_list)
@@ -234,7 +234,7 @@
 	for(var/mob/M in all_contestants())
 		to_chat(M,"<span class='userdanger'>The gates will open in [timetext]!</span>")
 	start_time = world.time + start_delay
-	addtimer(CALLBACK(src,.proc/begin),start_delay)
+	addtimer(CALLBACK(src, PROC_REF(begin)),start_delay)
 	for(var/team in teams)
 		var/obj/machinery/arena_spawn/team_spawn = get_spawn(team)
 		var/obj/effect/countdown/arena/A = new(team_spawn)
@@ -261,9 +261,9 @@
 		if(D.id != arena_id)
 			continue
 		if(closed)
-			INVOKE_ASYNC(D, /obj/machinery/door/poddoor.proc/close)
+			INVOKE_ASYNC(D, TYPE_PROC_REF(/obj/machinery/door/poddoor, close))
 		else
-			INVOKE_ASYNC(D, /obj/machinery/door/poddoor.proc/open)
+			INVOKE_ASYNC(D, TYPE_PROC_REF(/obj/machinery/door/poddoor, open))
 
 /obj/machinery/computer/arena/Topic(href, href_list)
 	if(..())
@@ -326,8 +326,8 @@
 /obj/machinery/computer/arena/ui_interact(mob/user)
 	. = ..()
 	var/list/dat = list()
-	dat += "<div>Spawning is currently [ready_to_spawn ? "<span class='good'>enabled</span>" : "<span class='bad'>disabled</span>"] <a href='?src=[REF(src)];toggle_spawn=1'>Toggle</a></div>"
-	dat += "<div><a href='?src=[REF(src)];start=1'>[start_time ? "Stop countdown" : "Start!"]</a></div>"
+	dat += "<div>Spawning is currently [ready_to_spawn ? "<span class='good'>enabled</span>" : "<span class='bad'>disabled</span>"] <a href='byond://?src=[REF(src)];toggle_spawn=1'>Toggle</a></div>"
+	dat += "<div><a href='byond://?src=[REF(src)];start=1'>[start_time ? "Stop countdown" : "Start!"]</a></div>"
 	for(var/team in teams)
 		dat += "<h2>[capitalize(team)] team:</h2>"
 		dat += "<ul>"
@@ -341,28 +341,28 @@
 				else
 					player_status = M.stat == DEAD ? "Dead" : "Alive"
 				dat += "<li>[ckey] - [player_status] - "
-				dat += "<a href='?_src_=holder;[HrefToken(TRUE)];adminplayerobservefollow=[REF(M)]'>FLW</a>"
-				dat += "<a href='?src=[REF(src)];member_action=remove;team=[team];ckey=[ckey]'>Remove</a>"
+				dat += "<a href='byond://?_src_=holder;[HrefToken(TRUE)];adminplayerobservefollow=[REF(M)]'>FLW</a>"
+				dat += "<a href='byond://?src=[REF(src)];member_action=remove;team=[team];ckey=[ckey]'>Remove</a>"
 				//Add more per player features here
 				dat += "</li>"
 		dat += "</ul>"
 		dat += "<div> Team Outfit : [outfits[team] ? outfits[team] : default_outfit]</div>"
-		dat += "<a href='?src=[REF(src)];team_action=loadteam;team=[team]'>Load team</a>"
-		dat += "<a href='?src=[REF(src)];team_action=addmember;team=[team]'>Add member</a>"
-		dat += "<a href='?src=[REF(src)];team_action=outfit;team=[team]'>Change Outfit</a>"
+		dat += "<a href='byond://?src=[REF(src)];team_action=loadteam;team=[team]'>Load team</a>"
+		dat += "<a href='byond://?src=[REF(src)];team_action=addmember;team=[team]'>Add member</a>"
+		dat += "<a href='byond://?src=[REF(src)];team_action=outfit;team=[team]'>Change Outfit</a>"
 		//Add more per team features here
 
 	dat += "Current arena: [current_arena_template]"
 	dat += "<h2>Arena List:</h2>"
 	for(var/A in arena_templates)
-		dat += "<a href='?src=[REF(src)];change_arena=[url_encode(A)]'>[A]</a><br>"
+		dat += "<a href='byond://?src=[REF(src)];change_arena=[url_encode(A)]'>[A]</a><br>"
 	dat += "<hr>"
-	dat += "<a href='?src=[REF(src)];upload=1'>Upload new arena</a><br>"
+	dat += "<a href='byond://?src=[REF(src)];upload=1'>Upload new arena</a><br>"
 	dat += "<hr>"
 	//Special actions
-	dat += "<a href='?src=[REF(src)];special=reset'>Reset Arena.</a><br>"
-	dat += "<a href='?src=[REF(src)];special=randomarena'>Load random arena.</a><br>"
-	dat += "<a href='?src=[REF(src)];special=spawntrophy'>Spawn trophies for survivors.</a><br>"
+	dat += "<a href='byond://?src=[REF(src)];special=reset'>Reset Arena.</a><br>"
+	dat += "<a href='byond://?src=[REF(src)];special=randomarena'>Load random arena.</a><br>"
+	dat += "<a href='byond://?src=[REF(src)];special=spawntrophy'>Spawn trophies for survivors.</a><br>"
 
 	var/datum/browser/popup = new(user, "arena controller", "Arena Controller", 500, 600)
 	popup.set_content(dat.Join())

@@ -12,7 +12,7 @@ SUBSYSTEM_DEF(job)
 	var/list/prioritized_jobs = list()
 	var/list/latejoin_trackers = list()	//Don't read this list, use GetLateJoinTurfs() instead
 
-	var/overflow_role = "Assistant"
+	var/overflow_role = "Pedestrian"
 
 	var/list/level_order = list(JP_HIGH,JP_MEDIUM,JP_LOW)
 
@@ -22,7 +22,6 @@ SUBSYSTEM_DEF(job)
 		SetupOccupations()
 	if(CONFIG_GET(flag/load_jobs_from_txt))
 		LoadJobs()
-	generate_selectable_species()
 	set_overflow_role(CONFIG_GET(string/overflow_job))
 	return ..()
 
@@ -42,9 +41,9 @@ SUBSYSTEM_DEF(job)
 		overflow_role = new_overflow_role
 		JobDebug("Overflow role set to : [new_overflow_role]")
 
-/datum/controller/subsystem/job/proc/SetupOccupations(faction = "Station")
+/datum/controller/subsystem/job/proc/SetupOccupations(faction = "Vampire")
 	occupations = list()
-	var/list/all_jobs = subtypesof(/datum/job)
+	var/list/all_jobs = subtypesof(/datum/job/vamp/vtr)
 	if(!all_jobs.len)
 		to_chat(world, "<span class='boldannounce'>Error setting up jobs, no job datums found</span>")
 		return FALSE
@@ -66,6 +65,15 @@ SUBSYSTEM_DEF(job)
 
 	return TRUE
 
+/datum/controller/subsystem/job/proc/FreeRole(rank, var/mob/living/carbon/human/mob)
+	if(!rank)
+		return
+	var/datum/job/job = GetJob(rank)
+	if(!job)
+		return FALSE
+	if (mob?.dna?.species && job.species_slots[mob.dna.species.name] >= 0)
+		job.species_slots[mob.dna?.species.name]++
+	job.current_positions = max(0, job.current_positions - 1)
 
 /datum/controller/subsystem/job/proc/GetJob(rank)
 	if(!occupations.len)
@@ -80,14 +88,25 @@ SUBSYSTEM_DEF(job)
 /datum/controller/subsystem/job/proc/AssignRole(mob/dead/new_player/player, rank, latejoin = FALSE)
 	JobDebug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
 	if(player?.mind && rank)
-		var/datum/job/job = GetJob(rank)
+		var/bypass = FALSE
+		if (check_rights_for(player.client, R_ADMIN))
+			bypass = TRUE
+		var/datum/job/vamp/vtr/job = GetJob(rank)
 		if(!job)
 			return FALSE
 		if(is_banned_from(player.ckey, rank) || QDELETED(player))
 			return FALSE
-		if(!job.player_old_enough(player.client))
+		if(!job.player_old_enough(player.client) && !bypass)
 			return FALSE
-		if(job.required_playtime_remaining(player.client))
+		if(job.required_playtime_remaining(player.client) && !bypass)
+			return FALSE
+		if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank) && !bypass)
+			return FALSE
+		if((player.client.prefs.masquerade < job.minimal_masquerade) && !bypass)
+			return FALSE
+		if(!job.allowed_species.Find(player.client.prefs.pref_species.name) && !bypass)
+			return FALSE
+		if ((job.species_slots[player.client.prefs.pref_species.name] == 0) && !bypass)
 			return FALSE
 		var/position_limit = job.total_positions
 		if(!latejoin)
@@ -95,25 +114,51 @@ SUBSYSTEM_DEF(job)
 		JobDebug("Player: [player] is now Rank: [rank], JCP:[job.current_positions], JPL:[position_limit]")
 		player.mind.assigned_role = rank
 		unassigned -= player
+		if ((job.species_slots[player.client.prefs.pref_species.name] > 0) && !bypass)
+			job.species_slots[player.client.prefs.pref_species.name]--
 		job.current_positions++
 		return TRUE
 	JobDebug("AR has failed, Player: [player], Rank: [rank]")
 	return FALSE
 
 
-/datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/job, level, flag)
+/datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/vamp/vtr/job, level, flag)
 	JobDebug("Running FOC, Job: [job], Level: [level], Flag: [flag]")
 	var/list/candidates = list()
 	for(var/mob/dead/new_player/player in unassigned)
+		var/bypass = FALSE
+		if (check_rights_for(player.client, R_ADMIN))
+			bypass = TRUE
 		if(is_banned_from(player.ckey, job.title) || QDELETED(player))
 			JobDebug("FOC isbanned failed, Player: [player]")
 			continue
-		if(!job.player_old_enough(player.client))
+		if(!job.player_old_enough(player.client) && !bypass)
 			JobDebug("FOC player not old enough, Player: [player]")
 			continue
-		if(job.required_playtime_remaining(player.client))
+		if(job.required_playtime_remaining(player.client) && !bypass)
 			JobDebug("FOC player not enough xp, Player: [player]")
 			continue
+		if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank) && !bypass)
+			JobDebug("FOC player not of the correct vampire rank, Player: [player]")
+			continue
+		if((player.client.prefs.masquerade < job.minimal_masquerade) && !bypass)
+			JobDebug("FOC player not enough masquerade, Player: [player]")
+			continue
+		if(!job.allowed_species.Find(player.client.prefs.pref_species.name) && !bypass)
+			JobDebug("FOC player species not allowed, Player: [player]")
+			continue
+		if((job.species_slots[player.client.prefs.pref_species.name] == 0) && !bypass)
+			JobDebug("FOC player species limit overrun, Player: [player]")
+			continue
+		if(player.client.prefs.pref_species.name == "Vampire")
+			if(player.client.prefs.clane)
+				var/alloww = FALSE
+				for(var/i in job.allowed_bloodlines)
+					if(i == player.client.prefs.clane.name)
+						alloww = TRUE
+				if(!alloww && !bypass)
+					JobDebug("FOC player clan not allowed, Player: [player]")
+					continue
 		if(flag && (!(flag in player.client.prefs.be_special)))
 			JobDebug("FOC flag failed, Player: [player], Flag: [flag], ")
 			continue
@@ -128,14 +173,14 @@ SUBSYSTEM_DEF(job)
 /datum/controller/subsystem/job/proc/GiveRandomJob(mob/dead/new_player/player)
 	JobDebug("GRJ Giving random job, Player: [player]")
 	. = FALSE
-	for(var/datum/job/job in shuffle(occupations))
+	for(var/datum/job/vamp/vtr/job in shuffle(occupations))
 		if(!job)
 			continue
 
 		if(istype(job, GetJob(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
-		if(job.title in GLOB.command_positions) //If you want a command position, select it!
+		if(job.title in GLOB.leader_positions) //If you want a command position, select it!
 			continue
 
 		if(is_banned_from(player.ckey, job.title) || QDELETED(player))
@@ -152,6 +197,32 @@ SUBSYSTEM_DEF(job)
 		if(job.required_playtime_remaining(player.client))
 			JobDebug("GRJ player not enough xp, Player: [player]")
 			continue
+
+		if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank))
+			JobDebug("GRJ player not enough vampire rank, Player: [player]")
+			continue
+
+		if(player.client.prefs.masquerade < job.minimal_masquerade)
+			JobDebug("GRJ player not enough masquerade, Player: [player]")
+			continue
+
+		if(!job.allowed_species.Find(player.client.prefs.pref_species.name))
+			JobDebug("GRJ player species not allowed, Player: [player]")
+			continue
+
+		if(job.species_slots[player.client.prefs.pref_species.name] == 0)
+			JobDebug("GRJ player species limit overrun, Player: [player]")
+			continue
+
+		if(player.client.prefs.pref_species.name == "Vampire")
+			if(player.client.prefs.clane)
+				var/alloww = FALSE
+				for(var/i in job.allowed_bloodlines)
+					if(i == player.client.prefs.clane.name)
+						alloww = TRUE
+				if(!alloww)
+					JobDebug("GRJ player clan not allowed, Player: [player]")
+					continue
 
 		if(player.mind && (job.title in player.mind.restricted_roles))
 			JobDebug("GRJ incompatible with antagonist role, Player: [player], Job: [job.title]")
@@ -312,8 +383,12 @@ SUBSYSTEM_DEF(job)
 			if(PopcapReached())
 				RejectPlayer(player)
 
+			var/bypass = FALSE
+			if (check_rights_for(player.client, R_ADMIN))
+				bypass = TRUE
+
 			// Loop through all jobs
-			for(var/datum/job/job in shuffledoccupations) // SHUFFLE ME BABY
+			for(var/datum/job/vamp/vtr/job in shuffledoccupations) // SHUFFLE ME BABY
 				if(!job)
 					continue
 
@@ -325,13 +400,39 @@ SUBSYSTEM_DEF(job)
 					JobDebug("DO player deleted during job ban check")
 					break
 
-				if(!job.player_old_enough(player.client))
+				if(!job.player_old_enough(player.client) && !bypass)
 					JobDebug("DO player not old enough, Player: [player], Job:[job.title]")
 					continue
 
-				if(job.required_playtime_remaining(player.client))
+				if(job.required_playtime_remaining(player.client) && !bypass)
 					JobDebug("DO player not enough xp, Player: [player], Job:[job.title]")
 					continue
+
+				if(job.minimum_vamp_rank && (player.client.prefs.vamp_rank >= job.minimum_vamp_rank) && !bypass)
+					JobDebug("DO player not enough vampire rank, Player: [player]")
+					continue
+
+				if((player.client.prefs.masquerade < job.minimal_masquerade) && !bypass)
+					JobDebug("DO player not enough masquerade, Player: [player]")
+					continue
+
+				if(!job.allowed_species.Find(player.client.prefs.pref_species.name) && !bypass)
+					JobDebug("DO player species not allowed, Player: [player]")
+					continue
+
+				if((job.species_slots[player.client.prefs.pref_species.name] == 0) && !bypass)
+					JobDebug("DO player species limit overrun, Player: [player]")
+					continue
+
+				if(player.client.prefs.pref_species.name == "Vampire")
+					if(player.client.prefs.clane)
+						var/alloww = FALSE
+						for(var/i in job.allowed_bloodlines)
+							if(i == player.client.prefs.clane.name)
+								alloww = TRUE
+						if(!alloww && !bypass)
+							JobDebug("DO player clan not allowed, Player: [player]")
+							continue
 
 				if(player.mind && (job.title in player.mind.restricted_roles))
 					JobDebug("DO incompatible with antagonist role, Player: [player], Job:[job.title]")
@@ -435,6 +536,8 @@ SUBSYSTEM_DEF(job)
 					continue
 				sloc.used = TRUE
 				break
+		if(living_mob.breaks_masquerade_on_join())
+			S = pick(GLOB.masquerade_latejoin)
 		if(S)
 			S.JoinPlayerHere(living_mob, FALSE)
 		if(!S) //if there isn't a spawnpoint send them to latejoin, if there's no latejoin go yell at your mapper
@@ -446,7 +549,13 @@ SUBSYSTEM_DEF(job)
 	if(living_mob.mind)
 		living_mob.mind.assigned_role = rank
 
-	to_chat(M, "<b>You are the [rank].</b>")
+	// TFN EDIT START: alt job titles
+	var/display_rank = rank
+	if(M?.client?.prefs?.alt_titles_preferences[rank])
+		display_rank = M.client.prefs.alt_titles_preferences[rank]
+	// TFN EDIT START
+
+	to_chat(M, "<b>You are the [display_rank].</b>")
 	if(job)
 		var/new_mob = job.equip(living_mob, null, null, joined_late , null, M.client)//silicons override this proc to return a mob
 		if(ismob(new_mob))
@@ -464,19 +573,27 @@ SUBSYSTEM_DEF(job)
 			else
 				handle_auto_deadmin_roles(M.client, rank)
 
-		to_chat(M, "<b>As the [rank] you answer directly to [job.supervisors]. Special circumstances may change this.</b>")
-		job.radio_help_message(M)
+		to_chat(M, "<b>As the [display_rank] you answer directly to [job.supervisors]. Special circumstances may change this.</b>")
+		var/mob/living/carbon/human/human = living_mob
+		if(iskindred(human) || isgarou(human))
+			if(job.v_duty && job.v_duty != "")
+				to_chat(M, span_notice("<b>[job.v_duty]</b>"))
+			if(job.title != "Prince")
+				to_chat(M, "<span class='notice' style='color:red;'><b>The Invictus rule the city. You should obey them, their laws and the Prince, at least in public.</b></span>")
+		else if(job.duty && job.duty != "")
+			to_chat(M, "<span class='notice'><b>[job.duty]</b></span>")
+//		job.radio_help_message(M)
 		if(job.req_admin_notify)
 			to_chat(M, "<b>You are playing a job that is important for Game Progression. If you have to disconnect, please notify the admins via adminhelp.</b>")
-		if(CONFIG_GET(number/minimal_access_threshold))
-			to_chat(M, "<span class='notice'><B>As this station was initially staffed with a [CONFIG_GET(flag/jobs_have_minimal_access) ? "full crew, only your job's necessities" : "skeleton crew, additional access may"] have been added to your ID card.</B></span>")
+//		if(CONFIG_GET(number/minimal_access_threshold))
+//			to_chat(M, "<span class='notice'><B>As this station was initially staffed with a [CONFIG_GET(flag/jobs_have_minimal_access) ? "full crew, only your job's necessities" : "skeleton crew, additional access may"] have been added to your ID card.</B></span>")
 
-	var/related_policy = get_policy(rank)
-	if(related_policy)
-		to_chat(M,related_policy)
-	if(ishuman(living_mob))
-		var/mob/living/carbon/human/wageslave = living_mob
-		living_mob.add_memory("Your account ID is [wageslave.account_id].")
+//	var/related_policy = get_policy(rank)
+//	if(related_policy)
+//		to_chat(M,related_policy)
+//	if(ishuman(living_mob))
+//		var/mob/living/carbon/human/wageslave = living_mob
+//		living_mob.add_memory("Your account ID is [wageslave.account_id].")
 	if(job && living_mob)
 		job.after_spawn(living_mob, M, joined_late) // note: this happens before the mob has a key! M will always have a client, H might not.
 
@@ -505,7 +622,7 @@ SUBSYSTEM_DEF(job)
 /datum/controller/subsystem/job/proc/setup_officer_positions()
 	var/datum/job/J = SSjob.GetJob("Security Officer")
 	if(!J)
-		CRASH("setup_officer_positions(): Security officer job is missing")
+		return
 
 	var/ssc = CONFIG_GET(number/security_scaling_coeff)
 	if(ssc > 0)
@@ -598,7 +715,7 @@ SUBSYSTEM_DEF(job)
 	var/oldjobs = SSjob.occupations
 	sleep(20)
 	for (var/datum/job/J in oldjobs)
-		INVOKE_ASYNC(src, .proc/RecoverJob, J)
+		INVOKE_ASYNC(src, PROC_REF(RecoverJob), J)
 
 /datum/controller/subsystem/job/proc/RecoverJob(datum/job/J)
 	var/datum/job/newjob = GetJob(J.title)
@@ -611,6 +728,13 @@ SUBSYSTEM_DEF(job)
 /atom/proc/JoinPlayerHere(mob/M, buckle)
 	// By default, just place the mob on the same turf as the marker or whatever.
 	M.forceMove(get_turf(src))
+	if(M.taxist)
+		var/taxi_spawn_location = M.loc
+		var/mob/living/living_m = M
+		if(living_m && living_m.breaks_masquerade_on_join())
+			var/atom/new_start = pick(SSjob.latejoin_trackers)
+			taxi_spawn_location = new_start.loc
+		new /obj/vampire_car/taxi(taxi_spawn_location)
 
 /obj/structure/chair/JoinPlayerHere(mob/M, buckle)
 	// Placing a mob in a chair will attempt to buckle it, or else fall back to default.
@@ -627,43 +751,16 @@ SUBSYSTEM_DEF(job)
 
 	if(latejoin_trackers.len)
 		destination = pick(latejoin_trackers)
+		var/mob/living/living_m = M
+		if(living_m && living_m.breaks_masquerade_on_join())
+			destination = pick(GLOB.masquerade_latejoin)
 		destination.JoinPlayerHere(M, buckle)
 		return TRUE
 
-	//bad mojo
-	var/area/shuttle/arrival/A = GLOB.areas_by_type[/area/shuttle/arrival]
-	if(A)
-		//first check if we can find a chair
-		var/obj/structure/chair/C = locate() in A
-		if(C)
-			C.JoinPlayerHere(M, buckle)
-			return TRUE
-
-		//last hurrah
-		var/list/avail = list()
-		for(var/turf/T in A)
-			if(!T.is_blocked_turf(TRUE))
-				avail += T
-		if(avail.len)
-			destination = pick(avail)
-			destination.JoinPlayerHere(M, FALSE)
-			return TRUE
-
-	//pick an open spot on arrivals and dump em
-	var/list/arrivals_turfs = shuffle(get_area_turfs(/area/shuttle/arrival))
-	if(arrivals_turfs.len)
-		for(var/turf/T in arrivals_turfs)
-			if(!T.is_blocked_turf(TRUE))
-				T.JoinPlayerHere(M, FALSE)
-				return TRUE
-		//last chance, pick ANY spot on arrivals and dump em
-		destination = arrivals_turfs[1]
-		destination.JoinPlayerHere(M, FALSE)
-		return TRUE
-	else
-		var/msg = "Unable to send mob [M] to late join!"
-		message_admins(msg)
-		CRASH(msg)
+	
+	var/msg = "Unable to send mob [M] to late join!"
+	message_admins(msg)
+	CRASH(msg)
 
 
 ///////////////////////////////////
@@ -694,7 +791,7 @@ SUBSYSTEM_DEF(job)
 	. = list()
 	for(var/i in GLOB.human_list)
 		var/mob/living/carbon/human/player = i
-		if(player.stat != DEAD && player.mind && (player.mind.assigned_role in GLOB.security_positions))
+		if(player.stat != DEAD && player.mind && (player.mind.assigned_role in GLOB.ss13))
 			. |= player.mind
 
 ////////////////////////////////////////
@@ -704,7 +801,7 @@ SUBSYSTEM_DEF(job)
 	. = list()
 	for(var/i in GLOB.human_list)
 		var/mob/living/carbon/human/player = i
-		if(player.mind && (player.mind.assigned_role in GLOB.security_positions))
+		if(player.mind && (player.mind.assigned_role in GLOB.ss13))
 			. |= player.mind
 
 /datum/controller/subsystem/job/proc/JobDebug(message)

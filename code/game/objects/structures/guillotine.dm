@@ -79,7 +79,7 @@
 		if (GUILLOTINE_BLADE_DROPPED)
 			blade_status = GUILLOTINE_BLADE_MOVING
 			icon_state = "guillotine_raise"
-			addtimer(CALLBACK(src, .proc/raise_blade), GUILLOTINE_ANIMATION_LENGTH)
+			addtimer(CALLBACK(src, PROC_REF(raise_blade)), GUILLOTINE_ANIMATION_LENGTH)
 			return
 		if (GUILLOTINE_BLADE_RAISED)
 			if (LAZYLEN(buckled_mobs))
@@ -92,7 +92,7 @@
 						current_action = 0
 						blade_status = GUILLOTINE_BLADE_MOVING
 						icon_state = "guillotine_drop"
-						addtimer(CALLBACK(src, .proc/drop_blade, user), GUILLOTINE_ANIMATION_LENGTH - 2) // Minus two so we play the sound and decap faster
+						addtimer(CALLBACK(src, PROC_REF(drop_blade), user), GUILLOTINE_ANIMATION_LENGTH - 2) // Minus two so we play the sound and decap faster
 					else
 						current_action = 0
 				else
@@ -105,7 +105,7 @@
 			else
 				blade_status = GUILLOTINE_BLADE_MOVING
 				icon_state = "guillotine_drop"
-				addtimer(CALLBACK(src, .proc/drop_blade), GUILLOTINE_ANIMATION_LENGTH)
+				addtimer(CALLBACK(src, PROC_REF(drop_blade)), GUILLOTINE_ANIMATION_LENGTH)
 
 /obj/structure/guillotine/proc/raise_blade()
 	blade_status = GUILLOTINE_BLADE_RAISED
@@ -125,14 +125,15 @@
 
 		playsound(src, 'sound/weapons/guillotine.ogg', 100, TRUE)
 		if (blade_sharpness >= GUILLOTINE_DECAP_MIN_SHARP || head.brute_dam >= 100)
+			var/datum/preferences/P = GLOB.preferences_datums[ckey(H.key)]
 			head.dismember()
 			log_combat(user, H, "beheaded", src)
 			H.regenerate_icons()
 			unbuckle_all_mobs()
 			kill_count += 1
-
 			var/blood_overlay = "bloody"
-
+			if(P)
+				P.reason_of_death = "Executed to sustain the Traditions ([time2text(world.timeofday, "YYYY-MM-DD hh:mm:ss")])."
 			if (kill_count == 2)
 				blood_overlay = "bloodier"
 			else if (kill_count > 2)
@@ -142,21 +143,13 @@
 			cut_overlays()
 			add_overlay(mutable_appearance(icon, blood_overlay))
 
-			// The crowd is pleased
-			// The delay is to making large crowds have a longer laster applause
-			var/delay_offset = 0
-			for(var/mob/M in viewers(src, 7))
-				var/mob/living/carbon/human/C = M
-				if (ishuman(M))
-					addtimer(CALLBACK(C, /mob/.proc/emote, "clap"), delay_offset * 0.3)
-					delay_offset++
+			SSbloodhunt.hunted -= H
+			H.bloodhunted = FALSE
+			SSbloodhunt.update_shit()
 		else
 			H.apply_damage(15 * blade_sharpness, BRUTE, head)
 			log_combat(user, H, "dropped the blade on", src, " non-fatally")
 			H.emote("scream")
-
-		if (blade_sharpness > 1)
-			blade_sharpness -= 1
 
 	blade_status = GUILLOTINE_BLADE_DROPPED
 	icon_state = "guillotine"

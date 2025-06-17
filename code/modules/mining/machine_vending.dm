@@ -8,7 +8,10 @@
 	density = TRUE
 	circuit = /obj/item/circuitboard/machine/mining_equipment_vendor
 	var/icon_deny = "mining-deny"
+	var/mob/living/carbon/human/npc/my_owner
+	var/owner_needed = TRUE
 	var/obj/item/card/id/inserted_id
+	var/points = 0
 	var/list/prize_list = list( //if you add something to this, please, for the love of god, sort it by price/type. use tabs and not spaces.
 		new /datum/data/mining_equipment("1 Marker Beacon",				/obj/item/stack/marker_beacon,										10),
 		new /datum/data/mining_equipment("10 Marker Beacons",			/obj/item/stack/marker_beacon/ten,									100),
@@ -76,6 +79,10 @@
 
 /obj/machinery/mineral/equipment_vendor/Initialize()
 	. = ..()
+	if(owner_needed == TRUE)
+		for(var/mob/living/carbon/human/npc/NPC in range(2, src))
+			if(NPC)	//PSEUDO_M come back to fix this
+				my_owner = NPC
 	build_inventory()
 
 /obj/machinery/mineral/equipment_vendor/proc/build_inventory()
@@ -95,6 +102,13 @@
 	)
 
 /obj/machinery/mineral/equipment_vendor/ui_interact(mob/user, datum/tgui/ui)
+	if(owner_needed == TRUE)
+		if(!my_owner)
+			return
+		if(get_dist(src, my_owner) > 4)
+			return
+		if(my_owner.stat >= HARD_CRIT)
+			return
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "MiningVendor", name)
@@ -114,59 +128,170 @@
 
 /obj/machinery/mineral/equipment_vendor/ui_data(mob/user)
 	. = list()
-	var/obj/item/card/id/C
-	if(isliving(user))
-		var/mob/living/L = user
-		C = L.get_idcard(TRUE)
-	if(C)
-		.["user"] = list()
-		.["user"]["points"] = C.mining_points
-		if(C.registered_account)
-			.["user"]["name"] = C.registered_account.account_holder
-			if(C.registered_account.account_job)
-				.["user"]["job"] = C.registered_account.account_job.title
-			else
-				.["user"]["job"] = "No Job"
+	.["user"] = list()
+	.["user"]["points"] = points
+	.["user"]["name"] = "[user.name]"
+	.["user"]["job"] = "[user.mind?.assigned_role]"
+
 
 /obj/machinery/mineral/equipment_vendor/ui_act(action, params)
 	. = ..()
 	if(.)
 		return
 
+	if(owner_needed == TRUE)
+		if(!my_owner)
+			return
+		if(get_dist(src, my_owner) > 4)
+			return
+		if(my_owner.stat >= HARD_CRIT)
+			return
+
 	switch(action)
 		if("purchase")
-			var/obj/item/card/id/I
-			if(isliving(usr))
-				var/mob/living/L = usr
-				I = L.get_idcard(TRUE)
-			if(!istype(I))
-				to_chat(usr, "<span class='alert'>Error: An ID is required!</span>")
-				flick(icon_deny, src)
-				return
+//			var/obj/item/card/id/I
+//			if(isliving(usr))
+//				var/mob/living/L = usr
+//				I = L.get_idcard(TRUE)
+//			if(!istype(I))
+//				to_chat(usr, "<span class='alert'>Error: An ID is required!</span>")
+//				flick(icon_deny, src)
+//				return
 			var/datum/data/mining_equipment/prize = locate(params["ref"]) in prize_list
 			if(!prize || !(prize in prize_list))
 				to_chat(usr, "<span class='alert'>Error: Invalid choice!</span>")
 				flick(icon_deny, src)
 				return
-			if(prize.cost > I.mining_points)
-				to_chat(usr, "<span class='alert'>Error: Insufficient points for [prize.equipment_name] on [I]!</span>")
+			if(prize.cost > points)
+				to_chat(usr, "<span class='alert'>Error: Insufficient points for [prize.equipment_name]!</span>")
 				flick(icon_deny, src)
 				return
-			I.mining_points -= prize.cost
+			points -= prize.cost
 			to_chat(usr, "<span class='notice'>[src] clanks to life briefly before vending [prize.equipment_name]!</span>")
 			new prize.equipment_path(loc)
 			SSblackbox.record_feedback("nested tally", "mining_equipment_bought", 1, list("[type]", "[prize.equipment_path]"))
 			. = TRUE
 
-/obj/machinery/mineral/equipment_vendor/attackby(obj/item/I, mob/user, params)
+/obj/machinery/mineral/equipment_vendor/fastfood/attackby(obj/item/I, mob/user, params)
+	if(owner_needed == TRUE)
+		if(!my_owner)
+			return
+		if(get_dist(src, my_owner) > 4)
+			return	//PSEUDO_M come back and fix this shit...
+		if(my_owner.stat >= HARD_CRIT)
+			return
 	if(istype(I, /obj/item/mining_voucher))
 		RedeemVoucher(I, user)
+		return
+	if(istype(I, /obj/item/stack/dollar))
+		var/obj/item/stack/dollar/D = I
+		points = points+D.amount
+		qdel(D)
 		return
 	if(default_deconstruction_screwdriver(user, "mining-open", "mining", I))
 		return
 	if(default_deconstruction_crowbar(I))
 		return
 	return ..()
+
+/obj/machinery/mineral/equipment_vendor/restricted
+	name = "Requisitions"
+	desc = "A requisitions form waiting for any of the employees here to fill out for frivolous and mismanaged goodies."
+	icon = 'icons/wod13/props.dmi'
+	icon_state = "menu"
+	icon_deny = "menu"
+	prize_list = list()
+	//we only define this here for a possible case down the line of the requisition becoming unrestricted for whatever reason
+	var/restricted = TRUE
+	// Assoc list of people who made requisitions (a weakref, specifically, and an amount of points)
+	var/list/requisitioners = list()
+	// Assoc list of how many points a given job gets, being boss has its perks
+	var/list/jobs_allowed = list()
+	var/rejection_message = "The quartermaster doesn't seem to know you or want to speak with you."
+	owner_needed = FALSE
+
+/obj/machinery/mineral/equipment_vendor/restricted/interact(mob/user, special_state)
+	if(isnull(user.mind))
+		return
+	var/user_job = user.mind.assigned_role
+	if(restricted && !jobs_allowed.Find(user_job) && !isAdminObserver(user))
+		to_chat(user, rejection_message)
+		return
+	if(!requisitioners.Find(user))
+		var/initial_points
+		initial_points = jobs_allowed.Find(user_job) ? jobs_allowed[user_job] : 100
+		requisitioners[user] = isAdminObserver(user) ? 99999 : initial_points
+	points = requisitioners[user]	//PSEUDO_M come back and redo this, too, but we have other dev priorities atm...
+	return ..()
+
+/obj/machinery/mineral/equipment_vendor/restricted/ui_data(mob/user)
+	. = ..()
+	requisitioners[user] = points	// make sure they actually spend their req points...
+
+/obj/machinery/mineral/equipment_vendor/restricted/hospital
+	jobs_allowed = list(
+		"Doctor" = 150,
+		"Clinic Director" = 750,
+	)
+	prize_list = list(
+		new /datum/data/mining_equipment("iron pill bottle", /obj/item/storage/pill_bottle/iron, 5),
+		new /datum/data/mining_equipment("surgical apron", /obj/item/clothing/suit/apron/surgical, 5),
+		new /datum/data/mining_equipment("latex gloves", /obj/item/clothing/gloves/vampire/latex, 5),
+		new /datum/data/mining_equipment("burn ointment", /obj/item/stack/medical/ointment, 5),
+		new /datum/data/mining_equipment("saline solution", /obj/item/reagent_containers/glass/bottle/salglu_solution, 5),
+		new /datum/data/mining_equipment("respiratory aid kit", /obj/item/storage/firstaid/o2, 10),
+		new /datum/data/mining_equipment("defib batteries", /obj/item/stock_parts/cell, 10),
+		new /datum/data/mining_equipment("ephedrine pill bottle", /obj/item/storage/pill_bottle/ephedrine, 10),
+		new /datum/data/mining_equipment("Medicated Suture", /obj/item/stack/medical/suture/medicated, 10),
+		new /datum/data/mining_equipment("Regenerative Mesh", /obj/item/stack/medical/mesh/advanced, 10),
+		new /datum/data/mining_equipment("toxins first aid kit", /obj/item/storage/firstaid/toxin, 15),
+		new /datum/data/mining_equipment("burns first aid kit", /obj/item/storage/firstaid/fire, 15),
+		new /datum/data/mining_equipment("standard first aid kit", /obj/item/storage/firstaid/medical, 15),
+		new /datum/data/mining_equipment("bruise pack", /obj/item/stack/medical/bruise_pack, 20),
+		new /datum/data/mining_equipment("Compact Defibillator", /obj/item/defibrillator/compact, 25),
+		new /datum/data/mining_equipment("surgery dufflebag", /obj/item/storage/backpack/duffelbag/med/surgery, 50),
+		new /datum/data/mining_equipment("Hospital Radio", /obj/item/p25radio, 50)
+	)
+
+/obj/machinery/mineral/equipment_vendor/restricted/police
+	jobs_allowed = list(
+		"Police Officer" = 200,
+		"Federal Investigator" = 400,
+		"Police Sergeant" = 500,
+		"Police Chief" = 15000,	// don't you love the militirization of the police?
+	)
+	prize_list = list(
+		new /datum/data/mining_equipment("handcuffs", /obj/item/restraints/handcuffs, 1),
+		new /datum/data/mining_equipment("police uniform", /obj/item/clothing/under/vampire/police, 1),
+		new /datum/data/mining_equipment("police hat", /obj/item/clothing/head/vampire/police, 1),
+		new /datum/data/mining_equipment("camera", /obj/item/camera, 1),
+		new /datum/data/mining_equipment("tape recorder", /obj/item/taperecorder, 1),
+		new /datum/data/mining_equipment("white crayon", /obj/item/toy/crayon/white, 1),
+		new /datum/data/mining_equipment("evidence box", /obj/item/storage/box/evidence, 1),
+		new /datum/data/mining_equipment("crime scene tape", /obj/item/barrier_tape/police, 1),
+		new /datum/data/mining_equipment("flashlight", /obj/item/flashlight, 1),
+		new /datum/data/mining_equipment("magnifier", /obj/item/detective_scanner, 2),
+		new /datum/data/mining_equipment("body bags", /obj/item/storage/box/bodybags, 5),
+		new /datum/data/mining_equipment("police vest", /obj/item/clothing/suit/vampire/vest/police, 5),
+		new /datum/data/mining_equipment("Colt M1911 magazine",		/obj/item/ammo_box/magazine/vamp45acp,	10),
+		new /datum/data/mining_equipment("AUG Magazines",			/obj/item/ammo_box/magazine/vampaug,	10),
+		new /datum/data/mining_equipment("AR-15 Magazines",			/obj/item/ammo_box/magazine/vamp556,	10),
+		new /datum/data/mining_equipment("desert eagle magazine",	/obj/item/ammo_box/magazine/m44,	10),
+		new /datum/data/mining_equipment("Glock19 magazine",		/obj/item/ammo_box/magazine/glock9mm,	10),
+		new /datum/data/mining_equipment("IFAK",					/obj/item/storage/firstaid/ifak,	15),
+		new /datum/data/mining_equipment("12ga buckshot",			/obj/item/ammo_box/vampire/c12g/buck,	15),
+		new /datum/data/mining_equipment("mp5 magazine",			/obj/item/ammo_box/magazine/vamp9mp5, 20),
+		new /datum/data/mining_equipment("Glock19",					/obj/item/gun/ballistic/automatic/vampire/glock19,	25),
+		new /datum/data/mining_equipment("Colt M1911",				/obj/item/gun/ballistic/automatic/vampire/m1911,	25),
+		new /datum/data/mining_equipment("SPAS15 magazine",			/obj/item/ammo_box/magazine/vampautoshot,	30),
+		new /datum/data/mining_equipment("12ga slug",				/obj/item/ammo_box/vampire/c12g,	35),
+		new /datum/data/mining_equipment("PD Radio", 				/obj/item/p25radio/police, 50),
+		new /datum/data/mining_equipment("shotgun",					/obj/item/gun/ballistic/shotgun/vampire, 50),
+		new /datum/data/mining_equipment("submachine gun",			/obj/item/gun/ballistic/automatic/vampire/mp5, 100),
+		new /datum/data/mining_equipment("assault rifle",			/obj/item/gun/ballistic/automatic/vampire/ar15, 125),
+		new /datum/data/mining_equipment("SPAS15",					/obj/item/gun/ballistic/automatic/vampire/autoshotgun, 200),
+		new /datum/data/mining_equipment("sniper rifle",			/obj/item/gun/ballistic/automatic/vampire/sniper, 300),
+	)	//PSEUDO_M todo: add .50 ammo to this list
 
 /obj/machinery/mineral/equipment_vendor/proc/RedeemVoucher(obj/item/mining_voucher/voucher, mob/redeemer)
 	var/items = list("Survival Capsule and Explorer's Webbing", "Resonator Kit", "Minebot Kit", "Extraction and Rescue Kit", "Crusher Kit", "Mining Conscription Kit")

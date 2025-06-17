@@ -60,6 +60,7 @@
 	desc = "This space is blocked off by a wooden barricade."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "woodenbarricade"
+	resistance_flags = FLAMMABLE
 	bar_material = WOOD
 	var/drop_amount = 3
 
@@ -131,7 +132,7 @@
 
 /obj/structure/barricade/security/Initialize()
 	. = ..()
-	addtimer(CALLBACK(src, .proc/deploy), deploy_time)
+	addtimer(CALLBACK(src, PROC_REF(deploy)), deploy_time)
 
 /obj/structure/barricade/security/proc/deploy()
 	icon_state = "barrier1"

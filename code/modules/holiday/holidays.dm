@@ -276,7 +276,7 @@
 	name = "ANZAC Day"
 	begin_day = 25
 	begin_month = APRIL
-	drone_hat = /obj/item/food/grown/poppy
+	drone_hat = /obj/item/food/grown/flower/poppy
 
 /datum/holiday/anz/getStationPrefix()
 	return pick("Australian","New Zealand","Poppy", "Southern Cross")
@@ -401,7 +401,7 @@
 	name = "Flowers Day"
 	begin_day = 19
 	begin_month = NOVEMBER
-	drone_hat = /obj/item/food/grown/moonflower
+	drone_hat = /obj/item/food/grown/flower/moonflower
 
 /datum/holiday/hello
 	name = "Saying-'Hello' Day"
@@ -469,7 +469,7 @@
 	return "Have a merry Christmas!"
 
 /datum/holiday/xmas/celebrate()
-	SSticker.OnRoundstart(CALLBACK(src, .proc/roundstart_celebrate))
+	SSticker.OnRoundstart(CALLBACK(src, PROC_REF(roundstart_celebrate)))
 	GLOB.maintenance_loot += list(
 		list(
 			/obj/item/toy/xmas_cracker = 3,

@@ -12,7 +12,7 @@
 	minimal_player_age = 7
 	exp_requirements = 180
 	exp_type = EXP_TYPE_CREW
-	exp_type_department = EXP_TYPE_ENGINEERING
+	exp_type_department = EXP_TYPE_NEUTRALS
 
 	outfit = /datum/outfit/job/ce
 
@@ -29,7 +29,7 @@
 
 	liver_traits = list(TRAIT_ENGINEER_METABOLISM, TRAIT_ROYAL_METABOLISM)
 
-	display_order = JOB_DISPLAY_ORDER_CHIEF_ENGINEER
+//	display_order = JOB_DISPLAY_ORDER_CHIEF_ENGINEER
 	bounty_types = CIV_JOB_ENG
 
 /datum/outfit/job/ce

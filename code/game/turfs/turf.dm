@@ -419,7 +419,7 @@ GLOBAL_LIST_EMPTY(station_turfs)
 
 	var/list/things = src_object.contents()
 	var/datum/progressbar/progress = new(user, things.len, src)
-	while (do_after(usr, 1 SECONDS, src, NONE, FALSE, CALLBACK(src_object, /datum/component/storage.proc/mass_remove_from_storage, src, things, progress)))
+	while (do_after(usr, 1 SECONDS, src, NONE, FALSE, CALLBACK(src_object, TYPE_PROC_REF(/datum/component/storage, mass_remove_from_storage), src, things, progress)))
 		stoplag(1)
 	progress.end_progress()
 
@@ -620,7 +620,15 @@ GLOBAL_LIST_EMPTY(station_turfs)
  */
 /turf/wash(clean_types)
 	. = ..()
-
+	if(istype(src, /turf/open/floor))
+		var/turf/open/floor/F = src
+		var/mod = 0
+		if(istype(get_area(src), /area/vtm))
+			var/area/vtm/V = get_area(src)
+			if(!V.upper)
+				mod = 10
+		F.spread_chance = initial(F.spread_chance)+mod
+		F.burn_material = initial(F.burn_material)
 	for(var/am in src)
 		if(am == src)
 			continue

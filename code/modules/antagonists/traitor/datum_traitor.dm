@@ -193,7 +193,7 @@
 		if(TRAITOR_AI)
 			add_law_zero()
 			owner.current.playsound_local(get_turf(owner.current), 'sound/ambience/antag/malf.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
-			owner.current.grant_language(/datum/language/codespeak, TRUE, TRUE, LANGUAGE_MALF)
+			//owner.current.grant_language(/datum/language/codespeak, TRUE, TRUE, LANGUAGE_MALF)
 		if(TRAITOR_HUMAN)
 			if(should_equip)
 				equip(silent)
@@ -207,7 +207,7 @@
 	var/mob/living/silicon/ai/A = M
 	if(istype(A) && traitor_kind == TRAITOR_AI)
 		A.hack_software = TRUE
-	RegisterSignal(M, COMSIG_MOVABLE_HEAR, .proc/handle_hearing)
+	RegisterSignal(M, COMSIG_MOVABLE_HEAR, PROC_REF(handle_hearing))
 
 /datum/antagonist/traitor/remove_innate_effects(mob/living/mob_override)
 	. = ..()

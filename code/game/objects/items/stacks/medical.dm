@@ -43,12 +43,12 @@
 	if(patient == user)
 		if(!silent)
 			user.visible_message("<span class='notice'>[user] starts to apply [src] on [user.p_them()]self...</span>", "<span class='notice'>You begin applying [src] on yourself...</span>")
-		if(!do_mob(user, patient, self_delay, extra_checks=CALLBACK(patient, /mob/living/proc/can_inject, user, TRUE)))
+		if(!do_mob(user, patient, self_delay, extra_checks=CALLBACK(patient, TYPE_PROC_REF(/mob/living, can_inject), user, TRUE)))
 			return
 	else if(other_delay)
 		if(!silent)
 			user.visible_message("<span class='notice'>[user] starts to apply [src] on [patient].</span>", "<span class='notice'>You begin applying [src] on [patient]...</span>")
-		if(!do_mob(user, patient, other_delay, extra_checks=CALLBACK(patient, /mob/living/proc/can_inject, user, TRUE)))
+		if(!do_mob(user, patient, other_delay, extra_checks=CALLBACK(patient, TYPE_PROC_REF(/mob/living, can_inject), user, TRUE)))
 			return
 
 	if(heal(patient, user))
@@ -60,6 +60,9 @@
 /// Apply the actual effects of the healing if it's a simple animal, goes to [/obj/item/stack/medical/proc/heal_carbon] if it's a carbon, returns TRUE if it works, FALSE if it doesn't
 /obj/item/stack/medical/proc/heal(mob/living/patient, mob/user)
 	if(patient.stat == DEAD)
+		to_chat(user, "<span class='warning'>[patient] is dead! You can not help [patient.p_them()].</span>")
+		return
+	if(iskindred(patient))
 		to_chat(user, "<span class='warning'>[patient] is dead! You can not help [patient.p_them()].</span>")
 		return
 	if(isanimal(patient) && heal_brute) // only brute can heal

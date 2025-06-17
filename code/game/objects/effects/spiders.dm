@@ -102,7 +102,7 @@
 /obj/structure/spider/eggcluster/process(delta_time)
 	amount_grown += rand(0,1) * delta_time
 	if(amount_grown >= 100 && !ghost_ready)
-		notify_ghosts("[src] is ready to hatch!", null, enter_link="<a href=?src=[REF(src)];activate=1>(Click to play)</a>", source=src, action=NOTIFY_ORBIT, ignore_key = POLL_IGNORE_SPIDER)
+		notify_ghosts("[src] is ready to hatch!", null, enter_link="<a href=byond://?src=[REF(src)];activate=1>(Click to play)</a>", source=src, action=NOTIFY_ORBIT, ignore_key = POLL_IGNORE_SPIDER)
 		ghost_ready = TRUE
 
 /obj/structure/spider/eggcluster/attack_ghost(mob/user)
@@ -212,7 +212,7 @@
 
 	forceMove(exit_vent)
 	var/travel_time = round(get_dist(loc, exit_vent.loc) / 2)
-	addtimer(CALLBACK(src, .proc/do_vent_move, exit_vent, travel_time), travel_time)
+	addtimer(CALLBACK(src, PROC_REF(do_vent_move), exit_vent, travel_time), travel_time)
 
 /obj/structure/spider/spiderling/proc/do_vent_move(obj/machinery/atmospherics/components/unary/vent_pump/exit_vent, travel_time)
 	if(QDELETED(exit_vent) || exit_vent.welded)
@@ -222,7 +222,7 @@
 	if(prob(50))
 		audible_message("<span class='hear'>You hear something scampering through the ventilation ducts.</span>")
 
-	addtimer(CALLBACK(src, .proc/finish_vent_move, exit_vent), travel_time)
+	addtimer(CALLBACK(src, PROC_REF(finish_vent_move), exit_vent), travel_time)
 
 /obj/structure/spider/spiderling/proc/finish_vent_move(obj/machinery/atmospherics/components/unary/vent_pump/exit_vent)
 	if(QDELETED(exit_vent) || exit_vent.welded)
@@ -250,7 +250,7 @@
 				visible_message("<B>[src] scrambles into the ventilation ducts!</B>", \
 								"<span class='hear'>You hear something scampering through the ventilation ducts.</span>")
 
-			addtimer(CALLBACK(src, .proc/vent_move, exit_vent), rand(20,60))
+			addtimer(CALLBACK(src, PROC_REF(vent_move), exit_vent), rand(20,60))
 
 	//=================
 

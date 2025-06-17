@@ -51,7 +51,7 @@
 	return TRUE
 
 /datum/keybinding/mob/swap_hands
-	hotkey_keys = list("X", "Northeast") // PAGEUP
+	hotkey_keys = list("X") // PAGEUP
 	name = "swap_hands"
 	full_name = "Swap hands"
 	description = ""
@@ -63,6 +63,21 @@
 		return
 	var/mob/M = user.mob
 	M.swap_hand()
+	return TRUE
+
+/datum/keybinding/mob/jump
+    hotkey_keys = list("Northeast") // MMB
+    name = "jump"
+    full_name = "Jump"
+    description = "Makes your character jump."
+    keybind_signal = COMSIG_KB_MOB_JUMP_DOWN
+
+/datum/keybinding/mob/jump/down(client/user)
+	. = ..()
+	if(.)
+		return
+	var/mob/M = user.mob
+	M.jump(M.loc) // Call the jump function when MMB is pressed
 	return TRUE
 
 /datum/keybinding/mob/activate_inhand
@@ -102,7 +117,7 @@
 	return TRUE
 
 /datum/keybinding/mob/toggle_move_intent
-	hotkey_keys = list("C")
+	hotkey_keys = list("V")
 	name = "toggle_move_intent"
 	full_name = "Hold to toggle move intent"
 	description = "Held down to cycle to the other move intent, release to cycle back"

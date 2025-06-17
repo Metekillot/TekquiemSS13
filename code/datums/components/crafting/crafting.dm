@@ -1,16 +1,16 @@
 /datum/component/personal_crafting/Initialize()
 	if(ismob(parent))
-		RegisterSignal(parent, COMSIG_MOB_CLIENT_LOGIN, .proc/create_mob_button)
+		RegisterSignal(parent, COMSIG_MOB_CLIENT_LOGIN, PROC_REF(create_mob_button))
 
 /datum/component/personal_crafting/proc/create_mob_button(mob/user, client/CL)
 	SIGNAL_HANDLER
 
 	var/datum/hud/H = user.hud_used
 	var/atom/movable/screen/craft/C = new()
-	C.icon = H.ui_style
+	C.icon = 'icons/wod13/UI/buttons_wide.dmi'
 	H.static_inventory += C
 	CL.screen += C
-	RegisterSignal(C, COMSIG_CLICK, .proc/component_ui_interact)
+	RegisterSignal(C, COMSIG_CLICK, PROC_REF(component_ui_interact))
 
 /datum/component/personal_crafting
 	var/busy
@@ -172,10 +172,13 @@
 /datum/component/personal_crafting/proc/construct_item(atom/a, datum/crafting_recipe/R)
 	var/list/contents = get_surroundings(a,R.blacklist)
 	var/send_feedback = 1
+	var/mob/living/carbon/human/PIS
+	if(ishuman(a))
+		PIS = a
 	if(check_contents(a, R, contents))
 		if(check_tools(a, R, contents))
 			//If we're a mob we'll try a do_after; non mobs will instead instantly construct the item
-			if(ismob(a) && !do_after(a, R.time, target = a))
+			if(ismob(a) && !do_after(a, R.time*max(1, 5-PIS.get_wits()), target = a))
 				return "."
 			contents = get_surroundings(a,R.blacklist)
 			if(!check_contents(a, R, contents))
@@ -184,6 +187,20 @@
 				return ", missing tool."
 			var/list/parts = del_reqs(R, a)
 			var/atom/movable/I = new R.result (get_turf(a.loc))
+			if(istype(I, /mob/living/simple_animal/hostile))
+				var/mob/living/simple_animal/hostile/HS = I
+				if(ishuman(a))
+					HS.my_creator = a
+			if(istype(I, /obj/structure/fleshwall))
+				if(istype(get_area(a), /area/vtm))
+					var/area/vtm/V = get_area(a)
+					if(V.upper)
+						PIS.AdjustMasquerade(-1)
+			if(istype(I, /obj/effect/decal/gut_floor))
+				if(istype(get_area(a), /area/vtm))
+					var/area/vtm/V = get_area(a)
+					if(V.upper)
+						PIS.AdjustMasquerade(-1)
 			I.CheckParts(parts, R)
 			if(send_feedback)
 				SSblackbox.record_feedback("tally", "object_crafted", 1, I.type)
@@ -325,15 +342,15 @@
 	SIGNAL_HANDLER
 
 	if(user == parent)
-		INVOKE_ASYNC(src, .proc/ui_interact, user)
+		INVOKE_ASYNC(src, PROC_REF(ui_interact), user)
 
 /datum/component/personal_crafting/ui_state(mob/user)
 	return GLOB.not_incapacitated_turf_state
 
 //For the UI related things we're going to assume the user is a mob rather than typesetting it to an atom as the UI isn't generated if the parent is an atom
-/datum/component/personal_crafting/ui_interact(mob/user, datum/tgui/ui)
+/datum/component/personal_crafting/ui_interact(mob/user, datum/tgui/ui, var/open_ui = TRUE)
 	ui = SStgui.try_update_ui(user, src, ui)
-	if(!ui)
+	if(!ui && open_ui)
 		cur_category = categories[1]
 		if(islist(categories[cur_category]))
 			var/list/subcats = categories[cur_category]
@@ -414,6 +431,7 @@
 			else
 				to_chat(user, "<span class='warning'>Construction failed[result]</span>")
 			busy = FALSE
+			ui_interact(user, open_ui = FALSE) //Update the UI again as soon as possible after the UI is no longer busy, but don't open it again if it got closed.
 		if("toggle_recipes")
 			display_craftable_only = !display_craftable_only
 			. = TRUE

@@ -4,6 +4,8 @@
 
 #define isatom(A) (isloc(A))
 
+#define isdatum(thing) (istype(thing, /datum))
+
 #define isweakref(D) (istype(D, /datum/weakref))
 
 //Turfs
@@ -16,6 +18,8 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 	/turf/open/water,
 	/turf/open/openspace
 	)))
+
+#define isnpcbeacon(A) (istype(A, /obj/effect/landmark/npcbeacon))
 
 #define isgroundlessturf(A) (is_type_in_typecache(A, GLOB.turfs_without_ground))
 
@@ -48,10 +52,14 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 
 #define isbrain(A) (istype(A, /mob/living/brain))
 
+#define iszomboid(A) (istype(A, /mob/living/simple_animal/hostile/zombie))
+
 //Carbon mobs
 #define iscarbon(A) (istype(A, /mob/living/carbon))
 
 #define ishuman(A) (istype(A, /mob/living/carbon/human))
+
+#define isnpc(A) (istype(A, /mob/living/carbon/human/npc))
 
 //Human sub-species
 #define isabductor(A) (is_species(A, /datum/species/abductor))
@@ -72,8 +80,18 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 #define isvampire(A) (is_species(A,/datum/species/vampire))
 #define isdullahan(A) (is_species(A, /datum/species/dullahan))
 #define ismonkey(A) (is_species(A, /datum/species/monkey))
+#define iskindred(A) (is_species(A,/datum/species/kindred))
+#define iscathayan(A) (is_species(A,/datum/species/kuei_jin))
+#define isghoul(A) (is_species(A,/datum/species/ghoul))
+#define isgarou(A) (is_species(A,/datum/species/garou))
 
 //more carbon mobs
+
+#define iswerewolf(A) (istype(A, /mob/living/carbon/werewolf))
+
+#define iscrinos(A) (istype(A, /mob/living/carbon/werewolf/crinos))
+
+#define islupus(A) (istype(A, /mob/living/carbon/werewolf/lupus))
 
 #define isalien(A) (istype(A, /mob/living/carbon/alien))
 

@@ -113,15 +113,15 @@
 	dat += hack(user)
 	dat += showpai(user)
 	dat += "<TT><B>Mobile Fire Extinguisher v1.0</B></TT><BR><BR>"
-	dat += "Status: <A href='?src=[REF(src)];power=1'>[on ? "On" : "Off"]</A><BR>"
+	dat += "Status: <A href='byond://?src=[REF(src)];power=1'>[on ? "On" : "Off"]</A><BR>"
 	dat += "Maintenance panel panel is [open ? "opened" : "closed"]<BR>"
 
 	dat += "Behaviour controls are [locked ? "locked" : "unlocked"]<BR>"
 	if(!locked || issilicon(user) || isAdminGhostAI(user))
-		dat += "Extinguish Fires: <A href='?src=[REF(src)];operation=extinguish_fires'>[extinguish_fires ? "Yes" : "No"]</A><BR>"
-		dat += "Extinguish People: <A href='?src=[REF(src)];operation=extinguish_people'>[extinguish_people ? "Yes" : "No"]</A><BR>"
-		dat += "Patrol Station: <A href='?src=[REF(src)];operation=patrol'>[auto_patrol ? "Yes" : "No"]</A><BR>"
-		dat += "Stationary Mode: <a href='?src=[REF(src)];operation=stationary_mode'>[stationary_mode ? "Yes" : "No"]</a><br>"
+		dat += "Extinguish Fires: <A href='byond://?src=[REF(src)];operation=extinguish_fires'>[extinguish_fires ? "Yes" : "No"]</A><BR>"
+		dat += "Extinguish People: <A href='byond://?src=[REF(src)];operation=extinguish_people'>[extinguish_people ? "Yes" : "No"]</A><BR>"
+		dat += "Patrol Station: <A href='byond://?src=[REF(src)];operation=patrol'>[auto_patrol ? "Yes" : "No"]</A><BR>"
+		dat += "Stationary Mode: <a href='byond://?src=[REF(src)];operation=stationary_mode'>[stationary_mode ? "Yes" : "No"]</a><br>"
 
 	return dat
 
@@ -238,7 +238,7 @@
 
 	if(target_fire && (get_dist(src, target_fire) > 2))
 
-		path = get_path_to(src, get_turf(target_fire), /turf/proc/Distance_cardinal, 0, 30, 1, id=access_card)
+		path = get_path_to(src, get_turf(target_fire), TYPE_PROC_REF(/turf, Distance_cardinal), 0, 30, 1, id=access_card)
 		mode = BOT_MOVING
 		if(!path.len)
 			soft_reset()

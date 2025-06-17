@@ -201,7 +201,7 @@ GLOBAL_LIST_EMPTY(bodycontainers) //Let them act as spawnpoints for revenants an
 
 /obj/item/paper/guides/jobs/medical/morgue
 	name = "morgue memo"
-	info = "<font size='2'>Since this station's medbay never seems to fail to be staffed by the mindless monkeys meant for genetics experiments, I'm leaving a reminder here for anyone handling the pile of cadavers the quacks are sure to leave.</font><BR><BR><font size='4'><font color=red>Red lights mean there's a plain ol' dead body inside.</font><BR><BR><font color=orange>Yellow lights mean there's non-body objects inside.</font><BR><font size='2'>Probably stuff pried off a corpse someone grabbed, or if you're lucky it's stashed booze.</font><BR><BR><font color=green>Green lights mean the morgue system detects the body may be able to be brought back to life.</font></font><BR><font size='2'>I don't know how that works, but keep it away from the kitchen and go yell at the geneticists.</font><BR><BR>- CentCom medical inspector"
+	default_raw_text = "<font size='2'>Since this station's medbay never seems to fail to be staffed by the mindless monkeys meant for genetics experiments, I'm leaving a reminder here for anyone handling the pile of cadavers the quacks are sure to leave.</font><BR><BR><font size='4'><font color=red>Red lights mean there's a plain ol' dead body inside.</font><BR><BR><font color=orange>Yellow lights mean there's non-body objects inside.</font><BR><font size='2'>Probably stuff pried off a corpse someone grabbed, or if you're lucky it's stashed booze.</font><BR><BR><font color=green>Green lights mean the morgue system detects the body may be able to be brought back to life.</font></font><BR><font size='2'>I don't know how that works, but keep it away from the kitchen and go yell at the geneticists.</font><BR><BR>- CentCom medical inspector"
 
 /*
  * Crematorium
@@ -266,14 +266,21 @@ GLOBAL_LIST_EMPTY(crematoriums)
 		update_icon()
 
 		for(var/mob/living/M in conts)
-			if (M.stat != DEAD)
+			if(M.stat != DEAD)
 				M.emote("scream")
+				if(user)
+					if(isnpc(M) && !iskindred(M))
+						var/mob/living/carbon/human/HM = user
+						HM.AdjustHumanity(-1, 0)
 			if(user)
 				log_combat(user, M, "cremated")
+				if(!iskindred(M) && isnpc(M) && M.stat == DEAD)
+					var/mob/living/carbon/human/HM = user
+					HM.AdjustMasquerade(1)
 			else
 				M.log_message("was cremated", LOG_ATTACK)
-
-			M.death(1)
+			if(M.stat != DEAD)		//So it's the bug which causes to loose humanity if burning corpses
+				M.death(1)
 			if(M) //some animals get automatically deleted on death.
 				M.ghostize()
 				qdel(M)

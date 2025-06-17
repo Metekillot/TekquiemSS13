@@ -156,27 +156,27 @@
 	var/list/file_data = list()
 	var/pos = 1
 	for(var/V in GLOB.news_network.network_channels)
-		var/datum/newscaster/feed_channel/channel = V
+		var/datum/feed_channel/channel = V
 		if(!istype(channel))
 			stack_trace("Non-channel in newscaster channel list")
 			continue
-		file_data["[pos]"] = list("channel name" = "[channel.channel_name]", "author" = "[channel.author]", "censored" = channel.censored ? 1 : 0, "author censored" = channel.authorCensor ? 1 : 0, "messages" = list())
+		file_data["[pos]"] = list("channel name" = "[channel.channel_name]", "author" = "[channel.author]", "censored" = channel.censored ? 1 : 0, "author censored" = channel.author_censor ? 1 : 0, "messages" = list())
 		for(var/M in channel.messages)
-			var/datum/newscaster/feed_message/message = M
+			var/datum/feed_message/message = M
 			if(!istype(message))
 				stack_trace("Non-message in newscaster channel messages list")
 				continue
 			var/list/comment_data = list()
 			for(var/C in message.comments)
-				var/datum/newscaster/feed_comment/comment = C
+				var/datum/feed_comment/comment = C
 				if(!istype(comment))
 					stack_trace("Non-message in newscaster message comments list")
 					continue
 				comment_data += list(list("author" = "[comment.author]", "time stamp" = "[comment.time_stamp]", "body" = "[comment.body]"))
-			file_data["[pos]"]["messages"] += list(list("author" = "[message.author]", "time stamp" = "[message.time_stamp]", "censored" = message.bodyCensor ? 1 : 0, "author censored" = message.authorCensor ? 1 : 0, "photo file" = "[message.photo_file]", "photo caption" = "[message.caption]", "body" = "[message.body]", "comments" = comment_data))
+			file_data["[pos]"]["messages"] += list(list("author" = "[message.author]", "time stamp" = "[message.time_stamp]", "censored" = message.body_censor ? 1 : 0, "author censored" = message.author_censor ? 1 : 0, "photo file" = "[message.photo_file]", "photo caption" = "[message.caption]", "body" = "[message.body]", "comments" = comment_data))
 		pos++
 	if(GLOB.news_network.wanted_issue.active)
-		file_data["wanted"] = list("author" = "[GLOB.news_network.wanted_issue.scannedUser]", "criminal" = "[GLOB.news_network.wanted_issue.criminal]", "description" = "[GLOB.news_network.wanted_issue.body]", "photo file" = "[GLOB.news_network.wanted_issue.photo_file]")
+		file_data["wanted"] = list("author" = "[GLOB.news_network.wanted_issue.scanned_user]", "criminal" = "[GLOB.news_network.wanted_issue.criminal]", "description" = "[GLOB.news_network.wanted_issue.body]", "photo file" = "[GLOB.news_network.wanted_issue.photo_file]")
 	WRITE_FILE(json_file, json_encode(file_data))
 
 ///Handles random hardcore point rewarding if it applies.
@@ -205,7 +205,7 @@
 /datum/controller/subsystem/ticker/proc/declare_completion()
 	set waitfor = FALSE
 
-	to_chat(world, "<BR><BR><BR><span class='big bold'>The round has ended.</span>")
+	to_chat(world, "<BR><BR><BR><span class='big bold'>The dawn is coming.</span>")
 	log_game("The round has ended.")
 
 	for(var/I in round_end_events)
@@ -288,7 +288,7 @@
 /datum/controller/subsystem/ticker/proc/standard_reboot()
 	if(ready_for_reboot)
 		if(mode.station_was_nuked)
-			Reboot("Station destroyed by Nuclear Device.", "nuke")
+			Reboot("City destroyed by Nuclear Device.", "nuke")
 		else
 			Reboot("Round ended.", "proper completion")
 	else
@@ -314,6 +314,10 @@
 	parts += hardcore_random_report()
 
 	CHECK_TICK
+
+	parts += transportation_report()
+
+	CHECK_TICK
 	//Medals
 	parts += medal_report()
 	//Station Goals
@@ -331,10 +335,10 @@
 
 	if(GLOB.round_id)
 		var/statspage = CONFIG_GET(string/roundstatsurl)
-		var/info = statspage ? "<a href='?action=openLink&link=[url_encode(statspage)][GLOB.round_id]'>[GLOB.round_id]</a>" : GLOB.round_id
+		var/info = statspage ? "<a href='byond://?action=openLink&link=[url_encode(statspage)][GLOB.round_id]'>[GLOB.round_id]</a>" : GLOB.round_id
 		parts += "[FOURSPACES]Round ID: <b>[info]</b>"
-	parts += "[FOURSPACES]Shift Duration: <B>[DisplayTimeText(world.time - SSticker.round_start_time)]</B>"
-	parts += "[FOURSPACES]Station Integrity: <B>[mode.station_was_nuked ? "<span class='redtext'>Destroyed</span>" : "[popcount["station_integrity"]]%"]</B>"
+	parts += "[FOURSPACES]Night Duration: <B>[DisplayTimeText(world.time - SSticker.round_start_time)]</B>"
+	parts += "[FOURSPACES]City Integrity: <B>[mode.station_was_nuked ? "<span class='redtext'>Destroyed</span>" : "[popcount["station_integrity"]]%"]</B>"
 	var/total_players = GLOB.joined_player_list.len
 	if(total_players)
 		parts+= "[FOURSPACES]Total Population: <B>[total_players]</B>"
@@ -348,7 +352,7 @@
 				parts += "[FOURSPACES]First Death: <b>[ded["name"]], [ded["role"]], at [ded["area"]]. Damage taken: [ded["damage"]].[ded["last_words"] ? " Their last words were: \"[ded["last_words"]]\"" : ""]</b>"
 			//ignore this comment, it fixes the broken sytax parsing caused by the " above
 			else
-				parts += "[FOURSPACES]<i>Nobody died this shift!</i>"
+				parts += "[FOURSPACES]<i>Nobody died this night!</i>"
 	if(istype(SSticker.mode, /datum/game_mode/dynamic))
 		var/datum/game_mode/dynamic/mode = SSticker.mode
 		parts += "[FOURSPACES]Threat level: [mode.threat_level]"
@@ -417,17 +421,17 @@
 			if(EMERGENCY_ESCAPED_OR_ENDGAMED)
 				if(!M.onCentCom() && !M.onSyndieBase())
 					parts += "<div class='panel stationborder'>"
-					parts += "<span class='marooned'>You managed to survive, but were marooned on [station_name()]...</span>"
+					parts += "<span class='marooned'>You managed to survive, but were quarantined in [station_name()]...</span>"
 				else
 					parts += "<div class='panel greenborder'>"
-					parts += "<span class='greentext'>You managed to survive the events on [station_name()] as [M.real_name].</span>"
+					parts += "<span class='greentext'>You managed to survive the events of [station_name()] as [M.real_name].</span>"
 			else
 				parts += "<div class='panel greenborder'>"
-				parts += "<span class='greentext'>You managed to survive the events on [station_name()] as [M.real_name].</span>"
+				parts += "<span class='greentext'>You managed to survive the events of [station_name()] as [M.real_name].</span>"
 
 		else
 			parts += "<div class='panel redborder'>"
-			parts += "<span class='redtext'>You did not survive the events on [station_name()]...</span>"
+			parts += "<span class='redtext'>You did not survive the events of [station_name()]...</span>"
 	else
 		parts += "<div class='panel stationborder'>"
 	parts += "<br>"
@@ -493,27 +497,26 @@
 ///Generate a report for how much money is on station, as well as the richest crewmember on the station.
 /datum/controller/subsystem/ticker/proc/market_report()
 	var/list/parts = list()
-	parts += "<span class='header'>Station Economic Summary:</span>"
+	parts += "<span class='header'>City Economic Summary:</span>"
 	///This is the richest account on station at roundend.
-	var/datum/bank_account/mr_moneybags
+	var/datum/vtr_bank_account/mr_moneybags = GLOB.bank_account_list[1]
+	if(!istype(mr_moneybags))
+		CRASH("A bank account wasn't found in GLOB.bank_account_list for determining the richest player at round-end.")
 	///This is the station's total wealth at the end of the round.
 	var/station_vault = 0
 	///How many players joined the round.
 	var/total_players = GLOB.joined_player_list.len
-	var/list/typecache_bank = typecacheof(list(/datum/bank_account/department, /datum/bank_account/remote))
-	for(var/i in SSeconomy.bank_accounts_by_id)
-		var/datum/bank_account/current_acc = SSeconomy.bank_accounts_by_id[i]
-		if(typecache_bank[current_acc.type])
-			continue
-		station_vault += current_acc.account_balance
-		if(!mr_moneybags || mr_moneybags.account_balance < current_acc.account_balance)
-			mr_moneybags = current_acc
-	parts += "<div class='panel stationborder'>There were [station_vault] credits collected by crew this shift.<br>"
+	for(var/datum/vtr_bank_account/account in GLOB.bank_account_list)
+		if(account && account.account_owner)
+			station_vault += account.balance
+			if(mr_moneybags.balance < account.balance)
+				mr_moneybags = account
+	parts += "<div class='panel stationborder'>There were [station_vault] dollars collected by people this shift.<br>"
 	if(total_players > 0)
-		parts += "An average of [station_vault/total_players] credits were collected.<br>"
-		log_econ("Roundend credit total: [station_vault] credits. Average Credits: [station_vault/total_players]")
+		parts += "An average of [station_vault/total_players] dollars were collected.<br>"
+		log_econ("Roundend credit total: [station_vault] dollars. Average cash amount: [station_vault/total_players]")
 	if(mr_moneybags)
-		parts += "The most affluent crew member at shift end was <b>[mr_moneybags.account_holder] with [mr_moneybags.account_balance]</b> cr!</div>"
+		parts += "The most affluent person at the night's end was <b>[mr_moneybags.account_owner] with [mr_moneybags.balance]</b> dollars!</div>"
 	else
 		parts += "Somehow, nobody made any money this shift! This'll result in some budget cuts...</div>"
 	return parts
@@ -572,7 +575,7 @@
 	var/currrent_category
 	var/datum/antagonist/previous_category
 
-	sortTim(all_antagonists, /proc/cmp_antag_category)
+	sortTim(all_antagonists, GLOBAL_PROC_REF(cmp_antag_category))
 
 	for(var/datum/antagonist/A in all_antagonists)
 		if(!A.show_in_roundend)
@@ -604,7 +607,7 @@
 	var/datum/action/report/R = new
 	C.player_details.player_actions += R
 	R.Grant(C.mob)
-	to_chat(C,"<a href='?src=[REF(R)];report=1'>Show roundend report again</a>")
+	to_chat(C,"<a href='byond://?src=[REF(R)];report=1'>Show roundend report again</a>")
 
 /datum/action/report
 	name = "Show roundend report"
@@ -638,7 +641,7 @@
 		if(fleecheck)
 			var/turf/T = get_turf(ply.current)
 			if(!T || !is_station_level(T.z))
-				text += " while <span class='redtext'>fleeing the station</span>"
+				text += " while <span class='redtext'>fleeing the city</span>"
 		if(ply.current.real_name != ply.name)
 			text += " as <b>[ply.current.real_name]</b>"
 	else

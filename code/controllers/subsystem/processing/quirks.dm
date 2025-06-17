@@ -5,7 +5,7 @@
 PROCESSING_SUBSYSTEM_DEF(quirks)
 	name = "Quirks"
 	init_order = INIT_ORDER_QUIRKS
-	flags = SS_BACKGROUND
+	flags = SS_BACKGROUND|SS_NO_FIRE
 	runlevels = RUNLEVEL_GAME
 	wait = 1 SECONDS
 
@@ -32,7 +32,7 @@ PROCESSING_SUBSYSTEM_DEF(quirks)
 
 /datum/controller/subsystem/processing/quirks/proc/SetupQuirks()
 	// Sort by Positive, Negative, Neutral; and then by name
-	var/list/quirk_list = sortList(subtypesof(/datum/quirk), /proc/cmp_quirk_asc)
+	var/list/quirk_list = sortList(subtypesof(/datum/quirk), GLOBAL_PROC_REF(cmp_quirk_asc))
 
 	for(var/V in quirk_list)
 		var/datum/quirk/T = V

@@ -275,7 +275,7 @@
 				to_chat(user, "<span class='warning'>Your glow is already enhanced!</span>")
 				return
 			species.update_glow(user, 5)
-			addtimer(CALLBACK(species, /datum/species/jelly/luminescent.proc/update_glow, user, LUMINESCENT_DEFAULT_GLOW), 600)
+			addtimer(CALLBACK(species, TYPE_PROC_REF(/datum/species/jelly/luminescent, update_glow), user, LUMINESCENT_DEFAULT_GLOW), 600)
 			to_chat(user, "<span class='notice'>You start glowing brighter.</span>")
 
 		if(SLIME_ACTIVATE_MAJOR)
@@ -441,7 +441,6 @@
 	switch(activation_type)
 		if(SLIME_ACTIVATE_MINOR)
 			to_chat(user, "<span class='userdanger'>You feel something <i>wrong</i> inside you...</span>")
-			user.ForceContractDisease(new /datum/disease/transformation/slime(), FALSE, TRUE)
 			return 100
 
 		if(SLIME_ACTIVATE_MAJOR)
@@ -491,7 +490,7 @@
 				return
 			to_chat(user, "<span class='notice'>You feel your skin harden and become more resistant.</span>")
 			species.armor += 25
-			addtimer(CALLBACK(src, .proc/reset_armor, species), 1200)
+			addtimer(CALLBACK(src, PROC_REF(reset_armor), species), 1200)
 			return 450
 
 		if(SLIME_ACTIVATE_MAJOR)

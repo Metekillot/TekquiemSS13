@@ -3,7 +3,7 @@
 $include game_options.txt
 $include dbconfig.txt
 $include comms.txt
-$include antag_rep.txt
+$include logging.txt
 $include resources.txt
 $include interviews.txt
 
@@ -16,22 +16,22 @@ $include interviews.txt
 # There are various options which are hard-locked for security reasons.
 
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Uncomment and replace 'tgstation' with the name of your choice.
-# SERVERNAME tgstation
+SERVERNAME World of Darkness XIII
 
 ## Server SQL name: This is the name used to identify the server to the SQL DB, distinct from SERVERNAME as it must be at most 32 characters.
-# SERVERSQLNAME tgstation
+# SERVERSQLNAME wod13
 
 ## Station name: The name of the station as it is referred to in-game. If commented out, the game will generate a random name instead.
-STATIONNAME Space Station 13
+STATIONNAME San Francisco
 
 ## Put on byond hub: Uncomment this to put your server on the byond hub.
-#HUB
+HUB
 
 ## Lobby time: This is the amount of time between rounds that players have to setup their characters and be ready.
 LOBBY_COUNTDOWN 120
 
 ## Round End Time: This is the amount of time after the round ends that players have to murder death kill each other.
-ROUND_END_COUNTDOWN 90
+ROUND_END_COUNTDOWN 60
 
 ## Comment this out if you want to use the SQL based admin system, the legacy system uses admins.txt.
 ## You need to set up your database to use the SQL based system.
@@ -74,82 +74,6 @@ ENABLE_LOCALHOST_RANK
 #USE_EXP_RESTRICTIONS_OTHER
 ## Allows admins to bypass job playtime requirements.
 #USE_EXP_RESTRICTIONS_ADMIN_BYPASS
-
-## log OOC channel
-LOG_OOC
-
-## log client Say
-LOG_SAY
-
-## log admin actions
-LOG_ADMIN
-
-## log admin chat
-LOG_ADMINCHAT
-
-## log client access (logon/logoff)
-LOG_ACCESS
-
-## log game actions (start of round, results, etc.)
-LOG_GAME
-
-## log player votes
-LOG_VOTE
-
-## log client Whisper
-LOG_WHISPER
-
-## log emotes
-LOG_EMOTE
-
-## log attack messages
-LOG_ATTACK
-
-## log pda messages
-LOG_PDA
-
-## log uplink purchases
-LOG_UPLINK
-
-## log telecomms messages
-LOG_TELECOMMS
-
-## log prayers
-LOG_PRAYER
-
-## log lawchanges
-LOG_LAW
-
-## log economy actions
-LOG_ECON
-
-## log crew manifest to seperate file
-LOG_MANIFEST
-
-## log job divide debugging information
-#LOG_JOB_DEBUG
-
-## log all world.Topic() calls
-# LOG_WORLD_TOPIC
-
-## enables use of the proc twitterize() that lets you take a large list of strings and turn it into a JSON file of tweet sized strings.
-## As an example of how this could be """useful""" look towards Poly (https://twitter.com/Poly_the_Parrot)
-# LOG_TWITTER
-
-## Enable logging pictures
-# LOG_PICTURES
-
-## log mecha actions
-# LOG_MECHA
-
-## log virus and actions
-LOG_VIRUS
-
-## log cloning actions
-LOG_CLONING
-
-## log shuttle actions
-LOG_SHUTTLE
 
 ##Log camera pictures - Must have picture logging enabled
 PICTURE_LOGGING_CAMERA
@@ -194,7 +118,7 @@ VOTE_PERIOD 600
 # DEFAULT_NO_VOTE
 
 ## disable abandon mob
-NORESPAWN
+#NORESPAWN
 
 ## set a hosted by name for unix platforms
 HOSTEDBY Yournamehere
@@ -234,16 +158,16 @@ CHECK_RANDOMIZER
 # SERVER ss13.example.com:2506
 
 ## forum address
-# FORUMURL http://tgstation13.org/phpBB/index.php
+FORUMURL https://discord.gg/KCGR6Xfhdb
 
 ## Wiki address
-# WIKIURL http://www.tgstation13.org/wiki
+WIKIURL https://wiki.wod13.org
 
 ## Rules address
-# RULESURL http://www.tgstation13.org/wiki/Rules
+RULESURL https://discord.gg/KCGR6Xfhdb
 
 ## Github address
-# GITHUBURL https://www.github.com/tgstation/tgstation
+# GITHUBURL https://github.com/RequiemSS13/RequiemSS13
 
 ## Discord bot command prefix, if the discord bot is used
 # DISCORDBOTCOMMANDPREFIX ?
@@ -260,7 +184,7 @@ CHECK_RANDOMIZER
 # GAMELOGURL
 
 ## Ban appeals URL - usually for a forum or wherever people should go to contact your admins.
-# BANAPPEALS http://justanotherday.example.com
+BANAPPEALS https://discord.gg/KCGR6Xfhdb
 
 ## System command that invokes youtube-dl, used by Play Internet Sound.
 ## You can install youtube-dl with
@@ -286,10 +210,6 @@ ALLOW_HOLIDAYS
 
 ## Uncomment to show the names of the admin sending a pm from IRC instead of showing as a stealthmin.
 #SHOW_IRC_NAME
-
-## Defines the ticklimit for subsystem initialization (In percents of a byond tick). Lower makes world start smoother. Higher makes it faster.
-##This is currently a testing optimized setting. A good value for production would be 98.
-TICK_LIMIT_MC_INIT 500
 
 ##Defines the ticklag for the world. Ticklag is the amount of time between game ticks (aka byond ticks) (in 1/10ths of a second).
 ##	This also controls the client network update rate, as well as the default client fps
@@ -490,7 +410,7 @@ DISABLE_HIGH_POP_MC_MODE_AMOUNT 60
 ## Uncomment to prevent the world from sleeping while no players are connected after initializations
 #RESUME_AFTER_INITIALIZATIONS
 
-## Uncomment to set the number of /world/Reboot()s before the DreamDaemon restarts itself. 0 means restart every round. Requires tgstation server tools.
+## Uncomment to set the number of /world/Reboot()s before the Dream Daemon restarts itself. 0 means restart every round. Requires tgstation server tools.
 #ROUNDS_UNTIL_HARD_RESTART 10
 
 
@@ -499,7 +419,7 @@ DISABLE_HIGH_POP_MC_MODE_AMOUNT 60
 ##  15x15 would be the standard square view. 21x15 is what goonstation uses for widescreen.
 ##  Setting this to something different from DEFAULT_VIEW_SQUARE will enable widescreen toggles
 ##	Do note that changing this value will affect the title screen. The title screen will have to be updated manually if this is changed.
-DEFAULT_VIEW 19x15
+DEFAULT_VIEW 17x15
 
 ##Default view size, in tiles. Should *always* be square.
 ## The alternative square viewport size if you're using a widescreen view size
@@ -517,6 +437,36 @@ DEFAULT_VIEW_SQUARE 15x15
 ## If enabled, only bans from these servers will be shown to admins using CentCom. The default sources list is an example.
 #CENTCOM_SOURCE_WHITELIST Beestation MRP,TGMC,FTL13
 
+## The URL to the webhook for adminhelps to relay the urgent ahelp message to
+## If not set, will disable urgent ahelps.
+#URGENT_ADMINHELP_WEBHOOK_URL
+
+## See above, but for non-urgent ahelps
+#REGULAR_ADMINHELP_WEBHOOK_URL
+
+## The urgent ahelp cooldown for a given player if they're alone on a server and need to send an urgent ahelp.
+URGENT_AHELP_COOLDOWN 300
+
+## The message that is sent to the discord if an urgent ahelp is sent. Useful for sending a role ping.
+#URGENT_AHELP_MESSAGE
+
+## See above, but for non-urgent ahelps.
+#AHELP_MESSAGE
+
+## The message that the player receives whenever prompted whether they want to send an urgent ahelp or not.
+#URGENT_AHELP_USER_PROMPT This'll ping the admins!
+
+## The link that the title of a ticket can link to.
+## If not set, it will link nowhere
+## use $RID for the round ID and $TID for the ticket ID
+#ADMINHELP_AHELP_LINK
+
+## The URL for the pfp of the webhook
+#ADMINHELP_WEBHOOK_PFP
+
+## The name of the webhook
+#ADMINHELP_WEBHOOK_NAME
+
 #### DISCORD STUFFS ####
 ## MAKE SURE ALL SECTIONS OF THIS ARE FILLED OUT BEFORE ENABLING
 ## Discord IDs can be obtained by following this guide: https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-
@@ -532,3 +482,23 @@ DEFAULT_VIEW_SQUARE 15x15
 
 ## Add the ID of the role you want assigning here
 #DISCORD_ROLEID 000000000000000000
+
+## The path to export current .sav format files to json. If commented out, has no effect.
+## Assuming you're saving inside the directory where you have your .dme
+## Windows: directory\to\save\ | Linux: directory/to/save/
+## Don't forget the last path separator!
+#JSON_CONVERSION_PATH data\player_saves\json_saves\
+
+## Tgui payloads larger than the 2kb limit for BYOND topic requests are split into roughly 1kb chunks and sent in sequence.
+## This config option limits the maximum chunk count for which the server will accept a payload, default is 32
+TGUI_MAX_CHUNK_COUNT 32
+
+## Enables the Discord Overwatch system
+#DISCORD_OVERWATCH
+
+## Sets the webhook URL for the Overwatch System
+#DISCORD_OVERWATCH_WEBHOOK https://discord.com/api/webhooks/XXX/XXX
+
+
+## Sets the potential server url for the discord tgs commands
+#DISCORD_SERVER_TARGET 127.0.0.1:1000

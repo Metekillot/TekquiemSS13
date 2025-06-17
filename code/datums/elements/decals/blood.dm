@@ -6,7 +6,7 @@
 
 	. = ..()
 
-	RegisterSignal(target, COMSIG_ATOM_GET_EXAMINE_NAME, .proc/get_examine_name, TRUE)
+	RegisterSignal(target, COMSIG_ATOM_GET_EXAMINE_NAME, PROC_REF(get_examine_name), TRUE)
 
 /datum/element/decal/blood/Detach(atom/source, force)
 	UnregisterSignal(source, COMSIG_ATOM_GET_EXAMINE_NAME)
@@ -15,7 +15,7 @@
 /datum/element/decal/blood/generate_appearance(_icon, _icon_state, _dir, _layer, _color, _alpha, source)
 	var/obj/item/I = source
 	if(!_icon)
-		_icon = 'icons/effects/blood.dmi'
+		_icon = 'icons/effects/blood_inventory.dmi'
 	if(!_icon_state)
 		_icon_state = "itemblood"
 	var/icon = initial(I.icon)

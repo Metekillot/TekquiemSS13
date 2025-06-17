@@ -414,20 +414,20 @@
 	update_icon()
 	linked_interface.active = TRUE
 	linked_interface.update_icon()
-	RegisterSignal(linked_interface, COMSIG_PARENT_QDELETING, .proc/unregister_signals)
+	RegisterSignal(linked_interface, COMSIG_PARENT_QDELETING, PROC_REF(unregister_signals))
 	linked_input.active = TRUE
 	linked_input.update_icon()
-	RegisterSignal(linked_input, COMSIG_PARENT_QDELETING, .proc/unregister_signals)
+	RegisterSignal(linked_input, COMSIG_PARENT_QDELETING, PROC_REF(unregister_signals))
 	linked_output.active = TRUE
 	linked_output.update_icon()
-	RegisterSignal(linked_output, COMSIG_PARENT_QDELETING, .proc/unregister_signals)
+	RegisterSignal(linked_output, COMSIG_PARENT_QDELETING, PROC_REF(unregister_signals))
 	linked_moderator.active = TRUE
 	linked_moderator.update_icon()
-	RegisterSignal(linked_moderator, COMSIG_PARENT_QDELETING, .proc/unregister_signals)
+	RegisterSignal(linked_moderator, COMSIG_PARENT_QDELETING, PROC_REF(unregister_signals))
 	for(var/obj/machinery/hypertorus/corner/corner in corners)
 		corner.active = TRUE
 		corner.update_icon()
-		RegisterSignal(corner, COMSIG_PARENT_QDELETING, .proc/unregister_signals)
+		RegisterSignal(corner, COMSIG_PARENT_QDELETING, PROC_REF(unregister_signals))
 	soundloop = new(list(src), TRUE)
 	soundloop.volume = 5
 
@@ -1341,7 +1341,7 @@
 
 /obj/item/paper/guides/jobs/atmos/hypertorus
 	name = "paper- 'Quick guide to safe handling of the HFR'"
-	info = "<B>How to safely(TM) operate the Hypertorus</B><BR>\
+	default_raw_text = "<B>How to safely(TM) operate the Hypertorus</B><BR>\
 	-Build the machine as it’s shown in the main guide.<BR>\
 	-Make a 50/50 gasmix of tritium and hydrogen totalling around 2000 moles.<BR>\
 	-Start the machine, fill up the cooling loop with plasma/hypernoblium and use space or freezers to cool it.<BR>\

@@ -41,7 +41,7 @@ the new instance inside the host to be updated to the template's stats.
 	var/points = 0
 
 	var/last_move_tick = 0
-	var/move_delay = 1
+	var/disease_move_delay = 1
 
 	var/next_adaptation_time = 0
 	var/adaptation_cooldown = 600
@@ -69,7 +69,7 @@ the new instance inside the host to be updated to the template's stats.
 	browser = new /datum/browser(src, "disease_menu", "Adaptation Menu", 1000, 770, src)
 
 	freemove_end = world.time + FREEMOVE_TIME
-	freemove_end_timerid = addtimer(CALLBACK(src, .proc/infect_random_patient_zero), FREEMOVE_TIME, TIMER_STOPPABLE)
+	freemove_end_timerid = addtimer(CALLBACK(src, PROC_REF(infect_random_patient_zero)), FREEMOVE_TIME, TIMER_STOPPABLE)
 
 /mob/camera/disease/Destroy()
 	. = ..()
@@ -114,7 +114,7 @@ the new instance inside the host to be updated to the template's stats.
 	if(freemove)
 		forceMove(NewLoc)
 	else
-		if(world.time > (last_move_tick + move_delay))
+		if(world.time > (last_move_tick + disease_move_delay))
 			follow_next(Dir & NORTHWEST)
 			last_move_tick = world.time
 
@@ -267,7 +267,7 @@ the new instance inside the host to be updated to the template's stats.
 /mob/camera/disease/proc/set_following(mob/living/L)
 	if(following_host)
 		UnregisterSignal(following_host, COMSIG_MOVABLE_MOVED)
-	RegisterSignal(L, COMSIG_MOVABLE_MOVED, .proc/follow_mob)
+	RegisterSignal(L, COMSIG_MOVABLE_MOVED, PROC_REF(follow_mob))
 	following_host = L
 	follow_mob()
 
@@ -308,7 +308,7 @@ the new instance inside the host to be updated to the template's stats.
 /mob/camera/disease/proc/adapt_cooldown()
 	to_chat(src, "<span class='notice'>You have altered your genetic structure. You will be unable to adapt again for [DisplayTimeText(adaptation_cooldown)].</span>")
 	next_adaptation_time = world.time + adaptation_cooldown
-	addtimer(CALLBACK(src, .proc/notify_adapt_ready), adaptation_cooldown)
+	addtimer(CALLBACK(src, PROC_REF(notify_adapt_ready)), adaptation_cooldown)
 
 /mob/camera/disease/proc/notify_adapt_ready()
 	to_chat(src, "<span class='notice'>You are now ready to adapt again.</span>")

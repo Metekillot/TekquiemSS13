@@ -20,7 +20,7 @@
  *
  * make sure you add an update to the schema_version stable in the db changelog
  */
-#define DB_MINOR_VERSION 12
+#define DB_MINOR_VERSION 22
 
 
 //! ## Timing subsystem
@@ -62,6 +62,10 @@
 
 ///Empty ID define
 #define TIMER_ID_NULL -1
+
+/// Used to trigger object removal from a processing list
+#define PROCESS_KILL 26
+
 
 //! ## Initialization subsystem
 
@@ -112,8 +116,10 @@
 #define INIT_ORDER_INSTRUMENTS		82
 #define INIT_ORDER_VIS				80
 #define INIT_ORDER_ACHIEVEMENTS		77
+#define INIT_ORDER_WHITELISTS		76
 #define INIT_ORDER_RESEARCH			75
 #define INIT_ORDER_EVENTS			70
+#define INIT_ORDER_LOADOUT			71
 #define INIT_ORDER_JOBS				65
 #define INIT_ORDER_QUIRKS			60
 #define INIT_ORDER_TICKER			55
@@ -125,6 +131,7 @@
 #define INIT_ORDER_OUTPUTS			35
 #define INIT_ORDER_ATOMS			30
 #define INIT_ORDER_LANGUAGE			25
+#define INIT_ORDER_MODULARMAPPING 	23
 #define INIT_ORDER_MACHINES			20
 #define INIT_ORDER_SKILLS			15
 #define INIT_ORDER_TIMER			1
@@ -149,11 +156,14 @@
 // Subsystem fire priority, from lowest to highest priority
 // If the subsystem isn't listed here it's either DEFAULT or PROCESS (if it's a processing subsystem child)
 
+#define FIRE_PRIORITY_PING 10
+#define FIRE_PRIORITY_VERYLOW		10
 #define FIRE_PRIORITY_IDLE_NPC		10
 #define FIRE_PRIORITY_SERVER_MAINT	10
 #define FIRE_PRIORITY_RESEARCH		10
 #define FIRE_PRIORITY_VIS			10
 #define FIRE_PRIORITY_GARBAGE		15
+#define FIRE_PRIORITY_DATABASE 16
 #define FIRE_PRIORITY_WET_FLOORS	20
 #define FIRE_PRIORITY_AIR			20
 #define FIRE_PRIORITY_NPC			20
@@ -233,11 +243,11 @@
 #define SSAIR_ATMOSMACHINERY 2
 #define SSAIR_ACTIVETURFS 3
 #define SSAIR_HOTSPOTS 4
-#define SSAIR_EXCITEDCLEANUP 5
-#define SSAIR_EXCITEDGROUPS 6
-#define SSAIR_HIGHPRESSURE 7
-#define SSAIR_SUPERCONDUCTIVITY 8
-#define SSAIR_PROCESS_ATOMS 9
+//#define SSAIR_EXCITEDCLEANUP 5
+#define SSAIR_EXCITEDGROUPS 5
+#define SSAIR_HIGHPRESSURE 6
+#define SSAIR_SUPERCONDUCTIVITY 7
+#define SSAIR_PROCESS_ATOMS 8
 
 // Explosion Subsystem subtasks
 #define SSEXPLOSIONS_MOVABLES 1

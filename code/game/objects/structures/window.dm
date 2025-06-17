@@ -31,6 +31,15 @@
 	var/hitsound = 'sound/effects/Glasshit.ogg'
 	flags_ricochet = RICOCHET_HARD
 	receive_ricochet_chance_mod = 0.5
+	var/curtain = 0 // Spawns a curtain on init. This likely won't be used much if at all since the frame itself creates its own curtain, but just in case its needed for edge cases
+	var/curtain_dir // 1 for NORTH 2 for SOUTH 4 for EAST 8 for WEST; For directional restrictions on curtains
+
+/obj/structure/window/proc/create_curtain()
+	var/obj/structure/curtain/dwelling/new_curtain = new(get_turf(src))
+	if(curtain_dir) new_curtain.use_restrict_dir = DIRFLIP(curtain_dir)
+
+/obj/structure/window/proc/process_break_in(severity) // For dependancies
+	return
 
 /obj/structure/window/examine(mob/user)
 	. = ..()
@@ -66,11 +75,13 @@
 	explosion_block = EXPLOSION_BLOCK_PROC
 
 	flags_1 |= ALLOW_DARK_PAINTS_1
-	RegisterSignal(src, COMSIG_OBJ_PAINTED, .proc/on_painted)
+	RegisterSignal(src, COMSIG_OBJ_PAINTED, PROC_REF(on_painted))
+
+	if(curtain) create_curtain()
 
 /obj/structure/window/ComponentInitialize()
 	. = ..()
-	AddComponent(/datum/component/simple_rotation,ROTATION_ALTCLICK | ROTATION_CLOCKWISE | ROTATION_COUNTERCLOCKWISE | ROTATION_VERBS ,null,CALLBACK(src, .proc/can_be_rotated),CALLBACK(src,.proc/after_rotation))
+	AddComponent(/datum/component/simple_rotation,ROTATION_ALTCLICK | ROTATION_CLOCKWISE | ROTATION_COUNTERCLOCKWISE | ROTATION_VERBS ,null,CALLBACK(src, PROC_REF(can_be_rotated)),CALLBACK(src, PROC_REF(after_rotation)))
 	AddElement(/datum/element/atmos_sensitive)
 
 /obj/structure/window/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
@@ -96,6 +107,11 @@
 		set_anchored(FALSE)
 	if(current_size >= STAGE_FIVE)
 		deconstruct(FALSE)
+
+/obj/structure/window/MouseDrop_T(atom/dropping, mob/user)
+	. = ..()
+
+	LoadComponent(/datum/component/leanable, dropping)
 
 /obj/structure/window/CanAllowThrough(atom/movable/mover, turf/target)
 	. = ..()
@@ -151,6 +167,7 @@
 			"<span class='notice'>You knock on [src].</span>")
 		playsound(src, knocksound, 50, TRUE)
 	else
+		process_break_in(5)
 		user.visible_message("<span class='warning'>[user] bashes [src]!</span>", \
 			"<span class='warning'>You bash [src]!</span>")
 		playsound(src, bashsound, 100, TRUE)
@@ -186,13 +203,13 @@
 	if(!(flags_1&NODECONSTRUCT_1) && !(reinf && state >= RWINDOW_FRAME_BOLTED))
 		if(I.tool_behaviour == TOOL_SCREWDRIVER)
 			to_chat(user, "<span class='notice'>You begin to [anchored ? "unscrew the window from":"screw the window to"] the floor...</span>")
-			if(I.use_tool(src, user, decon_speed, volume = 75, extra_checks = CALLBACK(src, .proc/check_anchored, anchored)))
+			if(I.use_tool(src, user, decon_speed, volume = 75, extra_checks = CALLBACK(src, PROC_REF(check_anchored), anchored)))
 				set_anchored(!anchored)
 				to_chat(user, "<span class='notice'>You [anchored ? "fasten the window to":"unfasten the window from"] the floor.</span>")
 			return
 		else if(I.tool_behaviour == TOOL_WRENCH && !anchored)
 			to_chat(user, "<span class='notice'>You begin to disassemble [src]...</span>")
-			if(I.use_tool(src, user, decon_speed, volume = 75, extra_checks = CALLBACK(src, .proc/check_state_and_anchored, state, anchored)))
+			if(I.use_tool(src, user, decon_speed, volume = 75, extra_checks = CALLBACK(src, PROC_REF(check_state_and_anchored), state, anchored)))
 				var/obj/item/stack/sheet/G = new glass_type(user.loc, glass_amount)
 				G.add_fingerprint(user)
 				playsound(src, 'sound/items/Deconstruct.ogg', 50, TRUE)
@@ -201,7 +218,7 @@
 			return
 		else if(I.tool_behaviour == TOOL_CROWBAR && reinf && (state == WINDOW_OUT_OF_FRAME) && anchored)
 			to_chat(user, "<span class='notice'>You begin to lever the window into the frame...</span>")
-			if(I.use_tool(src, user, 100, volume = 75, extra_checks = CALLBACK(src, .proc/check_state_and_anchored, state, anchored)))
+			if(I.use_tool(src, user, 100, volume = 75, extra_checks = CALLBACK(src, PROC_REF(check_state_and_anchored), state, anchored)))
 				state = RWINDOW_SECURE
 				to_chat(user, "<span class='notice'>You pry the window into the frame.</span>")
 			return
@@ -252,6 +269,7 @@
 	if(QDELETED(src))
 		return
 	if(!disassembled)
+		process_break_in(50)
 		playsound(src, breaksound, 70, TRUE)
 		if(!(flags_1 & NODECONSTRUCT_1))
 			for(var/obj/item/shard/debris in spawnDebris(drop_location()))
@@ -332,7 +350,7 @@
 		cut_overlay(crack_overlay)
 		if(ratio > 75)
 			return
-		crack_overlay = mutable_appearance('icons/obj/structures.dmi', "damage[ratio]", -(layer+0.1))
+		crack_overlay = mutable_appearance('icons/wod13/32x48.dmi', "damage[ratio]", -(layer+0.1))
 		. += crack_overlay
 
 /obj/structure/window/should_atmos_process(datum/gas_mixture/air, exposed_temperature)
@@ -393,7 +411,7 @@
 				if(I.use_tool(src, user, 150, volume = 100))
 					to_chat(user, "<span class='notice'>The security bolts are glowing white hot and look ready to be removed.</span>")
 					state = RWINDOW_BOLTS_HEATED
-					addtimer(CALLBACK(src, .proc/cool_bolts), 300)
+					addtimer(CALLBACK(src, PROC_REF(cool_bolts)), 300)
 				return
 		if(RWINDOW_BOLTS_HEATED)
 			if(I.tool_behaviour == TOOL_SCREWDRIVER)
@@ -522,7 +540,7 @@
 				if(I.use_tool(src, user, 180, volume = 100))
 					to_chat(user, "<span class='notice'>The security screws are glowing white hot and look ready to be removed.</span>")
 					state = RWINDOW_BOLTS_HEATED
-					addtimer(CALLBACK(src, .proc/cool_bolts), 300)
+					addtimer(CALLBACK(src, PROC_REF(cool_bolts)), 300)
 				return
 		if(RWINDOW_BOLTS_HEATED)
 			if(I.tool_behaviour == TOOL_SCREWDRIVER)
@@ -601,6 +619,8 @@
 	icon_state = "window-0"
 	base_icon_state = "window"
 	max_integrity = 50
+	plane = GAME_PLANE
+	layer = ABOVE_ALL_MOB_LAYER
 	fulltile = TRUE
 	flags_1 = PREVENT_CLICK_UNDER_1
 	smoothing_flags = SMOOTH_BITMASK
@@ -632,6 +652,8 @@
 	base_icon_state = "rplasma_window"
 	state = RWINDOW_SECURE
 	max_integrity = 1000
+	plane = GAME_PLANE
+	layer = ABOVE_ALL_MOB_LAYER
 	fulltile = TRUE
 	flags_1 = PREVENT_CLICK_UNDER_1
 	smoothing_flags = SMOOTH_BITMASK

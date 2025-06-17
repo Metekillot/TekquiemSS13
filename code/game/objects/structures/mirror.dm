@@ -1,4 +1,6 @@
 //wip wip wup
+GLOBAL_LIST_EMPTY(las_mirrors)
+
 /obj/structure/mirror
 	name = "mirror"
 	desc = "Mirror mirror on the wall, who's the most robust of them all?"
@@ -8,11 +10,38 @@
 	anchored = TRUE
 	max_integrity = 200
 	integrity_failure = 0.5
+	var/datum/weakref/ref
+	vis_flags = VIS_HIDE
+	var/timerid = null
 
 /obj/structure/mirror/Initialize(mapload)
 	. = ..()
+	var/unique_number = ""
+	if(length(GLOB.las_mirrors))
+		unique_number = "[length(GLOB.las_mirrors)+1]"
+	else
+		unique_number = "1"
+	if(istype(get_area(src), /area/vtm))
+		var/area/A = get_area(src)
+		if(A)
+			name = "mirror ([A.name] [unique_number])"
+			GLOB.las_mirrors += src
 	if(icon_state == "mirror_broke" && !broken)
 		obj_break(null, mapload)
+	var/obj/effect/reflection/reflection = new(src.loc)
+	reflection.setup_visuals(src)
+	ref = WEAKREF(reflection)
+
+/obj/structure/mirror/Crossed(atom/movable/AM)
+	. = ..()
+	if(!ref)
+		var/obj/effect/reflection/reflection = new(src.loc)
+		reflection.setup_visuals(src)
+		ref = WEAKREF(reflection)
+
+/obj/structure/mirror/Destroy()
+	. = ..()
+	GLOB.las_mirrors -= src
 
 /obj/structure/mirror/attack_hand(mob/user)
 	. = ..()
@@ -23,7 +52,6 @@
 
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
-
 		//see code/modules/mob/dead/new_player/preferences.dm at approx line 545 for comments!
 		//this is largely copypasted from there.
 
@@ -61,11 +89,23 @@
 		if(desc == initial(desc))
 			desc = "Oh no, seven years of bad luck!"
 		broken = TRUE
+		if(!ref)
+			var/obj/effect/reflection/reflection = new(src.loc)
+			reflection.setup_visuals(src)
+			ref = WEAKREF(reflection)
+		var/obj/effect/reflection/reflection = ref.resolve()
+		if(istype(reflection))
+			reflection.alpha_icon_state = "mirror_mask_broken"
+			reflection.update_mirror_filters()
 
 /obj/structure/mirror/deconstruct(disassembled = TRUE)
 	if(!(flags_1 & NODECONSTRUCT_1))
 		if(!disassembled)
 			new /obj/item/shard( src.loc )
+	var/obj/effect/reflection/reflection = ref.resolve()
+	if(istype(reflection))
+		qdel(reflection)
+		ref = null
 	qdel(src)
 
 /obj/structure/mirror/welder_act(mob/living/user, obj/item/I)
@@ -112,7 +152,7 @@
 	..()
 
 /obj/structure/mirror/magic/lesser/New()
-	choosable_races = GLOB.roundstart_races.Copy()
+	choosable_races = get_roundstart_species().Copy()
 	..()
 
 /obj/structure/mirror/magic/badmin/New()
@@ -149,7 +189,7 @@
 				H.dna.real_name = newname
 			if(H.mind)
 				H.mind.name = newname
-
+/*
 		if("race")
 			var/newrace
 			var/racechoice = input(H, "What are we again?", "Race change") as null|anything in choosable_races
@@ -169,7 +209,7 @@
 				if(new_s_tone)
 					H.skin_tone = new_s_tone
 					H.dna.update_ui_block(DNA_SKIN_TONE_BLOCK)
-
+*/
 			if(MUTCOLORS in H.dna.species.species_traits)
 				var/new_mutantcolor = input(user, "Choose your skin color:", "Race change","#"+H.dna.features["mcolor"]) as color|null
 				if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))

@@ -197,7 +197,7 @@
 
 /obj/item/reagent_containers/glass/bottle/salglu_solution
 	name = "saline-glucose solution bottle"
-	desc = "A small bottle of saline-glucose solution."
+	desc = "A small bottle of saline-glucose solution, formulated specifically for stabilizing bloodloss and minor injury."
 	icon_state = "bottle1"
 	list_reagents = list(/datum/reagent/medicine/salglu_solution = 30)
 
@@ -261,7 +261,7 @@
 /obj/item/reagent_containers/glass/bottle/wizarditis
 	name = "Wizarditis culture bottle"
 	desc = "A small bottle. Contains a sample of Rincewindus Vulgaris."
-	spawned_disease = /datum/disease/wizarditis
+	spawned_disease = /datum/disease/anxiety //Random disease. This is never going to run anyways unless admins
 
 /obj/item/reagent_containers/glass/bottle/anxiety
 	name = "Severe Anxiety culture bottle"

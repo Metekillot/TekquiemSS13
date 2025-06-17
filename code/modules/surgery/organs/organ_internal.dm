@@ -39,7 +39,7 @@
 			initial_reagents = food_reagents,\
 			foodtypes = RAW | MEAT | GROSS,\
 			volume = reagent_vol,\
-			after_eat = CALLBACK(src, .proc/OnEatFrom))
+			after_eat = CALLBACK(src, PROC_REF(OnEatFrom)))
 
 /obj/item/organ/proc/Insert(mob/living/carbon/M, special = FALSE, drop_if_replaced = TRUE)
 	if(!iscarbon(M) || owner == M)
@@ -91,7 +91,7 @@
 /obj/item/organ/proc/on_death(delta_time = 2)	//runs decay when outside of a person
 	if(organ_flags & (ORGAN_SYNTHETIC | ORGAN_FROZEN))
 		return
-	applyOrganDamage(maxHealth * decay_factor * 0.5 * delta_time)
+	applyOrganDamage(maxHealth * decay_factor * 0.25 * delta_time)
 
 /obj/item/organ/proc/on_life()	//repair organ damage if the organ is not failing
 	if(organ_flags & ORGAN_FAILING)

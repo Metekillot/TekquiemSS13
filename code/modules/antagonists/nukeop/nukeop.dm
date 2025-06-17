@@ -131,8 +131,8 @@
 
 /datum/antagonist/nukeop/get_admin_commands()
 	. = ..()
-	.["Send to base"] = CALLBACK(src,.proc/admin_send_to_base)
-	.["Tell code"] = CALLBACK(src,.proc/admin_tell_code)
+	.["Send to base"] = CALLBACK(src, PROC_REF(admin_send_to_base))
+	.["Tell code"] = CALLBACK(src, PROC_REF(admin_tell_code))
 
 /datum/antagonist/nukeop/proc/admin_send_to_base(mob/admin)
 	owner.current.forceMove(pick(GLOB.nukeop_start))
@@ -160,7 +160,7 @@
 	..()
 	if(nuke_team?.memorized_code)
 		var/obj/item/paper/P = new
-		P.info = "The nuclear authorization code is: <b>[nuke_team.memorized_code]</b>"
+		P.add_raw_text("The nuclear authorization code is: <b>[nuke_team.memorized_code]</b>")
 		P.name = "nuclear bomb code"
 		var/mob/living/carbon/human/H = owner.current
 		if(!istype(H))
@@ -190,7 +190,7 @@
 			H.put_in_hands(dukinuki, TRUE)
 		nuke_team.war_button = dukinuki
 	owner.announce_objectives()
-	addtimer(CALLBACK(src, .proc/nuketeam_name_assign), 1)
+	addtimer(CALLBACK(src, PROC_REF(nuketeam_name_assign)), 1)
 
 
 /datum/antagonist/nukeop/leader/proc/nuketeam_name_assign()
@@ -390,17 +390,17 @@
 		while(!isturf(disk_loc))
 			if(ismob(disk_loc))
 				var/mob/M = disk_loc
-				disk_report += "carried by <a href='?_src_=holder;[HrefToken()];adminplayeropts=[REF(M)]'>[M.real_name]</a> "
+				disk_report += "carried by <a href='byond://?_src_=holder;[HrefToken()];adminplayeropts=[REF(M)]'>[M.real_name]</a> "
 			if(isobj(disk_loc))
 				var/obj/O = disk_loc
 				disk_report += "in \a [O.name] "
 			disk_loc = disk_loc.loc
-		disk_report += "in [disk_loc.loc] at ([disk_loc.x], [disk_loc.y], [disk_loc.z])</td><td><a href='?_src_=holder;[HrefToken()];adminplayerobservefollow=[REF(N)]'>FLW</a></td></tr>"
+		disk_report += "in [disk_loc.loc] at ([disk_loc.x], [disk_loc.y], [disk_loc.z])</td><td><a href='byond://?_src_=holder;[HrefToken()];adminplayerobservefollow=[REF(N)]'>FLW</a></td></tr>"
 	disk_report += "</table>"
 	var/common_part = ..()
 	var/challenge_report
 	if(!QDELETED(war_button))
-		challenge_report += "<b>War not declared.</b> <a href='?_src_=holder;[HrefToken()];force_war=[REF(war_button)]'>\[Force war\]</a>"
+		challenge_report += "<b>War not declared.</b> <a href='byond://?_src_=holder;[HrefToken()];force_war=[REF(war_button)]'>\[Force war\]</a>"
 	return common_part + disk_report + challenge_report
 
 /datum/team/nuclear/is_gamemode_hero()

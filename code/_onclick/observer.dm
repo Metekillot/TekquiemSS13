@@ -1,20 +1,27 @@
-/mob/dead/observer/DblClickOn(atom/A, params)
-	if(check_click_intercept(params, A))
-		return
+/*/mob/dead/observer/DblClickOn(atom/A, params)
+	//if(check_click_intercept(params, A))
+		//return
 
 	if(can_reenter_corpse && mind?.current)
 		if(A == mind.current || (mind.current in A)) // double click your corpse or whatever holds it
 			reenter_corpse()						// (body bag, closet, mech, etc)
-			return									// seems legit.
 
+	else		//return	[Lucifernix] - Removing the thing where ghosts can't double click. This was below reenter_corpse()						// seems legit.
+		forceMove(get_turf(A))
+		update_parallax_contents()
 	// Things you might plausibly want to follow
-	if(ismovable(A))
+
+	// [ChillRaccoon] - follow and teleport should make only admins
+
+	if(!aghosted)
+		return FALSE
+
+	if(ismovable(A))					[Lucifernix] - All this code has a bug where jumping into dark spaces makes your screen dark. Needs fixing before allowing this.
 		ManualFollow(A)
 
 	// Otherwise jump
-	else if(A.loc)
-		forceMove(get_turf(A))
-		update_parallax_contents()
+	//else if(A.loc)
+*/
 
 /mob/dead/observer/ClickOn(atom/A, params)
 	if(check_click_intercept(params,A))

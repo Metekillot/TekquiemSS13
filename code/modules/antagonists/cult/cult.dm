@@ -106,7 +106,7 @@
 	add_antag_hud(antag_hud_type, antag_hud_name, current)
 	handle_clown_mutation(current, mob_override ? null : "Your training has allowed you to overcome your clownish nature, allowing you to wield weapons without harming yourself.")
 	current.faction |= "cult"
-	current.grant_language(/datum/language/narsie, TRUE, TRUE, LANGUAGE_CULTIST)
+	//current.grant_language(/datum/language/narsie, TRUE, TRUE, LANGUAGE_CULTIST)
 	if(!cult_team.cult_master)
 		vote.Grant(current)
 	communion.Grant(current)
@@ -126,7 +126,7 @@
 	remove_antag_hud(antag_hud_type, current)
 	handle_clown_mutation(current, removing = FALSE)
 	current.faction -= "cult"
-	current.remove_language(/datum/language/narsie, TRUE, TRUE, LANGUAGE_CULTIST)
+	//current.remove_language(/datum/language/narsie, TRUE, TRUE, LANGUAGE_CULTIST)
 	vote.Remove(current)
 	communion.Remove(current)
 	magic.Remove(current)
@@ -162,9 +162,9 @@
 
 /datum/antagonist/cult/get_admin_commands()
 	. = ..()
-	.["Dagger"] = CALLBACK(src,.proc/admin_give_dagger)
-	.["Dagger and Metal"] = CALLBACK(src,.proc/admin_give_metal)
-	.["Remove Dagger and Metal"] = CALLBACK(src, .proc/admin_take_all)
+	.["Dagger"] = CALLBACK(src, PROC_REF(admin_give_dagger))
+	.["Dagger and Metal"] = CALLBACK(src, PROC_REF(admin_give_metal))
+	.["Remove Dagger and Metal"] = CALLBACK(src, PROC_REF(admin_take_all))
 
 /datum/antagonist/cult/proc/admin_give_dagger(mob/admin)
 	if(!equip_cultist(metal=FALSE))
@@ -269,7 +269,7 @@
 			if(B.current)
 				SEND_SOUND(B.current, 'sound/hallucinations/i_see_you2.ogg')
 				to_chat(B.current, "<span class='cultlarge'>The veil weakens as your cult grows, your eyes begin to glow...</span>")
-				addtimer(CALLBACK(src, .proc/rise, B.current), 200)
+				addtimer(CALLBACK(src, PROC_REF(rise), B.current), 200)
 		cult_risen = TRUE
 
 	if(ratio > CULT_ASCENDENT && !cult_ascendent)
@@ -277,7 +277,7 @@
 			if(B.current)
 				SEND_SOUND(B.current, 'sound/hallucinations/im_here1.ogg')
 				to_chat(B.current, "<span class='cultlarge'>Your cult is ascendent and the red harvest approaches - you cannot hide your true nature for much longer!!</span>")
-				addtimer(CALLBACK(src, .proc/ascend, B.current), 200)
+				addtimer(CALLBACK(src, PROC_REF(ascend), B.current), 200)
 		cult_ascendent = TRUE
 
 

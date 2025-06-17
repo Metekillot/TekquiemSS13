@@ -19,7 +19,15 @@ GLOBAL_PROTECT(admin_verbs_default)
 	/client/proc/stop_sounds,
 	/client/proc/mark_datum_mapview,
 	/client/proc/debugstatpanel,
-	/client/proc/fix_air				/*resets air in designated radius to its default atmos composition*/
+	#ifdef AREA_GROUPER_DEBUGGING
+	/client/proc/grouper_set_start,
+	/client/proc/grouper_set_end,
+	/client/proc/report_location,
+	/client/proc/grouper_get_path,
+	/client/proc/grouper_setup_path_dial,
+	#endif
+	/client/proc/fix_air,				/*resets air in designated radius to its default atmos composition*/
+	/client/proc/requests
 	)
 GLOBAL_LIST_INIT(admin_verbs_admin, world.AVerbsAdmin())
 GLOBAL_PROTECT(admin_verbs_admin)
@@ -30,6 +38,15 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/datum/admins/proc/show_player_panel,	/*shows an interface for individual players, with various links (links require additional flags*/
 	/datum/verbs/menu/Admin/verb/playerpanel,
 	/client/proc/game_panel,			/*game panel, allows to change game-mode etc*/
+	/client/proc/toggle_canon,
+	/client/proc/grant_discipline,
+	/client/proc/remove_discipline,
+	/client/proc/whitelist_panel,
+	/*
+	/client/proc/encipher_word,
+	/client/proc/uncipher_word,
+	*/
+	/client/proc/set_late_party,		/*sets the party for late joiners*/
 	/client/proc/check_ai_laws,			/*shows AI and borg laws*/
 	/client/proc/ghost_pool_protection,	/*opens a menu for toggling ghost roles*/
 	/datum/admins/proc/toggleooc,		/*toggles ooc on/off for everyone*/
@@ -43,12 +60,14 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/client/proc/getserverlogs,		/*for accessing server logs*/
 	/client/proc/getcurrentlogs,		/*for accessing server logs for the current round*/
 	/client/proc/cmd_admin_subtle_message,	/*send a message to somebody as a 'voice in their head'*/
+	/client/proc/cmd_admin_adjust_masquerade, /*adjusts the masquerade level of a player*/
+	/client/proc/cmd_admin_global_adjust_masquerade, /*adjusts the global masquerade*/
+	/client/proc/cmd_admin_adjust_humanity, /*adjusts the humanity level of a player*/
 	/client/proc/cmd_admin_headset_message,	/*send a message to somebody through their headset as CentCom*/
 	/client/proc/cmd_admin_delete,		/*delete an instance/object/mob/etc*/
 	/client/proc/cmd_admin_check_contents,	/*displays the contents of an instance*/
 	/client/proc/centcom_podlauncher,/*Open a window to launch a Supplypod and configure it or it's contents*/
 	/client/proc/check_antagonists,		/*shows all antags*/
-	/datum/admins/proc/access_news_network,	/*allows access of newscasters*/
 	/client/proc/jumptocoord,			/*we ghost and jump to a coordinate*/
 	/client/proc/Getmob,				/*teleports a mob to our location*/
 	/client/proc/Getkey,				/*teleports a mob with a certain ckey to our location*/
@@ -77,7 +96,9 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/client/proc/resetasaycolor,
 	/client/proc/toggleadminhelpsound,
 	/client/proc/respawn_character,
-	/datum/admins/proc/open_borgopanel
+	/datum/admins/proc/open_borgopanel,
+	/client/proc/log_viewer_new,
+	/client/proc/fax_panel /*send a paper to fax*/
 	)
 GLOBAL_LIST_INIT(admin_verbs_ban, list(/client/proc/unban_panel, /client/proc/ban_panel, /client/proc/stickybanpanel))
 GLOBAL_PROTECT(admin_verbs_ban)
@@ -104,8 +125,10 @@ GLOBAL_LIST_INIT(admin_verbs_fun, list(
 	/client/proc/mass_zombie_cure,
 	/client/proc/polymorph_all,
 	/client/proc/show_tip,
+	/client/proc/roll_dice_vtm,
 	/client/proc/smite,
-	/client/proc/admin_away
+	/client/proc/admin_away,
+	/client/proc/toggle_RMB
 	))
 GLOBAL_PROTECT(admin_verbs_fun)
 GLOBAL_LIST_INIT(admin_verbs_spawn, list(/datum/admins/proc/spawn_atom, /datum/admins/proc/podspawn_atom, /datum/admins/proc/spawn_cargo, /datum/admins/proc/spawn_objasmob, /client/proc/respawn_character, /datum/admins/proc/beaker_panel))
@@ -164,6 +187,7 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	/client/proc/map_template_upload,
 	/client/proc/jump_to_ruin,
 	/client/proc/clear_dynamic_transit,
+	/client/proc/run_empty_query,
 	/client/proc/toggle_medal_disable,
 	/client/proc/view_runtimes,
 	/client/proc/pump_random_event,
@@ -186,7 +210,7 @@ GLOBAL_PROTECT(admin_verbs_debug)
 	/client/proc/check_timer_sources,
 	/client/proc/toggle_cdn
 	)
-GLOBAL_LIST_INIT(admin_verbs_possess, list(/proc/possess, /proc/release))
+GLOBAL_LIST_INIT(admin_verbs_possess, list(GLOBAL_PROC_REF(possess), GLOBAL_PROC_REF(release)))
 GLOBAL_PROTECT(admin_verbs_possess)
 GLOBAL_LIST_INIT(admin_verbs_permissions, list(/client/proc/edit_admin_permissions))
 GLOBAL_PROTECT(admin_verbs_permissions)
@@ -207,9 +231,11 @@ GLOBAL_LIST_INIT(admin_verbs_hideable, list(
 	/client/proc/admin_ghost,
 	/client/proc/toggle_view_range,
 	/client/proc/cmd_admin_subtle_message,
+	/client/proc/cmd_admin_adjust_masquerade,
+	/client/proc/cmd_admin_global_adjust_masquerade,
+	/client/proc/cmd_admin_adjust_humanity,
 	/client/proc/cmd_admin_headset_message,
 	/client/proc/cmd_admin_check_contents,
-	/datum/admins/proc/access_news_network,
 	/client/proc/admin_call_shuttle,
 	/client/proc/admin_cancel_shuttle,
 	/client/proc/cmd_admin_direct_narrate,
@@ -256,7 +282,8 @@ GLOBAL_LIST_INIT(admin_verbs_hideable, list(
 	/client/proc/toggle_nuke,
 	/client/proc/cmd_display_del_log,
 	/client/proc/toggle_combo_hud,
-	/client/proc/debug_huds
+	/client/proc/debug_huds,
+	/client/proc/toggle_RMB
 	))
 GLOBAL_PROTECT(admin_verbs_hideable)
 
@@ -336,38 +363,57 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	to_chat(src, "<span class='interface'>All of your adminverbs are now visible.</span>", confidential = TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Show Adminverbs") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-
-
-
 /client/proc/admin_ghost()
 	set category = "Admin.Game"
 	set name = "Aghost"
 	if(!holder)
 		return
 	. = TRUE
-	if(isobserver(mob))
-		//re-enter
+	if (isobserver(mob))
 		var/mob/dead/observer/ghost = mob
-		if(!ghost.mind || !ghost.mind.current) //won't do anything if there is no body
-			return FALSE
-		if(!ghost.can_reenter_corpse)
-			log_admin("[key_name(usr)] re-entered corpse")
-			message_admins("[key_name_admin(usr)] re-entered corpse")
-		ghost.can_reenter_corpse = 1 //force re-entering even when otherwise not possible
-		ghost.reenter_corpse()
-		SSblackbox.record_feedback("tally", "admin_verb", 1, "Admin Reenter") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-	else if(isnewplayer(mob))
+		if (ghost.aghosted)
+			if (ghost.mind?.current) //return to body
+				ghost.aghosted = !ghost.aghosted
+				if(!ghost.can_reenter_corpse)
+					log_admin("[key_name(usr)] re-entered corpse")
+					message_admins("[key_name_admin(usr)] re-entered corpse")
+				ghost.can_reenter_corpse = TRUE //force re-entering even when otherwise not possible
+				ghost.client.show_popup_menus = 0
+				ghost.reenter_corpse()
+
+				SSblackbox.record_feedback("tally", "admin_verb", 1, "Admin Reenter") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+			else
+				return FALSE
+		else //turn normal ghost into aghost
+			ghost.aghosted = !ghost.aghosted
+			ghost.movement_type = FLYING | GROUND | PHASING
+			ghost.sight = SEE_TURFS | SEE_MOBS | SEE_OBJS
+			ghost.icon = null
+			ghost.icon_state = null
+			ghost.overlays = null
+			ghost.client.color = null
+	else if (isnewplayer(mob))
 		to_chat(src, "<font color='red'>Error: Aghost: Can't admin-ghost whilst in the lobby. Join or Observe first.</font>", confidential = TRUE)
 		return FALSE
-	else
-		//ghostize
+	else //ghostize
 		log_admin("[key_name(usr)] admin ghosted.")
 		message_admins("[key_name_admin(usr)] admin ghosted.")
+
 		var/mob/body = mob
-		body.ghostize(1)
+		var/mob/dead/observer/ghost = body.ghostize(TRUE, TRUE)
 		init_verbs()
 		if(body && !body.key)
 			body.key = "@[key]"	//Haaaaaaaack. But the people have spoken. If it breaks; blame adminbus
+
+		//sets aghost-specific properties here instead of in the ghostize proc
+		ghost.movement_type = FLYING | GROUND | PHASING
+		ghost.sight = SEE_TURFS | SEE_MOBS | SEE_OBJS
+		ghost.icon = null
+		ghost.icon_state = null
+		ghost.overlays = null
+		ghost.client.color = null
+		ghost.aghosted = TRUE
+
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Admin Ghost") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/invisimin()
@@ -415,6 +461,214 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		holder.Game()
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Game Panel") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
+/client/proc/toggle_canon()
+	set name = "Toggle Canon"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+	GLOB.canon_event = !GLOB.canon_event
+	SEND_SOUND(world, sound('code/modules/wod13/sounds/canon.ogg'))
+	if(GLOB.canon_event)
+		to_chat(world, "<b>THE ROUND IS NOW CANON. ALL ROLEPLAY AND ESCALATION RULES ARE IN EFFECT.</b>")
+	else
+		to_chat(world, "<b>THE ROUND IS NO LONGER CANON. DATA WILL NO LONGER SAVE, AND ROLEPLAY AND ESCALATION RULES ARE NO LONGER IN EFFECT.</b>")
+	message_admins("[key_name_admin(usr)] toggled the round's canonicity. The round is [GLOB.canon_event ? "now canon." : "no longer canon."]")
+	log_admin("[key_name(usr)] toggled the round's canonicity. The round is [GLOB.canon_event ? "now canon." : "no longer canon."]")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Toggle Canon") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/cmd_admin_global_adjust_masquerade()
+	set name = "Adjust Global Masquerade"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+
+	var/last_global_mask = SSmasquerade.total_level
+
+	var/value = input(usr, "Enter the Global Masquerade adjustment values(- will decrease, + will increase) :", "Global Masquerade Adjustment", 0) as num|null
+	if(value == null)
+		return
+
+	SSmasquerade.manual_adjustment = value
+
+	var/changed_mask = max(0,min(1000,last_global_mask + value))
+
+	SSmasquerade.fire()
+
+	var/msg = "<span class='adminnotice'><b>Global Masquerade Adjustment: [key_name_admin(usr)] has adjusted Global masquerade from [last_global_mask] to [changed_mask] with the value of : [value]. Real Masquerade Value with the other possible variables : [SSmasquerade.total_level]</b></span>"
+	log_admin("Global MasqAdjust: [key_name(usr)] has adjusted Global masquerade from [last_global_mask] to [changed_mask] with the value of : [value]. Real Masquerade Value with the other possible variables : [SSmasquerade.total_level]")
+	SSoverwatch.record_action(usr, "Global MasqAdjust: [key_name(usr)] has adjusted Global masquerade from [last_global_mask] to [changed_mask] with the value of : [value]. Real Masquerade Value with the other possible variables : [SSmasquerade.total_level]")
+	message_admins(msg)
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Global Adjust Masquerade")
+
+
+
+
+
+/client/proc/cmd_admin_adjust_masquerade(mob/living/carbon/human/M in GLOB.player_list)
+	set name = "Adjust Masquerade"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+	if(!ismob(M))
+		return
+	if(!check_rights(R_ADMIN))
+		return
+
+	var/value = input(usr, "Enter the Masquerade adjustment value for [key_name(M)]:", "Masquerade Adjustment", 0) as num|null
+	if(!value)
+		return
+
+	M.AdjustMasquerade(value, TRUE)
+	var/msg = "<span class='adminnotice'><b>Masquerade Adjustment: [key_name_admin(usr)] adjusted [key_name_admin(M)]'s masquerade by [value] to [M.masquerade]</b></span>"
+	log_admin("MasqAdjust: [key_name(usr)] has adjusted [key_name(M)]'s masquerade by [value] to [M.masquerade]")
+	message_admins(msg)
+	admin_ticket_log(M, msg)
+	SSoverwatch.record_action(usr, "MasqAdjust: [key_name(usr)] has adjusted [key_name(M)]'s masquerade by [value] to [M.masquerade]")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Adjust Masquerade")
+
+/client/proc/cmd_admin_adjust_humanity(mob/living/carbon/human/M in GLOB.player_list)
+	set name = "Adjust Humanity"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+	if(!ismob(M))
+		return
+	if(!check_rights(R_ADMIN))
+		return
+
+	var/value = input(usr, "Enter the Humanity adjustment value for [M.key]:", "Humanity Adjustment", 0) as num|null
+	if(value == null)
+		return
+
+	M.AdjustHumanity(value, 0, forced = TRUE)
+
+	var/msg = "<span class='adminnotice'><b>Humanity Adjustment: [key_name_admin(usr)] adjusted [key_name(M)]'s Humanity by [value] to [M.humanity]</b></span>"
+	log_admin("HumanityAdjust: [key_name_admin(usr)] has adjusted [key_name(M)]'s Humanity by [value] to [M.humanity]")
+	message_admins(msg)
+	admin_ticket_log(M, msg)
+	SSoverwatch.record_action(usr, "HumanityAdjust: [key_name_admin(usr)] has adjusted [key_name(M)]'s Humanity by [value] to [M.humanity]")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Adjust Humanity")
+
+/client/proc/grant_whitelist()
+	set name = "Grant Whitelist"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+	if (!SSwhitelists.whitelists_enabled)
+		to_chat(usr, "<span class='warning'>Whitelisting isn't enabled!</span>")
+		return
+
+	var/whitelistee = input("CKey to whitelist:") as null|text
+	if (whitelistee)
+		whitelistee = ckey(whitelistee)
+		var/list/whitelist_pool = (SSwhitelists.possible_whitelists - SSwhitelists.get_user_whitelists(whitelistee))
+		if (whitelist_pool.len == 0)
+			to_chat(usr, "<span class='warning'>[whitelistee] already has all whitelists!</span>")
+			return
+		var/whitelist = input("Whitelist to give:") as null|anything in whitelist_pool
+		if (whitelist)
+			var/ticket_link = input("Link to whitelist request ticket:") as null|text
+			if (ticket_link)
+				var/approval_reason = input("Reason for whitelist approval:") as null|text
+				if (approval_reason)
+					SSwhitelists.add_whitelist(whitelistee, whitelist, usr.ckey, ticket_link, approval_reason)
+					message_admins("[key_name_admin(usr)] gave [whitelistee] the [whitelist] whitelist. Reason: [approval_reason]")
+					log_admin("[key_name(usr)] gave [whitelistee] the [whitelist] whitelist. Reason: [approval_reason]")
+					SSoverwatch.record_action(usr, "[key_name(usr)] gave [whitelistee] the [whitelist] whitelist. Reason: [approval_reason]")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Grant Whitelist") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/grant_discipline()
+	set name = "Grant Discipline"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+	var/client/player = input("What player do you want to give a Discipline?") as null|anything in GLOB.clients
+	if (player)
+		if (!player.prefs)
+			to_chat(usr, "<span class='warning'>Could not find preferences for [player].")
+			return
+		var/datum/preferences/preferences = player.prefs
+		if ((preferences.pref_species.id != "kindred") && (preferences.pref_species.id != "ghoul"))
+			to_chat(usr, "<span class='warning'>Your target is not a vampire or a ghoul.</span>")
+			return
+		var/giving_discipline = input("What Discipline do you want to give [player]?") as null|anything in (subtypesof(/datum/discipline) - preferences.discipline_types - /datum/discipline/bloodheal)
+		if (giving_discipline)
+			var/giving_discipline_level = input("What rank of this Discipline do you want to give [player]?") as null|anything in list(0, 1, 2, 3, 4, 5)
+			if (!isnull(giving_discipline_level))
+				if ((giving_discipline_level > 1) && (preferences.pref_species.id == "ghoul"))
+					to_chat(usr, "<span class='warning'>Giving Discipline at level 1 because ghouls cannot have Disciplines higher.</span>")
+					giving_discipline_level = 1
+				var/reason = input("Why are you giving [player] this Discipline?") as null|text
+				if (reason)
+					preferences.discipline_types += giving_discipline
+					preferences.discipline_levels += giving_discipline_level
+					preferences.save_character()
+
+					var/datum/discipline/discipline = new giving_discipline(giving_discipline_level)
+
+					message_admins("[ADMIN_LOOKUPFLW(usr)] gave [ADMIN_LOOKUPFLW(player)] the Discipline [discipline.name] at rank [discipline.level]. Reason: [reason]")
+					log_admin("[key_name(usr)] gave [key_name(player)] the Discipline [discipline.name] at rank [discipline.level]. Reason: [reason]")
+					SSoverwatch.record_action(usr, "[key_name(usr)] gave [key_name(player)] the Discipline [discipline.name] at rank [discipline.level]. Reason: [reason]")
+
+					if ((giving_discipline_level > 0) && player.mob)
+						if (ishuman(player.mob))
+							var/mob/living/carbon/human/human = player.mob
+							human.give_discipline(discipline)
+						else
+							qdel(discipline)
+					else
+						qdel(discipline)
+
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Grant Discipline") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/remove_discipline()
+	set name = "Remove Discipline"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+
+	var/client/player = input("What player do you want to remove a Discipline from?") as null|anything in GLOB.clients
+	if (player)
+		if (!player.prefs)
+			to_chat(usr, "<span class='warning'>Could not find preferences for [player].")
+			return
+		var/datum/preferences/preferences = player.prefs
+		if ((preferences.pref_species.id != "kindred") && (preferences.pref_species.id != "ghoul"))
+			to_chat(usr, "<span class='warning'>Your target is not a vampire or a ghoul.</span>")
+			return
+		var/removing_discipline = input("What Discipline do you want to give [player]?") as null|anything in preferences.discipline_types
+		if (removing_discipline)
+			var/reason = input("Why are you removing this Discipline from [player]?") as null|text
+			if (reason)
+				var/datum/discipline/discipline = new removing_discipline
+
+				var/i = preferences.discipline_types.Find(removing_discipline)
+				preferences.discipline_types.Cut(i, i + 1)
+				preferences.discipline_levels.Cut(i, i + 1)
+				preferences.save_character()
+
+				message_admins("[ADMIN_LOOKUPFLW(usr)] removed the Discipline [discipline.name] from [ADMIN_LOOKUPFLW(player)]. Reason: [reason]")
+				log_admin("[key_name(usr)] removed the Discipline [discipline.name] from [key_name(player)]. Reason: [reason]")
+				SSoverwatch.record_action(usr, "[key_name(usr)] removed the Discipline [discipline.name] from [key_name(player)]. Reason: [reason]")
+
+				qdel(discipline)
+
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Remove Discipline") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/whitelist_panel()
+	set name = "Whitelist Management"
+	set category = "Admin"
+	if (!check_rights(R_ADMIN))
+		return
+	holder.whitelist_panel()
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Whitelist Management") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
 /client/proc/poll_panel()
 	set name = "Server Poll Management"
 	set category = "Admin"
@@ -423,24 +677,39 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	holder.poll_list_panel()
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Server Poll Management") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/client/proc/findStealthKey(txt)
-	if(txt)
-		for(var/P in GLOB.stealthminID)
-			if(GLOB.stealthminID[P] == txt)
-				return P
-	txt = GLOB.stealthminID[ckey]
-	return txt
+/// Returns this client's stealthed ckey
+/client/proc/getStealthKey()
+	return GLOB.stealthminID[ckey]
+
+/// Takes a stealthed ckey as input, returns the true key it represents
+/proc/findTrueKey(stealth_key)
+	if(!stealth_key)
+		return
+	for(var/potentialKey in GLOB.stealthminID)
+		if(GLOB.stealthminID[potentialKey] == stealth_key)
+			return potentialKey
+
+/// Hands back a stealth ckey to use, guarenteed to be unique
+/proc/generateStealthCkey()
+	var/guess = rand(0, 1000)
+	var/text_guess
+	var/valid_found = FALSE
+	while(valid_found == FALSE)
+		valid_found = TRUE
+		text_guess = "@[num2text(guess)]"
+		// We take a guess at some number, and if it's not in the existing stealthmin list we exit
+		for(var/key in GLOB.stealthminID)
+			// If it is in the list tho, we up one number, and redo the loop
+			if(GLOB.stealthminID[key] == text_guess)
+				guess += 1
+				valid_found = FALSE
+				break
+
+	return text_guess
+
 
 /client/proc/createStealthKey()
-	var/num = (rand(0,1000))
-	var/i = 0
-	while(i == 0)
-		i = 1
-		for(var/P in GLOB.stealthminID)
-			if(num == GLOB.stealthminID[P])
-				num++
-				i = 0
-	GLOB.stealthminID["[ckey]"] = "@[num2text(num)]"
+	GLOB.stealthminID["[ckey]"] = generateStealthCkey()
 
 /client/proc/stealth()
 	set category = "Admin"
@@ -515,6 +784,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	message_admins("[ADMIN_LOOKUPFLW(usr)] creating an admin explosion at [epicenter.loc].")
 	log_admin("[key_name(usr)] created an admin explosion at [epicenter.loc].")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Drop Bomb") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+	SSoverwatch.record_action(usr, "[key_name(usr)] created an admin explosion at [epicenter.loc].")
 
 /client/proc/drop_dynex_bomb()
 	set category = "Admin.Fun"
@@ -527,6 +797,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		dyn_explosion(epicenter, ex_power)
 		message_admins("[ADMIN_LOOKUPFLW(usr)] creating an admin explosion at [epicenter.loc].")
 		log_admin("[key_name(usr)] created an admin explosion at [epicenter.loc].")
+		SSoverwatch.record_action(usr, "[key_name(usr)] created an admin explosion at [epicenter.loc].")
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Drop Dynamic Bomb") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/get_dynex_range()
@@ -627,6 +898,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Give Spell") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	log_admin("[key_name(usr)] gave [key_name(T)] the spell [S].")
+	SSoverwatch.record_action(usr, "[key_name(usr)] gave [key_name(T)] the spell [S].")
 	message_admins("<span class='adminnotice'>[key_name_admin(usr)] gave [key_name_admin(T)] the spell [S].</span>")
 
 	S = spell_list[S]
@@ -646,6 +918,7 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 		if(S)
 			T.mind.RemoveSpell(S)
 			log_admin("[key_name(usr)] removed the spell [S] from [key_name(T)].")
+			SSoverwatch.record_action(usr, "[key_name(usr)] removed the spell [S] from [key_name(T)].")
 			message_admins("<span class='adminnotice'>[key_name_admin(usr)] removed the spell [S] from [key_name_admin(T)].</span>")
 			SSblackbox.record_feedback("tally", "admin_verb", 1, "Remove Spell") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -656,12 +929,13 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	if(!istype(T))
 		to_chat(src, "<span class='notice'>You can only give a disease to a mob of type /mob/living.</span>", confidential = TRUE)
 		return
-	var/datum/disease/D = input("Choose the disease to give to that guy", "ACHOO") as null|anything in sortList(SSdisease.diseases, /proc/cmp_typepaths_asc)
+	var/datum/disease/D = input("Choose the disease to give to that guy", "ACHOO") as null|anything in sortList(SSdisease.diseases, GLOBAL_PROC_REF(cmp_typepaths_asc))
 	if(!D)
 		return
 	T.ForceContractDisease(new D, FALSE, TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Give Disease") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	log_admin("[key_name(usr)] gave [key_name(T)] the disease [D].")
+	SSoverwatch.record_action(usr, "[key_name(usr)] gave [key_name(T)] the disease [D].")
 	message_admins("<span class='adminnotice'>[key_name_admin(usr)] gave [key_name_admin(T)] the disease [D].</span>")
 
 /client/proc/object_say(obj/O in world)
@@ -690,6 +964,22 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	if(holder)
 		src.holder.output_ai_laws()
 
+/client/proc/set_late_party()
+	set name = "Set Late Party"
+	set category = "Admin.Game"
+
+	var/setting = input(usr, "Choose the bad guys party setting:", "Set Late Party") in list("caitiff", "sabbat", "hunter", "random")
+	if(setting == "random")
+		SSbad_guys_party.setting = null
+		SSbad_guys_party.get_badguys()
+	else
+		SSbad_guys_party.set_badguys(setting)
+		SSbad_guys_party.get_badguys()
+
+	log_admin("[key_name(usr)] set the bad guys party setting to [setting]")
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] set the bad guys party setting to [setting]</span>")
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Set Late Party")
+
 /client/proc/deadmin()
 	set name = "Deadmin"
 	set category = "Admin"
@@ -712,6 +1002,15 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	set name = "Readmin"
 	set category = "Admin"
 	set desc = "Regain your admin powers."
+
+//	if(GLOB.canon_event)
+//		if(istype(mob, /mob/living))
+//			var/cool_guy = FALSE
+//			for(var/i in GLOB.psychokids)
+//				if(i == "[ckey]")
+//					cool_guy = TRUE
+//			if(!cool_guy)
+//				return
 
 	var/datum/admins/A = GLOB.deadmins[ckey]
 
@@ -783,4 +1082,44 @@ GLOBAL_PROTECT(admin_verbs_hideable)
 	set name = "Debug Stat Panel"
 	set category = "Debug"
 
-	src << output("", "statbrowser:create_debug")
+	src.stat_panel.send_message("create_debug")
+
+#ifdef AREA_GROUPER_DEBUGGING
+/client/proc/grouper_set_start()
+	set category = "Debug"
+	set name = "ZZ Set pathfinder start"
+	set desc = "Set pathfinder start."
+	SSarea_grouper.start_preset = get_turf(usr)
+
+/client/proc/grouper_set_end()
+	set category = "Debug"
+	set name = "ZZ Set pathfinder end"
+	set desc = "Set pathfinder end."
+	SSarea_grouper.end_preset = get_turf(usr)
+
+/client/proc/report_location()
+	set category = "Debug"
+	set name = "ZZ Output Location"
+	set desc = "Output your current location."
+	var/turf/our_turf = get_turf(usr)
+	to_chat(usr, "Your location: [our_turf]([our_turf.x], [our_turf.y], [our_turf.z])")
+
+/client/proc/grouper_get_path()
+	set category = "Debug"
+	set name = "ZZ Get Area Group Path"
+	set desc = "Get the path to where you want to go."
+	var/list/turf_list = SSarea_grouper.get_path_debug()
+	if(!turf_list)
+		return
+	to_chat(usr, "In order to get from [SSarea_grouper.start_preset.loc] at [SSarea_grouper.start_preset]([SSarea_grouper.start_preset.x], [SSarea_grouper.start_preset.y], [SSarea_grouper.start_preset.z]) to [SSarea_grouper.end_preset.loc] at [SSarea_grouper.end_preset]([SSarea_grouper.end_preset.x], [SSarea_grouper.end_preset.y], [SSarea_grouper.end_preset.z]) I must go to the following points:")
+	for(var/turf/go_turf in turf_list)
+		to_chat(usr, "I need to go to the [go_turf]([go_turf.x], [go_turf.y], [go_turf.z]) in [go_turf.loc]")
+
+/client/proc/grouper_setup_path_dial()
+	set category = "Debug"
+	set name = "ZZ Summon Dial for path"
+	set desc = "Subject yourself to the Majesty 5 summon proc."
+	if(SSarea_grouper.end_preset)
+		to_chat(usr, "End preset not set!")
+	usr.AddComponent(/datum/component/summon_dial, SSarea_grouper.end_preset, usr)
+#endif

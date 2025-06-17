@@ -27,7 +27,7 @@
 	mode = new /datum/buildmode_mode/basic(src)
 	holder = c
 	buttons = list()
-	li_cb = CALLBACK(src, .proc/post_login)
+	li_cb = CALLBACK(src, PROC_REF(post_login))
 	holder.player_details.post_login_callbacks += li_cb
 	holder.show_popup_menus = FALSE
 	create_buttons()
@@ -39,7 +39,8 @@
 	mode.exit_mode(src)
 	holder.screen -= buttons
 	holder.click_intercept = null
-	holder.show_popup_menus = TRUE
+	if(isobserver(holder.mob))
+		holder.show_popup_menus = TRUE
 	qdel(src)
 
 /datum/buildmode/Destroy()
