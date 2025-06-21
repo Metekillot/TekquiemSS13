@@ -17,118 +17,12 @@
 	req_access = list(ACCESS_TCOMSAT)
 	circuit = /obj/item/circuitboard/computer/comm_server
 
-/obj/machinery/computer/telecomms/server/ui_interact(mob/user)
+/obj/machinery/computer/telecomms/server/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()
-	var/dat = "<center><b>Telecommunications Server Monitor</b></center>"
-
-	switch(screen)
-
-
-	  // --- Main Menu ---
-
-		if(0)
-			dat += "<br>[temp]<br>"
-			dat += "<br>Current Network: <a href='byond://?src=[REF(src)];network=1'>[network]</a><br>"
-			if(servers.len)
-				dat += "<br>Detected Telecommunication Servers:<ul>"
-				for(var/obj/machinery/telecomms/T in servers)
-					dat += "<li><a href='byond://?src=[REF(src)];viewserver=[T.id]'>[REF(T)] [T.name]</a> ([T.id])</li>"
-				dat += "</ul>"
-				dat += "<br><a href='byond://?src=[REF(src)];operation=release'>\[Flush Buffer\]</a>"
-
-			else
-				dat += "<br>No servers detected. Scan for servers: <a href='byond://?src=[REF(src)];operation=scan'>\[Scan\]</a>"
-
-
-	  // --- Viewing Server ---
-
-		if(1)
-			dat += "<br>[temp]<br>"
-			dat += "<center><a href='byond://?src=[REF(src)];operation=mainmenu'>\[Main Menu\]</a>     <a href='byond://?src=[REF(src)];operation=refresh'>\[Refresh\]</a></center>"
-			dat += "<br>Current Network: [network]"
-			dat += "<br>Selected Server: [SelectedServer.id]"
-
-			if(SelectedServer.totaltraffic >= 1024)
-				dat += "<br>Total recorded traffic: [round(SelectedServer.totaltraffic / 1024)] Terrabytes<br><br>"
-			else
-				dat += "<br>Total recorded traffic: [SelectedServer.totaltraffic] Gigabytes<br><br>"
-
-			dat += "Stored Logs: <ol>"
-
-			var/i = 0
-			for(var/datum/comm_log_entry/C in SelectedServer.log_entries)
-				i++
-
-
-				// If the log is a speech file
-				if(C.input_type == "Speech File")
-					dat += "<li><font color = #008F00>[C.name]</font>  <font color = #FF0000><a href='byond://?src=[REF(src)];delete=[i]'>\[X\]</a></font><br>"
-
-					// -- Determine race of orator --
-
-					var/mobtype = C.parameters["mobtype"]
-					var/race			   // The actual race of the mob
-
-					if(ispath(mobtype, /mob/living/carbon/human) || ispath(mobtype, /mob/living/brain))
-						race = "Humanoid"
-
-					// NT knows a lot about slimes, but not aliens. Can identify slimes
-					else if(ispath(mobtype, /mob/living/simple_animal/slime))
-						race = "Slime"
-
-					// sometimes M gets deleted prematurely for AIs... just check the job
-					else if(ispath(mobtype, /mob/living/silicon) || C.parameters["job"] == "AI")
-						race = "Artificial Life"
-
-					else if(isobj(mobtype))
-						race = "Machinery"
-
-					else if(ispath(mobtype, /mob/living/simple_animal))
-						race = "Domestic Animal"
-
-					else
-						race = "<i>Unidentifiable</i>"
-
-					dat += "<u><font color = #18743E>Data type</font></u>: [C.input_type]<br>"
-					dat += "<u><font color = #18743E>Source</font></u>: [C.parameters["name"]] (Job: [C.parameters["job"]])<br>"
-					dat += "<u><font color = #18743E>Class</font></u>: [race]<br>"
-					var/message = C.parameters["message"]
-					var/language = C.parameters["language"]
-
-					// based on [/atom/movable/proc/lang_treat]
-					if (universal_translate || user.has_language(language))
-						message = "\"[message]\""
-					else if (!user.has_language(language))
-						var/datum/language/D = GLOB.language_datum_instances[language]
-						message = "\"[D.scramble(message)]\""
-					else if (language)
-						message = "<i>(unintelligible)</i>"
-
-					dat += "<u><font color = #18743E>Contents</font></u>: [message]<br>"
-					dat += "</li><br>"
-
-				else if(C.input_type == "Execution Error")
-					dat += "<li><font color = #990000>[C.name]</font>  <a href='byond://?src=[REF(src)];delete=[i]'>\[X\]</a><br>"
-					dat += "<u><font color = #787700>Error</font></u>: \"[C.parameters["message"]]\"<br>"
-					dat += "</li><br>"
-
-				else
-					dat += "<li><font color = #000099>[C.name]</font>  <a href='byond://?src=[REF(src)];delete=[i]'>\[X\]</a><br>"
-					dat += "<u><font color = #18743E>Data type</font></u>: [C.input_type]<br>"
-					dat += "<u><font color = #18743E>Contents</font></u>: <i>(unintelligible)</i><br>"
-					dat += "</li><br>"
-
-
-			dat += "</ol>"
-
-
-
-	user << browse(HTML_SKELETON_TITLE("Telecommunication Server Monitor", dat), "window=comm_monitor;size=575x400")
-	onclose(user, "server_control")
-
-	temp = ""
-	return
-
+	ui = SStgui.try_update_ui(user, src, ui)
+	if (!ui)
+		ui = new(user, src, "ServerMonitor", name)
+		ui.open()
 
 /obj/machinery/computer/telecomms/server/Topic(href, href_list)
 	if(..())
@@ -210,3 +104,4 @@
 /obj/machinery/computer/telecomms/server/attackby()
 	. = ..()
 	updateUsrDialog()
+

@@ -748,3 +748,4 @@
 		else
 			to_chat(H, "<span class='warning'>You can't seem to link [target]'s mind...</span>")
 			to_chat(target, "<span class='warning'>The foreign presence leaves your mind.</span>")
+

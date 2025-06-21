@@ -80,22 +80,26 @@
 
 	return data
 
-/obj/machinery/computer/bank_machine/ui_act(action, params)
+/obj/machinery/computer/bank_machine/ui_act(action, params, datum/tgui/ui)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
 		if("siphon")
-			say("Siphon of station credits has begun!")
-			siphoning = TRUE
+			if(is_station_level(src.z) || is_centcom_level(src.z))
+				say("Siphon of station credits has begun!")
+				start_siphon(ui.user)
+			else
+				say("Error: Console not in reach of station, withdrawal cannot begin.")
 			. = TRUE
 		if("halt")
 			say("Station credit withdrawal halted.")
-			end_syphon()
+			end_siphon()
 			. = TRUE
 
 /obj/machinery/computer/bank_machine/proc/end_syphon()
 	siphoning = FALSE
 	new /obj/item/holochip(drop_location(), syphoning_credits) //get the loot
 	syphoning_credits = 0
+

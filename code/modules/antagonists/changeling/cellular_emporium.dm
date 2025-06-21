@@ -89,3 +89,4 @@
 
 /datum/action/innate/cellular_emporium/Activate()
 	cellular_emporium.ui_interact(owner)
+

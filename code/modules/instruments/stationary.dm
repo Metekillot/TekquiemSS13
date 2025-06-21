@@ -50,3 +50,4 @@
 		name = "space piano"
 		desc = "This is a space piano, like a regular piano, but always in tune! Even if the musician isn't."
 		icon_state = "piano"
+

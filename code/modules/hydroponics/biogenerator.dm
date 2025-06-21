@@ -255,8 +255,9 @@
 
 /obj/machinery/biogenerator/ui_assets(mob/user)
 	return list(
-		get_asset_datum(/datum/asset/spritesheet/research_designs),
+		get_asset_datum(/datum/asset/spritesheet_batched/research_designs),
 	)
+
 
 /obj/machinery/biogenerator/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -334,3 +335,4 @@
 		if("select")
 			selected_cat = params["category"]
 			return TRUE
+

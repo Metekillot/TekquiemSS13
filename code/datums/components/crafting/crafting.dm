@@ -484,3 +484,4 @@
 	if(!learned_recipes)
 		learned_recipes = list()
 	learned_recipes |= R
+

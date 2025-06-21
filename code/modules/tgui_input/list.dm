@@ -157,3 +157,4 @@
 
 /datum/tgui_list_input/proc/set_choice(choice)
 	src.choice = choice
+

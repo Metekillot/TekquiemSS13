@@ -50,20 +50,24 @@
 			))
 	return data
 
-/obj/machinery/mineral/stacking_unit_console/ui_act(action, list/params)
+/obj/machinery/mineral/stacking_unit_console/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
 		if("release")
-			var/obj/item/stack/sheet/released_type = text2path(params["type"])
+			var/obj/item/stack/released_type = text2path(params["type"])
 			if(!released_type || !(initial(released_type.merge_type) in machine.stack_list))
 				return //someone tried to spawn materials by spoofing hrefs
-			var/obj/item/stack/sheet/inp = machine.stack_list[initial(released_type.merge_type)]
-			var/obj/item/stack/sheet/out = new inp.type(null, inp.amount)
+			var/obj/item/stack/inp = machine.stack_list[initial(released_type.merge_type)]
+			var/obj/item/stack/out = new inp.type(null, inp.amount)
 			inp.amount = 0
 			machine.unload_mineral(out)
+			return TRUE
+		if("rotate")
+			var/input = text2num(params["input"])
+			machine.rotate(input)
 			return TRUE
 
 /**********************Mineral stacking unit**************************/
@@ -135,3 +139,4 @@
 		var/obj/item/stack/sheet/out = new inp.type(null, stack_amt)
 		unload_mineral(out)
 		storage.amount -= stack_amt
+

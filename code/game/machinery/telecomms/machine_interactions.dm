@@ -78,88 +78,77 @@
 
 	return data
 
-/obj/machinery/telecomms/ui_act(action, params)
+/obj/machinery/telecomms/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
-	if(!issilicon(usr))
-		if(!istype(usr.get_active_held_item(), /obj/item/multitool))
+	var/mob/living/current_user = usr
+	if(!HAS_SILICON_ACCESS(current_user))
+		if(!istype(current_user.get_active_held_item(), /obj/item/multitool))
 			return
 
-	var/obj/item/multitool/heldmultitool = get_multitool(operator)
+	var/obj/item/multitool/heldmultitool = get_multitool(current_user)
 
 	switch(action)
 		if("toggle")
 			toggled = !toggled
 			update_power()
-			update_icon()
-			log_game("[key_name(operator)] toggled [toggled ? "On" : "Off"] [src] at [AREACOORD(src)].")
+			update_appearance()
+			current_user.log_message("toggled [toggled ? "On" : "Off"] [src].", LOG_GAME)
 			. = TRUE
 		if("id")
 			if(params["value"])
 				if(length(params["value"]) > 32)
-					to_chat(operator, "<span class='warning'>Error: Machine ID too long!</span>")
-					playsound(src, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
+					to_chat(current_user, span_warning("Error: Machine ID too long!"))
+					playsound(src, 'sound/machines/buzz/buzz-sigh.ogg', 50, TRUE)
 					return
 				else
 					id = params["value"]
-					log_game("[key_name(operator)] has changed the ID for [src] at [AREACOORD(src)] to [id].")
+					current_user.log_message("has changed the ID for [src] to [id].", LOG_GAME)
 					. = TRUE
 		if("network")
 			if(params["value"])
 				if(length(params["value"]) > 15)
-					to_chat(operator, "<span class='warning'>Error: Network name too long!</span>")
-					playsound(src, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
+					to_chat(current_user, span_warning("Error: Network name too long!"))
+					playsound(src, 'sound/machines/buzz/buzz-sigh.ogg', 50, TRUE)
 					return
 				else
-					for(var/obj/machinery/telecomms/T in links)
-						T.links.Remove(src)
+					for(var/obj/machinery/telecomms/linked_machine in links)
+						remove_link(linked_machine)
 					network = params["value"]
 					links = list()
-					log_game("[key_name(operator)] has changed the network for [src] at [AREACOORD(src)] to [network].")
+					current_user.log_message("has changed the network for [src] to [network].", LOG_GAME)
 					. = TRUE
 		if("tempfreq")
 			if(params["value"])
 				tempfreq = text2num(params["value"]) * 10
 		if("freq")
-			var/newfreq = tempfreq * 10
-			if(newfreq == FREQ_SYNDICATE)
-				to_chat(operator, "<span class='warning'>Error: Interference preventing filtering frequency: \"[newfreq / 10] GHz\"</span>")
-				playsound(src, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
+			if(tempfreq in banned_frequencies)
+				to_chat(current_user, span_warning("Error: Interference preventing filtering frequency: \"[tempfreq / 10] kHz\""))
+				playsound(src, 'sound/machines/buzz/buzz-sigh.ogg', 50, TRUE)
 			else
-				if(!(newfreq in freq_listening) && newfreq < 10000)
-					freq_listening.Add(newfreq)
-					log_game("[key_name(operator)] added frequency [newfreq] for [src] at [AREACOORD(src)].")
+				if(!(tempfreq in freq_listening))
+					freq_listening.Add(tempfreq)
+					current_user.log_message("added frequency [tempfreq] for [src].", LOG_GAME)
 					. = TRUE
 		if("delete")
 			freq_listening.Remove(params["value"])
-			log_game("[key_name(operator)] added removed frequency [params["value"]] for [src] at [AREACOORD(src)].")
+			current_user.log_message("removed frequency [params["value"]] for [src].", LOG_GAME)
 			. = TRUE
 		if("unlink")
-			var/obj/machinery/telecomms/T = links[text2num(params["value"])]
-			if(T)
-				// Remove link entries from both T and src.
-				if(T.links)
-					T.links.Remove(src)
-				links.Remove(T)
-				log_game("[key_name(operator)] unlinked [src] and [T] at [AREACOORD(src)].")
-				. = TRUE
+			var/obj/machinery/telecomms/machine_to_unlink = links[text2num(params["value"])]
+			if(machine_to_unlink)
+				. = remove_link(machine_to_unlink, current_user)
 		if("link")
 			if(heldmultitool)
-				var/obj/machinery/telecomms/T = heldmultitool.buffer
-				if(istype(T) && T != src)
-					if(!(src in T.links))
-						T.links += src
-					if(!(T in links))
-						links += T
-						log_game("[key_name(operator)] linked [src] for [T] at [AREACOORD(src)].")
-						. = TRUE
+				var/obj/machinery/telecomms/machine_to_link = heldmultitool.buffer
+				. = add_new_link(machine_to_link, current_user)
 		if("buffer")
-			heldmultitool.buffer = src
+			heldmultitool.set_buffer(src)
 			. = TRUE
 		if("flush")
-			heldmultitool.buffer = null
+			heldmultitool.set_buffer(null)
 			. = TRUE
 
 	add_act(action, params)
@@ -222,3 +211,4 @@
 	if(issilicon(user) || in_range(user, src))
 		return TRUE
 	return FALSE
+

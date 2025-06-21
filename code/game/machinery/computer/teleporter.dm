@@ -54,7 +54,7 @@
 
 	return data
 
-/obj/machinery/computer/teleporter/ui_act(action, params)
+/obj/machinery/computer/teleporter/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -68,19 +68,15 @@
 
 	switch(action)
 		if("regimeset")
-			power_station.engaged = FALSE
-			power_station.teleporter_hub.update_icon()
-			power_station.teleporter_hub.calibrated = FALSE
+			turn_off()
 			reset_regime()
 			. = TRUE
 		if("settarget")
-			power_station.engaged = FALSE
-			power_station.teleporter_hub.update_icon()
-			power_station.teleporter_hub.calibrated = FALSE
+			turn_off()
 			set_target(usr)
 			. = TRUE
 		if("calibrate")
-			if(!target)
+			if(!target_ref)
 				say("Error: No target set to calibrate to.")
 				return
 			if(power_station.teleporter_hub.calibrated || power_station.teleporter_hub.accuracy >= 3)
@@ -89,9 +85,9 @@
 
 			say("Processing hub calibration to target...")
 			calibrating = TRUE
-			power_station.update_icon()
-			addtimer(CALLBACK(src, PROC_REF(finish_calibration)), 50 * (3 - power_station.teleporter_hub.accuracy)) //Better parts mean faster calibration
-			. = TRUE
+			power_station.update_appearance()
+			addtimer(CALLBACK(src, PROC_REF(finish_calibration)), 5 SECONDS * (3 - power_station.teleporter_hub.accuracy)) //Better parts mean faster calibration
+			return TRUE
 
 /obj/machinery/computer/teleporter/proc/finish_calibration()
 	calibrating = FALSE
@@ -179,3 +175,4 @@
 	if(!A ||(A.area_flags & NOTELEPORT))
 		return FALSE
 	return TRUE
+

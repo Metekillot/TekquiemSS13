@@ -12,7 +12,7 @@
 		holder = userMob.client //if its a mob, assign the mob's client to holder
 
 /datum/skill_panel/ui_state(mob/user)
-	return GLOB.admin_state
+	return ADMIN_STATE(R_ADMIN)
 
 /datum/skill_panel/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -56,3 +56,4 @@
 			var/number = input("Please insert a whole number between 1 (NONE) and [max_skill] (LEGENDARY) corresponding to the level you'd like to set the player to.") as num|null
 			if (number > 0 && number <= max_skill )
 				targetmind.set_level(skill, number)
+

@@ -264,7 +264,7 @@
 		ui = new(user, src, "DnaConsole")
 		ui.open()
 
-/obj/machinery/computer/scan_consolenew/ui_assets()
+/obj/machinery/computer/dna_console/ui_assets()
 	. = ..() || list()
 	. += get_asset_datum(/datum/asset/simple/genetics)
 
@@ -2156,3 +2156,4 @@
 #undef SEARCH_STORED
 #undef SEARCH_DISKETTE
 #undef SEARCH_ADV_INJ
+

@@ -408,9 +408,8 @@ GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics
 		return
 	return ..()
 
-/obj/machinery/atmospherics/components/unary/cryo_cell/ui_state(mob/user)
+/obj/machinery/cryo_cell/ui_state(mob/user)
 	return GLOB.notcontained_state
-
 
 /obj/machinery/atmospherics/components/unary/cryo_cell/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -550,3 +549,4 @@ GLOBAL_VAR_INIT(cryo_overlay_cover_off, mutable_appearance('icons/obj/cryogenics
 #undef CRYO_THROTTLE_CTR_MAX
 #undef CRYO_MIN_GAS_MOLES
 #undef CRYO_BREAKOUT_TIME
+

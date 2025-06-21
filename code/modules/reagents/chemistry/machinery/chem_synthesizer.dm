@@ -17,6 +17,7 @@
 		ui = new(user, src, "ChemDebugSynthesizer", name)
 		ui.open()
 
+
 /obj/machinery/chem_dispenser/chem_synthesizer/ui_act(action, params)
 	. = ..()
 	if(.)
@@ -63,3 +64,4 @@
 		return input
 	else
 		return get_chem_id(input)
+

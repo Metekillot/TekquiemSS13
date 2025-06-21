@@ -140,7 +140,7 @@
 		data["pad_active"] = TRUE
 	return data
 
-/obj/machinery/computer/mechpad/ui_act(action, params)
+/obj/machinery/computer/mechpad/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -154,10 +154,10 @@
 				return
 			current_pad.display_name = new_name
 		if("remove")
-			if(usr && alert(usr, "Are you sure?", "Unlink Orbital Pad", "I'm Sure", "Abort") != "Abort")
-				mechpads -= current_pad
-				LAZYREMOVE(current_pad.consoles, src)
+			if(usr && tgui_alert(usr, "Are you sure?", "Unlink Orbital Pad", list("I'm Sure", "Abort")) == "I'm Sure")
+				remove_pad(current_pad)
 				selected_id = null
 		if("launch")
 			try_launch(usr, current_pad)
 	. = TRUE
+

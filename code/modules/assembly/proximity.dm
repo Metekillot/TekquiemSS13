@@ -128,7 +128,7 @@
 	data["sensitivity"] = sensitivity
 	return data
 
-/obj/item/assembly/prox_sensor/ui_act(action, params)
+/obj/item/assembly/prox_sensor/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -144,7 +144,7 @@
 				. = TRUE
 		if("time")
 			timing = !timing
-			update_icon()
+			update_appearance()
 			. = TRUE
 		if("input")
 			var/value = text2num(params["adjust"])
@@ -152,3 +152,4 @@
 				value = round(time + value)
 				time = clamp(value, 0, 600)
 				. = TRUE
+

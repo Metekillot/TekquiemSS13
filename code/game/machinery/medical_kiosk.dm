@@ -326,37 +326,39 @@
 	data["active_status_4"] = scan_active_4	// Radio-Neuro Scan Check
 	return data
 
-/obj/machinery/medical_kiosk/ui_act(action,active)
+/obj/machinery/medical_kiosk/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
 		if("beginScan_1")
-			if(!scan_active_1)
+			if(!(scan_active & KIOSK_SCANNING_GENERAL))
 				inuse()
 			if(paying_customer == TRUE)
-				scan_active_1 = TRUE
+				scan_active |= KIOSK_SCANNING_GENERAL
 				paying_customer = FALSE
 		if("beginScan_2")
-			if(!scan_active_2)
+			if(!(scan_active & KIOSK_SCANNING_SYMPTOMS))
 				inuse()
 			if(paying_customer == TRUE)
-				scan_active_2 = TRUE
+				scan_active |= KIOSK_SCANNING_SYMPTOMS
 				paying_customer = FALSE
 		if("beginScan_3")
-			if(!scan_active_3)
+			if(!(scan_active & KIOSK_SCANNING_NEURORAD))
 				inuse()
 			if(paying_customer == TRUE)
-				scan_active_3 = TRUE
+				scan_active |= KIOSK_SCANNING_NEURORAD
 				paying_customer = FALSE
 		if("beginScan_4")
-			if(!scan_active_4)
+			if(!(scan_active & KIOSK_SCANNING_REAGENTS))
 				inuse()
 			if(paying_customer == TRUE)
-				scan_active_4 = TRUE
+				scan_active |= KIOSK_SCANNING_REAGENTS
 				paying_customer = FALSE
 		if("clearTarget")
-			altPatient = null
+			patient_ref = null
 			clearScans()
 			. = TRUE
+
+

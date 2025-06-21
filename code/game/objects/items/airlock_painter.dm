@@ -221,7 +221,7 @@
 		))
 	return data
 
-/obj/item/airlock_painter/decal/ui_act(action,list/params)
+/obj/item/airlock_painter/decal/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -229,14 +229,24 @@
 	switch(action)
 		//Lists of decals and designs
 		if("select decal")
-			var/selected_decal = params["decals"]
-			stored_decal = selected_decal
+			. = TRUE
+			for(var/decal_set in decal_list)
+				if(decal_set[2] == params["decal"])
+					stored_decal = params["decal"]
+					break
+			for(var/dir_set in dir_list)
+				if(dir_set[2] == text2num(params["dir"]))
+					stored_dir = text2num(params["dir"])
+					break
+
 		if("select color")
-			var/selected_color = params["colors"]
-			stored_color = selected_color
-		if("selected direction")
-			var/selected_direction = text2num(params["dirs"])
-			stored_dir = selected_direction
+			. = TRUE
+			stored_color = params["color"]
+
+		if("pick custom color")
+			if(supports_custom_color)
+				pick_painting_tool_color(usr, stored_custom_color)
+
 	update_decal_path()
 	. = TRUE
 
@@ -247,3 +257,4 @@
 /obj/item/airlock_painter/decal/debug/Initialize()
 	. = ..()
 	ink = new /obj/item/toner/extreme(src)
+

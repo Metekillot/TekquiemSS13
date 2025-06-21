@@ -117,32 +117,14 @@
 		ui.open()
 
 /datum/interview/ui_state(mob/user)
+	if(check_rights_for(user.client, R_ADMIN))
+		return GLOB.always_state
 	return GLOB.new_player_state
 
-/datum/interview/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	if (..())
-		return
-	switch(action)
-		if ("update_answer")
-			if (!read_only)
-				responses[text2num(params["qidx"])] = copytext_char(params["answer"], 1, 501) // byond indexing moment
-				. = TRUE
-		if ("submit")
-			if (!read_only)
-				read_only = TRUE
-				GLOB.interviews.enqueue(src)
-				. = TRUE
-		if ("approve")
-			if (usr.client?.holder && status == INTERVIEW_PENDING)
-				src.approve(usr)
-				. = TRUE
-		if ("deny")
-			if (usr.client?.holder && status == INTERVIEW_PENDING)
-				src.deny(usr)
-				. = TRUE
-		if ("adminpm")
-			if (usr.client?.holder && owner)
-				usr.client.cmd_admin_pm(owner, null)
+/datum/interview/ui_state(mob/user)
+	if(check_rights_for(user.client, R_ADMIN))
+		return GLOB.always_state
+	return GLOB.new_player_state
 
 /datum/interview/ui_data(mob/user)
 	. = list(
@@ -160,3 +142,4 @@
 			"response" = responses.len < i ? null : responses[i]
 		)
 		.["questions"] += list(data)
+

@@ -163,3 +163,4 @@
 	if(!isnull(entry))
 		var/converted_entry = encode ? html_encode(entry) : entry
 		src.entry = max_length ? trim(converted_entry, PREVENT_CHARACTER_TRIM_LOSS(max_length)) : converted_entry
+

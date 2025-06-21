@@ -241,7 +241,7 @@
 	data["special_faxes"] = special_networks
 	return data
 
-/obj/machinery/fax/ui_act(action, list/params)
+/obj/machinery/fax/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -255,7 +255,7 @@
 			loaded.forceMove(drop_location())
 			loaded_item_ref = null
 			playsound(src, 'sound/machines/eject.ogg', 50, FALSE)
-			update_icon()
+			update_appearance()
 			return TRUE
 
 		if("send")
@@ -266,7 +266,7 @@
 			if(send(loaded, destination))
 				log_fax(loaded, destination, params["name"])
 				loaded_item_ref = null
-				update_icon()
+				update_appearance()
 				return TRUE
 
 		if("send_special")
@@ -283,11 +283,25 @@
 
 			history_add("Send", params["name"])
 
-			//GLOB.requests.fax_request(usr.client, "sent a fax message from [fax_name]/[fax_id] to [params["name"]]", fax_paper)
-			to_chat(GLOB.admins, span_adminnotice("[icon2html(src.icon, GLOB.admins)]<b><font color=green>FAX REQUEST: </font>[ADMIN_FULLMONTY(usr)]:</b> [span_linkify("sent a fax message from [fax_name]/[fax_id][ADMIN_FLW(src)] to [params["name"]]")] [ADMIN_SHOW_PAPER(fax_paper)]"), confidential = TRUE)
+			GLOB.requests.fax_request(usr.client, "sent a fax message from [fax_name]/[fax_id] to [params["name"]]", list("paper" = fax_paper, "destination_id" = params["id"], "sender_name" = fax_name))
+			to_chat(GLOB.admins,
+				span_adminnotice("[icon2html(src.icon, GLOB.admins)]<b><font color=green>FAX REQUEST: </font>[ADMIN_FULLMONTY(usr)]:</b> [span_linkify("sent a fax message from [fax_name]/[fax_id][ADMIN_FLW(src)] to [html_encode(params["name"])]")] [ADMIN_SHOW_PAPER(fax_paper)] [ADMIN_PRINT_FAX(fax_paper, fax_name, params["id"])]"),
+				type = MESSAGE_TYPE_PRAYER,
+				confidential = TRUE)
+			for(var/client/staff as anything in GLOB.admins)
+				if(staff?.prefs.read_preference(/datum/preference/toggle/comms_notification))
+					SEND_SOUND(staff, sound('sound/misc/server-ready.ogg'))
+
+			if(GLOB.fax_autoprinting)
+				for(var/obj/machinery/fax/admin/FAX as anything in SSmachines.get_machines_by_type_and_subtypes(/obj/machinery/fax/admin))
+					if(FAX.fax_id != params["id"])
+						continue
+					FAX.receive(fax_paper, fax_name)
+					break
+
 			log_fax(fax_paper, params["id"], params["name"])
 			loaded_item_ref = null
-			update_icon()
+			update_appearance()
 
 		if("history_clear")
 			history_clear()
@@ -456,3 +470,4 @@
 	do_sparks(5, TRUE, src)
 	var/check_range = TRUE
 	return electrocute_mob(user, get_area(src), src, 0.7, check_range)
+

@@ -117,13 +117,8 @@
 /obj/item/radio/ui_state(mob/user)
 	return GLOB.inventory_state
 
-/obj/item/radio/ui_interact(mob/user, datum/tgui/ui, datum/ui_state/state)
-	ui = SStgui.try_update_ui(user, src, ui)
-	if(!ui)
-		ui = new(user, src, "Radio", name)
-		if(state)
-			ui.set_state(state)
-		ui.open()
+/obj/item/radio/ui_state(mob/user)
+	return GLOB.inventory_state
 
 /obj/item/radio/ui_data(mob/user)
 	var/list/data = list()
@@ -473,3 +468,4 @@
 /obj/item/radio/off	// Station bounced radios, their only difference is spawning with the speakers off, this was made to help the lag.
 	listening = 0			// And it's nice to have a subtype too for future features.
 	dog_fashion = /datum/dog_fashion/back
+

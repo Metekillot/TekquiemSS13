@@ -184,11 +184,7 @@
 	return 1
 
 /datum/computer_file/program/ui_interact(mob/user, datum/tgui/ui)
-	ui = SStgui.try_update_ui(user, src, ui)
-	if(!ui && tgui_id)
-		ui = new(user, src, tgui_id, filedesc)
-		if(ui.open())
-			ui.send_asset(get_asset_datum(/datum/asset/simple/headers))
+	SHOULD_CALL_PARENT(FALSE)
 
 // CONVENTIONS, READ THIS WHEN CREATING NEW PROGRAM AND OVERRIDING THIS PROC:
 // Topic calls are automagically forwarded from NanoModule this program contains.
@@ -236,3 +232,4 @@
 	if(program_state != PROGRAM_STATE_ACTIVE) // Our program was closed. Close the ui if it exists.
 		return UI_CLOSE
 	return ..()
+

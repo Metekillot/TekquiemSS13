@@ -123,50 +123,19 @@
 /obj/machinery/navbeacon/attack_paw()
 	return
 
-/obj/machinery/navbeacon/ui_interact(mob/user)
+/obj/machinery/navbeacon/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()
-	var/ai = isAI(user)
-	var/turf/T = loc
-	if(T.intact)
-		return		// prevent intraction when T-scanner revealed
 
-	if(!open && !ai)	// can't alter controls if not open, unless you're an AI
-		to_chat(user, "<span class='warning'>The beacon's control cover is closed!</span>")
-		return
+	var/turf/our_turf = loc
+	if(our_turf.underfloor_accessibility < UNDERFLOOR_INTERACTABLE)
+		return // prevent intraction when T-scanner revealed
 
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "NavBeacon")
+		ui.set_autoupdate(FALSE)
+		ui.open()
 
-	var/t
-
-	if(locked && !ai)
-		t = {"<TT><B>Navigation Beacon</B><HR><BR>
-<i>(swipe card to unlock controls)</i><BR>
-Location: [location ? location : "(none)"]</A><BR>
-Transponder Codes:<UL>"}
-
-		for(var/key in codes)
-			t += "<LI>[key] ... [codes[key]]"
-		t+= "<UL></TT>"
-
-	else
-
-		t = {"<TT><B>Navigation Beacon</B><HR><BR>
-<i>(swipe card to lock controls)</i><BR>
-
-<HR>
-Location: <A href='byond://?src=[REF(src)];locedit=1'>[location ? location : "None"]</A><BR>
-Transponder Codes:<UL>"}
-
-		for(var/key in codes)
-			t += "<LI>[key] ... [codes[key]]"
-			t += "	<A href='byond://?src=[REF(src)];edit=1;code=[key]'>Edit</A>"
-			t += "	<A href='byond://?src=[REF(src)];delete=1;code=[key]'>Delete</A><BR>"
-		t += "	<A href='byond://?src=[REF(src)];add=1;'>Add New</A><BR>"
-		t+= "<UL></TT>"
-
-	var/datum/browser/popup = new(user, "navbeacon", "Navigation Beacon", 300, 400)
-	popup.set_content(t)
-	popup.open()
-	return
 
 /obj/machinery/navbeacon/Topic(href, href_list)
 	if(..())
@@ -224,3 +193,4 @@ Transponder Codes:<UL>"}
 			glob_lists_register()
 
 			updateDialog()
+

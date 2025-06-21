@@ -258,31 +258,31 @@
 	data["id"] = id
 	return data
 
-/mob/living/simple_animal/bot/mulebot/ui_act(action, params)
+/mob/living/simple_animal/bot/mulebot/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
-
-	if(. || (locked && !usr.has_unlimited_silicon_privilege))
+	var/mob/user = ui.user
+	if(. || (bot_cover_flags & BOT_COVER_LOCKED && !HAS_SILICON_ACCESS(user)))
 		return
 
 	switch(action)
 		if("lock")
-			if(usr.has_unlimited_silicon_privilege)
-				locked = !locked
-				. = TRUE
-		if("power")
-			if(on)
+			if(HAS_SILICON_ACCESS(user))
+				bot_cover_flags ^= BOT_COVER_LOCKED
+				return TRUE
+		if("on")
+			if(bot_mode_flags & BOT_MODE_ON)
 				turn_off()
-			else if(open)
-				to_chat(usr, "<span class='warning'>[name]'s maintenance panel is open!</span>")
+			else if(bot_cover_flags & BOT_COVER_MAINTS_OPEN)
+				to_chat(user, span_warning("[name]'s maintenance panel is open!"))
 				return
 			else if(cell)
 				if(!turn_on())
-					to_chat(usr, "<span class='warning'>You can't switch on [src]!</span>")
+					to_chat(user, span_warning("You can't switch on [src]!"))
 					return
-			. = TRUE
+			return TRUE
 		else
-			bot_control(action, usr, params) // Kill this later.
-			. = TRUE
+			bot_control(action, user, params) // Kill this later. // Kill PDAs in general please
+			return TRUE
 
 /mob/living/simple_animal/bot/mulebot/bot_control(command, mob/user, list/params = list(), pda = FALSE)
 	if(pda && wires.is_cut(WIRE_RX)) // MULE wireless is controlled by wires.
@@ -899,3 +899,4 @@
 
 /obj/machinery/bot_core/mulebot
 	req_access = list(ACCESS_CARGO)
+

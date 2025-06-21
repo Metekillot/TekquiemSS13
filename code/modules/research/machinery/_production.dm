@@ -40,11 +40,11 @@
 /obj/machinery/rnd/production/RefreshParts()
 	calculate_efficiency()
 
-/obj/machinery/rnd/production/ui_interact(mob/user)
-	user.set_machine(src)
-	var/datum/browser/popup = new(user, "rndconsole", name, 460, 550)
-	popup.set_content(generate_ui())
-	popup.open()
+/obj/machinery/rnd/production/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "Fabricator")
+		ui.open()
 
 /obj/machinery/rnd/production/proc/calculate_efficiency()
 	efficiency_coeff = 1
@@ -401,3 +401,4 @@
 
 	l += "</tr></table></div>"
 	return l
+

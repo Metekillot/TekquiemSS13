@@ -203,29 +203,43 @@
 	return data
 
 
-/obj/machinery/door_timer/ui_act(action, params)
+/obj/machinery/status_display/door_timer/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
 	. = TRUE
 
+	var/mob/user = usr
+
 	if(!allowed(usr))
-		to_chat(usr, "<span class='warning'>Access denied.</span>")
+		to_chat(usr, span_warning("Access denied."))
 		return FALSE
 
 	switch(action)
 		if("time")
 			var/value = text2num(params["adjust"])
 			if(value)
-				. = set_timer(time_left()+value)
+				. = set_timer(timer_duration + value)
+				user.investigate_log("modified the timer by [value/10] seconds for cell [id], currently [time_left(seconds = TRUE)]", INVESTIGATE_RECORDS)
+				user.log_message("modified the timer by [value/10] seconds for cell [id], currently [time_left(seconds = TRUE)]", LOG_ATTACK)
 		if("start")
 			timer_start()
+			user.investigate_log("has started [id]'s timer of [time_left(seconds = TRUE)] seconds", INVESTIGATE_RECORDS)
+			user.log_message("has started [id]'s timer of [time_left(seconds = TRUE)] seconds", LOG_ATTACK)
 		if("stop")
+			user.investigate_log("has stopped [id]'s timer of [time_left(seconds = TRUE)] seconds", INVESTIGATE_RECORDS)
+			user.log_message("has stopped [id]'s timer of [time_left(seconds = TRUE)] seconds", LOG_ATTACK)
 			timer_end(forced = TRUE)
 		if("flash")
-			for(var/obj/machinery/flasher/F in targets)
-				F.flash()
+			user.investigate_log("has flashed cell [id]", INVESTIGATE_RECORDS)
+			user.log_message("has flashed cell [id]", LOG_ATTACK)
+			for(var/datum/weakref/flash_ref as anything in flashers)
+				var/obj/machinery/flasher/flasher = flash_ref.resolve()
+				if(!flasher)
+					flashers -= flash_ref
+					continue
+				flasher.flash()
 		if("preset")
 			var/preset = params["preset"]
 			var/preset_time = time_left()
@@ -237,11 +251,12 @@
 				if("long")
 					preset_time = PRESET_LONG
 			. = set_timer(preset_time)
+			user.investigate_log("set cell [id]'s timer to [preset_time/10] seconds", INVESTIGATE_RECORDS)
+			user.log_message("set cell [id]'s timer to [preset_time/10] seconds", LOG_ATTACK)
 			if(timing)
 				activation_time = world.time
 		else
 			. = FALSE
-
 
 #undef PRESET_SHORT
 #undef PRESET_MEDIUM
@@ -252,3 +267,4 @@
 #undef FONT_COLOR
 #undef FONT_STYLE
 #undef CHARS_PER_LINE
+

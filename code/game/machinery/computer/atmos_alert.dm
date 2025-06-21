@@ -37,7 +37,7 @@
 
 	return data
 
-/obj/machinery/computer/atmos_alert/ui_act(action, params)
+/obj/machinery/computer/atmos_alert/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -46,14 +46,14 @@
 		if("clear")
 			var/zone = params["zone"]
 			if(zone in priority_alarms)
-				to_chat(usr, "<span class='notice'>Priority alarm for [zone] cleared.</span>")
+				to_chat(usr, span_notice("Priority alarm for [zone] cleared."))
 				priority_alarms -= zone
 				. = TRUE
 			if(zone in minor_alarms)
-				to_chat(usr, "<span class='notice'>Minor alarm for [zone] cleared.</span>")
+				to_chat(usr, span_notice("Minor alarm for [zone] cleared."))
 				minor_alarms -= zone
 				. = TRUE
-	update_icon()
+	update_appearance()
 
 /obj/machinery/computer/atmos_alert/proc/set_frequency(new_frequency)
 	SSradio.remove_object(src, receive_frequency)
@@ -87,3 +87,4 @@
 		. += "alert:2"
 	else if(minor_alarms.len)
 		. += "alert:1"
+

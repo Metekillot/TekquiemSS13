@@ -67,15 +67,14 @@
 	return reagent_list.Join(", ")
 
 
-/obj/structure/microscope/ui_act(action, params)
+/obj/structure/microscope/ui_act(action, params, datum/tgui/ui)
 	. = ..()
 	if(.)
 		return
 	switch(action)
 		if("eject_petridish")
-			if(!current_dish)
-				return FALSE
-			current_dish.forceMove(get_turf(src))
-			current_dish = null
-			. = TRUE
-	update_icon()
+			if(current_dish)
+				remove_dish(ui.user)
+				. = TRUE
+	update_appearance()
+

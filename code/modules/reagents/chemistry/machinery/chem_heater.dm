@@ -112,22 +112,61 @@
 	data["beakerContents"] = beakerContents
 	return data
 
-/obj/machinery/chem_heater/ui_act(action, params)
+/obj/machinery/chem_heater/ui_act(action, params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
+
 	switch(action)
 		if("power")
 			on = !on
-			. = TRUE
+			return TRUE
+
 		if("temperature")
 			var/target = params["target"]
-			if(text2num(target) != null)
-				target = text2num(target)
-				. = TRUE
-			if(.)
-				target_temperature = clamp(target, 0, 1000)
+			if(isnull(target))
+				return FALSE
+
+			target = text2num(target)
+			if(isnull(target))
+				return FALSE
+
+			target_temperature = clamp(target, 0, 1000)
+			return TRUE
+
 		if("eject")
-			on = FALSE
-			replace_beaker(usr)
-			. = TRUE
+			//Eject doesn't turn it off, so you can preheat for beaker swapping
+			return replace_beaker(ui.user)
+
+		if("acidBuffer")
+			var/target = params["target"]
+			if(!target)
+				return FALSE
+
+			target = text2num(target)
+			if(isnull(target))
+				return FALSE
+
+			return move_buffer(/datum/reagent/reaction_agent/acidic_buffer, target)
+		if("basicBuffer")
+			var/target = params["target"]
+			if(!target)
+				return FALSE
+
+			target = text2num(target)
+			if(isnull(target))
+				return FALSE
+
+			return move_buffer(/datum/reagent/reaction_agent/basic_buffer, target)
+		if("disp_vol")
+			var/target = params["target"]
+			if(!target)
+				return FALSE
+
+			target = text2num(target)
+			if(isnull(target))
+				return FALSE
+
+			dispense_volume = target
+			return TRUE
+

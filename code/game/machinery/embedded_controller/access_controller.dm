@@ -254,10 +254,12 @@
 	else
 		icon_state = "access_control_standby"
 
-/obj/machinery/door_buttons/airlock_controller/ui_interact(mob/user)
-	var/datum/browser/popup = new(user, "computer", name)
-	popup.set_content(returnText())
-	popup.open()
+/obj/machinery/door_buttons/airlock_controller/ui_interact(mob/user, datum/tgui/ui)
+	. = ..()
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "AirlockButtonController", name)
+		ui.open()
 
 /obj/machinery/door_buttons/airlock_controller/proc/returnText()
 	var/output
@@ -308,3 +310,4 @@
 #undef CYCLE
 #undef CYCLE_EXTERIOR
 #undef CYCLE_INTERIOR
+

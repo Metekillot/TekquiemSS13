@@ -79,29 +79,8 @@
 		data["items"] += list(content_data)
 	return data
 
-/obj/structure/noticeboard/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	. = ..()
-	if(.)
-		return
-
-	var/obj/item/item = locate(params["ref"]) in contents
-	if(!istype(item) || item.loc != src)
-		return
-
-	var/mob/user = usr
-
-	switch(action)
-		if("examine")
-			if(istype(item, /obj/item/paper))
-				item.ui_interact(user)
-			else
-				user.examinate(item)
-			return TRUE
-		if("remove")
-			if(!allowed(user))
-				return
-			remove_item(item, user)
-			return TRUE
+/obj/structure/noticeboard/ui_state(mob/user)
+	return GLOB.physical_state
 
 /**
  * Removes an item from the notice board
@@ -181,3 +160,4 @@
 	desc = "Important notices from the heads of staff."
 
 #undef MAX_NOTICES
+

@@ -250,7 +250,7 @@
 	data["current_heat"] = current_heat
 	. =  data
 
-/obj/machinery/power/port_gen/pacman/ui_act(action, params)
+/obj/machinery/power/port_gen/pacman/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -285,3 +285,4 @@
 
 /obj/machinery/power/port_gen/pacman/super/overheat()
 	explosion(src.loc, 3, 3, 3, -1)
+

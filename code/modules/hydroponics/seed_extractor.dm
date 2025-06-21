@@ -207,3 +207,4 @@
 					visible_message("<span class='notice'>[found_seed] falls onto the floor.</span>", null, "<span class='hear'>You hear a soft clatter.</span>", COMBAT_MESSAGE_RANGE)
 				. = TRUE
 
+

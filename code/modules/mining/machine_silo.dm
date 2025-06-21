@@ -82,11 +82,11 @@ GLOBAL_LIST_EMPTY(silo_access_logs)
 
 	return ..()
 
-/obj/machinery/ore_silo/ui_interact(mob/user)
-	user.set_machine(src)
-	var/datum/browser/popup = new(user, "ore_silo", null, 600, 550)
-	popup.set_content(generate_ui())
-	popup.open()
+/obj/machinery/ore_silo/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "OreSilo")
+		ui.open()
 
 /obj/machinery/ore_silo/proc/generate_ui()
 	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
@@ -254,3 +254,4 @@ GLOBAL_LIST_EMPTY(silo_access_logs)
 		sep = ", "
 		msg += "[amount < 0 ? "-" : "+"][val] [M.name]"
 	formatted = msg.Join()
+

@@ -97,7 +97,7 @@
 	data["max_pressure"] = round(ONE_ATMOSPHERE*100)
 	return data
 
-/obj/machinery/atmospherics/components/binary/pressure_valve/ui_act(action, params)
+/obj/machinery/atmospherics/components/binary/pressure_valve/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -117,7 +117,7 @@
 			if(.)
 				target_pressure = clamp(pressure, 0, ONE_ATMOSPHERE*100)
 				investigate_log("was set to [target_pressure] kPa by [key_name(usr)]", INVESTIGATE_ATMOS)
-	update_icon()
+	update_appearance(UPDATE_ICON)
 
 /obj/machinery/atmospherics/components/binary/pressure_valve/atmosinit()
 	. = ..()
@@ -175,3 +175,4 @@
 /obj/machinery/atmospherics/components/binary/pressure_valve/on/layer4
 	piping_layer = 4
 	icon_state= "pvalve_on_map-4"
+

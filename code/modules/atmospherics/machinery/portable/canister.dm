@@ -620,3 +620,4 @@
 				replace_tank(usr, FALSE)
 				. = TRUE
 	update_icon()
+

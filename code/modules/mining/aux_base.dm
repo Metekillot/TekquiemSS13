@@ -118,12 +118,12 @@
 		return FALSE
 	return TRUE
 
-/obj/machinery/computer/auxiliary_base/ui_act(action, params)
+/obj/machinery/computer/auxiliary_base/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	if(!allowed(usr))
-		to_chat(usr, "<span class='danger'>Access denied.</span>")
+		to_chat(usr, span_danger("Access denied."))
 		return
 
 	switch(action)
@@ -132,7 +132,7 @@
 				return
 			var/shuttle_error = SSshuttle.moveShuttle(shuttleId, params["shuttle_id"], 1)
 			if(launch_warning)
-				say("<span class='danger'>Launch sequence activated! Prepare for drop!!</span>")
+				say("Launch sequence activated! Prepare for drop!!", spans = list("danger"))
 				playsound(loc, 'sound/machines/warning-buzzer.ogg', 70, FALSE)
 				launch_warning = FALSE
 				blind_drop_ready = FALSE
@@ -150,12 +150,12 @@
 			for(var/z_level in SSmapping.levels_by_trait(ZTRAIT_MINING))
 				all_mining_turfs += Z_TURFS(z_level)
 			var/turf/LZ = pick(all_mining_turfs) //Pick a random mining Z-level turf
-			if(!ismineralturf(LZ) && !istype(LZ, /turf/open/floor/plating/asteroid))
+			if(!ismineralturf(LZ) && !isasteroidturf(LZ))
 			//Find a suitable mining turf. Reduces chance of landing in a bad area
-				to_chat(usr, "<span class='warning'>Landing zone scan failed. Please try again.</span>")
+				to_chat(usr, span_warning("Landing zone scan failed. Please try again."))
 				return
 			if(set_landing_zone(LZ, usr) != ZONE_SET)
-				to_chat(usr, "<span class='warning'>Landing zone unsuitable. Please recalculate.</span>")
+				to_chat(usr, span_warning("Landing zone unsuitable. Please recalculate."))
 				return
 			blind_drop_ready = FALSE
 			return TRUE
@@ -166,13 +166,19 @@
 			destination = target_destination
 			return TRUE
 		if("turrets_power")
-			for(var/obj/machinery/porta_turret/aux_base/base_turret in turrets)
+			for(var/datum/weakref/turret_ref as anything in turrets)
+				var/obj/machinery/porta_turret/aux_base/base_turret = turret_ref.resolve()
+				if(!istype(base_turret)) // null or invalid in turrets list
+					LAZYREMOVE(turrets, turret_ref)
+					continue
+
 				base_turret.toggle_on()
 			return TRUE
 		if("single_turret_power")
-			var/obj/machinery/porta_turret/aux_base/base_turret = locate(params["single_turret_power"]) in turrets
-			if(!istype(base_turret))
+			var/obj/machinery/porta_turret/aux_base/base_turret = locate(params["single_turret_power"])
+			if(!istype(base_turret) || !(WEAKREF(base_turret) in turrets))
 				return
+
 			base_turret.toggle_on()
 			return TRUE
 
@@ -427,3 +433,4 @@
 #undef BAD_AREA
 #undef BAD_COORDS
 #undef BAD_TURF
+

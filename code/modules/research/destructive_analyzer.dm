@@ -127,11 +127,11 @@ Note: Must be placed within 3 tiles of the R&D Console
 	update_icon()
 	return TRUE
 
-/obj/machinery/rnd/destructive_analyzer/ui_interact(mob/user)
-	. = ..()
-	var/datum/browser/popup = new(user, "destructive_analyzer", name, 900, 600)
-	popup.set_content(ui_deconstruct())
-	popup.open()
+/obj/machinery/rnd/destructive_analyzer/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "DestructiveAnalyzer")
+		ui.open()
 
 /obj/machinery/rnd/destructive_analyzer/proc/ui_deconstruct()		//Legacy code
 	var/list/l = list()
@@ -223,3 +223,4 @@ Note: Must be placed within 3 tiles of the R&D Console
 			say("Destructive analysis failed!")
 
 	updateUsrDialog()
+

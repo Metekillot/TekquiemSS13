@@ -71,56 +71,85 @@
 
 	return data
 
-/obj/machinery/computer/robotics/ui_act(action, params)
+/obj/machinery/computer/robotics/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
-		if("killbot")
-			if(allowed(usr))
-				var/mob/living/silicon/robot/R = locate(params["ref"]) in GLOB.silicon_mobs
-				if(can_control(usr, R) && !..())
-					var/turf/T = get_turf(R)
-					message_admins("<span class='notice'>[ADMIN_LOOKUPFLW(usr)] detonated [key_name_admin(R, R.client)] at [ADMIN_VERBOSEJMP(T)]!</span>")
-					log_game("\<span class='notice'>[key_name(usr)] detonated [key_name(R)]!</span>")
-					if(R.connected_ai)
-						to_chat(R.connected_ai, "<br><br><span class='alert'>ALERT - Cyborg detonation detected: [R.name]</span><br>")
-					R.self_destruct()
-			else
-				to_chat(usr, "<span class='danger'>Access Denied.</span>")
 		if("stopbot")
 			if(allowed(usr))
 				var/mob/living/silicon/robot/R = locate(params["ref"]) in GLOB.silicon_mobs
 				if(can_control(usr, R) && !..())
-					message_admins("<span class='notice'>[ADMIN_LOOKUPFLW(usr)] [!R.lockcharge ? "locked down" : "released"] [ADMIN_LOOKUPFLW(R)]!</span>")
-					log_game("[key_name(usr)] [!R.lockcharge ? "locked down" : "released"] [key_name(R)]!")
-					R.SetLockdown(!R.lockcharge)
-					to_chat(R, "[!R.lockcharge ? "<span class='notice'>Your lockdown has been lifted!" : "<span class='alert'>You have been locked down!"]</span>")
-					if(R.connected_ai)
-						to_chat(R.connected_ai, "[!R.lockcharge ? "<span class='notice'>NOTICE - Cyborg lockdown lifted" : "<span class='alert'>ALERT - Cyborg lockdown detected"]: <a href='byond://?src=[REF(R.connected_ai)];track=[html_encode(R.name)]'>[R.name]</a></span><br>")
+					if(isAI(usr))
+						if(R.lockcharge)
+							if(R.ai_lockdown)
+								R.ai_lockdown = FALSE
+								lock_unlock_borg(R)
+							else
+								to_chat(usr, span_danger("Cyborg locked by an user with superior permissions."))
+						else
+							R.ai_lockdown = TRUE
+							lock_unlock_borg(R)
+					else
+						if(isnull(locked_down_borg) && !R.lockcharge) //If there is no borg locked down by the console yet
+							lock_unlock_borg(R, src.loc.loc.name)
+							R.ai_lockdown = FALSE //Just in case I'm stupid
+							locked_down_borg = R
+							RegisterSignal(R, COMSIG_QDELETING, PROC_REF(borg_destroyed))
+						else if(locked_down_borg == R) //If the borg locked down by the console is the same as the one we're trying to unlock
+							lock_unlock_borg(R)
+						else if(R.lockcharge&&R.ai_lockdown)
+							R.ai_lockdown = FALSE
+							lock_unlock_borg(R)
+						else if(R.lockcharge&&locked_down_borg!=R)
+							to_chat(usr, span_danger("The cyborg was locked by a different console."))
+						else
+							to_chat(usr, span_danger("You can lock down only one cyborg at a time."))
 			else
-				to_chat(usr, "<span class='danger'>Access Denied.</span>")
+				to_chat(usr, span_danger("Access Denied."))
+			if(!isnull(locked_down_borg))
+				use_power = ACTIVE_POWER_USE
+			else
+				use_power = IDLE_POWER_USE
+
+		if("killbot") //Malf AIs, and AIs with a combat upgrade, can detonate their cyborgs remotely.
+			if(!isAI(usr))
+				return
+			var/mob/living/silicon/ai/ai = usr
+			if(!ai.malf_picker)
+				return
+			var/mob/living/silicon/robot/target = locate(params["ref"]) in GLOB.silicon_mobs
+			if(!istype(target))
+				return
+			if(target.connected_ai != ai)
+				return
+			target.self_destruct(usr)
+
 		if("magbot")
 			var/mob/living/silicon/S = usr
 			if((istype(S) && S.hack_software) || isAdminGhostAI(usr))
 				var/mob/living/silicon/robot/R = locate(params["ref"]) in GLOB.silicon_mobs
 				if(istype(R) && !R.emagged && (R.connected_ai == usr || isAdminGhostAI(usr)) && !R.scrambledcodes && can_control(usr, R))
-					log_game("[key_name(usr)] emagged [key_name(R)] using robotic console!")
+					log_silicon("[key_name(usr)] emagged [key_name(R)] using robotic console!")
 					message_admins("[ADMIN_LOOKUPFLW(usr)] emagged cyborg [key_name_admin(R)] using robotic console!")
 					R.SetEmagged(TRUE)
 					R.logevent("WARN: root privleges granted to PID [num2hex(rand(1,65535), -1)][num2hex(rand(1,65535), -1)].") //random eight digit hex value. Two are used because rand(1,4294967295) throws an error
+
 		if("killdrone")
 			if(allowed(usr))
-				var/mob/living/simple_animal/drone/D = locate(params["ref"]) in GLOB.mob_list
-				if(D.hacked)
-					to_chat(usr, "<span class='danger'>ERROR: [D] is not responding to external commands.</span>")
+				var/mob/living/basic/drone/drone = locate(params["ref"]) in GLOB.mob_list
+				if(drone.hacked)
+					to_chat(usr, span_danger("ERROR: [drone] is not responding to external commands."))
 				else
-					var/turf/T = get_turf(D)
-					message_admins("[ADMIN_LOOKUPFLW(usr)] detonated [key_name_admin(D)] at [ADMIN_VERBOSEJMP(T)]!")
-					log_game("[key_name(usr)] detonated [key_name(D)]!")
+					var/turf/T = get_turf(drone)
+					message_admins("[ADMIN_LOOKUPFLW(usr)] detonated [key_name_admin(drone)] at [ADMIN_VERBOSEJMP(T)]!")
+					log_silicon("[key_name(usr)] detonated [key_name(drone)]!")
 					var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
-					s.set_up(3, TRUE, D)
+					s.set_up(3, TRUE, drone)
 					s.start()
-					D.visible_message("<span class='danger'>\the [D] self-destructs!</span>")
-					D.gib()
+					drone.visible_message(span_danger("\the [drone] self-destructs!"))
+					drone.investigate_log("has been gibbed by a robotics console.", INVESTIGATE_DEATHS)
+					drone.gib()
+
+

@@ -390,3 +390,4 @@
 			sending = FALSE
 			teleport(usr, pad)
 			. = TRUE
+

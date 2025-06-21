@@ -160,3 +160,4 @@
 
 /datum/tgui_input_number/proc/set_entry(entry)
 	src.entry = entry
+

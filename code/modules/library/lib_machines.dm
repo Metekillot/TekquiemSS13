@@ -420,125 +420,59 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 		scanner = WEAKREF(foundya)
 		return foundya
 
-/obj/machinery/computer/libraryconsole/bookmanagement/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	//The parent call takes care of stuff like searching, don't forget about that yeah?
+/obj/machinery/computer/libraryconsole/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	switch(action)
-		if("set_screen")
-			var/window = params["screen_index"]
-			set_screen_state(window)
+		if("set_search_id")
+			var/newid = text2num(params["id"])
+			if(newid != book_id)
+				params_changed = TRUE
+			book_id = newid
 			return TRUE
-		if("toggle_dropdown")
-			show_dropdown = !show_dropdown
+		if("set_search_title")
+			var/newtitle = params["title"]
+			if(newtitle != title)
+				params_changed = TRUE
+			title = newtitle
 			return TRUE
-		if("inventory_remove")
-			var/id = params["book_id"]
-			inventory -= id
-			inventory_update()
-			update_static_data_for_all_viewers()
+		if("set_search_category")
+			var/newcategory = params["category"]
+			if(!(newcategory in SSlibrary.search_categories)) //Nice try
+				newcategory = DEFAULT_SEARCH_CATAGORY
+			if(newcategory != category)
+				params_changed = TRUE
+			category = newcategory
 			return TRUE
-		if("switch_inventory_page")
-			inventory_page = sanitize_page_input(params["page"], inventory_page, inventory_page_count)
-			inventory_update()
-			update_static_data_for_all_viewers()
+		if("set_search_author")
+			var/newauthor = params["author"]
+			if(newauthor != author)
+				params_changed = TRUE
+			author = newauthor
 			return TRUE
-		if("checkout")
-			var/list/available = list()
-			for(var/id in inventory)
-				var/datum/book_info/book_infos = inventory[id]
-				available[book_infos.title] = book_infos
-			var/book_name = params["book_name"]
-			if(QDELETED(src) || !book_name)
-				return
-			var/datum/book_info/book_info = available[book_name]
-			if(!istype(book_info))
-				return
-			var/datum/borrowbook/loan = new /datum/borrowbook
-
-			var/loan_to = copytext(sanitize(params["loaned_to"]), 1, MAX_NAME_LEN)
-			var/checkoutperiod = max(params["checkout_time"], 1)
-
-			loan.book_data = book_info.return_copy()
-			loan.loanedto = loan_to
-			loan.checkout = world.time
-			loan.duedate = world.time + (checkoutperiod MINUTES)
-			checkouts[ref(loan)] = loan
-			checkout_update()
-			return TRUE
-		if("checkin")
-			var/id = params["checked_out_id"]
-			checkouts -= id
-			checkout_update()
-			return TRUE
-		if("switch_checkout_page")
-			checkout_page = sanitize_page_input(params["page"], checkout_page, checkout_page_count)
-			checkout_update()
-			return TRUE
-		if("set_cache_title")
-			var/obj/machinery/libraryscanner/scan = get_scanner()
-			if(scan?.cache && params["title"])
-				scan.cache.set_title(params["title"])
-			return TRUE
-		if("set_cache_author")
-			var/obj/machinery/libraryscanner/scan = get_scanner()
-			if(scan?.cache && params["author"])
-				scan.cache.set_author(params["author"])
-			return TRUE
-		if("upload")
+		if("search")
 			if(!prevent_db_spam())
 				say("Database cables refreshing. Please wait a moment.")
 				return
-			var/upload_category = params["category"]
-			if(!(upload_category in SSlibrary.upload_categories)) //Nice try
-				upload_category = DEFAULT_UPLOAD_CATAGORY
-
-			INVOKE_ASYNC(src, PROC_REF(upload_from_scanner), upload_category)
+			INVOKE_ASYNC(src, PROC_REF(update_db_info))
 			return TRUE
-		if("news_post")
-			// We grey out the button UI-side, but let's just be safe to guard against spammy spammers.
-			if(!COOLDOWN_FINISHED(src, newscaster_cooldown))
-				say("Not enough time has passed since the last news post. Please wait.")
+		if("switch_page")
+			if(!prevent_db_spam())
+				say("Database cables refreshing. Please wait a moment.")
 				return
-			if(!GLOB.news_network)
-				say("No news network found on station. Aborting.")
-			var/channelexists = FALSE
-			for(var/datum/feed_channel/feed in GLOB.news_network.network_channels)
-				if(feed.channel_name == LIBRARY_NEWSFEED)
-					channelexists = TRUE
-					break
-			if(!channelexists)
-				GLOB.news_network.create_feed_channel(LIBRARY_NEWSFEED, "Library", "The official station book club!", null)
-
-			var/obj/machinery/libraryscanner/scan = get_scanner()
-			if(!scan)
-				say("No nearby scanner detected. Aborting.")
+			search_page = sanitize_page_input(params["page"], search_page, page_count)
+			INVOKE_ASYNC(src, PROC_REF(update_db_info))
+			return TRUE
+		if("clear_data") //The cap just walked in on your browsing, quick! delete it!
+			if(!prevent_db_spam())
+				say("Database cables refreshing. Please wait a moment.")
 				return
-			GLOB.news_network.submit_article(scan.cache.content, "[scan.cache.author]: [scan.cache.title]", LIBRARY_NEWSFEED, null)
-			say("Upload complete. Your uploaded title is now available on station newscasters.")
-			COOLDOWN_START(src, newscaster_cooldown, NEWSCASTER_COOLDOWN)
-			return TRUE
-		if("print_book")
-			var/id = params["book_id"]
-			attempt_print(CALLBACK(src, PROC_REF(print_book), id))
-			return TRUE
-		if("print_bible")
-			attempt_print(CALLBACK(src, PROC_REF(print_bible)))
-			return TRUE
-		if("print_poster")
-			var/poster_name = params["poster_name"]
-			attempt_print(CALLBACK(src, PROC_REF(print_poster), poster_name))
-			return TRUE
-		if("lore_spawn")
-			if(obj_flags & EMAGGED && can_spawn_lore)
-				print_forbidden_lore(usr)
-			set_screen_state(MIN_LIBRARY)
-			return TRUE
-		if("lore_deny")
-			if(obj_flags & EMAGGED && can_spawn_lore)
-				shun_the_corp(usr)
-			set_screen_state(MIN_LIBRARY)
+			title = initial(title)
+			author = initial(author)
+			category = DEFAULT_SEARCH_CATAGORY
+			search_page = 0
+			INVOKE_ASYNC(src, PROC_REF(update_db_info))
 			return TRUE
 
 /obj/machinery/computer/libraryconsole/bookmanagement/attackby(obj/item/weapon, mob/user, params)
@@ -739,25 +673,59 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 
 	return data
 
-/obj/machinery/libraryscanner/ui_act(action, params, datum/tgui/ui, datum/ui_state/state)
+/obj/machinery/computer/libraryconsole/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	switch(action)
-		if("scan")
-			if(cache?.compare(held_book.book_data))
-				say("This book is already in my internal cache")
+		if("set_search_id")
+			var/newid = text2num(params["id"])
+			if(newid != book_id)
+				params_changed = TRUE
+			book_id = newid
+			return TRUE
+		if("set_search_title")
+			var/newtitle = params["title"]
+			if(newtitle != title)
+				params_changed = TRUE
+			title = newtitle
+			return TRUE
+		if("set_search_category")
+			var/newcategory = params["category"]
+			if(!(newcategory in SSlibrary.search_categories)) //Nice try
+				newcategory = DEFAULT_SEARCH_CATAGORY
+			if(newcategory != category)
+				params_changed = TRUE
+			category = newcategory
+			return TRUE
+		if("set_search_author")
+			var/newauthor = params["author"]
+			if(newauthor != author)
+				params_changed = TRUE
+			author = newauthor
+			return TRUE
+		if("search")
+			if(!prevent_db_spam())
+				say("Database cables refreshing. Please wait a moment.")
 				return
-			cache = held_book.book_data.return_copy()
-			flick("bigscanner1", src)
-			playsound(src, 'sound/machines/scanner/scanner.ogg', vol = 50, vary = TRUE)
+			INVOKE_ASYNC(src, PROC_REF(update_db_info))
 			return TRUE
-		if("clear")
-			cache = null
+		if("switch_page")
+			if(!prevent_db_spam())
+				say("Database cables refreshing. Please wait a moment.")
+				return
+			search_page = sanitize_page_input(params["page"], search_page, page_count)
+			INVOKE_ASYNC(src, PROC_REF(update_db_info))
 			return TRUE
-		if("eject")
-			ui.user.put_in_hands(held_book)
-			playsound(src, 'sound/machines/eject.ogg', 70)
+		if("clear_data") //The cap just walked in on your browsing, quick! delete it!
+			if(!prevent_db_spam())
+				say("Database cables refreshing. Please wait a moment.")
+				return
+			title = initial(title)
+			author = initial(author)
+			category = DEFAULT_SEARCH_CATAGORY
+			search_page = 0
+			INVOKE_ASYNC(src, PROC_REF(update_db_info))
 			return TRUE
 
 /*
@@ -852,3 +820,4 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 #undef MIN_LIBRARY
 #undef NEWSCASTER_COOLDOWN
 #undef PRINTER_COOLDOWN
+

@@ -79,11 +79,12 @@
 			)
 	return data
 
-/obj/machinery/computer/apc_control/ui_act(action, params)
+/obj/machinery/computer/apc_control/ui_act(action, params, datum/tgui/ui)
 	. = ..()
 	if(.)
 		return
 
+	var/mob/living/user = ui.user
 	switch(action)
 		if("log-in")
 			if(obj_flags & EMAGGED)
@@ -91,57 +92,42 @@
 				auth_id = "Unknown (Unknown):"
 				log_activity("[auth_id] logged in to the terminal")
 				return
-			var/obj/item/card/id/ID = operator.get_idcard(TRUE)
-			if(ID && istype(ID))
-				if(check_access(ID))
+			if(!istype(user))
+				return
+			var/obj/item/card/id/user_id_card = user.get_idcard(TRUE)
+			if(istype(user_id_card))
+				if(check_access(user_id_card))
 					authenticated = TRUE
-					auth_id = "[ID.registered_name] ([ID.assignment]):"
+					auth_id = "[user_id_card.registered_name] ([user_id_card.assignment]):"
 					log_activity("[auth_id] logged in to the terminal")
-					playsound(src, 'sound/machines/terminal_on.ogg', 50, FALSE)
+					playsound(src, 'sound/machines/terminal/terminal_on.ogg', 50, FALSE)
 				else
-					auth_id = "[ID.registered_name] ([ID.assignment]):"
+					auth_id = "[user_id_card.registered_name] ([user_id_card.assignment]):"
 					log_activity("[auth_id] attempted to log into the terminal")
+					playsound(src, 'sound/machines/terminal/terminal_error.ogg', 50, FALSE)
+					say("ID rejected, access denied!")
 				return
 			auth_id = "Unknown (Unknown):"
 			log_activity("[auth_id] attempted to log into the terminal")
 		if("log-out")
 			log_activity("[auth_id] logged out of the terminal")
-			playsound(src, 'sound/machines/terminal_off.ogg', 50, FALSE)
+			playsound(src, 'sound/machines/terminal/terminal_off.ogg', 50, FALSE)
 			authenticated = FALSE
 			auth_id = "\[NULL\]"
 		if("toggle-logs")
 			should_log = !should_log
-			log_game("[key_name(operator)] set the logs of [src] in [AREACOORD(src)] [should_log ? "On" : "Off"]")
+			user.log_message("set the logs of [src] [should_log ? "On" : "Off"].", LOG_GAME)
 		if("restore-console")
 			restoring = TRUE
-			addtimer(CALLBACK(src, PROC_REF(restore_comp)), rand(3,5) * 9)
+			addtimer(CALLBACK(src, PROC_REF(restore_comp), user), rand(3,5) * 9 SECONDS)
 		if("access-apc")
 			var/ref = params["ref"]
-			playsound(src, "terminal_type", 50, FALSE)
-			var/obj/machinery/power/apc/APC = locate(ref) in GLOB.apcs_list
-			if(!APC)
+			playsound(src, SFX_TERMINAL_TYPE, 50, FALSE)
+			var/obj/machinery/power/apc/remote_target = locate(ref) in SSmachines.get_machines_by_type_and_subtypes(/obj/machinery/power/apc)
+			if(!remote_target || !check_apc(remote_target))
 				return
-			if(active_apc)
-				to_chat(operator, "<span class='robot danger'>[icon2html(src, auth_id)] Disconnected from [active_apc].</span>")
-				active_apc.say("Remote access canceled. Interface locked.")
-				playsound(active_apc, 'sound/machines/boltsdown.ogg', 25, FALSE)
-				playsound(active_apc, 'sound/machines/terminal_alert.ogg', 50, FALSE)
-				active_apc.locked = TRUE
-				active_apc.update_icon()
-				active_apc.remote_control = null
-				active_apc = null
-			APC.remote_control = src
-			APC.ui_interact(operator)
-			playsound(src, 'sound/machines/terminal_prompt_confirm.ogg', 50, FALSE)
-			log_game("[key_name(operator)] remotely accessed [APC] from [src] at [AREACOORD(src)].")
-			log_activity("[auth_id] remotely accessed APC in [get_area_name(APC.area, TRUE)]")
-			if(APC.locked)
-				APC.say("Remote access detected. Interface unlocked.")
-				playsound(APC, 'sound/machines/boltsup.ogg', 25, FALSE)
-				playsound(APC, 'sound/machines/terminal_alert.ogg', 50, FALSE)
-			APC.locked = FALSE
-			APC.update_icon()
-			active_apc = APC
+			connect_apc(remote_target, user)
+			return TRUE
 		if("check-logs")
 			log_activity("Checked Logs")
 		if("check-apcs")
@@ -150,11 +136,26 @@
 			var/ref = params["ref"]
 			var/type = params["type"]
 			var/value = params["value"]
-			var/obj/machinery/power/apc/target = locate(ref) in GLOB.apcs_list
-			if(!target)
+			var/obj/machinery/power/apc/target = locate(ref) in SSmachines.get_machines_by_type_and_subtypes(/obj/machinery/power/apc)
+			if(!target || !check_apc(target))
 				return
-			target.vars[type] = target.setsubsystem(text2num(value))
-			target.update_icon()
+
+			value = target.setsubsystem(text2num(value))
+			switch(type) // Sanity check
+				if("equipment")
+					target.equipment = value
+				if("lighting")
+					target.lighting = value
+				if("environ")
+					target.environ = value
+				if(null)
+					return
+				else
+					message_admins("Warning: possible href exploit by [key_name(user)] - attempted to set [html_encode(type)] on [target] to [html_encode(value)]")
+					user.log_message("possibly trying to href exploit - attempted to set [html_encode(type)] on [target] to [html_encode(value)]", LOG_ADMIN)
+					return
+
+			target.update_appearance()
 			target.update()
 			var/setTo = ""
 			switch(target.vars[type])
@@ -167,13 +168,16 @@
 				if(3)
 					setTo = "Auto On"
 			log_activity("Set APC [target.area.name] [type] to [setTo]")
-			log_game("[key_name(operator)] Set APC [target.area.name] [type] to [setTo]]")
+			user.log_message("set APC [target.area.name] [type] to [setTo]]", LOG_GAME)
 		if("breaker")
 			var/ref = params["ref"]
-			var/obj/machinery/power/apc/target = locate(ref) in GLOB.apcs_list
-			target.toggle_breaker()
-			var/setTo = target.operating ? "On" : "Off"
-			log_activity("Turned APC [target.area.name]'s breaker [setTo]")
+			var/obj/machinery/power/apc/breaker_target = locate(ref) in SSmachines.get_machines_by_type_and_subtypes(/obj/machinery/power/apc)
+			if(!breaker_target || !check_apc(breaker_target))
+				return
+			breaker_target.toggle_breaker(user)
+			var/setTo = breaker_target.operating ? "On" : "Off"
+			log_activity("Turned APC [breaker_target.area.name]'s breaker [setTo]")
+			return TRUE
 
 /obj/machinery/computer/apc_control/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
@@ -199,3 +203,4 @@
 		if(A.operator && A.operator == src && !A.machine_stat)
 			return TRUE
 	return
+

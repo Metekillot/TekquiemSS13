@@ -137,3 +137,4 @@
 
 /datum/tgui_checkbox_input/proc/set_choices(list/selections)
 	src.choices = selections.Copy()
+

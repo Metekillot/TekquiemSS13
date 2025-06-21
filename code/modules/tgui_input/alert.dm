@@ -139,3 +139,4 @@
 
 /datum/tgui_alert/proc/set_choice(choice)
 	src.choice = choice
+

@@ -59,27 +59,19 @@
 	QDEL_NULL(wires)
 	return ..()
 
-/obj/machinery/autolathe/ui_interact(mob/user)
-	. = ..()
+/obj/machinery/autolathe/ui_interact(mob/user, datum/tgui/ui)
 	if(!is_operational)
 		return
 
 	if(shocked && !(machine_stat & NOPOWER))
-		shock(user,50)
+		shock(user, 50)
+		return
 
-	var/dat
+	ui = SStgui.try_update_ui(user, src, ui)
 
-	switch(screen)
-		if(AUTOLATHE_MAIN_MENU)
-			dat = main_win(user)
-		if(AUTOLATHE_CATEGORY_MENU)
-			dat = category_win(user,selected_category)
-		if(AUTOLATHE_SEARCH_MENU)
-			dat = search_win(user)
-
-	var/datum/browser/popup = new(user, "autolathe", name, 400, 500)
-	popup.set_content(dat)
-	popup.open()
+	if(!ui)
+		ui = new(user, src, "Autolathe")
+		ui.open()
 
 /obj/machinery/autolathe/on_deconstruction()
 	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
@@ -435,3 +427,4 @@
 //Has a reference to the autolathe so you can do !!FUN!! things with hacked lathes
 /obj/item/proc/autolathe_crafted(obj/machinery/autolathe/A)
 	return
+

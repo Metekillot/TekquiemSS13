@@ -78,23 +78,25 @@
 	data["current_reagent"] = ckey(initial(reagent_id.name))
 	return data
 
-/obj/machinery/plumbing/synthesizer/ui_act(action, params)
+/obj/machinery/plumbing/synthesizer/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
-	. = TRUE
+
 	switch(action)
 		if("amount")
 			var/new_amount = text2num(params["target"])
 			if(new_amount in possible_amounts)
 				amount = new_amount
 				. = TRUE
+
 		if("select")
 			var/new_reagent = GLOB.name2reagent[params["reagent"]]
 			if(new_reagent in dispensable_reagents)
 				reagent_id = new_reagent
 				. = TRUE
-	update_icon()
+
+	update_appearance()
 	reagents.clear_reagents()
 
 /obj/machinery/plumbing/synthesizer/update_overlays()
@@ -105,3 +107,4 @@
 	else
 		r_overlay.color = "#FFFFFF"
 	. += r_overlay
+

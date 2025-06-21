@@ -241,33 +241,40 @@
 				index++
 	return data
 
-/obj/machinery/mineral/ore_redemption/ui_act(action, params)
+/obj/machinery/mineral/ore_redemption/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	var/datum/component/material_container/mat_container = materials.mat_container
 	switch(action)
 		if("Claim")
-			var/obj/item/card/id/I
+			//requires silo but silo not in range
+			if(requires_silo && !materials.check_z_level())
+				return FALSE
+
+			//no ID
+			var/obj/item/card/id/user_id_card
 			if(isliving(usr))
-				var/mob/living/L = usr
-				I = L.get_idcard(TRUE)
+				var/mob/living/user = usr
+				user_id_card = user.get_idcard(TRUE)
+			if(isnull(user_id_card))
+				to_chat(usr, span_warning("No valid ID detected."))
+				return FALSE
+
+			//we have points
 			if(points)
-				if(I)
-					I.mining_points += points
-					points = 0
-				else
-					to_chat(usr, "<span class='warning'>No valid ID detected.</span>")
-			else
-				to_chat(usr, "<span class='warning'>No points to claim.</span>")
-			return TRUE
+				user_id_card.registered_account.mining_points += points
+				points = 0
+				return TRUE
+
+			return FALSE
 		if("Release")
 			if(!mat_container)
 				return
 			if(materials.on_hold())
-				to_chat(usr, "<span class='warning'>Mineral access is on hold, please contact the quartermaster.</span>")
+				to_chat(usr, span_warning("Mineral access is on hold, please contact the quartermaster."))
 			else if(!allowed(usr)) //Check the ID inside, otherwise check the user
-				to_chat(usr, "<span class='warning'>Required access not found.</span>")
+				to_chat(usr, span_warning("Required access not found."))
 			else
 				var/datum/material/mat = locate(params["id"])
 
@@ -275,66 +282,31 @@
 				if(!amount)
 					return
 
-				var/stored_amount = CEILING(amount / MINERAL_MATERIAL_AMOUNT, 0.1)
-
+				var/stored_amount = CEILING(amount / SHEET_MATERIAL_AMOUNT, 0.1)
 				if(!stored_amount)
 					return
 
-				var/desired = 0
-				if (params["sheets"])
-					desired = text2num(params["sheets"])
-				else
-					desired = input("How many sheets?", "How many sheets would you like to smelt?", 1) as null|num
-
-				var/sheets_to_remove = round(min(desired,50,stored_amount))
-
-				var/count = mat_container.retrieve_sheets(sheets_to_remove, mat, get_step(src, output_dir))
-				var/list/mats = list()
-				mats[mat] = MINERAL_MATERIAL_AMOUNT
-				materials.silo_log(src, "released", -count, "sheets", mats)
-				//Logging deleted for quick coding
-			return TRUE
-		if("diskInsert")
-			var/obj/item/disk/design_disk/disk = usr.get_active_held_item()
-			if(istype(disk))
-				if(!usr.transferItemToLoc(disk,src))
-					return
-				inserted_disk = disk
-			else
-				to_chat(usr, "<span class='warning'>Not a valid Design Disk!</span>")
-			return TRUE
-		if("diskEject")
-			if(inserted_disk)
-				usr.put_in_hands(inserted_disk)
-				inserted_disk = null
-			return TRUE
-		if("diskUpload")
-			var/n = text2num(params["design"])
-			if(inserted_disk && inserted_disk.blueprints && inserted_disk.blueprints[n])
-				stored_research.add_design(inserted_disk.blueprints[n])
+				var/desired = text2num(params["sheets"])
+				var/sheets_to_remove = round(min(desired, 50, stored_amount))
+				materials.eject_sheets(mat, sheets_to_remove, get_step(src, output_dir))
 			return TRUE
 		if("Smelt")
 			if(!mat_container)
 				return
 			if(materials.on_hold())
-				to_chat(usr, "<span class='warning'>Mineral access is on hold, please contact the quartermaster.</span>")
+				to_chat(usr, span_warning("Mineral access is on hold, please contact the quartermaster."))
 				return
 			var/alloy_id = params["id"]
 			var/datum/design/alloy = stored_research.isDesignResearchedID(alloy_id)
-			var/obj/item/card/id/I
+			var/obj/item/card/id/user_id_card
 			if(isliving(usr))
-				var/mob/living/L = usr
-				I = L.get_idcard(TRUE)
-			if((check_access(I) || allowed(usr)) && alloy)
-				var/smelt_amount = can_smelt_alloy(alloy)
-				var/desired = 0
-				if (params["sheets"])
-					desired = text2num(params["sheets"])
-				else
-					desired = input("How many sheets?", "How many sheets would you like to smelt?", 1) as null|num
-				var/amount = round(min(desired,50,smelt_amount))
-				mat_container.use_materials(alloy.materials, amount)
-				materials.silo_log(src, "released", -amount, "sheets", alloy.materials)
+				var/mob/living/user = usr
+				user_id_card = user.get_idcard(TRUE)
+			if((check_access(user_id_card) || allowed(usr)) && alloy)
+				var/amount = round(min(text2num(params["sheets"]), 50, can_smelt_alloy(alloy)))
+				if(amount < 1) //no negative mats
+					return
+				materials.use_materials(alloy.materials, multiplier = amount, action = "released", name = "sheets")
 				var/output
 				if(ispath(alloy.build_path, /obj/item/stack/sheet))
 					output = new alloy.build_path(src, amount)
@@ -342,7 +314,7 @@
 					output = new alloy.build_path(src)
 				unload_mineral(output)
 			else
-				to_chat(usr, "<span class='warning'>Required access not found.</span>")
+				to_chat(usr, span_warning("Required access not found."))
 			return TRUE
 
 /obj/machinery/mineral/ore_redemption/ex_act(severity, target)
@@ -354,3 +326,4 @@
 		icon_state = initial(icon_state)
 	else
 		icon_state = "[initial(icon_state)]-off"
+

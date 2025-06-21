@@ -65,7 +65,7 @@
 
 	return data
 
-/obj/machinery/gulag_item_reclaimer/ui_act(action, params)
+/obj/machinery/gulag_item_reclaimer/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -74,7 +74,7 @@
 		if("release_items")
 			var/mob/living/carbon/human/H = locate(params["mobref"]) in stored_items
 			if(H != usr && !allowed(usr))
-				to_chat(usr, "<span class='warning'>Access denied.</span>")
+				to_chat(usr, span_warning("Access denied."))
 				return
 			drop_items(H)
 			. = TRUE
@@ -88,3 +88,4 @@
 		stored_items[user] -= W
 		W.forceMove(drop_location)
 	stored_items -= user
+

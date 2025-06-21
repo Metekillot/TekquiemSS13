@@ -37,24 +37,12 @@
 	stored_research = new /datum/techweb/specialized/autounlocking/limbgrower
 	. = ..()
 
-/obj/machinery/limbgrower/ui_interact(mob/user)
+/obj/machinery/limbgrower/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()
-	if(!is_operational)
-		return
-
-	var/dat = main_win(user)
-
-	switch(screen)
-		if(LIMBGROWER_MAIN_MENU)
-			dat = main_win(user)
-		if(LIMBGROWER_CATEGORY_MENU)
-			dat = category_win(user,selected_category)
-		if(LIMBGROWER_CHEMICAL_MENU)
-			dat = chemical_win(user)
-
-	var/datum/browser/popup = new(user, "Limb Grower", name, 400, 500)
-	popup.set_content(dat)
-	popup.open()
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "Limbgrower")
+		ui.open()
 
 /obj/machinery/limbgrower/on_deconstruction()
 	for(var/obj/item/reagent_containers/glass/G in component_parts)
@@ -234,3 +222,4 @@
 			stored_research.add_design(D)
 	to_chat(user, "<span class='warning'>A warning flashes onto the screen, stating that safety overrides have been deactivated!</span>")
 	obj_flags |= EMAGGED
+

@@ -230,3 +230,4 @@
 				votes[selected_answer] += 1
 				voted[user.ckey] = selected_answer
 				. = TRUE
+

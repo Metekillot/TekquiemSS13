@@ -95,7 +95,7 @@
 		ui = new(user, src, "MechBayPowerConsole", name)
 		ui.open()
 
-/obj/machinery/computer/mech_bay_power_console/ui_act(action, params)
+/obj/machinery/computer/mech_bay_power_console/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -103,7 +103,7 @@
 		if("reconnect")
 			reconnect()
 			. = TRUE
-			update_icon()
+			update_appearance()
 
 /obj/machinery/computer/mech_bay_power_console/ui_data(mob/user)
 	var/list/data = list()
@@ -150,3 +150,4 @@
 	if (recharge_port && recharge_port.recharge_console == src)
 		recharge_port.recharge_console = null
 	return ..()
+

@@ -1128,3 +1128,4 @@ DEFINE_BITFIELD(turret_flags, list(
 			if(istype(P, /obj/projectile/beam/lasertag/bluetag))
 				toggle_on(FALSE)
 				addtimer(CALLBACK(src, PROC_REF(toggle_on), TRUE), 10 SECONDS)
+

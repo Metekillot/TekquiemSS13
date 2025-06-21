@@ -139,13 +139,13 @@
 
 	return data
 
-/obj/machinery/atmospherics/components/trinary/filter/ui_act(action, params)
+/obj/machinery/atmospherics/components/trinary/filter/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	switch(action)
 		if("power")
-			on = !on
+			set_on(!on)
 			investigate_log("was turned [on ? "on" : "off"] by [key_name(usr)]", INVESTIGATE_ATMOS)
 			. = TRUE
 		if("rate")
@@ -159,16 +159,19 @@
 			if(.)
 				transfer_rate = clamp(rate, 0, MAX_TRANSFER_RATE)
 				investigate_log("was set to [transfer_rate] L/s by [key_name(usr)]", INVESTIGATE_ATMOS)
-		if("filter")
-			filter_type = null
-			var/filter_name = "nothing"
-			var/gas = gas_id2path(params["mode"])
-			if(gas in GLOB.meta_gas_info)
-				filter_type = gas
-				filter_name	= GLOB.meta_gas_info[gas][META_GAS_NAME]
-			investigate_log("was set to filter [filter_name] by [key_name(usr)]", INVESTIGATE_ATMOS)
+		if("toggle_filter")
+			if(!gas_id2path(params["val"]))
+				return TRUE
+			filter_type ^= gas_id2path(params["val"])
+			var/change
+			if(gas_id2path(params["val"]) in filter_type)
+				change = "added"
+			else
+				change = "removed"
+			var/gas_name = GLOB.meta_gas_info[gas_id2path(params["val"])][META_GAS_NAME]
+			usr.investigate_log("[change] [gas_name] from the filter type.", INVESTIGATE_ATMOS)
 			. = TRUE
-	update_icon()
+	update_appearance(UPDATE_ICON)
 
 /obj/machinery/atmospherics/components/trinary/filter/can_unwrench(mob/user)
 	. = ..()
@@ -361,3 +364,4 @@
 
 /obj/machinery/atmospherics/components/trinary/filter/flipped/critical
 	critical_machine = TRUE
+

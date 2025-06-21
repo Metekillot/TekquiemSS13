@@ -101,7 +101,7 @@
 	data["dos_crashed"] = dos_failure
 	return data
 
-/obj/machinery/ntnet_relay/ui_act(action, params)
+/obj/machinery/ntnet_relay/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -109,13 +109,13 @@
 		if("restart")
 			dos_overload = 0
 			set_dos_failure(FALSE)
-			update_icon()
-			SSnetworks.add_log("Quantum relay manually restarted from overload recovery mode to normal operation mode.")
+			update_appearance()
+			SSmodular_computers.add_log("Quantum relay manually restarted from overload recovery mode to normal operation mode.")
 			return TRUE
 		if("toggle")
 			set_relay_enabled(!relay_enabled)
-			SSnetworks.add_log("Quantum relay manually [relay_enabled ? "enabled" : "disabled"].")
-			update_icon()
+			SSmodular_computers.add_log("Quantum relay manually [relay_enabled ? "enabled" : "disabled"].")
+			update_appearance()
 			return TRUE
 
 /obj/machinery/ntnet_relay/Initialize()
@@ -139,3 +139,4 @@
 		D.error = "Connection to quantum relay severed"
 
 	return ..()
+

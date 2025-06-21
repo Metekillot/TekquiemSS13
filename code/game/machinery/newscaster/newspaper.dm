@@ -121,7 +121,7 @@
 		else
 			return TRUE
 	SStgui.update_uis(src)
-	playsound(src, "page_turn", 50, TRUE)
+	playsound(src, SFX_PAGE_TURN, 50, TRUE)
 	return TRUE
 
 /obj/item/newspaper/ui_static_data(mob/user)
@@ -174,3 +174,4 @@
 			))
 	data["channel_data"] = list(channel_data)
 	return data
+

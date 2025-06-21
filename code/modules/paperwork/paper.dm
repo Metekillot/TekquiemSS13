@@ -350,7 +350,7 @@
 		return UI_UPDATE
 	if(!in_range(user, src) && !isobserver(user))
 		return UI_CLOSE
-	if(user.incapacitated(ignore_restraints = TRUE, ignore_grab = TRUE) || (isobserver(user) && !isAdminGhostAI(user)))
+	if(INCAPACITATED_IGNORING(user, INCAPABLE_RESTRAINTS|INCAPABLE_GRAB) || (isobserver(user) && !isAdminGhostAI(user)))
 		return UI_UPDATE
 	// Even harder to read if your blind...braile? humm
 	// .. or if you cannot read

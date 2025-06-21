@@ -16,11 +16,9 @@
 	GLOB.alert_consoles -= src
 	return ..()
 
-/obj/machinery/computer/station_alert/ui_interact(mob/user, datum/tgui/ui)
-	ui = SStgui.try_update_ui(user, src, ui)
-	if(!ui)
-		ui = new(user, src, "StationAlertConsole", name)
-		ui.open()
+/obj/machinery/computer/station_alert/ui_interact(mob/user)
+	. = ..()
+	alert_control.ui_interact(user)
 
 /obj/machinery/computer/station_alert/ui_data(mob/user)
 	var/list/data = list()
@@ -86,3 +84,4 @@
 			active_alarms = TRUE
 	if(active_alarms)
 		. += "alert:2"
+

@@ -76,16 +76,11 @@
 	else
 		return INITIALIZE_HINT_QDEL
 
-/obj/machinery/mineral/processing_unit_console/ui_interact(mob/user)
-	. = ..()
-	if(!machine)
-		return
-
-	var/dat = machine.get_machine_data()
-
-	var/datum/browser/popup = new(user, "processing", "Smelting Console", 300, 500)
-	popup.set_content(dat)
-	popup.open()
+/obj/machinery/mineral/processing_unit_console/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "ProcessingConsole")
+		ui.open()
 
 /obj/machinery/mineral/processing_unit_console/Topic(href, href_list)
 	if(..())
@@ -275,3 +270,4 @@
 	..()
 
 #undef SMELT_AMOUNT
+

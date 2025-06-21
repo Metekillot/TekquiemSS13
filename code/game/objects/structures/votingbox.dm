@@ -223,3 +223,4 @@
 
 #undef VOTE_TEXT_LIMIT
 #undef MAX_VOTES
+

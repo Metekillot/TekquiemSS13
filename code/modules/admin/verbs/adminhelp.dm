@@ -715,22 +715,8 @@ GLOBAL_DATUM_INIT(admin_help_ui_handler, /datum/admin_help_ui_handler, new)
 		ui.open()
 		ui.set_autoupdate(FALSE)
 
-/datum/admin_help_ui_handler/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	. = ..()
-	if(.)
-		return
-	var/client/user_client = usr.client
-	var/message = sanitize_text(trim(params["message"]))
-	var/urgent = !!params["urgent"]
-	var/list/admins = get_admin_counts(R_BAN)
-	if(length(admins["present"]) != 0 || is_banned_from(user_client.ckey, "Urgent Adminhelp"))
-		urgent = FALSE
-
-	if(user_client.adminhelptimerid)
-		return
-
-	perform_adminhelp(user_client, message, urgent)
-	ui.close()
+/datum/admin_help_ui_handler/ui_state(mob/user)
+	return GLOB.always_state
 
 /datum/admin_help_ui_handler/proc/perform_adminhelp(client/user_client, message, urgent)
 	if(GLOB.say_disabled) //This is here to try to identify lag problems
@@ -1114,3 +1100,4 @@ GLOBAL_DATUM_INIT(admin_help_ui_handler, /datum/admin_help_ui_handler, new)
 #undef WEBHOOK_URGENT
 #undef WEBHOOK_NONE
 #undef WEBHOOK_NON_URGENT
+

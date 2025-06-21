@@ -85,7 +85,7 @@
 	data["emptying"] = emptying
 	return data
 
-/obj/machinery/plumbing/acclimator/ui_act(action, params)
+/obj/machinery/plumbing/acclimator/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -106,3 +106,4 @@
 #undef COOLING
 #undef HEATING
 #undef NEUTRAL
+

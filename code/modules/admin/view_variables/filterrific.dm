@@ -5,7 +5,7 @@
 	src.target = target
 
 /datum/filter_editor/ui_state(mob/user)
-	return GLOB.admin_state
+	return ADMIN_STATE(R_VAREDIT)
 
 /datum/filter_editor/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -95,5 +95,6 @@
 					count += 1
 			message_admins("LOCAL CLOWN [usr.ckey] JUST MASS FILTER EDITED [count] WITH PATH OF [params["path"]]!")
 			log_admin("LOCAL CLOWN [usr.ckey] JUST MASS FILTER EDITED [count] WITH PATH OF [params["path"]]!")
+
 
 

@@ -227,208 +227,129 @@
 	data["condiStyles"] = condi_styles
 	return data
 
-/obj/machinery/chem_master/ui_act(action, params)
+/obj/machinery/chem_master/ui_act(action, params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
-	if(action == "eject")
-		replace_beaker(usr)
-		return TRUE
+	switch(action)
+		if("eject")
+			if(is_printing)
+				say("The buffer is locked while printing.")
+				return
 
-	if(action == "ejectPillBottle")
-		if(!bottle)
-			return FALSE
-		bottle.forceMove(drop_location())
-		adjust_item_drop_location(bottle)
-		bottle = null
-		return TRUE
-
-	if(action == "transfer")
-		var/reagent = GLOB.name2reagent[params["id"]]
-		var/amount = text2num(params["amount"])
-		var/to_container = params["to"]
-		// Custom amount
-		if (amount == -1)
-			amount = text2num(input(
-				"Enter the amount you want to transfer:",
-				name, ""))
-		if (amount == null || amount <= 0)
-			return FALSE
-		if (to_container == "beaker" && !mode)
-			reagents.remove_reagent(reagent, amount)
-			return TRUE
-		if (!beaker)
-			return FALSE
-		if (to_container == "buffer")
-			beaker.reagents.trans_id_to(src, reagent, amount)
-			return TRUE
-		if (to_container == "beaker" && mode)
-			reagents.trans_id_to(beaker, reagent, amount)
-			return TRUE
-		return FALSE
-
-	if(action == "toggleMode")
-		mode = !mode
-		return TRUE
-
-	if(action == "pillStyle")
-		var/id = text2num(params["id"])
-		chosen_pill_style = id
-		return TRUE
-
-	if(action == "condiStyle")
-		chosen_condi_style = params["id"]
-		return TRUE
-
-	if(action == "create")
-		if(reagents.total_volume == 0)
-			return FALSE
-		var/item_type = params["type"]
-		// Get amount of items
-		var/amount = text2num(params["amount"])
-		if(amount == null)
-			amount = text2num(input(usr,
-				"Max 10. Buffer content will be split evenly.",
-				"How many to make?", 1))
-		amount = clamp(round(amount), 0, 10)
-		if (amount <= 0)
-			return FALSE
-		// Get units per item
-		var/vol_each = text2num(params["volume"])
-		var/vol_each_text = params["volume"]
-		var/vol_each_max = reagents.total_volume / amount
-		var/list/style
-
-		if (item_type == "pill")
-			vol_each_max = min(50, vol_each_max)
-		else if (item_type == "patch")
-			vol_each_max = min(40, vol_each_max)
-		else if (item_type == "bottle")
-			vol_each_max = min(30, vol_each_max)
-		else if (item_type == "condimentPack")
-			vol_each_max = min(10, vol_each_max)
-		else if (item_type == "condimentBottle")
-			var/list/styles = get_condi_styles()
-			if (chosen_condi_style == CONDIMASTER_STYLE_AUTO || !(chosen_condi_style in styles))
-				style = guess_condi_style(reagents)
-			else
-				style = styles[chosen_condi_style]
-			vol_each_max = min(50, vol_each_max)
-		else
-			return FALSE
-		if(vol_each_text == "auto")
-			vol_each = vol_each_max
-		if(vol_each == null)
-			vol_each = text2num(input(usr,
-				"Maximum [vol_each_max] units per item.",
-				"How many units to fill?",
-				vol_each_max))
-		vol_each = clamp(vol_each, 0, vol_each_max)
-		if(vol_each <= 0)
-			return FALSE
-		// Get item name
-		var/name = params["name"]
-		var/name_has_units = item_type == "pill" || item_type == "patch"
-		if(!name)
-			var/name_default
-			if (style && style["name"] && !style["generate_name"])
-				name_default = style["name"]
-			else
-				name_default = reagents.get_master_reagent_name()
-			if (name_has_units)
-				name_default += " ([vol_each]u)"
-			name = stripped_input(usr,
-				"Name:",
-				"Give it a name!",
-				name_default,
-				MAX_NAME_LEN)
-		if(!name || !reagents.total_volume || !src || QDELETED(src) || !usr.canUseTopic(src, !issilicon(usr)))
-			return FALSE
-		// Start filling
-		if(item_type == "pill")
-			var/obj/item/reagent_containers/pill/P
-			var/target_loc = drop_location()
-			var/drop_threshold = INFINITY
-			if(bottle)
-				var/datum/component/storage/STRB = bottle.GetComponent(
-					/datum/component/storage)
-				if(STRB)
-					drop_threshold = STRB.max_items - bottle.contents.len
-					target_loc = bottle
-			for(var/i = 0; i < amount; i++)
-				if(i < drop_threshold)
-					P = new/obj/item/reagent_containers/pill(target_loc)
-				else
-					P = new/obj/item/reagent_containers/pill(drop_location())
-				P.name = trim("[name] pill")
-				if(chosen_pill_style == RANDOM_PILL_STYLE)
-					P.icon_state ="pill[rand(1,21)]"
-				else
-					P.icon_state = "pill[chosen_pill_style]"
-				if(P.icon_state == "pill4")
-					P.desc = "A tablet or capsule, but not just any, a red one, one taken by the ones not scared of knowledge, freedom, uncertainty and the brutal truths of reality."
-				adjust_item_drop_location(P)
-				reagents.trans_to(P, vol_each, transfered_by = usr)
-			return TRUE
-		if(item_type == "patch")
-			var/obj/item/reagent_containers/pill/patch/P
-			for(var/i = 0; i < amount; i++)
-				P = new/obj/item/reagent_containers/pill/patch(drop_location())
-				P.name = trim("[name] patch")
-				adjust_item_drop_location(P)
-				reagents.trans_to(P, vol_each, transfered_by = usr)
-			return TRUE
-		if(item_type == "bottle")
-			var/obj/item/reagent_containers/glass/bottle/P
-			for(var/i = 0; i < amount; i++)
-				P = new/obj/item/reagent_containers/glass/bottle(drop_location())
-				P.name = trim("[name] bottle")
-				adjust_item_drop_location(P)
-				reagents.trans_to(P, vol_each, transfered_by = usr)
-			return TRUE
-		if(item_type == "condimentPack")
-			var/obj/item/reagent_containers/food/condiment/pack/P
-			for(var/i = 0; i < amount; i++)
-				P = new/obj/item/reagent_containers/food/condiment/pack(drop_location())
-				P.originalname = name
-				P.name = trim("[name] pack")
-				P.desc = "A small condiment pack. The label says it contains [name]."
-				reagents.trans_to(P, vol_each, transfered_by = usr)
-			return TRUE
-		if(item_type == "condimentBottle")
-			var/obj/item/reagent_containers/food/condiment/P
-			for(var/i = 0; i < amount; i++)
-				P = new/obj/item/reagent_containers/food/condiment(drop_location())
-				if (style)
-					apply_condi_style(P, style)
-				P.renamedByPlayer = TRUE
-				P.name = name
-				reagents.trans_to(P, vol_each, transfered_by = usr)
-			return TRUE
-		return FALSE
-
-	if(action == "analyze")
-		var/datum/reagent/R = GLOB.name2reagent[params["id"]]
-		if(R)
-			var/state = "Unknown"
-			if(initial(R.reagent_state) == 1)
-				state = "Solid"
-			else if(initial(R.reagent_state) == 2)
-				state = "Liquid"
-			else if(initial(R.reagent_state) == 3)
-				state = "Gas"
-			var/const/P = 3 //The number of seconds between life ticks
-			var/T = initial(R.metabolization_rate) * (60 / P)
-			analyze_vars = list("name" = initial(R.name), "state" = state, "color" = initial(R.color), "description" = initial(R.description), "metaRate" = T, "overD" = initial(R.overdose_threshold), "addicD" = initial(R.addiction_threshold))
-			screen = "analyze"
+			replace_beaker(ui.user)
 			return TRUE
 
-	if(action == "goScreen")
-		screen = params["screen"]
-		return TRUE
+		if("transfer")
+			if(is_printing)
+				say("The buffer is locked while printing.")
+				return
 
-	return FALSE
+			var/reagent_ref = params["reagentRef"]
+			var/amount = params["amount"]
+			var/target = params["target"]
+
+			if(amount == -1) // Set custom amount
+				var/mob/user = ui.user //Hold a reference of the user if the UI is closed
+				amount = round(tgui_input_number(user, "Enter amount to transfer", "Transfer amount", round_value = FALSE), CHEMICAL_VOLUME_ROUNDING)
+				if(!amount || !user.can_perform_action(src))
+					return FALSE
+
+			var/should_transfer = is_transfering || (target == "buffer") // we should always transfer if target is the buffer
+			if(should_transfer && isnull(beaker)) // if there's no beaker, we cannot transfer
+				say("No reagent container is inserted.")
+				return FALSE
+
+			var/reagents_from
+			var/reagents_to = null
+			if(target == "buffer")
+				reagents_from = beaker.reagents
+				reagents_to = reagents // buffer
+			else if(target == "beaker")
+				reagents_from = reagents // buffer
+				if(should_transfer)
+					reagents_to = beaker.reagents
+			return transfer_reagent(reagents_from, reagents_to, reagent_ref, amount, should_transfer)
+
+		if("toggleTransferMode")
+			is_transfering = !is_transfering
+			return TRUE
+
+		if("stopPrinting")
+			is_printing = FALSE
+			update_appearance(UPDATE_OVERLAYS)
+			return TRUE
+
+		if ("setPillDuration")
+			pill_layers = clamp(params["duration"], 0, PILL_MAX_PRINTABLE_LAYERS)
+			return TRUE
+
+		if("selectContainer")
+			var/obj/item/reagent_containers/target = locate(params["ref"])
+
+			//is this even a valid type path
+			if(!ispath(target))
+				return FALSE
+
+			//are we printing a valid container
+			var/container_found = FALSE
+			for(var/category in printable_containers)
+				//container found in previous iteration
+				if(container_found)
+					break
+
+				//find for matching typepath
+				for(var/obj/item/reagent_containers/container as anything in printable_containers[category])
+					if(target == container)
+						container_found = TRUE
+						break
+			if(!container_found)
+				return FALSE
+
+			//set the container
+			selected_container = target
+			return TRUE
+
+		if("create")
+			if(!reagents.total_volume || is_printing)
+				return FALSE
+
+			//validate print count
+			var/item_count = params["itemCount"]
+			if(isnull(item_count))
+				return FALSE
+			item_count = text2num(item_count)
+			if(isnull(item_count) || item_count <= 0)
+				return FALSE
+			item_count = min(item_count, MAX_CONTAINER_PRINT_AMOUNT)
+			var/volume_in_each = min(round(reagents.total_volume / item_count, CHEMICAL_VOLUME_ROUNDING), initial(selected_container.volume))
+
+			// Generate item name
+			var/item_name_default = initial(selected_container.name)
+			var/datum/reagent/master_reagent = reagents.get_master_reagent()
+			if(selected_container == default_container) // Tubes and bottles gain reagent name
+				item_name_default = "[master_reagent.name] [item_name_default]"
+			if(!(initial(selected_container.reagent_flags) & OPENCONTAINER)) // Closed containers get both reagent name and units in the name
+				item_name_default = "[master_reagent.name] [item_name_default] ([volume_in_each]u)"
+			var/item_name = tgui_input_text(
+				usr,
+				"Container name",
+				"Name",
+				item_name_default,
+				max_length = MAX_NAME_LEN,
+			)
+
+			if(!item_name || is_printing)
+				return FALSE
+
+			//start printing
+			is_printing = TRUE
+			printing_progress = 0
+			printing_total = item_count
+			update_appearance(UPDATE_OVERLAYS)
+			create_containers(ui.user, item_count, item_name, volume_in_each, selected_container)
+			return TRUE
 
 /obj/machinery/chem_master/adjust_item_drop_location(atom/movable/AM) // Special version for chemmasters and condimasters
 	if (AM == beaker)
@@ -579,3 +500,4 @@
 	name = "CondiMaster 3000"
 	desc = "Used to create condiments and other cooking supplies."
 	condi = TRUE
+

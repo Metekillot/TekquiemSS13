@@ -64,7 +64,7 @@
 		ui.open()
 
 /datum/fax_panel_interface/ui_state(mob/user)
-	return GLOB.admin_state
+	return ADMIN_STATE(R_ADMIN)
 
 /datum/fax_panel_interface/ui_static_data(mob/user)
 	var/list/data = list()
@@ -82,64 +82,6 @@
 
 	return data
 
-/datum/fax_panel_interface/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	if(..())
-		return
+/datum/fax_panel_interface/ui_state(mob/user)
+	return ADMIN_STATE(R_ADMIN)
 
-	if(!check_rights(R_ADMIN))
-		return
-
-	var/obj/machinery/fax/action_fax
-
-	if(params["faxName"])
-		action_fax = get_fax_by_name(params["faxName"])
-
-	switch(action)
-
-		if("follow")
-			if(!isobserver(usr))
-				usr.client?.admin_ghost()
-
-			usr.client?.admin_follow(action_fax)
-
-		if("preview") // see saved variant
-			if(!fax_paper)
-				return
-			fax_paper.ui_interact(usr)
-
-		if("save") // save paper
-			if(params["paperName"])
-				default_paper_name = params["paperName"]
-			if(params["fromWho"])
-				sending_fax_name = params["fromWho"]
-
-			fax_paper.clear_paper()
-			var/stamp
-			var/stamp_class
-
-			for(var/needed_stamp in stamp_list)
-				if(needed_stamp[1] == params["stamp"])
-					stamp = needed_stamp[2]
-					stamp_class = needed_stamp[3]
-					break
-
-			fax_paper.name = "paper — [default_paper_name]"
-			fax_paper.add_raw_text(params["rawText"], advanced_html = TRUE)
-
-			if(stamp)
-				fax_paper.add_stamp(stamp_class, params["stampX"], params["stampY"], params["stampAngle"], stamp)
-
-			fax_paper.update_static_data(usr) // OK, it's work, and update UI.
-
-		if("send")
-			//copy
-			var/obj/item/paper/our_fax = fax_paper.copy(/obj/item/paper)
-			our_fax.name = fax_paper.name
-			//send
-			action_fax.receive(our_fax, sending_fax_name)
-			message_admins("[key_name_admin(usr)] has sent a custom fax message to [action_fax.name][ADMIN_FLW(action_fax)][ADMIN_SHOW_PAPER(fax_paper)].")
-			log_admin("[key_name(usr)] has sent a custom fax message to [action_fax.name]")
-
-		if("createPaper")
-			var/obj/item/paper/our_paper = fax_paper.copy(/obj/item/paper, usr.loc)
-			our_paper.name = fax_paper.name

@@ -292,7 +292,7 @@ GLOBAL_LIST_EMPTY(gateway_destinations)
 			destinations += list(D.get_ui_data())
 	.["destinations"] = destinations
 
-/obj/machinery/computer/gateway_control/ui_act(action, list/params)
+/obj/machinery/computer/gateway_control/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -358,3 +358,4 @@ GLOBAL_LIST_EMPTY(gateway_destinations)
 	var/turf/center_turf = our_destination.get_target_turf()
 
 	vis_contents += block(locate(center_turf.x - 1, center_turf.y - 1, center_turf.z), locate(center_turf.x + 1, center_turf.y + 1, center_turf.z))
+

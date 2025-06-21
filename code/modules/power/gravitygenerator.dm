@@ -244,7 +244,7 @@ GLOBAL_LIST_EMPTY(gravity_generators) // We will keep track of this by adding ne
 
 	return data
 
-/obj/machinery/gravity_generator/main/ui_act(action, params)
+/obj/machinery/gravity_generator/main/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -414,3 +414,4 @@ GLOBAL_LIST_EMPTY(gravity_generators) // We will keep track of this by adding ne
 	<li>Mend the damaged framework with a welding tool.</li>
 	<li>Add additional plasteel plating.</li>
 	<li>Secure the additional plating with a wrench.</li></ol>"}
+

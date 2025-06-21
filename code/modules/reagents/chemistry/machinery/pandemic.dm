@@ -171,66 +171,37 @@
 
 	return data
 
-/obj/machinery/computer/pandemic/ui_act(action, params)
+/obj/machinery/computer/pandemic/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	switch(action)
 		if("eject_beaker")
 			eject_beaker()
-			. = TRUE
+			return TRUE
 		if("empty_beaker")
 			if(beaker)
 				beaker.reagents.clear_reagents()
-			. = TRUE
+			return TRUE
 		if("empty_eject_beaker")
 			if(beaker)
 				beaker.reagents.clear_reagents()
 				eject_beaker()
-			. = TRUE
+			return TRUE
 		if("rename_disease")
-			var/id = get_virus_id_by_index(text2num(params["index"]))
-			var/datum/disease/advance/A = SSdisease.archive_diseases[id]
-			if(!A.mutable)
-				return
-			if(A)
-				var/new_name = sanitize_name(html_encode(params["name"]), allow_numbers = TRUE)
-				if(!new_name || ..())
-					return
-				A.AssignName(new_name)
-				. = TRUE
+			rename_disease(params["index"], params["name"])
+			return TRUE
 		if("create_culture_bottle")
 			if (wait)
-				return
-			var/id = get_virus_id_by_index(text2num(params["index"]))
-			var/datum/disease/advance/A = SSdisease.archive_diseases[id]
-			if(!istype(A) || !A.mutable)
-				to_chat(usr, "<span class='warning'>ERROR: Cannot replicate virus strain.</span>")
-				return
-			A = A.Copy()
-			var/list/data = list("viruses" = list(A))
-			var/obj/item/reagent_containers/glass/bottle/B = new(drop_location())
-			B.name = "[A.name] culture bottle"
-			B.desc = "A small bottle. Contains [A.agent] culture in synthblood medium."
-			B.reagents.add_reagent(/datum/reagent/blood, 20, data)
-			wait = TRUE
-			update_icon()
-			var/turf/source_turf = get_turf(src)
-			log_virus("A culture bottle was printed for the virus [A.admin_details()] at [loc_name(source_turf)] by [key_name(usr)]")
-			addtimer(CALLBACK(src, PROC_REF(reset_replicator_cooldown)), 50)
-			. = TRUE
+				return FALSE
+			create_culture_bottle(params["index"])
+			return TRUE
 		if("create_vaccine_bottle")
 			if (wait)
-				return
-			var/id = params["index"]
-			var/datum/disease/D = SSdisease.archive_diseases[id]
-			var/obj/item/reagent_containers/glass/bottle/B = new(drop_location())
-			B.name = "[D.name] vaccine bottle"
-			B.reagents.add_reagent(/datum/reagent/vaccine, 15, list(id))
-			wait = TRUE
-			update_icon()
-			addtimer(CALLBACK(src, PROC_REF(reset_replicator_cooldown)), 200)
-			. = TRUE
+				return FALSE
+			create_vaccine_bottle(params["index"])
+			return TRUE
+	return FALSE
 
 
 /obj/machinery/computer/pandemic/attackby(obj/item/I, mob/user, params)
@@ -253,3 +224,4 @@
 /obj/machinery/computer/pandemic/on_deconstruction()
 	eject_beaker()
 	. = ..()
+

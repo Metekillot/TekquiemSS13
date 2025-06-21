@@ -39,11 +39,7 @@
 /obj/item/instrument/interact(mob/user)
 	ui_interact(user)
 
-/obj/item/instrument/ui_interact(mob/living/user)
-	if(!isliving(user) || user.stat != CONSCIOUS || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
-		return
-
-	user.set_machine(src)
+/obj/item/instrument/ui_interact(mob/user, datum/tgui/ui)
 	song.ui_interact(user)
 
 /obj/item/instrument/violin
@@ -321,3 +317,4 @@
 	hitsound = 'sound/voice/moth/scream_moth.ogg'
 	custom_price = PAYCHECK_HARD * 2.37
 	custom_premium_price = PAYCHECK_HARD * 2.37
+

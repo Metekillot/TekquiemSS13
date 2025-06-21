@@ -135,13 +135,15 @@
 		else if(on && holding)
 			investigate_log("[key_name(user)] started a transfer into [holding].", INVESTIGATE_ATMOS)
 
-/obj/machinery/portable_atmospherics/scrubber/ui_act(action, params)
+/obj/machinery/portable_atmospherics/scrubber/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	switch(action)
 		if("power")
 			on = !on
+			if(on)
+				SSair.start_processing_machine(src)
 			. = TRUE
 		if("eject")
 			if(holding)
@@ -150,7 +152,16 @@
 		if("toggle_filter")
 			scrubbing ^= gas_id2path(params["val"])
 			. = TRUE
-	update_icon()
+		if("reaction_suppression")
+			if(!nob_crystal_inserted)
+				message_admins("[ADMIN_LOOKUPFLW(usr)] tried to toggle reaction suppression on a scrubber without a noblium crystal inside, possible href exploit attempt.")
+				return
+			suppress_reactions = !suppress_reactions
+			SSair.start_processing_machine(src)
+			message_admins("[ADMIN_LOOKUPFLW(usr)] turned [suppress_reactions ? "on" : "off"] the [src] reaction suppression.")
+			usr.investigate_log("turned [suppress_reactions ? "on" : "off"] the [src] reaction suppression.", INVESTIGATE_ATMOS)
+			. = TRUE
+	update_appearance()
 
 /obj/machinery/portable_atmospherics/scrubber/huge
 	name = "huge air scrubber"
@@ -195,3 +206,4 @@
 			on = FALSE
 	else
 		return ..()
+

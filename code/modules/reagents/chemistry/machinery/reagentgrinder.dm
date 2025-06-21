@@ -176,54 +176,65 @@
 		holdingitems[I] = TRUE
 		return FALSE
 
-/obj/machinery/reagentgrinder/ui_interact(mob/user) // The microwave Menu //I am reasonably certain that this is not a microwave
-	. = ..()
-
-	if(operating || !user.canUseTopic(src, !issilicon(user)))
+/obj/machinery/reagentgrinder/ui_interact(mob/user)
+	//sanity check
+	if(!user.can_perform_action(src, ALLOW_SILICON_REACH | FORBID_TELEKINESIS_REACH))
 		return
 
+	var/static/radial_eject = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_eject")
+
+	//create list of options available
 	var/list/options = list()
+	//actions to be performed on the items stored inside
+	for(var/obj/item/to_process in src)
+		if((to_process in component_parts) || to_process == beaker)
+			continue
 
-	if(beaker || length(holdingitems))
+		if(is_operational && anchored && !QDELETED(beaker) && !beaker.reagents.holder_full())
+			var/static/radial_grind = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_grind")
+			options["grind"] = radial_grind
+
+			var/static/radial_juice = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_juice")
+			options["juice"] = radial_juice
+
 		options["eject"] = radial_eject
+		break
 
-	if(isAI(user))
-		if(machine_stat & NOPOWER)
-			return
+	//eject action if we have a beaker
+	if(!QDELETED(beaker))
+		options["eject"] = radial_eject
+		//mix reagents present inside
+		if(is_operational && anchored && beaker.reagents.total_volume)
+			var/static/radial_mix = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_mix")
+			options["mix"] = radial_mix
+
+	//examine action if Ai is trying to see whats up
+	if(HAS_AI_ACCESS(user))
+		var/static/radial_examine = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_examine")
 		options["examine"] = radial_examine
 
-	// if there is no power or it's broken, the procs will fail but the buttons will still show
-	if(length(holdingitems))
-		options["grind"] = radial_grind
-		options["juice"] = radial_juice
-	else if(beaker?.reagents.total_volume)
-		options["mix"] = radial_mix
-
-	var/choice
-
-	if(length(options) < 1)
-		return
-	if(length(options) == 1)
-		for(var/key in options)
-			choice = key
-	else
-		choice = show_radial_menu(user, src, options, require_near = !issilicon(user))
-
-	// post choice verification
-	if(operating || (isAI(user) && machine_stat & NOPOWER) || !user.canUseTopic(src, !issilicon(user)))
+	//display choices & perform action
+	var/choice = show_radial_menu(
+		user,
+		src,
+		options,
+		custom_check = CALLBACK(src, PROC_REF(check_interactable), user),
+		require_near = !HAS_SILICON_ACCESS(user),
+	)
+	if(!choice)
 		return
 
+	//act on choice
 	switch(choice)
 		if("eject")
-			eject(user)
-		if("grind")
-			grind(user)
-		if("juice")
-			juice(user)
+			replace_beaker(user)
+			dump_inventory_contents()
+		if("grind", "juice")
+			operate_for(6 SECONDS, choice == "juice", user)
 		if("mix")
-			mix(user)
+			mix(5 SECONDS, user)
 		if("examine")
-			examine(user)
+			to_chat(user, boxed_message(jointext(examine(user), "\n")))
 
 /obj/machinery/reagentgrinder/proc/eject(mob/user)
 	for(var/i in holdingitems)
@@ -320,3 +331,4 @@
 			var/amount = beaker.reagents.get_reagent_amount(/datum/reagent/consumable/eggyolk)
 			beaker.reagents.remove_reagent(/datum/reagent/consumable/eggyolk, amount)
 			beaker.reagents.add_reagent(/datum/reagent/consumable/mayonnaise, amount)
+

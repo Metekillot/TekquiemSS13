@@ -19,8 +19,10 @@
 		return ..()
 	return UI_CLOSE
 
-/datum/robot_control/ui_state(mob/user)
-	return GLOB.always_state
+/datum/robot_control/ui_status(mob/user, datum/ui_state/state)
+	if(is_interactable(user))
+		return ..()
+	return UI_CLOSE
 
 /datum/robot_control/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -75,3 +77,4 @@
 				return
 			owner.Bot.attack_ai(usr)
 			. = TRUE
+

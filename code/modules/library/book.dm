@@ -170,3 +170,4 @@
 /// Generates a random icon state for the book
 /obj/item/book/proc/gen_random_icon_state()
 	icon_state = "book[rand(1, maximum_book_state)]"
+

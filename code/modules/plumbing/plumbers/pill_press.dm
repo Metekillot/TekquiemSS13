@@ -87,7 +87,7 @@
 
 /obj/machinery/plumbing/pill_press/ui_assets(mob/user)
 	return list(
-		get_asset_datum(/datum/asset/spritesheet/simple/pills),
+		get_asset_datum(/datum/asset/spritesheet_batched/chemmaster)
 	)
 
 /obj/machinery/plumbing/pill_press/ui_interact(mob/user, datum/tgui/ui)
@@ -128,3 +128,4 @@
 			else if (product == "bottle")
 				max_volume = max_bottle_volume
 			current_volume = clamp(current_volume, min_volume, max_volume)
+

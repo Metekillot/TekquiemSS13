@@ -58,8 +58,10 @@
 		return UI_CLOSE
 	return ..()
 
-/obj/machinery/abductor/experiment/ui_state(mob/user)
-	return GLOB.physical_state
+/obj/machinery/abductor/experiment/ui_status(mob/user, datum/ui_state/state)
+	if(user == occupant)
+		return UI_CLOSE
+	return ..()
 
 /obj/machinery/abductor/experiment/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -187,3 +189,4 @@
 		icon_state = "experiment-open"
 	else
 		icon_state = "experiment"
+

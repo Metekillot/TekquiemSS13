@@ -40,7 +40,7 @@
 	var/comment_text
 
 /datum/newspanel/ui_state(mob/user)
-	return GLOB.admin_state
+	return ADMIN_STATE(R_ADMIN)
 
 /datum/newspanel/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -375,3 +375,4 @@
 /datum/newspanel/proc/clear_wanted_issue(user)
 	GLOB.news_network.wanted_issue.active = FALSE
 	return
+

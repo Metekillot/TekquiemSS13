@@ -200,22 +200,17 @@
 		data["currentTemp"] = round(curTemp - T0C, 1)
 	return data
 
-/obj/machinery/space_heater/ui_act(action, params)
+/obj/machinery/space_heater/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
 		if("power")
-			on = !on
-			mode = HEATER_MODE_STANDBY
-			usr.visible_message("<span class='notice'>[usr] switches [on ? "on" : "off"] \the [src].</span>", "<span class='notice'>You switch [on ? "on" : "off"] \the [src].</span>")
-			update_icon()
-			if (on)
-				START_PROCESSING(SSmachines, src)
+			toggle_power()
 			. = TRUE
 		if("mode")
-			setMode = params["mode"]
+			set_mode = params["mode"]
 			. = TRUE
 		if("target")
 			if(!panel_open)
@@ -225,15 +220,15 @@
 				target= text2num(target) + T0C
 				. = TRUE
 			if(.)
-				targetTemperature = clamp(round(target),
-					max(settableTemperatureMedian - settableTemperatureRange, TCMB),
-					settableTemperatureMedian + settableTemperatureRange)
+				target_temperature = clamp(round(target),
+					max(settable_temperature_median - settable_temperature_range, TCMB),
+					settable_temperature_median + settable_temperature_range)
 		if("eject")
 			if(panel_open && cell)
-				cell.forceMove(drop_location())
-				cell = null
+				usr.put_in_hands(cell)
 				. = TRUE
 
 #undef HEATER_MODE_STANDBY
 #undef HEATER_MODE_HEAT
 #undef HEATER_MODE_COOL
+

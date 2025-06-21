@@ -435,88 +435,32 @@
 	data["tray_open"] = open
 	return data
 
-/obj/structure/displaycase/forsale/ui_act(action, params)
+/obj/structure/displaycase/trophy/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
-	var/obj/item/card/id/potential_acc
-	if(isliving(usr))
-		var/mob/living/L = usr
-		potential_acc = L.get_idcard(hand_first = TRUE)
 	switch(action)
-		if("Buy")
-			if(!showpiece)
-				to_chat(usr, "<span class='notice'>There's nothing for sale.</span>")
+		if("insert_key")
+			if(historian_mode)
+				return
+			var/obj/item/key/displaycase/trophy_key = usr.get_active_held_item()
+			if(istype(trophy_key))
+				toggle_historian_mode(usr)
 				return TRUE
-			if(broken)
-				to_chat(usr, "<span class='notice'>[src] appears to be broken.</span>")
+			return
+		if("change_message")
+			if(showpiece && !holographic_showpiece)
+				var/new_trophy_message = tgui_input_text(usr, "Let's make history!", "Trophy Message", trophy_message, max_length = MAX_PLAQUE_LEN)
+				if(!new_trophy_message)
+					return
+				trophy_message = new_trophy_message
 				return TRUE
-			if(!payments_acc)
-				to_chat(usr, "<span class='notice'>[src] hasn't been registered yet.</span>")
-				return TRUE
-			if(!usr.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-				return TRUE
-			if(!potential_acc)
-				to_chat(usr, "<span class='notice'>No ID card detected.</span>")
+		if("lock")
+			if(!historian_mode)
 				return
-			var/datum/bank_account/account = potential_acc.registered_account
-			if(!account)
-				to_chat(usr, "<span class='notice'>[potential_acc] has no account registered!</span>")
-				return
-			if(!account.has_money(sale_price))
-				to_chat(usr, "<span class='notice'>You do not possess the funds to purchase this.</span>")
-				return TRUE
-			else
-				account.adjust_money(-sale_price)
-				if(payments_acc)
-					payments_acc.adjust_money(sale_price)
-				usr.put_in_hands(showpiece)
-				to_chat(usr, "<span class='notice'>You purchase [showpiece] for [sale_price] credits.</span>")
-				playsound(src, 'sound/effects/cashregister.ogg', 40, TRUE)
-				flick("[initial(icon_state)]_vend", src)
-				showpiece = null
-				update_icon()
-				SStgui.update_uis(src)
-				return TRUE
-		if("Open")
-			if(!payments_acc)
-				to_chat(usr, "<span class='notice'>[src] hasn't been registered yet.</span>")
-				return TRUE
-			if(!potential_acc || !potential_acc.registered_account)
-				return
-			if(!check_access(potential_acc))
-				playsound(src, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
-				return
-			toggle_lock()
-			SStgui.update_uis(src)
-		if("Register")
-			if(payments_acc)
-				return
-			if(!potential_acc || !potential_acc.registered_account)
-				return
-			if(!check_access(potential_acc))
-				playsound(src, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
-				return
-			payments_acc = potential_acc.registered_account
-			playsound(src, 'sound/machines/click.ogg', 20, TRUE)
-		if("Adjust")
-			if(!check_access(potential_acc) || potential_acc.registered_account != payments_acc)
-				playsound(src, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
-				return
-
-			var/new_price_input = input(usr,"Set the sale price for this vend-a-tray.","new price",0) as num|null
-			if(isnull(new_price_input) || (payments_acc != potential_acc.registered_account))
-				to_chat(usr, "<span class='warning'>[src] rejects your new price.</span>")
-				return
-			if(!usr.canUseTopic(src, BE_CLOSE, FALSE, NO_TK) )
-				to_chat(usr, "<span class='warning'>You need to get closer!</span>")
-				return
-			new_price_input = clamp(round(new_price_input, 1), 10, 1000)
-			sale_price = new_price_input
-			to_chat(usr, "<span class='notice'>The cost is now set to [sale_price].</span>")
-			SStgui.update_uis(src)
+			toggle_historian_mode(usr)
 			return TRUE
-	. = TRUE
+
 /obj/structure/displaycase/forsale/attackby(obj/item/I, mob/living/user, params)
 	if(isidcard(I))
 		//Card Registration
@@ -587,4 +531,5 @@
 /obj/structure/displaycase/forsale/kitchen
 	desc = "A display case with an ID-card swiper. Use your ID to purchase the contents. Meant for the bartender and chef."
 	req_one_access = list(ACCESS_KITCHEN, ACCESS_BAR)
+
 

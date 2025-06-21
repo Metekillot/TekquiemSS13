@@ -65,29 +65,29 @@
 					var/area/A = get_area(W)
 					beacon_name = A.name
 
-				var/D =  dir2text(get_dir(sr, tr))
+				var/D = dir2text(get_dir(sr, tr))
 				tele_beacons += list(list(name = beacon_name, direction = D, distance = distance))
 
 		data["telebeacons"] = tele_beacons
 
 		var/list/track_implants = list()
 
-		for (var/obj/item/implant/tracking/W in GLOB.tracked_implants)
-			if (!W.imp_in || !isliving(W.loc))
+		for (var/obj/item/implant/beacon/tracking_beacon in GLOB.tracked_implants)
+			if (!tracking_beacon.imp_in || !isliving(tracking_beacon.loc))
 				continue
 			else
-				var/mob/living/M = W.loc
-				if (M.stat == DEAD)
-					if (M.timeofdeath + W.lifespan_postmortem < world.time)
+				var/mob/living/living_mob = tracking_beacon.loc
+				if (living_mob.stat == DEAD)
+					if (living_mob.timeofdeath + tracking_beacon.lifespan_postmortem < world.time)
 						continue
-			var/turf/tr = get_turf(W)
+			var/turf/tr = get_turf(tracking_beacon)
 			var/distance = max(abs(tr.x - sr.x), abs(tr.y - sr.y))
 
 			if(distance > tracking_range)
 				continue
 
-			var/D =  dir2text(get_dir(sr, tr))
-			track_implants += list(list(name = W.imp_in.name, direction = D, distance = distance))
+			var/D = dir2text(get_dir(sr, tr))
+			track_implants += list(list(name = tracking_beacon.imp_in.name, direction = D, distance = distance))
 		data["trackimplants"] = track_implants
 	return data
 
@@ -219,3 +219,4 @@
 		else
 			itemUser.visible_message("<span class='suicide'>[user] looks even further depressed as they realize they do not have a head...and suddenly dies of shame!</span>")
 		return (BRUTELOSS)
+

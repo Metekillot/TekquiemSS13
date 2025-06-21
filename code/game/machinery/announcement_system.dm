@@ -107,38 +107,36 @@ GLOBAL_LIST_EMPTY(announcement_systems)
 	data["newheadToggle"] = newheadToggle
 	return data
 
-/obj/machinery/announcement_system/ui_act(action, param)
+/obj/machinery/announcement_system/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
-	if(!usr.canUseTopic(src, !issilicon(usr)))
+	if(!usr.can_perform_action(src, ALLOW_SILICON_REACH))
 		return
-	if(machine_stat & BROKEN)
-		visible_message("<span class='warning'>[src] buzzes.</span>", "<span class='hear'>You hear a faint buzz.</span>")
-		playsound(src.loc, 'sound/machines/buzz-two.ogg', 50, TRUE)
+	if(machine_stat & EMPED)
+		visible_message(span_warning("[src] buzzes."), span_hear("You hear a faint buzz."))
+		playsound(src.loc, 'sound/machines/buzz/buzz-two.ogg', 50, TRUE)
 		return
-	switch(action)
-		if("ArrivalText")
-			var/NewMessage = trim(html_encode(param["newText"]), MAX_MESSAGE_LEN)
-			if(!usr.canUseTopic(src, !issilicon(usr)))
-				return
-			if(NewMessage)
-				arrival = NewMessage
-				log_game("The arrivals announcement was updated: [NewMessage] by:[key_name(usr)]")
-		if("NewheadText")
-			var/NewMessage = trim(html_encode(param["newText"]), MAX_MESSAGE_LEN)
-			if(!usr.canUseTopic(src, !issilicon(usr)))
-				return
-			if(NewMessage)
-				newhead = NewMessage
-				log_game("The head announcement was updated: [NewMessage] by:[key_name(usr)]")
-		if("NewheadToggle")
-			newheadToggle = !newheadToggle
-			update_icon()
-		if("ArrivalToggle")
-			arrivalToggle = !arrivalToggle
-			update_icon()
+
 	add_fingerprint(usr)
+	var/datum/aas_config_entry/config = locate(params["entryRef"]) in config_entries
+	if(!config || !config.modifiable)
+		return
+
+	switch(action)
+		if("Toggle")
+			config.enabled = !config.enabled
+			if (config.type in list(/datum/aas_config_entry/arrival, /datum/aas_config_entry/newhead))
+				update_appearance()
+		if("Text")
+			if(!(params["lineKey"] in config.announcement_lines_map))
+				message_admins("[ADMIN_LOOKUPFLW(usr)] tried to set announcement line for nonexisting line in the [config.name] for AAS. Probably href injection. Received line: [params["lineKey"]]")
+				log_game("[key_name(usr)] tried to mess with AAS. For [config.name] he tried to edit nonexistend [params["lineKey"]]")
+				return
+			var/new_message = trim(html_encode(params["newText"]), MAX_MESSAGE_LEN)
+			if(new_message)
+				config.announcement_lines_map[params["lineKey"]] = new_message
+				usr.log_message("updated [params["lineKey"]] line in the [config.name] to: [new_message]", LOG_GAME)
 
 /obj/machinery/announcement_system/attack_robot(mob/living/silicon/user)
 	. = attack_ai(user)
@@ -168,3 +166,4 @@ GLOBAL_LIST_EMPTY(announcement_systems)
 		return
 	obj_flags |= EMAGGED
 	act_up()
+

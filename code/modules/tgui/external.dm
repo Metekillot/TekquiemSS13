@@ -238,3 +238,4 @@
 	if(window)
 		window.on_message(type, payload, href_list)
 	return TRUE
+

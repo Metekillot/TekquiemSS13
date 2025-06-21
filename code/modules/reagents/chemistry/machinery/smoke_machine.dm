@@ -134,30 +134,44 @@
 	data["maxSetting"] = max_range
 	return data
 
-/obj/machinery/smoke_machine/ui_act(action, params)
+/obj/machinery/smoke_machine/ui_act(action, params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
-
-	if(. || !anchored)
+	if(.)
 		return
+
 	switch(action)
 		if("purge")
 			reagents.clear_reagents()
-			update_icon()
-			. = TRUE
+			update_appearance(UPDATE_ICON_STATE)
+			return TRUE
+
 		if("setting")
-			var/amount = text2num(params["amount"])
+			var/amount = params["amount"]
+			if(isnull(amount))
+				return FALSE
+
+			amount = text2num(amount)
+			if(isnull(amount))
+				return FALSE
+
 			if(amount in 1 to max_range)
 				setting = amount
-				. = TRUE
+				return TRUE
+
 		if("power")
 			on = !on
-			update_icon()
-			if(on)
-				message_admins("[ADMIN_LOOKUPFLW(usr)] activated a smoke machine that contains [english_list(reagents.reagent_list)] at [ADMIN_VERBOSEJMP(src)].")
-				log_game("[key_name(usr)] activated a smoke machine that contains [english_list(reagents.reagent_list)] at [AREACOORD(src)].")
-				log_combat(usr, src, "has activated [src] which contains [english_list(reagents.reagent_list)] at [AREACOORD(src)].")
-		if("goScreen")
-			screen = params["screen"]
-			. = TRUE
+			if(on && reagents.total_volume)
+				var/mob/user = ui.user
+				var/list/english_list = english_list(reagents.reagent_list)
+				message_admins("[ADMIN_LOOKUPFLW(user)] activated a smoke machine that contains [english_list] at [ADMIN_VERBOSEJMP(src)].")
+				user.log_message("activated a smoke machine that contains [english_list]", LOG_GAME)
+				log_combat(user, src, "has activated [src] which contains [english_list] at [AREACOORD(src)].")
+				begin_processing()
+			else
+				on = FALSE
+				end_processing()
+			update_appearance(UPDATE_ICON_STATE)
+			return TRUE
 
 #undef REAGENTS_BASE_VOLUME
+

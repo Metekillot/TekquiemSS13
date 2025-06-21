@@ -305,3 +305,4 @@
 			toggle_chip_active(to_be_removed)
 			return TRUE
 
+

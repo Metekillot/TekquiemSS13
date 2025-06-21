@@ -226,12 +226,11 @@
 	data["recordingRecipe"] = recording_recipe
 	return data
 
-/obj/machinery/chem_dispenser/ui_act(action, params)
+/obj/machinery/chem_dispenser/ui_act(action, params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
-	if(beaker && istype(src, /obj/machinery/chem_dispenser/drinks))
-		beaker.required_eject = TRUE
+
 	switch(action)
 		if("amount")
 			if(!is_operational || QDELETED(beaker))
@@ -240,7 +239,8 @@
 			if(target in beaker.possible_transfer_amounts)
 				amount = target
 				work_animation()
-				. = TRUE
+				return TRUE
+
 		if("dispense")
 			if(!is_operational || QDELETED(cell))
 				return
@@ -248,19 +248,22 @@
 			if(!recording_recipe)
 				var/reagent = GLOB.name2reagent[reagent_name]
 				if(beaker && dispensable_reagents.Find(reagent))
-					var/datum/reagents/R = beaker.reagents
-					var/free = R.maximum_volume - R.total_volume
-					var/actual = min(amount, (cell.charge * powerefficiency)*10, free)
 
-					if(!cell.use(actual / powerefficiency))
+					var/datum/reagents/holder = beaker.reagents
+					var/to_dispense = max(0, min(amount, holder.maximum_volume - holder.total_volume))
+					if(!to_dispense)
+						say("The container is full!")
+						return
+					if(!cell.use(to_dispense * power_cost))
 						say("Not enough energy to complete operation!")
 						return
-					R.add_reagent(reagent, actual)
+					holder.add_reagent(reagent, to_dispense, reagtemp = dispensed_temperature, added_purity = base_reagent_purity)
 
 					work_animation()
 			else
 				recording_recipe[reagent_name] += amount
-			. = TRUE
+			return TRUE
+
 		if("remove")
 			if(!is_operational || recording_recipe)
 				return
@@ -268,75 +271,84 @@
 			if(beaker && (amount in beaker.possible_transfer_amounts))
 				beaker.reagents.remove_all(amount)
 				work_animation()
-				. = TRUE
+				return TRUE
+
 		if("eject")
-			if(beaker.required_eject == TRUE)
-				beaker.required_eject = FALSE
-				beaker.reagents.handle_reactions()
-			replace_beaker(usr)
-			. = TRUE
+			replace_beaker(ui.user)
+			return TRUE
+
 		if("dispense_recipe")
 			if(!is_operational || QDELETED(cell))
 				return
+
 			var/list/chemicals_to_dispense = saved_recipes[params["recipe"]]
 			if(!LAZYLEN(chemicals_to_dispense))
 				return
 			for(var/key in chemicals_to_dispense)
-				var/reagent = GLOB.name2reagent[translate_legacy_chem_id(key)]
+				var/reagent = GLOB.name2reagent[key]
 				var/dispense_amount = chemicals_to_dispense[key]
 				if(!dispensable_reagents.Find(reagent))
 					return
 				if(!recording_recipe)
 					if(!beaker)
 						return
-					var/datum/reagents/R = beaker.reagents
-					var/free = R.maximum_volume - R.total_volume
-					var/actual = min(dispense_amount, (cell.charge * powerefficiency)*10, free)
-					if(actual)
-						if(!cell.use(actual / powerefficiency))
-							say("Not enough energy to complete operation!")
-							return
-						R.add_reagent(reagent, actual)
-						work_animation()
+
+					var/datum/reagents/holder = beaker.reagents
+					var/to_dispense = max(0, min(dispense_amount, holder.maximum_volume - holder.total_volume))
+					if(!to_dispense)
+						continue
+					if(!cell.use(to_dispense * power_cost))
+						say("Not enough energy to complete operation!")
+						return
+					holder.add_reagent(reagent, to_dispense, reagtemp = dispensed_temperature, added_purity = base_reagent_purity)
+					work_animation()
 				else
 					recording_recipe[key] += dispense_amount
-			. = TRUE
+			return TRUE
+
 		if("clear_recipes")
-			if(!is_operational)
-				return
-			var/yesno = alert("Clear all recipes?",, "Yes","No")
-			if(yesno == "Yes")
+			if(is_operational && tgui_alert(ui.user, "Clear all recipes?", "Clear?", list("Yes", "No")) == "Yes")
 				saved_recipes = list()
-			. = TRUE
+				return TRUE
+
 		if("record_recipe")
-			if(!is_operational)
-				return
-			recording_recipe = list()
-			. = TRUE
+			if(is_operational)
+				recording_recipe = list()
+				return TRUE
+
 		if("save_recording")
 			if(!is_operational)
 				return
-			var/name = stripped_input(usr,"Name","What do you want to name this recipe?", "Recipe", MAX_NAME_LEN)
-			if(!usr.canUseTopic(src, !issilicon(usr)))
+			var/name = tgui_input_text(ui.user, "What do you want to name this recipe?", "Recipe Name", max_length = MAX_NAME_LEN)
+			if(!ui.user.can_perform_action(src, ALLOW_SILICON_REACH))
 				return
-			if(saved_recipes[name] && alert("\"[name]\" already exists, do you want to overwrite it?",, "Yes", "No") == "No")
+			if(saved_recipes[name] && tgui_alert(ui.user, "\"[name]\" already exists, do you want to overwrite it?",, list("Yes", "No")) == "No")
 				return
 			if(name && recording_recipe)
 				for(var/reagent in recording_recipe)
-					var/reagent_id = GLOB.name2reagent[translate_legacy_chem_id(reagent)]
+					var/reagent_id = GLOB.name2reagent[reagent]
 					if(!dispensable_reagents.Find(reagent_id))
-						visible_message("<span class='warning'>[src] buzzes.</span>", "<span class='hear'>You hear a faint buzz.</span>")
-						to_chat(usr, "<span class ='danger'>[src] cannot find <b>[reagent]</b>!</span>")
-						playsound(src, 'sound/machines/buzz-two.ogg', 50, TRUE)
+						visible_message(span_warning("[src] buzzes."), span_hear("You hear a faint buzz."))
+						to_chat(ui.user, span_warning("[src] cannot find <b>[reagent]</b>!"))
+						playsound(src, 'sound/machines/buzz/buzz-two.ogg', 50, TRUE)
 						return
 				saved_recipes[name] = recording_recipe
 				recording_recipe = null
-				. = TRUE
+				return TRUE
+
 		if("cancel_recording")
-			if(!is_operational)
-				return
-			recording_recipe = null
-			. = TRUE
+			if(is_operational)
+				recording_recipe = null
+				return TRUE
+
+		if("reaction_lookup")
+			if(beaker)
+				beaker.reagents.ui_interact(ui.user)
+
+	var/result = handle_ui_act(action, params, ui, state)
+	if(isnull(result))
+		result = FALSE
+	return result
 
 /obj/machinery/chem_dispenser/attackby(obj/item/I, mob/user, params)
 	if(default_unfasten_wrench(user, I))
@@ -717,3 +729,4 @@
 
 	QDEL_LIST(old_parts)
 	RefreshParts()
+

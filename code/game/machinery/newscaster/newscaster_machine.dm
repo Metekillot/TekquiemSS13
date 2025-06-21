@@ -807,3 +807,4 @@
 	pixel_shift = 30
 
 #undef ALERT_DELAY
+

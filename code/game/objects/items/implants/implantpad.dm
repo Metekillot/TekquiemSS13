@@ -58,21 +58,9 @@
 	else
 		return ..()
 
-/obj/item/implantpad/ui_interact(mob/user)
-	if(!user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-		user.unset_machine(src)
-		user << browse(null, "window=implantpad")
-		return
+/obj/item/implantpad/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if (!ui)
+		ui = new(user, src, "ImplantPad", name)
+		ui.open()
 
-	user.set_machine(src)
-	var/dat = "<B>Implant Mini-Computer:</B><HR>"
-	if(case)
-		if(case.imp)
-			if(istype(case.imp, /obj/item/implant))
-				dat += case.imp.get_data()
-		else
-			dat += "The implant casing is empty."
-	else
-		dat += "Please insert an implant casing!"
-	user << browse(HTML_SKELETON(dat), "window=implantpad")
-	onclose(user, "implantpad")

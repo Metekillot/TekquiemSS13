@@ -587,7 +587,7 @@ GLOBAL_LIST_EMPTY(colored_images)
 		currentrun -= machine
 
 /datum/controller/subsystem/air/ui_state(mob/user)
-	return GLOB.debug_state
+	return ADMIN_STATE(R_DEBUG)
 
 /datum/controller/subsystem/air/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -634,48 +634,6 @@ GLOBAL_LIST_EMPTY(colored_images)
 	data["showing_user"] = (plane.alpha == 255)
 	return data
 
-/datum/controller/subsystem/air/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	. = ..()
-	if(. || !check_rights_for(usr.client, R_DEBUG))
-		return
-	switch(action)
-		if("move-to-target")
-			var/turf/target = locate(params["spot"])
-			if(!target)
-				return
-			usr.forceMove(target)
-			usr.update_parallax_contents()
-		if("toggle-freeze")
-			can_fire = !can_fire
-			return TRUE
-		if("toggle_show_group")
-			var/datum/excited_group/group = locate(params["group"])
-			if(!group)
-				return
-			group.should_display = !group.should_display
-			if(display_all_groups)
-				return TRUE
-			if(group.should_display)
-				group.display_turfs()
-			else
-				group.hide_turfs()
-			return TRUE
-		if("toggle_show_all")
-			display_all_groups = !display_all_groups
-			for(var/datum/excited_group/group in excited_groups)
-				if(display_all_groups)
-					group.display_turfs()
-				else if(!group.should_display) //Don't flicker yeah?
-					group.hide_turfs()
-			return TRUE
-		if("toggle_user_display")
-			var/atom/movable/screen/plane_master/plane = ui.user.hud_used.plane_masters["[ATMOS_GROUP_PLANE]"]
-			if(!plane.alpha)
-				if(ui.user.client)
-					ui.user.client.images += GLOB.colored_images
-				plane.alpha = 255
-			else
-				if(ui.user.client)
-					ui.user.client.images -= GLOB.colored_images
-				plane.alpha = 0
-			return TRUE
+/datum/controller/subsystem/air/ui_state(mob/user)
+	return ADMIN_STATE(R_DEBUG)
+

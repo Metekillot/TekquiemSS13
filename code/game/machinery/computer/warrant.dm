@@ -8,87 +8,13 @@
 	var/screen = null
 	var/datum/data/record/current = null
 
-/obj/machinery/computer/warrant/ui_interact(mob/user)
+/obj/machinery/computer/warrant/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()
-
-	var/list/dat = list("Logged in as: ")
-	if(authenticated)
-		dat += {"<a href='byond://?src=[REF(src)];choice=Logout'>[authenticated]</a><hr>"}
-		if(current)
-			var/background
-			var/notice = ""
-			switch(current.fields["criminal"])
-				if("*Arrest*")
-					background = "background-color:#990000;"
-					notice = "<br>**REPORT TO THE BRIG**"
-				if("Incarcerated")
-					background = "background-color:#CD6500;"
-				if("Paroled")
-					background = "background-color:#CD6500;"
-				if("Discharged")
-					background = "background-color:#006699;"
-				if("None")
-					background = "background-color:#4F7529;"
-				if("")
-					background = "''" //"'background-color:#FFFFFF;'"
-			dat += "<font size='4'><b>Warrant Data</b></font>"
-			dat += {"<table>
-			<tr><td>Name:</td><td>&nbsp;[current.fields["name"]]&nbsp;</td></tr>
-			<tr><td>ID:</td><td>&nbsp;[current.fields["id"]]&nbsp;</td></tr>
-			</table>"}
-			dat += {"Criminal Status:<br>
-			<div style='[background] padding: 3px; text-align: center;'>
-			<strong>[current.fields["criminal"]][notice]</strong>
-			</div>"}
-
-			dat += "<br><br>Citations:"
-
-			dat +={"<table style="text-align:center;" border="1" cellspacing="0" width="100%">
-			<tr>
-			<th>Crime</th>
-			<th>Fine</th>
-			<th>Author</th>
-			<th>Time Added</th>
-			<th>Amount Due</th>
-			<th>Make Payment</th>
-			</tr>"}
-			for(var/datum/data/crime/c in current.fields["citation"])
-				var/owed = c.fine - c.paid
-				dat += {"<tr><td>[c.crimeName]</td>
-				<td>[c.fine] cr</td>
-				<td>[c.author]</td>
-				<td>[c.time]</td>"}
-				if(owed > 0)
-					dat += {"<td>[owed] cr</td>
-					<td><A href='byond://?src=[REF(src)];choice=Pay;field=citation_pay;cdataid=[c.dataId]'>\[Pay\]</A></td>"}
-				else
-					dat += "<td colspan='2'>All Paid Off</td>"
-				dat += "</tr>"
-			dat += "</table>"
-
-			dat += "<br>Crimes:"
-			dat +={"<table style="text-align:center;" border="1" cellspacing="0" width="100%">
-			<tr>
-			<th>Crime</th>
-			<th>Details</th>
-			<th>Author</th>
-			<th>Time Added</th>
-			</tr>"}
-			for(var/datum/data/crime/c in current.fields["crim"])
-				dat += {"<tr><td>[c.crimeName]</td>
-				<td>[c.crimeDetails]</td>
-				<td>[c.author]</td>
-				<td>[c.time]</td>
-				</tr>"}
-			dat += "</table>"
-		else
-			dat += {"<span>** No security record found for this ID **</span>"}
-	else
-		dat += {"<a href='byond://?src=[REF(src)];choice=Login'>------------</a><hr>"}
-
-	var/datum/browser/popup = new(user, "warrant", "Security Warrant Console", 600, 400)
-	popup.set_content(dat.Join())
-	popup.open()
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "WarrantConsole", name)
+		ui.set_autoupdate(FALSE)
+		ui.open()
 
 /obj/machinery/computer/warrant/Topic(href, href_list)
 	if(..())
@@ -131,3 +57,4 @@
 						to_chat(M, "<span class='warning'>Fines can only be paid with holochips!</span>")
 	updateUsrDialog()
 	add_fingerprint(M)
+

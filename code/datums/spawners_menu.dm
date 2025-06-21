@@ -69,3 +69,8 @@
 			if(MS)
 				MS.attack_ghost(owner)
 				. = TRUE
+
+
+
+
+

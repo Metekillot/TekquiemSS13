@@ -74,42 +74,61 @@ GLOBAL_LIST(labor_sheet_values)
 	data["can_go_home"] = can_go_home
 	return data
 
-/obj/machinery/mineral/labor_claim_console/ui_act(action, params)
+/obj/machinery/mineral/labor_claim_console/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
-	var/mob/M = usr
+	var/mob/user_mob = usr
+
 	switch(action)
+
 		if("claim_points")
-			var/obj/item/card/id/I
-			if(isliving(M))
-				var/mob/living/L = M
-				I = L.get_idcard(TRUE)
-			if(istype(I, /obj/item/card/id/prisoner))
-				var/obj/item/card/id/prisoner/P = I
-				P.points += stacking_machine.points
+			var/obj/item/card/id/worn_id
+			if(isliving(user_mob))
+				var/mob/living/living_mob = user_mob
+				worn_id = living_mob.get_idcard(TRUE)
+			if(istype(worn_id, /obj/item/card/id/advanced/prisoner))
+				var/obj/item/card/id/advanced/prisoner/worn_prisoner_id = worn_id
+				worn_prisoner_id.points += stacking_machine.points
 				stacking_machine.points = 0
-				to_chat(M, "<span class='notice'>Points transferred.</span>")
+				say("Points transferred.")
 				return TRUE
 			else
-				to_chat(M, "<span class='alert'>No valid id for point transfer detected.</span>")
+				if(COOLDOWN_FINISHED(src, say_cooldown))
+					say("No valid id for point transfer detected.")
+					COOLDOWN_START(src, say_cooldown, 2 SECONDS)
+
 		if("move_shuttle")
-			if(!alone_in_area(get_area(src), M))
-				to_chat(M, "<span class='alert'>Prisoners are only allowed to be released while alone.</span>")
+			var/list/labor_shuttle_mobs = find_labor_shuttle_mobs()
+			if(length(labor_shuttle_mobs) > 1 || labor_shuttle_mobs[1] != user_mob)
+				if(COOLDOWN_FINISHED(src, say_cooldown))
+					say("Prisoners may only be released one at a time.")
+					COOLDOWN_START(src, say_cooldown, 2 SECONDS)
 				return
+
 			switch(SSshuttle.moveShuttle("laborcamp", "laborcamp_home", TRUE))
 				if(1)
-					to_chat(M, "<span class='alert'>Shuttle not found.</span>")
+					if(COOLDOWN_FINISHED(src, say_cooldown))
+						say("Shuttle not found.")
+						COOLDOWN_START(src, say_cooldown, 2 SECONDS)
 				if(2)
-					to_chat(M, "<span class='alert'>Shuttle already at station.</span>")
+					if(COOLDOWN_FINISHED(src, say_cooldown))
+						say("Shuttle already at station.")
+						COOLDOWN_START(src, say_cooldown, 2 SECONDS)
 				if(3)
-					to_chat(M, "<span class='alert'>No permission to dock could be granted.</span>")
+					if(COOLDOWN_FINISHED(src, say_cooldown))
+						say("No permission to dock could be granted.")
+						COOLDOWN_START(src, say_cooldown, 2 SECONDS)
 				else
 					if(!(obj_flags & EMAGGED))
-						Radio.set_frequency(FREQ_SECURITY)
-						Radio.talk_into(src, "A prisoner has returned to the station. Minerals and Prisoner ID card ready for retrieval.", FREQ_SECURITY)
-					to_chat(M, "<span class='notice'>Shuttle received message and will be sent shortly.</span>")
+						var/datum/record/crew/target = find_record(user_mob.real_name)
+						target?.wanted_status = WANTED_PAROLE
+
+						aas_config_announce(/datum/aas_config_entry/security_labor_stacker, list("PERSON" = user_mob.real_name), src, list(RADIO_CHANNEL_SECURITY))
+					user_mob.log_message("has completed their labor points goal and is now sending the gulag shuttle back to the station.", LOG_GAME)
+					say("Labor sentence finished, shuttle returning.")
+					initiated_launch = TRUE
 					return TRUE
 
 /obj/machinery/mineral/labor_claim_console/proc/locate_stacking_machine()
@@ -167,3 +186,4 @@ GLOBAL_LIST(labor_sheet_values)
 			to_chat(user, "<span class='warning'>Error: Invalid ID</span>")
 	else
 		return ..()
+

@@ -270,8 +270,10 @@
 		return ..()
 	return UI_CLOSE
 
-/datum/wires/ui_state(mob/user)
-	return GLOB.physical_state
+/datum/wires/ui_status(mob/user, datum/ui_state/state)
+	if(interactable(user))
+		return ..()
+	return UI_CLOSE
 
 /datum/wires/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -342,3 +344,4 @@
 						to_chat(L, "<span class='warning'>You need an attachable assembly!</span>")
 
 #undef MAXIMUM_EMP_WIRES
+

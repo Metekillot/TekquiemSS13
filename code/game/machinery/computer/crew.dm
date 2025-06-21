@@ -96,7 +96,8 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 	ui_interact(M)
 
 /datum/crewmonitor/ui_host(mob/user)
-	return ui_sources[user]
+	var/datum/weakref/host_ref = ui_sources[WEAKREF(user)]
+	return host_ref?.resolve()
 
 /datum/crewmonitor/ui_data(mob/user)
 	var/z = user.z
@@ -212,3 +213,4 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 
 #undef SENSORS_UPDATE_PERIOD
 #undef UNKNOWN_JOB_ID
+

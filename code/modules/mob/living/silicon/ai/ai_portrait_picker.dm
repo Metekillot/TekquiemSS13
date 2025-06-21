@@ -76,3 +76,4 @@
 			ai.cut_overlays() //so people can't keep repeatedly select portraits to add stacking overlays
 			ai.icon_state = "ai-portrait-active"//background
 			ai.add_overlay(MA)
+

@@ -166,17 +166,19 @@
 	cam_background.fill_rect(1, 1, size_x, size_y)
 
 /obj/machinery/computer/security/ui_close(mob/user)
+	. = ..()
 	var/user_ref = REF(user)
 	var/is_living = isliving(user)
 	// Living creature or not, we remove you anyway.
 	concurrent_users -= user_ref
 	// Unregister map objects
-	user.client.clear_map(map_name)
+	cam_screen?.hide_from(user)
 	// Turn off the console
 	if(length(concurrent_users) == 0 && is_living)
+		active_camera?.on_stop_watching(src)
 		active_camera = null
-		playsound(src, 'sound/machines/terminal_off.ogg', 25, FALSE)
-		use_power(0)
+		last_camera_turf = null
+		playsound(src, 'sound/machines/terminal/terminal_off.ogg', 25, FALSE)
 
 /obj/machinery/computer/security/proc/show_camera_static()
 	cam_screen.vis_contents.Cut()
@@ -362,3 +364,4 @@
 	network = list("aiupload")
 
 #undef DEFAULT_MAP_SIZE
+

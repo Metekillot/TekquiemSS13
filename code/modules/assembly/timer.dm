@@ -103,7 +103,7 @@
 	data["loop"] = loop
 	return data
 
-/obj/item/assembly/timer/ui_act(action, params)
+/obj/item/assembly/timer/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -113,7 +113,7 @@
 			timing = !timing
 			if(timing && istype(holder, /obj/item/transfer_valve))
 				log_bomber(usr, "activated a", src, "attachment on [holder]")
-			update_icon()
+			update_appearance()
 			. = TRUE
 		if("repeat")
 			loop = !loop
@@ -125,3 +125,4 @@
 				time = clamp(value, 1, 600)
 				saved_time = time
 				. = TRUE
+

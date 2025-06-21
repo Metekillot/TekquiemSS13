@@ -11,25 +11,11 @@
 /obj/machinery/pipedispenser/attack_paw(mob/user)
 	return attack_hand(user)
 
-/obj/machinery/pipedispenser/ui_interact(mob/user)
-	. = ..()
-	var/dat = "PIPING LAYER: <A href='?src=[REF(src)];layer_down=1'>--</A><b>[piping_layer]</b><A href='?src=[REF(src)];layer_up=1'>++</A><BR>"
-
-	var/recipes = GLOB.atmos_pipe_recipes
-
-	for(var/category in recipes)
-		var/list/cat_recipes = recipes[category]
-		dat += "<b>[category]:</b><ul>"
-
-		for(var/i in cat_recipes)
-			var/datum/pipe_info/I = i
-			dat += I.Render(src)
-
-		dat += "</ul>"
-
-	user << browse("<HEAD><TITLE>[src]</TITLE></HEAD><TT>[dat]</TT>", "window=pipedispenser")
-	onclose(user, "pipedispenser")
-	return
+/obj/machinery/pipedispenser/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "PipeDispenser", name)
+		ui.open()
 
 /obj/machinery/pipedispenser/Topic(href, href_list)
 	if(..())
@@ -212,3 +198,4 @@
 				C.add_fingerprint(usr)
 			wait = world.time + 15
 	return
+

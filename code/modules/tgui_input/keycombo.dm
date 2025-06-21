@@ -124,3 +124,4 @@
 
 /datum/tgui_input_keycombo/proc/set_entry(entry)
 	src.entry = entry
+

@@ -234,24 +234,29 @@ Possible to do for anyone motivated enough:
 		data["holo_calls"] += list(call_data)
 	return data
 
-/obj/machinery/holopad/ui_act(action, list/params)
+/obj/machinery/holopad/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
 		if("AIrequest")
+			if(isAI(usr))
+				var/mob/living/silicon/ai/ai_user = usr
+				ai_user.eyeobj.setLoc(get_turf(src))
+				to_chat(usr, span_info("AIs can not request AI presence. Jumping instead."))
+				return
 			if(last_request + 200 < world.time)
 				last_request = world.time
-				to_chat(usr, "<span class='info'>You requested an AI's presence.</span>")
+				to_chat(usr, span_info("You requested an AI's presence."))
 				var/area/area = get_area(src)
 				for(var/mob/living/silicon/ai/AI in GLOB.silicon_mobs)
 					if(!AI.client)
 						continue
-					to_chat(AI, "<span class='info'>Your presence is requested at <a href='byond://?src=[REF(AI)];jumptoholopad=[REF(src)]'>\the [area]</a>.</span>")
+					to_chat(AI, span_info("Your presence is requested at <a href='byond://?src=[REF(AI)];jump_to_holopad=[REF(src)]'>\the [area]</a>. <a href='byond://?src=[REF(AI)];project_to_holopad=[REF(src)]'>Project Hologram?</a>"))
 				return TRUE
 			else
-				to_chat(usr, "<span class='info'>A request for AI presence was already sent recently.</span>")
+				to_chat(usr, span_info("A request for AI presence was already sent recently."))
 				return
 		if("holocall")
 			if(outgoing_call)
@@ -263,17 +268,21 @@ Possible to do for anyone motivated enough:
 					if(A)
 						LAZYADD(callnames[A], I)
 				callnames -= get_area(src)
-				var/result = tgui_input_list(usr, "Choose an area to call", "Holocall", sortNames(callnames))
-				if(QDELETED(usr) || !result || outgoing_call)
+				var/result = tgui_input_list(usr, "Choose an area to call", "Holocall", sort_names(callnames))
+				if(isnull(result))
+					return
+				if(QDELETED(usr) || outgoing_call)
 					return
 				if(usr.loc == loc)
 					var/input = text2num(params["headcall"])
 					var/headcall = input == 1 ? TRUE : FALSE
-					new /datum/holocall(usr, src, callnames[result], headcall)
+					var/datum/holocall/holo_call = new(usr, src, callnames[result], headcall)
+					if(QDELETED(holo_call)) //can delete itself if the target pad was destroyed
+						return FALSE
 					calling = TRUE
 					return TRUE
 			else
-				to_chat(usr, "<span class='warning'>You must stand on the holopad to make a call!</span>")
+				to_chat(usr, span_warning("You must stand on the holopad to make a call!"))
 		if("connectcall")
 			var/datum/holocall/call_to_connect = locate(params["holopad"]) in holo_calls
 			if(!QDELETED(call_to_connect))
@@ -284,6 +293,12 @@ Possible to do for anyone motivated enough:
 			if(!QDELETED(call_to_disconnect))
 				call_to_disconnect.Disconnect(src)
 				return TRUE
+		if("rejectall")
+			for(var/datum/holocall/call_to_reject as anything in holo_calls)
+				if(call_to_reject.connected_holopad == src) // do not kill the current connection
+					continue
+				call_to_reject.Disconnect(src)
+			return TRUE
 		if("disk_eject")
 			if(disk && !replay_mode)
 				disk.forceMove(drop_location())
@@ -318,7 +333,7 @@ Possible to do for anyone motivated enough:
 				new_turf = get_turf(src)
 			else
 				new_turf = get_step(src, GLOB.cardinals[offset])
-			replay_holo.forceMove(new_turf)
+			move_hologram(disk.record, new_turf)
 			return TRUE
 		if("hang_up")
 			if(outgoing_call)
@@ -696,3 +711,4 @@ For the other part of the code, check silicon say.dm. Particularly robot talk.*/
 
 #undef HOLOPAD_PASSIVE_POWER_USAGE
 #undef HOLOGRAM_POWER_USAGE
+

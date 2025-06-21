@@ -200,21 +200,18 @@
 	data["visible"] = visible
 	return data
 
-/obj/item/assembly/infra/ui_act(action, params)
+/obj/item/assembly/infra/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
-		return
+		return .
 
 	switch(action)
 		if("power")
-			on = !on
-			. = TRUE
+			toggle_on()
+			return TRUE
 		if("visibility")
-			visible = !visible
-			. = TRUE
-
-	update_icon()
-	refreshBeam()
+			toggle_visible()
+			return TRUE
 
 /***************************IBeam*********************************/
 
@@ -237,3 +234,4 @@
 		if (I.item_flags & ABSTRACT)
 			return
 	master.trigger_beam(AM, get_turf(src))
+

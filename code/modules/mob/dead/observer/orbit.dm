@@ -16,31 +16,8 @@
 		ui = new(user, src, "Orbit")
 		ui.open()
 
-/datum/orbit_menu/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	. = ..()
-	if(.)
-		return
-	switch(action)
-		if ("orbit")
-			var/ref = params["ref"]
-			var/atom/movable/poi = (locate(ref) in GLOB.mob_list) || (locate(ref) in GLOB.poi_list)
-			if (poi == null)
-				. = TRUE
-				return
-			owner.ManualFollow(poi)
-			owner.reset_perspective(null)
-			if (auto_observe)
-				owner.do_observe(poi)
-			. = TRUE
-		if ("refresh")
-			update_static_data(owner, ui)
-			. = TRUE
-		if ("toggle_observe")
-			auto_observe = !auto_observe
-			if (auto_observe && owner.orbit_target)
-				owner.do_observe(owner.orbit_target)
-			else
-				owner.reset_perspective(null)
+/datum/orbit_menu/ui_state(mob/user)
+	return GLOB.observer_state
 
 /datum/orbit_menu/ui_data(mob/user)
 	var/list/data = list()
@@ -109,3 +86,4 @@
 /datum/orbit_menu/ui_assets()
 	. = ..() || list()
 	. += get_asset_datum(/datum/asset/simple/orbit)
+

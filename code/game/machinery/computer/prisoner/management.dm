@@ -14,59 +14,12 @@
 	circuit = /obj/item/circuitboard/computer/prisoner
 
 
-/obj/machinery/computer/prisoner/management/ui_interact(mob/user)
+/obj/machinery/computer/prisoner/management/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()
-	if(isliving(user))
-		playsound(src, 'sound/machines/terminal_prompt_confirm.ogg', 50, FALSE)
-	var/dat = ""
-	if(screen == 0)
-		dat += "<HR><A href='byond://?src=[REF(src)];lock=1'>{Log In}</A>"
-	else if(screen == 1)
-		dat += "<H3>Prisoner ID Management</H3>"
-		if(contained_id)
-			dat += text("<A href='byond://?src=[REF(src)];id=eject'>[contained_id]</A><br>")
-			dat += text("Collected Points: [contained_id.points]. <A href='byond://?src=[REF(src)];id=reset'>Reset.</A><br>")
-			dat += text("Card goal: [contained_id.goal].  <A href='byond://?src=[REF(src)];id=setgoal'>Set </A><br>")
-			dat += text("Space Law recommends quotas of 100 points per minute they would normally serve in the brig.<BR>")
-		else
-			dat += text("<A href='byond://?src=[REF(src)];id=insert'>Insert Prisoner ID.</A><br>")
-		dat += "<H3>Prisoner Implant Management</H3>"
-		dat += "<HR>Chemical Implants<BR>"
-		var/turf/Tr = null
-		for(var/obj/item/implant/chem/C in GLOB.tracked_chem_implants)
-			Tr = get_turf(C)
-			if((Tr) && (Tr.z != src.z))
-				continue//Out of range
-			if(!C.imp_in)
-				continue
-			dat += "ID: [C.imp_in.name] | Remaining Units: [C.reagents.total_volume] <BR>"
-			dat += "| Inject: "
-			dat += "<A href='byond://?src=[REF(src)];inject1=[REF(C)]'>(<font class='bad'>(1)</font>)</A>"
-			dat += "<A href='byond://?src=[REF(src)];inject5=[REF(C)]'>(<font class='bad'>(5)</font>)</A>"
-			dat += "<A href='byond://?src=[REF(src)];inject10=[REF(C)]'>(<font class='bad'>(10)</font>)</A><BR>"
-			dat += "********************************<BR>"
-		dat += "<HR>Tracking Implants<BR>"
-		for(var/obj/item/implant/tracking/T in GLOB.tracked_implants)
-			if(!isliving(T.imp_in))
-				continue
-			Tr = get_turf(T)
-			if((Tr) && (Tr.z != src.z))
-				continue//Out of range
-
-			var/loc_display = "Unknown"
-			var/mob/living/M = T.imp_in
-			if(is_station_level(Tr.z) && !isspaceturf(M.loc))
-				var/turf/mob_loc = get_turf(M)
-				loc_display = mob_loc.loc
-
-			dat += "ID: [T.imp_in.name] | Location: [loc_display]<BR>"
-			dat += "<A href='byond://?src=[REF(src)];warn=[REF(T)]'>(<font class='bad'><i>Message Holder</i></font>)</A> |<BR>"
-			dat += "********************************<BR>"
-		dat += "<HR><A href='byond://?src=[REF(src)];lock=1'>{Log Out}</A>"
-	var/datum/browser/popup = new(user, "computer", "Prisoner Management Console", 400, 500)
-	popup.set_content(dat)
-	popup.open()
-	return
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "PrisonerManagement")
+		ui.open()
 
 /obj/machinery/computer/prisoner/management/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/card/id))
@@ -135,3 +88,4 @@
 		src.add_fingerprint(usr)
 	src.updateUsrDialog()
 	return
+

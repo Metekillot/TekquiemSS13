@@ -147,3 +147,4 @@
 	set desc = "See all of your achievements!"
 
 	player_details.achievements.ui_interact(usr)
+

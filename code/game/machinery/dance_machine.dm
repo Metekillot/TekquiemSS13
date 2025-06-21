@@ -124,55 +124,53 @@
 	data["volume"] = volume
 	return data
 
-/obj/machinery/jukebox/ui_act(action, list/params)
+/obj/machinery/jukebox/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
 		if("toggle")
-			if(QDELETED(src))
-				return
-			if(!active)
-				if(stop > world.time)
-					to_chat(usr, "<span class='warning'>Error: The device is still resetting from the last activation, it will be ready again in [DisplayTimeText(stop-world.time)].</span>")
-					if(!COOLDOWN_FINISHED(src, jukebox_error_cd))
-						return
-					playsound(src, 'sound/misc/compiler-failure.ogg', 50, TRUE)
-					COOLDOWN_START(src, jukebox_error_cd, 15 SECONDS)
-					return
+			if(isnull(music_player.active_song_sound))
+				if(!COOLDOWN_FINISHED(src, jukebox_song_cd))
+					to_chat(usr, span_warning("Error: The device is still resetting from the last activation, \
+						it will be ready again in [DisplayTimeText(COOLDOWN_TIMELEFT(src, jukebox_song_cd))]."))
+					if(COOLDOWN_FINISHED(src, jukebox_error_cd))
+						playsound(src, 'sound/machines/compiler/compiler-failure.ogg', 33, TRUE)
+						COOLDOWN_START(src, jukebox_error_cd, 15 SECONDS)
+					return TRUE
+
 				activate_music()
-				START_PROCESSING(SSobj, src)
-				return TRUE
 			else
-				stop = 0
-				return TRUE
-		if("select_track")
-			if(active)
-				to_chat(usr, "<span class='warning'>Error: You cannot change the song until the current one is over.</span>")
-				return
-			var/list/available = list()
-			for(var/datum/track/S in songs)
-				available[S.song_name] = S
-			var/selected = params["track"]
-			if(QDELETED(src) || !selected || !istype(available[selected], /datum/track))
-				return
-			selection = available[selected]
+				stop_music()
+
 			return TRUE
+
+		if("select_track")
+			if(!isnull(music_player.active_song_sound))
+				to_chat(usr, span_warning("Error: You cannot change the song until the current one is over."))
+				return TRUE
+
+			var/datum/track/new_song = music_player.songs[params["track"]]
+			if(QDELETED(src) || !istype(new_song, /datum/track))
+				return TRUE
+
+			music_player.selection = new_song
+			return TRUE
+
 		if("set_volume")
 			var/new_volume = params["volume"]
-			if(new_volume  == "reset")
-				volume = initial(volume)
-				return TRUE
+			if(new_volume == "reset" || new_volume == "max")
+				music_player.set_volume_to_max()
 			else if(new_volume == "min")
-				volume = 0
-				return TRUE
-			else if(new_volume == "max")
-				volume = 100
-				return TRUE
-			else if(text2num(new_volume) != null)
-				volume = text2num(new_volume)
-				return TRUE
+				music_player.set_new_volume(0)
+			else if(isnum(text2num(new_volume)))
+				music_player.set_new_volume(text2num(new_volume))
+			return TRUE
+
+		if("loop")
+			music_player.sound_loops = !!params["looping"]
+			return TRUE
 
 /obj/machinery/jukebox/proc/activate_music()
 	active = TRUE
@@ -496,3 +494,4 @@
 		for(var/mob/living/M in rangers)
 			if(prob(5+(allowed(M)*4)) && (M.mobility_flags & MOBILITY_MOVE))
 				dance(M)
+

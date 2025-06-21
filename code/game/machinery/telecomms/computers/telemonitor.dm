@@ -19,49 +19,13 @@
 	var/temp = ""				// temporary feedback messages
 	circuit = /obj/item/circuitboard/computer/comm_monitor
 
-/obj/machinery/computer/telecomms/monitor/ui_interact(mob/user)
+/obj/machinery/computer/telecomms/monitor/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()
-	var/dat = "<TITLE>Telecommunications Monitor</TITLE><center><b>Telecommunications Monitor</b></center>"
 
-	switch(screen)
-
-
-	  // --- Main Menu ---
-
-		if(0)
-			dat += "<br>[temp]<br><br>"
-			dat += "<br>Current Network: <a href='byond://?src=[REF(src)];network=1'>[network]</a><br>"
-			if(machinelist.len)
-				dat += "<br>Detected Network Entities:<ul>"
-				for(var/obj/machinery/telecomms/T in machinelist)
-					dat += "<li><a href='byond://?src=[REF(src)];viewmachine=[T.id]'>[REF(T)] [T.name]</a> ([T.id])</li>"
-				dat += "</ul>"
-				dat += "<br><a href='byond://?src=[REF(src)];operation=release'>\[Flush Buffer\]</a>"
-			else
-				dat += "<a href='byond://?src=[REF(src)];operation=probe'>\[Probe Network\]</a>"
-
-
-	  // --- Viewing Machine ---
-
-		if(1)
-			dat += "<br>[temp]<br>"
-			dat += "<center><a href='byond://?src=[REF(src)];operation=mainmenu'>\[Main Menu\]</a></center>"
-			dat += "<br>Current Network: [network]<br>"
-			dat += "Selected Network Entity: [SelectedMachine.name] ([SelectedMachine.id])<br>"
-			dat += "Linked Entities: <ol>"
-			for(var/obj/machinery/telecomms/T in SelectedMachine.links)
-				if(!T.hide)
-					dat += "<li><a href='byond://?src=[REF(src)];viewmachine=[T.id]'>[REF(T.id)] [T.name]</a> ([T.id])</li>"
-			dat += "</ol>"
-
-
-
-	user << browse(dat, "window=comm_monitor;size=575x400")
-	onclose(user, "server_control")
-
-	temp = ""
-	return
-
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "TelecommsMonitor")
+		ui.open()
 
 /obj/machinery/computer/telecomms/monitor/Topic(href, href_list)
 	if(..())
@@ -124,3 +88,4 @@
 /obj/machinery/computer/telecomms/monitor/attackby()
 	. = ..()
 	updateUsrDialog()
+

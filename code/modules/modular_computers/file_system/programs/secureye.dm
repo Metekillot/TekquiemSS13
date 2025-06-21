@@ -124,16 +124,24 @@
 
 /datum/computer_file/program/secureye/ui_close(mob/user)
 	. = ..()
+	//don't track anyone while we're shutting off.
+	if(internal_tracker)
+		internal_tracker.reset_tracking()
 	var/user_ref = REF(user)
 	var/is_living = isliving(user)
 	// Living creature or not, we remove you anyway.
 	concurrent_users -= user_ref
 	// Unregister map objects
-	user.client.clear_map(map_name)
+	cam_screen.hide_from(user)
 	// Turn off the console
 	if(length(concurrent_users) == 0 && is_living)
-		active_camera = null
-		playsound(src, 'sound/machines/terminal_off.ogg', 25, FALSE)
+		var/obj/machinery/camera/active_camera = camera_ref?.resolve()
+		if(!spying && active_camera)
+			active_camera.on_stop_watching(src)
+		camera_ref = null
+		last_camera_turf = null
+		if(!spying)
+			playsound(computer, 'sound/machines/terminal/terminal_off.ogg', 25, FALSE)
 
 /datum/computer_file/program/secureye/proc/update_active_camera_screen()
 	// Show static if can't use the camera
@@ -193,3 +201,4 @@
 		if(tempnetwork.len)
 			camlist["[cam.c_tag]"] = cam
 	return camlist
+

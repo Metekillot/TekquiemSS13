@@ -141,11 +141,12 @@ and clear when youre done! if you dont i will use :newspaper2: on you
 	data["can_toggle_safety"] = issilicon(user) || isAdminGhostAI(user)
 	return data
 
-/obj/machinery/computer/holodeck/ui_act(action, params)
+/obj/machinery/computer/holodeck/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	. = TRUE
+
 	switch(action)
 		if("load_program")
 			var/program_to_load = params["id"]
@@ -155,22 +156,25 @@ and clear when youre done! if you dont i will use :newspaper2: on you
 				checked |= emag_programs
 			var/valid = FALSE //dont tell security about this
 
-			for (var/prog in checked)//checks if program_to_load is any one of the loadable programs, if it isnt then it rejects it
-				var/list/check_list = prog
-				if (check_list["id"] == program_to_load)
+			//checks if program_to_load is any one of the loadable programs, if it isnt then it rejects it
+			for(var/list/check_list as anything in checked)
+				if(check_list["id"] == program_to_load)
 					valid = TRUE
 					break
-			if (!valid)
+			if(!valid)
 				return FALSE
 			//load the map_template that program_to_load represents
 			if(program_to_load)
 				load_program(program_to_load)
 		if("safety")
+			if (!(obj_flags & EMAGGED) && !issilicon(usr))
+				return
 			if((obj_flags & EMAGGED) && program)
 				emergency_shutdown()
 			nerf(obj_flags & EMAGGED,FALSE)
 			obj_flags ^= EMAGGED
 			say("Safeties reset. Restarting...")
+			usr.log_message("disabled Holodeck safeties.", LOG_GAME)
 
 ///this is what makes the holodeck not spawn anything on broken tiles (space and non engine plating / non holofloors)
 /datum/map_template/holodeck/update_blacklist(turf/placement, list/input_blacklist)
@@ -404,3 +408,4 @@ and clear when youre done! if you dont i will use :newspaper2: on you
 
 #undef HOLODECK_CD
 #undef HOLODECK_DMG_CD
+

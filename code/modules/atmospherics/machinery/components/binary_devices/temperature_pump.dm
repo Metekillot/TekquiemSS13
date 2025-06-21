@@ -72,13 +72,13 @@
 	data["max_heat_transfer_rate"] = round(max_heat_transfer_rate)
 	return data
 
-/obj/machinery/atmospherics/components/binary/temperature_pump/ui_act(action, params)
+/obj/machinery/atmospherics/components/binary/temperature_pump/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
 	switch(action)
 		if("power")
-			on = !on
+			set_on(!on)
 			investigate_log("was turned [on ? "on" : "off"] by [key_name(usr)]", INVESTIGATE_ATMOS)
 			. = TRUE
 		if("rate")
@@ -92,4 +92,5 @@
 			if(.)
 				heat_transfer_rate = clamp(rate, 0, max_heat_transfer_rate)
 				investigate_log("was set to [heat_transfer_rate]% by [key_name(usr)]", INVESTIGATE_ATMOS)
-	update_icon()
+	update_appearance(UPDATE_ICON)
+

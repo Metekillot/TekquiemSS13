@@ -61,19 +61,69 @@
 	data["emptying"] = emptying
 	return data
 
-/obj/machinery/plumbing/reaction_chamber/ui_act(action, params)
+/obj/machinery/plumbing/reaction_chamber/ui_act(action, params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
-		return
-	. = TRUE
+		return TRUE
+
 	switch(action)
+		if("add")
+			var/selected_reagent = tgui_input_list(ui.user, "Select reagent", "Reagent", GLOB.name2reagent)
+			if(!selected_reagent)
+				return FALSE
+			if(QDELETED(ui) || ui.status != UI_INTERACTIVE)
+				return FALSE
+
+			var/datum/reagent/input_reagent = GLOB.name2reagent[selected_reagent]
+			if(!input_reagent)
+				return FALSE
+
+			if(catalysts[input_reagent])
+				return FALSE
+
+			var/input_amount = text2num(params["amount"])
+			if(!input_amount)
+				return FALSE
+			input_amount = round(input_amount, CHEMICAL_VOLUME_ROUNDING)
+
+			if(!required_reagents[input_reagent])
+				required_reagents[input_reagent] = input_amount
+				return TRUE
+
 		if("remove")
 			var/reagent = get_chem_id(params["chem"])
 			if(reagent)
 				required_reagents.Remove(reagent)
-		if("add")
-			var/input_reagent = get_chem_id(params["chem"])
-			if(input_reagent && !required_reagents.Find(input_reagent))
-				var/input_amount = text2num(params["amount"])
-				if(input_amount)
-					required_reagents[input_reagent] = input_amount
+				return TRUE
+
+		if("temperature")
+			var/target = text2num(params["target"])
+			if(!isnull(target))
+				target_temperature = clamp(target, 0, 1000)
+				return TRUE
+
+		if("catalyst")
+			var/reagent = get_chem_id(params["chem"])
+			if(!reagent)
+				return FALSE
+
+			if(!catalysts[reagent])
+				catalysts[reagent] = required_reagents[reagent]
+				required_reagents -= reagent
+				return TRUE
+
+		if("catremove")
+			var/reagent = get_chem_id(params["chem"])
+			if(!reagent)
+				return FALSE
+
+			if(catalysts[reagent])
+				required_reagents[reagent] = catalysts[reagent]
+				catalysts -= reagent
+				return TRUE
+
+	var/result = handle_ui_act(action, params, ui, state)
+	if(isnull(result))
+		result = FALSE
+	return result
+

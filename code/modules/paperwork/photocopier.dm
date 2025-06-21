@@ -173,7 +173,7 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 
 	return data
 
-/obj/machinery/photocopier/ui_act(action, list/params)
+/obj/machinery/photocopier/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -194,7 +194,7 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 					else
 						to_chat(usr, span_notice("You feel kind of silly, copying [ass]\'s ass with [ass.p_their()] clothes on."))
 					return FALSE
-				do_copies(CALLBACK(src, PROC_REF(make_ass_copy), usr), usr, ASS_PAPER_USE, ASS_TONER_USE, num_copies)
+				do_copies(CALLBACK(src, PROC_REF(make_ass_copy)), usr, ASS_PAPER_USE, ASS_TONER_USE, num_copies)
 				return TRUE
 			else
 				// Basic paper
@@ -218,7 +218,7 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 		// Remove the paper/photo/document from the photocopier.
 		if("remove")
 			if(object_copy)
-				remove_photocopy(object_copy, usr)
+				remove_photocopy(usr, object_copy)
 				object_copy = null
 			else if(check_ass())
 				to_chat(ass, span_notice("You feel a slight pressure on your ass."))
@@ -265,6 +265,20 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 				return FALSE
 			var/list/blank = GLOB.paper_blanks[params["code"]]
 			do_copies(CALLBACK(src, PROC_REF(make_blank_print), blank), usr, PAPER_PAPER_USE, PAPER_TONER_USE, num_copies)
+			return TRUE
+		if("select_paper_type")
+			if(check_busy(usr))
+				return FALSE
+
+			var/paper_path = text2path(params["created_paper"])
+
+			if(!ispath(paper_path, /obj/item/paper))
+				return FALSE
+
+			if(!paper_stack[paper_path])
+				return FALSE
+
+			created_paper = paper_path
 			return TRUE
 
 /// Returns the color used for the printing operation. If the color is below TONER_LOW_PERCENTAGE, it returns a gray color.
@@ -703,3 +717,4 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 #undef ASS_TONER_USE
 #undef MAX_COPIES_AT_ONCE
 #undef PAPERWORK_TONER_USE
+

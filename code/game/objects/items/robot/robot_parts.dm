@@ -367,8 +367,14 @@
 	to_chat(user, "<span class='warning'>You need a multitool to access debug settings!</span>")
 	return UI_CLOSE
 
-/obj/item/robot_suit/ui_state(mob/user)
-	return GLOB.physical_state
+/obj/item/robot_suit/ui_status(mob/user, datum/ui_state/state)
+	if(isobserver(user))
+		return ..()
+	var/obj/item/held_item = user.get_active_held_item()
+	if(held_item?.tool_behaviour == TOOL_MULTITOOL)
+		return ..()
+	to_chat(user, span_warning("You need a multitool to access debug settings!"))
+	return UI_CLOSE
 
 /obj/item/robot_suit/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -423,3 +429,4 @@
 		if("lawsync")
 			lawsync = !lawsync
 			return TRUE
+

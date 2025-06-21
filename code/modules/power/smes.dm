@@ -342,7 +342,7 @@
 	)
 	return data
 
-/obj/machinery/power/smes/ui_act(action, params)
+/obj/machinery/power/smes/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -350,12 +350,12 @@
 		if("tryinput")
 			input_attempt = !input_attempt
 			log_smes(usr)
-			update_icon()
+			update_appearance()
 			. = TRUE
 		if("tryoutput")
 			output_attempt = !output_attempt
 			log_smes(usr)
-			update_icon()
+			update_appearance()
 			. = TRUE
 		if("input")
 			var/target = params["target"]
@@ -438,3 +438,4 @@
 #undef SMES_NOT_OUTPUTTING
 #undef SMES_INPUTTING
 #undef SMES_INPUT_ATTEMPT
+

@@ -339,8 +339,11 @@
 		ui.set_autoupdate(FALSE) // Nothing is changing here brother
 		ui.open()
 
-/datum/admin_book_viewer/ui_status(mob/user, datum/ui_state/state)
+/obj/machinery/computer/libraryconsole/admin_only_do_not_map_in_you_fucker/ui_status(mob/user, datum/ui_state/state)
 	if(!check_rights_for(user.client, R_BAN))
+		return UI_CLOSE
+	if(!SSdbcore.Connect())
+		can_connect = FALSE
 		return UI_CLOSE
 	return UI_INTERACTIVE
 
@@ -365,3 +368,4 @@
 #undef BOOK_ADMIN_DELETE
 #undef BOOK_ADMIN_RESTORE
 #undef BOOK_ADMIN_REPORT
+

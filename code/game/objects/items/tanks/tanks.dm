@@ -305,3 +305,4 @@
 
 	if(gas_change)
 		air_contents.garbage_collect()
+

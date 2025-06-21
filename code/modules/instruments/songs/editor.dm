@@ -30,62 +30,11 @@
 	. += "<a href='byond://?src=[REF(src)];togglesustainhold=1'>Sustain indefinitely last held note</a>: [full_sustain_held_note? "Enabled" : "Disabled"].<br>"
 	. += "</div>"
 
-/datum/song/ui_interact(mob/user)
-	var/list/dat = list()
-
-	dat += instrument_status_ui()
-
-	if(lines.len > 0)
-		dat += "<H3>Playback</H3>"
-		if(!playing)
-			dat += "<A href='byond://?src=[REF(src)];play=1'>Play</A> <SPAN CLASS='linkOn'>Stop</SPAN><BR><BR>"
-			dat += "Repeat Song: "
-			dat += repeat > 0 ? "<A href='byond://?src=[REF(src)];repeat=-10'>-</A><A href='byond://?src=[REF(src)];repeat=-1'>-</A>" : "<SPAN CLASS='linkOff'>-</SPAN><SPAN CLASS='linkOff'>-</SPAN>"
-			dat += " [repeat] times "
-			dat += repeat < max_repeats ? "<A href='byond://?src=[REF(src)];repeat=1'>+</A><A href='byond://?src=[REF(src)];repeat=10'>+</A>" : "<SPAN CLASS='linkOff'>+</SPAN><SPAN CLASS='linkOff'>+</SPAN>"
-			dat += "<BR>"
-		else
-			dat += "<SPAN CLASS='linkOn'>Play</SPAN> <A href='byond://?src=[REF(src)];stop=1'>Stop</A><BR>"
-			dat += "Repeats left: <B>[repeat]</B><BR>"
-	if(!editing)
-		dat += "<BR><B><A href='byond://?src=[REF(src)];edit=2'>Show Editor</A></B><BR>"
-	else
-		dat += "<H3>Editing</H3>"
-		dat += "<B><A href='byond://?src=[REF(src)];edit=1'>Hide Editor</A></B>"
-		dat += " <A href='byond://?src=[REF(src)];newsong=1'>Start a New Song</A>"
-		dat += " <A href='byond://?src=[REF(src)];import=1'>Import a Song</A><BR><BR>"
-		var/bpm = round(600 / tempo)
-		dat += "Tempo: <A href='byond://?src=[REF(src)];tempo=[world.tick_lag]'>-</A> [bpm] BPM <A href='byond://?src=[REF(src)];tempo=-[world.tick_lag]'>+</A><BR><BR>"
-		var/linecount = 0
-		for(var/line in lines)
-			linecount += 1
-			dat += "Line [linecount]: <A href='byond://?src=[REF(src)];modifyline=[linecount]'>Edit</A> <A href='byond://?src=[REF(src)];deleteline=[linecount]'>X</A> [line]<BR>"
-		dat += "<A href='byond://?src=[REF(src)];newline=1'>Add Line</A><BR><BR>"
-		if(help)
-			dat += "<B><A href='byond://?src=[REF(src)];help=1'>Hide Help</A></B><BR>"
-			dat += {"
-					Lines are a series of chords, separated by commas (,), each with notes separated by hyphens (-).<br>
-					Every note in a chord will play together, with chord timed by the tempo.<br>
-					<br>
-					Notes are played by the names of the note, and optionally, the accidental, and/or the octave number.<br>
-					By default, every note is natural and in octave 3. Defining otherwise is remembered for each note.<br>
-					Example: <i>C,D,E,F,G,A,B</i> will play a C major scale.<br>
-					After a note has an accidental placed, it will be remembered: <i>C,C4,C,C3</i> is <i>C3,C4,C4,C3</i><br>
-					Chords can be played simply by seperating each note with a hyphon: <i>A-C#,Cn-E,E-G#,Gn-B</i><br>
-					A pause may be denoted by an empty chord: <i>C,E,,C,G</i><br>
-					To make a chord be a different time, end it with /x, where the chord length will be length<br>
-					defined by tempo / x: <i>C,G/2,E/4</i><br>
-					Combined, an example is: <i>E-E4/4,F#/2,G#/8,B/8,E3-E4/4</i>
-					<br>
-					Lines may be up to [MUSIC_MAXLINECHARS] characters.<br>
-					A song may only contain up to [MUSIC_MAXLINES] lines.<br>
-					"}
-		else
-			dat += "<B><A href='byond://?src=[REF(src)];help=2'>Show Help</A></B><BR>"
-
-	var/datum/browser/popup = new(user, "instrument", parent?.name || "instrument", 700, 500)
-	popup.set_content(dat.Join(""))
-	popup.open()
+/datum/song/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if (!ui)
+		ui = new(user, src, "InstrumentEditor", parent.name)
+		ui.open()
 
 /**
  * Parses a song the user has input into lines and stores them.
@@ -249,3 +198,4 @@
 		full_sustain_held_note = !full_sustain_held_note
 
 	updateDialog()
+

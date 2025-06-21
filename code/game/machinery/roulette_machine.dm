@@ -84,7 +84,7 @@
 
 	return data
 
-/obj/machinery/roulette/ui_act(action, params)
+/obj/machinery/roulette/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
@@ -99,7 +99,7 @@
 		if("ChangeBetType")
 			chosen_bet_type = params["type"]
 			. = TRUE
-	update_icon() // Not applicable to all objects.
+	update_appearance() // Not applicable to all objects.
 
 ///Handles setting ownership and the betting itself.
 /obj/machinery/roulette/attackby(obj/item/W, mob/user, params)
@@ -422,3 +422,4 @@
 #undef ROULETTE_BET_RED
 
 #undef ROULETTE_JACKPOT_AMOUNT
+

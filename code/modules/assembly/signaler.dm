@@ -85,19 +85,24 @@
 	data["maxFrequency"] = MAX_FREE_FREQ
 	return data
 
-/obj/item/assembly/signaler/ui_act(action, params)
+/obj/item/assembly/signaler/ui_act(action, params, datum/tgui/ui)
 	. = ..()
 	if(.)
 		return
 
 	switch(action)
 		if("signal")
+			if(cooldown_length > 0)
+				if(TIMER_COOLDOWN_RUNNING(src, COOLDOWN_SIGNALLER_SEND))
+					balloon_alert(ui.user, "recharging!")
+					return
+				TIMER_COOLDOWN_START(src, COOLDOWN_SIGNALLER_SEND, cooldown_length)
 			INVOKE_ASYNC(src, PROC_REF(signal))
+			balloon_alert(ui.user, "signaled")
 			. = TRUE
 		if("freq")
-			frequency = unformat_frequency(params["freq"])
-			frequency = sanitize_frequency(frequency, TRUE)
-			set_frequency(frequency)
+			var/new_frequency = sanitize_frequency(unformat_frequency(params["freq"]), TRUE)
+			set_frequency(new_frequency)
 			. = TRUE
 		if("code")
 			code = text2num(params["code"])
@@ -110,7 +115,7 @@
 				code = initial(code)
 			. = TRUE
 
-	update_icon()
+	update_appearance()
 
 /obj/item/assembly/signaler/attackby(obj/item/W, mob/user, params)
 	if(issignaler(W))
@@ -199,3 +204,4 @@
 	return
 /obj/item/assembly/signaler/cyborg/screwdriver_act(mob/living/user, obj/item/I)
 	return
+

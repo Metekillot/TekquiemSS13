@@ -48,7 +48,7 @@ GENERAL_PROTECT_DATUM(/datum/log_holder)
 		ui.open()
 
 /datum/log_holder/ui_state(mob/user)
-	return GLOB.admin_state
+	return ADMIN_STATE(R_ADMIN | R_DEBUG)
 
 /datum/log_holder/ui_static_data(mob/user)
 	var/list/data = list(
@@ -101,19 +101,8 @@ GENERAL_PROTECT_DATUM(/datum/log_holder)
 	data_cache["categories"] = category_map
 	data_cache["last_data_update"] = last_data_update
 
-/datum/log_holder/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	. = ..()
-	if(.)
-		return
-
-	switch(action)
-		if("re-render")
-			cache_ui_data()
-			SStgui.update_uis(src)
-			return TRUE
-
-		else
-			stack_trace("unknown ui_act action [action] for [type]")
+/datum/log_holder/ui_state(mob/user)
+	return ADMIN_STATE(R_ADMIN | R_DEBUG)
 
 /// Assembles basic information for logging, creating the log category datums and checking for config flags as required
 /datum/log_holder/proc/init_logging()
@@ -334,3 +323,4 @@ GENERAL_PROTECT_DATUM(/datum/log_holder)
 		jsonified_list[key] = data
 
 	return jsonified_list
+

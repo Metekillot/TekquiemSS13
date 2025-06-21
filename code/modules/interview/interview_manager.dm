@@ -181,17 +181,10 @@ GLOBAL_DATUM_INIT(interviews, /datum/interview_manager, new)
 		ui.open()
 
 /datum/interview_manager/ui_state(mob/user)
-	return GLOB.admin_state
+	return ADMIN_STATE(R_ADMIN)
 
-/datum/interview_manager/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	if (..())
-		return
-	switch(action)
-		if ("open")
-			var/datum/interview/I = interview_by_id(text2num(params["id"]))
-			if (I)
-				I.ui_interact(usr)
-
+/datum/interview_manager/ui_state(mob/user)
+	return ADMIN_STATE(R_ADMIN)
 
 /datum/interview_manager/ui_data(mob/user)
 	. = list(
@@ -216,3 +209,4 @@ GLOBAL_DATUM_INIT(interviews, /datum/interview_manager, new)
 			"disconnected" = !I.owner
 		)
 		.["closed_interviews"] += list(data)
+

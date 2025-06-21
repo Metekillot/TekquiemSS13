@@ -27,8 +27,10 @@
 		return UI_CLOSE
 	return ..()
 
-/obj/machinery/abductor/gland_dispenser/ui_state(mob/user)
-	return GLOB.physical_state
+/obj/machinery/abductor/gland_dispenser/ui_status(mob/user, datum/ui_state/state)
+	if(!isabductor(user) && !isobserver(user))
+		return UI_CLOSE
+	return ..()
 
 /obj/machinery/abductor/gland_dispenser/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -76,3 +78,4 @@
 		amounts[count]--
 		var/T = gland_types[count]
 		new T(get_turf(src))
+
