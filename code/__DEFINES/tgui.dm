@@ -24,14 +24,33 @@
 /// Window is free and ready to receive data
 #define TGUI_WINDOW_READY 2
 
+/// Though not the maximum renderable ByondUis within tgui, this is the maximum that the server will manage per-UI
+#define TGUI_MANAGED_BYONDUI_LIMIT 10
+
+// These are defines instead of being inline, as they're being sent over
+// from tgui-core, so can't be easily played with
+#define TGUI_MANAGED_BYONDUI_TYPE_RENDER "renderByondUi"
+#define TGUI_MANAGED_BYONDUI_TYPE_UNMOUNT "unmountByondUi"
+
+#define TGUI_MANAGED_BYONDUI_PAYLOAD_ID "renderByondUi"
+
 /// Get a window id based on the provided pool index
 #define TGUI_WINDOW_ID(index) "tgui-window-[index]"
 /// Get a pool index of the provided window id
 #define TGUI_WINDOW_INDEX(window_id) text2num(copytext(window_id, 13))
 
 /// Creates a message packet for sending via output()
+// This is {"type":type,"payload":payload}, but pre-encoded. This is much faster
+// than doing it the normal way.
+// To ensure this is correct, this is unit tested in tgui_create_message.
 #define TGUI_CREATE_MESSAGE(type, payload) ( \
-	url_encode(json_encode(list( \
-		"type" = type, \
-		"payload" = payload, \
-	))))
+	"%7b%22type%22%3a%22[type]%22%2c%22payload%22%3a[url_encode(json_encode(payload))]%7d" \
+)
+
+/**
+ * Gets a ui_state that checks to see if the user has specific admin permissions.
+ *
+ * Arguments:
+ * * required_perms: Which admin permission flags to check the user for, such as [R_ADMIN]
+ */
+#define ADMIN_STATE(required_perms) (GLOB.admin_states["[required_perms]"] ||= new /datum/ui_state/admin_state(required_perms))

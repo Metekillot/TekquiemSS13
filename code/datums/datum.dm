@@ -19,6 +19,7 @@
 
 	/// Active timers with this datum as the target
 	var/list/active_timers
+	var/list/open_uis
 	/// Status traits attached to this datum
 	var/list/status_traits
 
